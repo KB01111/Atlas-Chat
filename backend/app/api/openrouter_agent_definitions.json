@@ -1,0 +1,41 @@
+[
+  {
+    "agent_id": "deepseek_v3_sdk",
+    "name": "DeepSeek v3 (SDK)",
+    "description": "Advanced reasoning and coding capabilities with DeepSeek v3 via OpenRouter using the SDK engine",
+    "agent_type": "sdk",
+    "uses_graphiti": true,
+    "allowed_tools": ["execute_code", "web_search", "file_management"],
+    "sdk_config": {
+      "model": "deepseek/deepseek-v3",
+      "temperature": 0.7,
+      "provider": "openrouter"
+    }
+  },
+  {
+    "agent_id": "deepseek_v3_langgraph",
+    "name": "DeepSeek v3 (LangGraph)",
+    "description": "Advanced reasoning with custom workflow using DeepSeek v3 via OpenRouter with the LangGraph engine",
+    "agent_type": "langgraph",
+    "uses_graphiti": true,
+    "allowed_tools": ["execute_code", "web_search", "file_management"],
+    "langgraph_config": {
+      "model": "deepseek/deepseek-v3",
+      "temperature": 0.7,
+      "provider": "openrouter"
+    }
+  },
+  {
+    "agent_id": "deepseek_coder",
+    "name": "DeepSeek Coder",
+    "description": "Specialized coding assistant using DeepSeek Coder via OpenRouter",
+    "agent_type": "sdk",
+    "uses_graphiti": true,
+    "allowed_tools": ["execute_code", "file_management"],
+    "sdk_config": {
+      "model": "deepseek/deepseek-coder",
+      "temperature": 0.5,
+      "provider": "openrouter"
+    }
+  }
+]
