@@ -36,14 +36,14 @@ class ContextSummarizer:
     - Calculating relevance between segments and queries
     """
     
-    def __init__(self, openai_client=None):
+    def __init__(self, openrouter_client=None):
         """
         Initialize the context summarizer.
         
         Args:
-            openai_client: Optional OpenAI client for API access
+            openrouter_client: Optional OpenRouter client for API access
         """
-        self.client = openai_client
+        self.client = openrouter_client
     
     async def create_detailed_summary(self, content: str, speakers: List[str], 
                                     metadata: Optional[Dict[str, Any]] = None) -> ConversationSegment:
@@ -61,7 +61,7 @@ class ContextSummarizer:
         Returns:
             Conversation segment with the detailed summary
         """
-        # In a real implementation, this would use the OpenAI client
+        # In a real implementation, this would use the OpenRouter client
         # to generate a summary with the appropriate compression ratio
         
         # Simulate summarization
@@ -93,7 +93,7 @@ class ContextSummarizer:
         Returns:
             Conversation segment with the condensed summary
         """
-        # In a real implementation, this would use the OpenAI client
+        # In a real implementation, this would use the OpenRouter client
         # to generate a summary with the appropriate compression ratio
         
         # Simulate summarization
@@ -125,7 +125,7 @@ class ContextSummarizer:
         Returns:
             Conversation segment with the topic summary
         """
-        # In a real implementation, this would use the OpenAI client
+        # In a real implementation, this would use the OpenRouter client
         # to generate a summary with the appropriate compression ratio
         
         # Simulate summarization

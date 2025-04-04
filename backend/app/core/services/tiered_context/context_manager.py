@@ -37,27 +37,27 @@ class TieredContextManager:
     - Managing context window size
     """
     
-    def __init__(self, max_context_tokens: int = 8000, openai_client=None):
+    def __init__(self, max_context_tokens: int = 8000, openrouter_client=None):
         """
         Initialize the tiered context manager.
         
         Args:
             max_context_tokens: Maximum number of tokens in context window
-            openai_client: Optional OpenAI client for API access
+            openrouter_client: Optional OpenRouter client for API access
         """
         self.max_context_tokens = max_context_tokens
-        self.client = openai_client
+        self.client = openrouter_client
         
         # Initialize components
-        self.context_summarizer = ContextSummarizer(openai_client=self.client)
+        self.context_summarizer = ContextSummarizer(openrouter_client=self.client)
         self.working_memory = WorkingMemory()
         self.episodic_memory = EpisodicMemory(context_summarizer=self.context_summarizer)
-        self.knowledge_graph = KnowledgeGraph(openai_client=self.client)
+        self.knowledge_graph = KnowledgeGraph(openrouter_client=self.client)
         
         # Initialize active sessions
         self.active_sessions: Dict[str, Dict[str, Any]] = {}
     
-    def add_message(self, session_id: str, message: str, role: str, 
+    async def add_message(self, session_id: str, message: str, role: str, 
                    metadata: Optional[Dict[str, Any]] = None) -> str:
         """
         Add a message to the context manager.
@@ -90,7 +90,7 @@ class TieredContextManager:
             recent_messages = self.working_memory.get_conversation_history(session_id, limit=5)
             
             # Add to episodic memory
-            self.episodic_memory.add_episode(
+            await self.episodic_memory.add_episode(
                 session_id=session_id,
                 content=f"{recent_messages}\n\n{role}: {message}",
                 speakers=[role],
@@ -99,7 +99,7 @@ class TieredContextManager:
         
         # Extract knowledge if appropriate
         if role == "assistant" and len(message) > 200:
-            self.knowledge_graph.extract_knowledge(
+            await self.knowledge_graph.extract_knowledge(
                 content=message,
                 session_id=session_id
             )
@@ -164,7 +164,7 @@ class TieredContextManager:
         if context_bundle.total_tokens < self.max_context_tokens:
             # Get knowledge graph nodes
             knowledge_limit = 2 if depth == 1 else (3 if depth == 2 else 5)
-            knowledge_nodes = self.knowledge_graph.search_nodes(
+            knowledge_nodes = await self.knowledge_graph.search_nodes(
                 query=query,
                 limit=knowledge_limit
             )
@@ -187,7 +187,7 @@ class TieredContextManager:
         
         return context_bundle
     
-    def format_context_for_prompt(self, context_bundle: ContextBundle) -> str:
+    async def format_context_for_prompt(self, context_bundle: ContextBundle) -> str:
         """
         Format context bundle for use in a prompt.
         
@@ -223,7 +223,7 @@ class TieredContextManager:
         
         return "\n\n".join(context_parts)
     
-    def end_session(self, session_id: str) -> bool:
+    async def end_session(self, session_id: str) -> bool:
         """
         End a conversation session.
         
@@ -238,10 +238,10 @@ class TieredContextManager:
             self.working_memory.clear_session(session_id)
             
             # Clear episodic memory
-            self.episodic_memory.clear_session(session_id)
+            await self.episodic_memory.clear_session(session_id)
             
             # Clear knowledge graph
-            self.knowledge_graph.clear_session(session_id)
+            await self.knowledge_graph.clear_session(session_id)
             
             # Remove from active sessions
             if session_id in self.active_sessions:
