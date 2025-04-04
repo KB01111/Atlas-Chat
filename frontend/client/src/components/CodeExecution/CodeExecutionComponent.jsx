@@ -1,388 +1,273 @@
-import React, { useState, useEffect } from 'react';
-import Editor from '@monaco-editor/react';
-import { useApi } from '../data-provider/simplified-api';
+import React, { useState, useEffect, useRef } from 'react';
+import { useApi } from '../../api-context';
+import MonacoEditor from 'react-monaco-editor';
+import './CodeExecutionComponent.css';
 
 const CodeExecutionComponent = ({ agentId, threadId }) => {
+  const { executeCode, writeFile, readFile, installPackages } = useApi();
   const [code, setCode] = useState('# Enter your Python code here\nprint("Hello, World!")');
   const [language, setLanguage] = useState('python');
   const [output, setOutput] = useState('');
   const [isExecuting, setIsExecuting] = useState(false);
-  const [error, setError] = useState(null);
-  const [files, setFiles] = useState([]);
-  const [selectedFile, setSelectedFile] = useState(null);
   const [packages, setPackages] = useState('');
-  
-  const api = useApi();
-  
-  // Execute code
-  const executeCode = async () => {
+  const [isInstalling, setIsInstalling] = useState(false);
+  const [fileName, setFileName] = useState('');
+  const [theme, setTheme] = useState('vs-dark');
+  const outputRef = useRef(null);
+
+  // Supported languages
+  const languages = [
+    { id: 'python', name: 'Python', installCmd: 'pip install' },
+    { id: 'javascript', name: 'JavaScript', installCmd: 'npm install' },
+    { id: 'typescript', name: 'TypeScript', installCmd: 'npm install' },
+    { id: 'bash', name: 'Bash', installCmd: 'apt-get install' }
+  ];
+
+  // Auto-scroll output to bottom
+  useEffect(() => {
+    if (outputRef.current) {
+      outputRef.current.scrollTop = outputRef.current.scrollHeight;
+    }
+  }, [output]);
+
+  // Handle code execution
+  const handleExecuteCode = async () => {
+    if (!code.trim()) return;
+    
     setIsExecuting(true);
-    setError(null);
-    setOutput('Executing code...\n');
+    setOutput(prev => prev + '\n--- Executing code ---\n');
     
     try {
-      const result = await api.executeCode(code, language, threadId, agentId);
+      const result = await executeCode(code, language, threadId, agentId);
       
       if (result.success) {
-        let outputText = '';
-        if (result.stdout) {
-          outputText += result.stdout;
+        setOutput(prev => prev + (result.stdout || '') + (result.stderr ? `\nErrors:\n${result.stderr}` : ''));
+        if (result.exit_code !== 0) {
+          setOutput(prev => prev + `\nExited with code ${result.exit_code}`);
         }
-        if (result.stderr) {
-          outputText += '\n' + result.stderr;
-        }
-        setOutput(outputText || 'Code executed successfully with no output.');
       } else {
-        setError(result.error || 'An unknown error occurred');
-        setOutput('Execution failed. See error details.');
+        setOutput(prev => prev + `\nExecution failed: ${result.error || 'Unknown error'}`);
       }
-    } catch (err) {
-      setError(err.message || 'Failed to execute code');
-      setOutput('Execution failed. See error details.');
+    } catch (error) {
+      setOutput(prev => prev + `\nError: ${error.message || 'Failed to execute code'}`);
     } finally {
       setIsExecuting(false);
+      setOutput(prev => prev + '\n--- Execution complete ---\n');
     }
   };
-  
-  // Install packages
-  const installPackages = async () => {
-    if (!packages.trim()) {
-      setError('Please enter package names');
-      return;
-    }
+
+  // Handle package installation
+  const handleInstallPackages = async () => {
+    if (!packages.trim()) return;
     
-    setIsExecuting(true);
-    setError(null);
-    setOutput('Installing packages...\n');
+    setIsInstalling(true);
+    setOutput(prev => prev + `\n--- Installing packages: ${packages} ---\n`);
     
     try {
       const packageList = packages.split(/[ ,]+/).filter(pkg => pkg.trim());
-      const result = await api.installPackages(packageList, language, threadId, agentId);
+      const result = await installPackages(packageList, language, threadId, agentId);
       
       if (result.success) {
-        let outputText = 'Packages installed successfully.\n';
-        if (result.stdout) {
-          outputText += result.stdout;
+        setOutput(prev => prev + (result.stdout || '') + (result.stderr ? `\nErrors:\n${result.stderr}` : ''));
+        if (result.exit_code !== 0) {
+          setOutput(prev => prev + `\nExited with code ${result.exit_code}`);
+        } else {
+          setOutput(prev => prev + `\nPackages installed successfully`);
         }
-        if (result.stderr) {
-          outputText += '\n' + result.stderr;
-        }
-        setOutput(outputText);
       } else {
-        setError(result.error || 'An unknown error occurred');
-        setOutput('Package installation failed. See error details.');
+        setOutput(prev => prev + `\nInstallation failed: ${result.error || 'Unknown error'}`);
       }
-    } catch (err) {
-      setError(err.message || 'Failed to install packages');
-      setOutput('Package installation failed. See error details.');
+    } catch (error) {
+      setOutput(prev => prev + `\nError: ${error.message || 'Failed to install packages'}`);
     } finally {
-      setIsExecuting(false);
+      setIsInstalling(false);
+      setPackages('');
+      setOutput(prev => prev + '\n--- Installation complete ---\n');
     }
   };
-  
-  // Save file
-  const saveFile = async () => {
-    if (!selectedFile) {
-      const fileName = prompt('Enter file name:');
-      if (!fileName) return;
-      
-      setIsExecuting(true);
-      setError(null);
-      
-      try {
-        const result = await api.writeFile(fileName, code, threadId, agentId);
-        
-        if (result.success) {
-          setSelectedFile(fileName);
-          setFiles(prevFiles => [...prevFiles, fileName]);
-          setOutput(`File ${fileName} saved successfully.`);
-        } else {
-          setError(result.error || 'An unknown error occurred');
-          setOutput('Failed to save file. See error details.');
-        }
-      } catch (err) {
-        setError(err.message || 'Failed to save file');
-        setOutput('Failed to save file. See error details.');
-      } finally {
-        setIsExecuting(false);
-      }
-    } else {
-      setIsExecuting(true);
-      setError(null);
-      
-      try {
-        const result = await api.writeFile(selectedFile, code, threadId, agentId);
-        
-        if (result.success) {
-          setOutput(`File ${selectedFile} updated successfully.`);
-        } else {
-          setError(result.error || 'An unknown error occurred');
-          setOutput('Failed to update file. See error details.');
-        }
-      } catch (err) {
-        setError(err.message || 'Failed to update file');
-        setOutput('Failed to update file. See error details.');
-      } finally {
-        setIsExecuting(false);
-      }
-    }
-  };
-  
-  // Load file
-  const loadFile = async (fileName) => {
-    setIsExecuting(true);
-    setError(null);
+
+  // Handle file save
+  const handleSaveFile = async () => {
+    const filename = prompt('Enter filename to save:', fileName || `code.${language === 'python' ? 'py' : language === 'javascript' ? 'js' : language === 'typescript' ? 'ts' : 'sh'}`);
+    if (!filename) return;
+    
+    setOutput(prev => prev + `\n--- Saving file: ${filename} ---\n`);
     
     try {
-      const result = await api.readFile(fileName, threadId, agentId);
+      const result = await writeFile(filename, code, threadId, agentId);
       
       if (result.success) {
-        setCode(result.content);
-        setSelectedFile(fileName);
-        setOutput(`File ${fileName} loaded successfully.`);
+        setOutput(prev => prev + `File ${filename} saved successfully`);
+        setFileName(filename);
       } else {
-        setError(result.error || 'An unknown error occurred');
-        setOutput('Failed to load file. See error details.');
+        setOutput(prev => prev + `\nFailed to save file: ${result.error || 'Unknown error'}`);
       }
-    } catch (err) {
-      setError(err.message || 'Failed to load file');
-      setOutput('Failed to load file. See error details.');
-    } finally {
-      setIsExecuting(false);
+    } catch (error) {
+      setOutput(prev => prev + `\nError: ${error.message || 'Failed to save file'}`);
     }
   };
-  
+
+  // Handle file load
+  const handleLoadFile = async () => {
+    const filename = prompt('Enter filename to load:');
+    if (!filename) return;
+    
+    setOutput(prev => prev + `\n--- Loading file: ${filename} ---\n`);
+    
+    try {
+      const result = await readFile(filename, threadId, agentId);
+      
+      if (result.success && result.content) {
+        setCode(result.content);
+        setFileName(filename);
+        setOutput(prev => prev + `File ${filename} loaded successfully`);
+        
+        // Auto-detect language based on file extension
+        const ext = filename.split('.').pop().toLowerCase();
+        if (ext === 'py') {
+          setLanguage('python');
+        } else if (ext === 'js') {
+          setLanguage('javascript');
+        } else if (ext === 'ts') {
+          setLanguage('typescript');
+        } else if (ext === 'sh' || ext === 'bash') {
+          setLanguage('bash');
+        }
+      } else {
+        setOutput(prev => prev + `\nFailed to load file: ${result.error || 'Unknown error'}`);
+      }
+    } catch (error) {
+      setOutput(prev => prev + `\nError: ${error.message || 'Failed to load file'}`);
+    }
+  };
+
   // Clear output
-  const clearOutput = () => {
+  const handleClearOutput = () => {
     setOutput('');
-    setError(null);
   };
-  
-  // New file
-  const newFile = () => {
-    setSelectedFile(null);
-    setCode('# Enter your Python code here\nprint("Hello, World!")');
-    setOutput('');
-    setError(null);
+
+  // Toggle theme
+  const handleToggleTheme = () => {
+    setTheme(theme === 'vs-dark' ? 'vs-light' : 'vs-dark');
   };
-  
-  // Set editor language based on selected language
-  const getEditorLanguage = () => {
-    switch (language) {
-      case 'python':
-        return 'python';
-      case 'javascript':
-        return 'javascript';
-      case 'typescript':
-        return 'typescript';
-      case 'bash':
-        return 'shell';
-      default:
-        return 'python';
-    }
+
+  // Editor options
+  const editorOptions = {
+    selectOnLineNumbers: true,
+    roundedSelection: false,
+    readOnly: false,
+    cursorStyle: 'line',
+    automaticLayout: true,
+    minimap: { enabled: true },
+    scrollBeyondLastLine: false,
+    lineNumbers: 'on',
+    renderLineHighlight: 'all',
+    fontFamily: 'JetBrains Mono, Menlo, Monaco, Consolas, "Courier New", monospace',
+    fontSize: 14,
+    tabSize: 2,
   };
-  
+
   return (
-    <div className="code-execution-component">
-      <div className="code-header">
-        <div className="language-selector">
-          <label htmlFor="language-select">Language:</label>
-          <select 
-            id="language-select"
-            value={language}
-            onChange={(e) => setLanguage(e.target.value)}
-            disabled={isExecuting}
-          >
-            <option value="python">Python</option>
-            <option value="javascript">JavaScript</option>
-            <option value="typescript">TypeScript</option>
-            <option value="bash">Bash</option>
-          </select>
+    <div className="code-execution-container">
+      <div className="code-execution-header">
+        <div className="code-execution-controls">
+          <div className="language-selector">
+            <label htmlFor="language-select">Language:</label>
+            <select
+              id="language-select"
+              value={language}
+              onChange={(e) => setLanguage(e.target.value)}
+              disabled={isExecuting}
+            >
+              {languages.map((lang) => (
+                <option key={lang.id} value={lang.id}>
+                  {lang.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          
+          <div className="code-execution-buttons">
+            <button
+              className="run-button"
+              onClick={handleExecuteCode}
+              disabled={isExecuting || !code.trim()}
+            >
+              {isExecuting ? 'Running...' : 'Run Code'}
+            </button>
+            
+            <button
+              className="save-button"
+              onClick={handleSaveFile}
+              disabled={isExecuting || !code.trim()}
+            >
+              Save
+            </button>
+            
+            <button
+              className="load-button"
+              onClick={handleLoadFile}
+              disabled={isExecuting}
+            >
+              Load
+            </button>
+            
+            <button
+              className="theme-button"
+              onClick={handleToggleTheme}
+              disabled={isExecuting}
+            >
+              {theme === 'vs-dark' ? 'Light Theme' : 'Dark Theme'}
+            </button>
+            
+            <button
+              className="clear-button"
+              onClick={handleClearOutput}
+              disabled={isExecuting || !output}
+            >
+              Clear Output
+            </button>
+          </div>
         </div>
         
-        <div className="file-controls">
-          <button onClick={newFile} disabled={isExecuting}>New File</button>
-          <button onClick={saveFile} disabled={isExecuting}>Save</button>
-          <select 
-            value={selectedFile || ''}
-            onChange={(e) => e.target.value && loadFile(e.target.value)}
-            disabled={isExecuting}
-          >
-            <option value="">Select File</option>
-            {files.map((file, index) => (
-              <option key={index} value={file}>{file}</option>
-            ))}
-          </select>
-        </div>
-        
-        <div className="package-controls">
+        <div className="package-installer">
           <input
             type="text"
-            placeholder="Package names (space or comma separated)"
             value={packages}
             onChange={(e) => setPackages(e.target.value)}
-            disabled={isExecuting}
+            placeholder="Package names (space or comma separated)"
+            disabled={isInstalling}
           />
-          <button onClick={installPackages} disabled={isExecuting}>
-            Install Packages
+          <button
+            onClick={handleInstallPackages}
+            disabled={isInstalling || !packages.trim()}
+          >
+            {isInstalling ? 'Installing...' : 'Install Packages'}
           </button>
         </div>
       </div>
       
-      <div className="editor-container">
-        <Editor
-          height="400px"
-          language={getEditorLanguage()}
+      <div className="code-execution-editor">
+        <MonacoEditor
+          width="100%"
+          height="400"
+          language={language}
+          theme={theme}
           value={code}
+          options={editorOptions}
           onChange={setCode}
-          theme="vs-dark"
-          options={{
-            minimap: { enabled: false },
-            lineNumbers: 'on',
-            fontSize: 14,
-            scrollBeyondLastLine: false,
-            automaticLayout: true,
-            readOnly: isExecuting
-          }}
         />
       </div>
       
-      <div className="execution-controls">
-        <button 
-          className="execute-button"
-          onClick={executeCode}
-          disabled={isExecuting}
-        >
-          {isExecuting ? 'Executing...' : 'Run Code'}
-        </button>
-        <button 
-          className="clear-button"
-          onClick={clearOutput}
-          disabled={isExecuting}
-        >
-          Clear Output
-        </button>
-      </div>
-      
-      <div className="output-container">
+      <div className="code-execution-output">
         <div className="output-header">
-          <span>Output</span>
-          {error && <span className="error-indicator">Error</span>}
+          <h3>Output</h3>
+          {fileName && <span className="current-file">Current file: {fileName}</span>}
         </div>
-        <pre className="output-content">
-          {output}
-          {error && <div className="error-message">Error: {error}</div>}
+        <pre ref={outputRef} className="output-content">
+          {output || 'Run your code to see output here...'}
         </pre>
       </div>
-      
-      <style jsx>{`
-        .code-execution-component {
-          display: flex;
-          flex-direction: column;
-          border: 1px solid #ccc;
-          border-radius: 4px;
-          overflow: hidden;
-          margin-bottom: 20px;
-        }
-        
-        .code-header {
-          display: flex;
-          justify-content: space-between;
-          padding: 10px;
-          background-color: #f5f5f5;
-          border-bottom: 1px solid #ccc;
-        }
-        
-        .language-selector,
-        .file-controls,
-        .package-controls {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-        }
-        
-        .editor-container {
-          border-bottom: 1px solid #ccc;
-        }
-        
-        .execution-controls {
-          display: flex;
-          padding: 10px;
-          background-color: #f5f5f5;
-          border-bottom: 1px solid #ccc;
-          gap: 10px;
-        }
-        
-        .execute-button {
-          background-color: #4CAF50;
-          color: white;
-          border: none;
-          padding: 8px 16px;
-          border-radius: 4px;
-          cursor: pointer;
-        }
-        
-        .execute-button:disabled {
-          background-color: #cccccc;
-          cursor: not-allowed;
-        }
-        
-        .clear-button {
-          background-color: #f44336;
-          color: white;
-          border: none;
-          padding: 8px 16px;
-          border-radius: 4px;
-          cursor: pointer;
-        }
-        
-        .output-container {
-          display: flex;
-          flex-direction: column;
-          min-height: 150px;
-          max-height: 300px;
-          overflow: auto;
-        }
-        
-        .output-header {
-          display: flex;
-          justify-content: space-between;
-          padding: 10px;
-          background-color: #f5f5f5;
-          border-bottom: 1px solid #ccc;
-          font-weight: bold;
-        }
-        
-        .error-indicator {
-          color: #f44336;
-        }
-        
-        .output-content {
-          padding: 10px;
-          white-space: pre-wrap;
-          word-wrap: break-word;
-          font-family: monospace;
-          margin: 0;
-          flex-grow: 1;
-          overflow: auto;
-        }
-        
-        .error-message {
-          color: #f44336;
-          margin-top: 10px;
-          font-weight: bold;
-        }
-        
-        button, select, input {
-          padding: 6px 12px;
-          border: 1px solid #ccc;
-          border-radius: 4px;
-        }
-        
-        input {
-          min-width: 250px;
-        }
-      `}</style>
     </div>
   );
 };
