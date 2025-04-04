@@ -1,0 +1,252 @@
+.code-execution-container {
+  display: flex;
+  flex-direction: column;
+  background-color: #1e1e1e;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.code-execution-header {
+  padding: 12px;
+  background-color: #252526;
+  border-bottom: 1px solid #333;
+}
+
+.code-execution-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.language-selector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.language-selector label {
+  color: #e0e0e0;
+  font-size: 14px;
+}
+
+.language-selector select {
+  background-color: #3c3c3c;
+  color: #e0e0e0;
+  border: 1px solid #555;
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-size: 14px;
+  outline: none;
+}
+
+.language-selector select:focus {
+  border-color: #007acc;
+}
+
+.code-execution-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.code-execution-buttons button {
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  outline: none;
+}
+
+.run-button {
+  background-color: #0e639c;
+  color: white;
+}
+
+.run-button:hover:not(:disabled) {
+  background-color: #1177bb;
+}
+
+.save-button {
+  background-color: #388e3c;
+  color: white;
+}
+
+.save-button:hover:not(:disabled) {
+  background-color: #43a047;
+}
+
+.load-button {
+  background-color: #f57c00;
+  color: white;
+}
+
+.load-button:hover:not(:disabled) {
+  background-color: #fb8c00;
+}
+
+.theme-button {
+  background-color: #7e57c2;
+  color: white;
+}
+
+.theme-button:hover:not(:disabled) {
+  background-color: #9575cd;
+}
+
+.clear-button {
+  background-color: #e53935;
+  color: white;
+}
+
+.clear-button:hover:not(:disabled) {
+  background-color: #ef5350;
+}
+
+button:disabled {
+  background-color: #555 !important;
+  color: #888;
+  cursor: not-allowed;
+}
+
+.package-installer {
+  display: flex;
+  gap: 8px;
+}
+
+.package-installer input {
+  flex: 1;
+  padding: 6px 10px;
+  border-radius: 4px;
+  border: 1px solid #555;
+  background-color: #3c3c3c;
+  color: #e0e0e0;
+  font-size: 14px;
+  outline: none;
+}
+
+.package-installer input:focus {
+  border-color: #007acc;
+}
+
+.package-installer button {
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  outline: none;
+  background-color: #6a1b9a;
+  color: white;
+}
+
+.package-installer button:hover:not(:disabled) {
+  background-color: #8e24aa;
+}
+
+.code-execution-editor {
+  height: 400px;
+  border-bottom: 1px solid #333;
+}
+
+.code-execution-output {
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+  padding: 12px;
+  height: 200px;
+  overflow-y: auto;
+}
+
+.output-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.output-header h3 {
+  margin: 0;
+  font-size: 16px;
+  color: #e0e0e0;
+}
+
+.current-file {
+  font-size: 14px;
+  color: #888;
+}
+
+.output-content {
+  margin: 0;
+  font-family: 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Light theme overrides */
+.code-execution-container.light-theme {
+  background-color: #f5f5f5;
+}
+
+.code-execution-container.light-theme .code-execution-header {
+  background-color: #e0e0e0;
+  border-bottom: 1px solid #ccc;
+}
+
+.code-execution-container.light-theme .language-selector label {
+  color: #333;
+}
+
+.code-execution-container.light-theme .language-selector select {
+  background-color: #fff;
+  color: #333;
+  border: 1px solid #ccc;
+}
+
+.code-execution-container.light-theme .package-installer input {
+  background-color: #fff;
+  color: #333;
+  border: 1px solid #ccc;
+}
+
+.code-execution-container.light-theme .code-execution-output {
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+.code-execution-container.light-theme .output-header h3 {
+  color: #333;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .code-execution-controls {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .code-execution-buttons {
+    flex-wrap: wrap;
+  }
+  
+  .package-installer {
+    flex-direction: column;
+  }
+  
+  .code-execution-editor {
+    height: 300px;
+  }
+  
+  .code-execution-output {
+    height: 150px;
+  }
+}
