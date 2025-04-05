@@ -91,13 +91,13 @@ from app.core.services.e2b.session import E2BSession
 async def execute_code():
     session = E2BSession(session_id="example-session")
     await session.initialize()
-    
+
     result = await session.execute_code(
         code="print('Hello, World!')",
         language="python",
         timeout=30
     )
-    
+
     print(result)
     await session.close()
 ```
@@ -122,14 +122,14 @@ from app.core.services.agent_service import AgentService
 
 async def delegate_task():
     agent_service = AgentService(db=db_session)
-    
+
     # Create a team
     team = await agent_service.create_team(
         name="Development Team",
         supervisor_name="Tech Lead",
         user_id="user123"
     )
-    
+
     # Add an agent
     agent = await agent_service.add_agent(
         team_id=team["id"],
@@ -138,7 +138,7 @@ async def delegate_task():
         languages=["python"],
         user_id="user123"
     )
-    
+
     # Create a task
     task = await agent_service.create_task(
         team_id=team["id"],
@@ -147,7 +147,7 @@ async def delegate_task():
         assigned_to=agent["id"],
         user_id="user123"
     )
-    
+
     print(task)
 ```
 
@@ -226,51 +226,67 @@ The `docker-compose.yml` file defines all services and their configurations, inc
 ### Docker Installation
 
 1. Clone the repository:
+
+
    ```bash
    git clone https://github.com/KB01111/Atlas-Chat.git
    cd Atlas-Chat
    ```
 
+
 2. Create a `.env` file with required environment variables:
+
    ```bash
    cp .env.example .env
    # Edit .env with your configuration
    ```
 
+
 3. Start the application:
+
    ```bash
    docker-compose up -d
    ```
 
 4. Access the application at `http://localhost:3000`
 
+
 ### Local Development
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/KB01111/Atlas-Chat.git
+
    cd Atlas-Chat
    ```
 
 2. Install backend dependencies:
+
    ```bash
+
    cd backend
    pip install -r requirements.txt
    ```
 
 3. Install frontend dependencies:
+
+
    ```bash
    cd frontend/client
    npm install
    ```
 
 4. Start the backend:
+
+
    ```bash
    cd backend
    uvicorn app.main:app --reload
    ```
 
 5. Start the frontend:
+
    ```bash
    cd frontend/client
    npm start
@@ -282,18 +298,24 @@ The `docker-compose.yml` file defines all services and their configurations, inc
 
 ### Creating a Conversation
 
+
 1. Navigate to the chat interface
 2. Click "New Chat" to start a new conversation
 3. Type your message and press Enter
 4. The AI assistant will respond to your message
 
+
 ### Executing Code
 
 1. In a conversation, use code blocks with language specification:
-   ```
+
+   ````
    ```python
    print("Hello, World!")
+   ````
+
    ```
+
    ```
 
 2. Click the "Run" button to execute the code

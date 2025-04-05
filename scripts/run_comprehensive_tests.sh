@@ -13,359 +13,359 @@ echo "Created test results directory: $RESULTS_DIR"
 
 # Function to log test results
 log_test_result() {
-  local test_name=$1
-  local status=$2
-  local details=$3
-  
-  echo "[$status] $test_name: $details" >> "$RESULTS_DIR/test_results.log"
-  echo "[$status] $test_name: $details"
+	local test_name=$1
+	local status=$2
+	local details=$3
+
+	echo "[$status] $test_name: $details" >>"$RESULTS_DIR/test_results.log"
+	echo "[$status] $test_name: $details"
 }
 
 # Function to test backend API endpoints
 test_backend_api() {
-  echo "Testing backend API endpoints..."
-  
-  # Check if backend is running
-  if ! curl -s http://localhost:8000/api/health > /dev/null; then
-    log_test_result "Backend Health Check" "FAIL" "Backend is not running"
-    return 1
-  fi
-  
-  # Test authentication endpoints
-  echo "Testing authentication endpoints..."
-  AUTH_RESULT=$(curl -s -X POST http://localhost:8000/api/auth/token -H "Content-Type: application/json" -d '{"username":"test","password":"test"}')
-  
-  if [[ $AUTH_RESULT == *"error"* ]]; then
-    log_test_result "Authentication API" "FAIL" "Authentication endpoint returned error"
-  else
-    log_test_result "Authentication API" "PASS" "Authentication endpoint working correctly"
-  fi
-  
-  # Test code execution endpoints
-  echo "Testing code execution endpoints..."
-  CODE_RESULT=$(curl -s -X POST http://localhost:8000/api/code/execute -H "Content-Type: application/json" -d '{"code":"print(\"Hello, World!\")","language":"python"}')
-  
-  if [[ $CODE_RESULT == *"error"* ]]; then
-    log_test_result "Code Execution API" "FAIL" "Code execution endpoint returned error"
-  else
-    log_test_result "Code Execution API" "PASS" "Code execution endpoint working correctly"
-  fi
-  
-  # Test artifact endpoints
-  echo "Testing artifact endpoints..."
-  ARTIFACT_RESULT=$(curl -s -X GET http://localhost:8000/api/artifacts)
-  
-  if [[ $ARTIFACT_RESULT == *"error"* ]]; then
-    log_test_result "Artifacts API" "FAIL" "Artifacts endpoint returned error"
-  else
-    log_test_result "Artifacts API" "PASS" "Artifacts endpoint working correctly"
-  fi
-  
-  # Test team management endpoints
-  echo "Testing team management endpoints..."
-  TEAM_RESULT=$(curl -s -X GET http://localhost:8000/api/teams)
-  
-  if [[ $TEAM_RESULT == *"error"* ]]; then
-    log_test_result "Teams API" "FAIL" "Teams endpoint returned error"
-  else
-    log_test_result "Teams API" "PASS" "Teams endpoint working correctly"
-  fi
+	echo "Testing backend API endpoints..."
+
+	# Check if backend is running
+	if ! curl -s http://localhost:8000/api/health >/dev/null; then
+		log_test_result "Backend Health Check" "FAIL" "Backend is not running"
+		return 1
+	fi
+
+	# Test authentication endpoints
+	echo "Testing authentication endpoints..."
+	AUTH_RESULT=$(curl -s -X POST http://localhost:8000/api/auth/token -H "Content-Type: application/json" -d '{"username":"test","password":"test"}')
+
+	if [[ $AUTH_RESULT == *"error"* ]]; then
+		log_test_result "Authentication API" "FAIL" "Authentication endpoint returned error"
+	else
+		log_test_result "Authentication API" "PASS" "Authentication endpoint working correctly"
+	fi
+
+	# Test code execution endpoints
+	echo "Testing code execution endpoints..."
+	CODE_RESULT=$(curl -s -X POST http://localhost:8000/api/code/execute -H "Content-Type: application/json" -d '{"code":"print(\"Hello, World!\")","language":"python"}')
+
+	if [[ $CODE_RESULT == *"error"* ]]; then
+		log_test_result "Code Execution API" "FAIL" "Code execution endpoint returned error"
+	else
+		log_test_result "Code Execution API" "PASS" "Code execution endpoint working correctly"
+	fi
+
+	# Test artifact endpoints
+	echo "Testing artifact endpoints..."
+	ARTIFACT_RESULT=$(curl -s -X GET http://localhost:8000/api/artifacts)
+
+	if [[ $ARTIFACT_RESULT == *"error"* ]]; then
+		log_test_result "Artifacts API" "FAIL" "Artifacts endpoint returned error"
+	else
+		log_test_result "Artifacts API" "PASS" "Artifacts endpoint working correctly"
+	fi
+
+	# Test team management endpoints
+	echo "Testing team management endpoints..."
+	TEAM_RESULT=$(curl -s -X GET http://localhost:8000/api/teams)
+
+	if [[ $TEAM_RESULT == *"error"* ]]; then
+		log_test_result "Teams API" "FAIL" "Teams endpoint returned error"
+	else
+		log_test_result "Teams API" "PASS" "Teams endpoint working correctly"
+	fi
 }
 
 # Function to test E2B code interpreter
 test_e2b_code_interpreter() {
-  echo "Testing E2B code interpreter..."
-  
-  # Check if E2B code interpreter is running
-  if ! curl -s http://localhost:8080/health > /dev/null; then
-    log_test_result "E2B Code Interpreter Health Check" "FAIL" "E2B code interpreter is not running"
-    return 1
-  fi
-  
-  # Test Python code execution
-  echo "Testing Python code execution..."
-  PYTHON_RESULT=$(curl -s -X POST http://localhost:8080/execute -H "Content-Type: application/json" -d '{"code":"print(\"Hello, World!\")","language":"python"}')
-  
-  if [[ $PYTHON_RESULT == *"error"* ]]; then
-    log_test_result "Python Code Execution" "FAIL" "Python code execution returned error"
-  else
-    log_test_result "Python Code Execution" "PASS" "Python code execution working correctly"
-  fi
-  
-  # Test JavaScript code execution
-  echo "Testing JavaScript code execution..."
-  JS_RESULT=$(curl -s -X POST http://localhost:8080/execute -H "Content-Type: application/json" -d '{"code":"console.log(\"Hello, World!\")","language":"javascript"}')
-  
-  if [[ $JS_RESULT == *"error"* ]]; then
-    log_test_result "JavaScript Code Execution" "FAIL" "JavaScript code execution returned error"
-  else
-    log_test_result "JavaScript Code Execution" "PASS" "JavaScript code execution working correctly"
-  fi
-  
-  # Test artifact generation
-  echo "Testing artifact generation..."
-  ARTIFACT_RESULT=$(curl -s -X POST http://localhost:8080/execute -H "Content-Type: application/json" -d '{"code":"import matplotlib.pyplot as plt\nimport numpy as np\n\nx = np.linspace(0, 10, 100)\ny = np.sin(x)\n\nplt.figure()\nplt.plot(x, y)\nplt.savefig(\"sine_wave.png\")\nprint(\"Artifact generated\")","language":"python"}')
-  
-  if [[ $ARTIFACT_RESULT == *"error"* ]]; then
-    log_test_result "Artifact Generation" "FAIL" "Artifact generation returned error"
-  else
-    log_test_result "Artifact Generation" "PASS" "Artifact generation working correctly"
-  fi
-  
-  # Test timeout handling
-  echo "Testing timeout handling..."
-  TIMEOUT_RESULT=$(curl -s -X POST http://localhost:8080/execute -H "Content-Type: application/json" -d '{"code":"import time\nwhile True:\n    time.sleep(1)\n    print(\"Still running...\")","language":"python","timeout":5}')
-  
-  if [[ $TIMEOUT_RESULT == *"timeout"* ]]; then
-    log_test_result "Timeout Handling" "PASS" "Timeout handling working correctly"
-  else
-    log_test_result "Timeout Handling" "FAIL" "Timeout handling not working correctly"
-  fi
+	echo "Testing E2B code interpreter..."
+
+	# Check if E2B code interpreter is running
+	if ! curl -s http://localhost:8080/health >/dev/null; then
+		log_test_result "E2B Code Interpreter Health Check" "FAIL" "E2B code interpreter is not running"
+		return 1
+	fi
+
+	# Test Python code execution
+	echo "Testing Python code execution..."
+	PYTHON_RESULT=$(curl -s -X POST http://localhost:8080/execute -H "Content-Type: application/json" -d '{"code":"print(\"Hello, World!\")","language":"python"}')
+
+	if [[ $PYTHON_RESULT == *"error"* ]]; then
+		log_test_result "Python Code Execution" "FAIL" "Python code execution returned error"
+	else
+		log_test_result "Python Code Execution" "PASS" "Python code execution working correctly"
+	fi
+
+	# Test JavaScript code execution
+	echo "Testing JavaScript code execution..."
+	JS_RESULT=$(curl -s -X POST http://localhost:8080/execute -H "Content-Type: application/json" -d '{"code":"console.log(\"Hello, World!\")","language":"javascript"}')
+
+	if [[ $JS_RESULT == *"error"* ]]; then
+		log_test_result "JavaScript Code Execution" "FAIL" "JavaScript code execution returned error"
+	else
+		log_test_result "JavaScript Code Execution" "PASS" "JavaScript code execution working correctly"
+	fi
+
+	# Test artifact generation
+	echo "Testing artifact generation..."
+	ARTIFACT_RESULT=$(curl -s -X POST http://localhost:8080/execute -H "Content-Type: application/json" -d '{"code":"import matplotlib.pyplot as plt\nimport numpy as np\n\nx = np.linspace(0, 10, 100)\ny = np.sin(x)\n\nplt.figure()\nplt.plot(x, y)\nplt.savefig(\"sine_wave.png\")\nprint(\"Artifact generated\")","language":"python"}')
+
+	if [[ $ARTIFACT_RESULT == *"error"* ]]; then
+		log_test_result "Artifact Generation" "FAIL" "Artifact generation returned error"
+	else
+		log_test_result "Artifact Generation" "PASS" "Artifact generation working correctly"
+	fi
+
+	# Test timeout handling
+	echo "Testing timeout handling..."
+	TIMEOUT_RESULT=$(curl -s -X POST http://localhost:8080/execute -H "Content-Type: application/json" -d '{"code":"import time\nwhile True:\n    time.sleep(1)\n    print(\"Still running...\")","language":"python","timeout":5}')
+
+	if [[ $TIMEOUT_RESULT == *"timeout"* ]]; then
+		log_test_result "Timeout Handling" "PASS" "Timeout handling working correctly"
+	else
+		log_test_result "Timeout Handling" "FAIL" "Timeout handling not working correctly"
+	fi
 }
 
 # Function to test frontend components
 test_frontend_components() {
-  echo "Testing frontend components..."
-  
-  # Check if frontend is running
-  if ! curl -s http://localhost:3000 > /dev/null; then
-    log_test_result "Frontend Health Check" "FAIL" "Frontend is not running"
-    return 1
-  fi
-  
-  # Since we can't easily test frontend components automatically,
-  # we'll just check if the main pages load correctly
-  
-  # Test home page
-  echo "Testing home page..."
-  HOME_RESULT=$(curl -s http://localhost:3000)
-  
-  if [[ $HOME_RESULT == *"Atlas-Chat"* ]]; then
-    log_test_result "Home Page" "PASS" "Home page loaded correctly"
-  else
-    log_test_result "Home Page" "FAIL" "Home page did not load correctly"
-  fi
-  
-  # Test chat page
-  echo "Testing chat page..."
-  CHAT_RESULT=$(curl -s http://localhost:3000/chat)
-  
-  if [[ $CHAT_RESULT == *"Chat"* ]]; then
-    log_test_result "Chat Page" "PASS" "Chat page loaded correctly"
-  else
-    log_test_result "Chat Page" "FAIL" "Chat page did not load correctly"
-  fi
-  
-  # Test settings page
-  echo "Testing settings page..."
-  SETTINGS_RESULT=$(curl -s http://localhost:3000/settings)
-  
-  if [[ $SETTINGS_RESULT == *"Settings"* ]]; then
-    log_test_result "Settings Page" "PASS" "Settings page loaded correctly"
-  else
-    log_test_result "Settings Page" "FAIL" "Settings page did not load correctly"
-  fi
+	echo "Testing frontend components..."
+
+	# Check if frontend is running
+	if ! curl -s http://localhost:3000 >/dev/null; then
+		log_test_result "Frontend Health Check" "FAIL" "Frontend is not running"
+		return 1
+	fi
+
+	# Since we can't easily test frontend components automatically,
+	# we'll just check if the main pages load correctly
+
+	# Test home page
+	echo "Testing home page..."
+	HOME_RESULT=$(curl -s http://localhost:3000)
+
+	if [[ $HOME_RESULT == *"Atlas-Chat"* ]]; then
+		log_test_result "Home Page" "PASS" "Home page loaded correctly"
+	else
+		log_test_result "Home Page" "FAIL" "Home page did not load correctly"
+	fi
+
+	# Test chat page
+	echo "Testing chat page..."
+	CHAT_RESULT=$(curl -s http://localhost:3000/chat)
+
+	if [[ $CHAT_RESULT == *"Chat"* ]]; then
+		log_test_result "Chat Page" "PASS" "Chat page loaded correctly"
+	else
+		log_test_result "Chat Page" "FAIL" "Chat page did not load correctly"
+	fi
+
+	# Test settings page
+	echo "Testing settings page..."
+	SETTINGS_RESULT=$(curl -s http://localhost:3000/settings)
+
+	if [[ $SETTINGS_RESULT == *"Settings"* ]]; then
+		log_test_result "Settings Page" "PASS" "Settings page loaded correctly"
+	else
+		log_test_result "Settings Page" "FAIL" "Settings page did not load correctly"
+	fi
 }
 
 # Function to test agent delegation system
 test_agent_delegation() {
-  echo "Testing agent delegation system..."
-  
-  # Test team creation
-  echo "Testing team creation..."
-  TEAM_RESULT=$(curl -s -X POST http://localhost:8000/api/teams -H "Content-Type: application/json" -d '{"name":"Test Team","supervisorName":"Test Supervisor"}')
-  
-  if [[ $TEAM_RESULT == *"error"* ]]; then
-    log_test_result "Team Creation" "FAIL" "Team creation returned error"
-  else
-    # Extract team ID from response
-    TEAM_ID=$(echo $TEAM_RESULT | grep -o '"id":"[^"]*"' | cut -d'"' -f4)
-    log_test_result "Team Creation" "PASS" "Team creation working correctly"
-    
-    # Test agent addition
-    echo "Testing agent addition..."
-    AGENT_RESULT=$(curl -s -X POST http://localhost:8000/api/teams/$TEAM_ID/agents -H "Content-Type: application/json" -d '{"name":"Test Agent","role":"coder","languages":["python"]}')
-    
-    if [[ $AGENT_RESULT == *"error"* ]]; then
-      log_test_result "Agent Addition" "FAIL" "Agent addition returned error"
-    else
-      # Extract agent ID from response
-      AGENT_ID=$(echo $AGENT_RESULT | grep -o '"id":"[^"]*"' | cut -d'"' -f4)
-      log_test_result "Agent Addition" "PASS" "Agent addition working correctly"
-      
-      # Test task delegation
-      echo "Testing task delegation..."
-      TASK_RESULT=$(curl -s -X POST http://localhost:8000/api/teams/$TEAM_ID/tasks -H "Content-Type: application/json" -d '{"title":"Test Task","description":"Write a function to calculate factorial","assignedTo":"'$AGENT_ID'"}')
-      
-      if [[ $TASK_RESULT == *"error"* ]]; then
-        log_test_result "Task Delegation" "FAIL" "Task delegation returned error"
-      else
-        log_test_result "Task Delegation" "PASS" "Task delegation working correctly"
-      fi
-    fi
-  fi
+	echo "Testing agent delegation system..."
+
+	# Test team creation
+	echo "Testing team creation..."
+	TEAM_RESULT=$(curl -s -X POST http://localhost:8000/api/teams -H "Content-Type: application/json" -d '{"name":"Test Team","supervisorName":"Test Supervisor"}')
+
+	if [[ $TEAM_RESULT == *"error"* ]]; then
+		log_test_result "Team Creation" "FAIL" "Team creation returned error"
+	else
+		# Extract team ID from response
+		TEAM_ID=$(echo $TEAM_RESULT | grep -o '"id":"[^"]*"' | cut -d'"' -f4)
+		log_test_result "Team Creation" "PASS" "Team creation working correctly"
+
+		# Test agent addition
+		echo "Testing agent addition..."
+		AGENT_RESULT=$(curl -s -X POST http://localhost:8000/api/teams/$TEAM_ID/agents -H "Content-Type: application/json" -d '{"name":"Test Agent","role":"coder","languages":["python"]}')
+
+		if [[ $AGENT_RESULT == *"error"* ]]; then
+			log_test_result "Agent Addition" "FAIL" "Agent addition returned error"
+		else
+			# Extract agent ID from response
+			AGENT_ID=$(echo $AGENT_RESULT | grep -o '"id":"[^"]*"' | cut -d'"' -f4)
+			log_test_result "Agent Addition" "PASS" "Agent addition working correctly"
+
+			# Test task delegation
+			echo "Testing task delegation..."
+			TASK_RESULT=$(curl -s -X POST http://localhost:8000/api/teams/$TEAM_ID/tasks -H "Content-Type: application/json" -d '{"title":"Test Task","description":"Write a function to calculate factorial","assignedTo":"'$AGENT_ID'"}')
+
+			if [[ $TASK_RESULT == *"error"* ]]; then
+				log_test_result "Task Delegation" "FAIL" "Task delegation returned error"
+			else
+				log_test_result "Task Delegation" "PASS" "Task delegation working correctly"
+			fi
+		fi
+	fi
 }
 
 # Function to test security features
 test_security_features() {
-  echo "Testing security features..."
-  
-  # Test JWT authentication
-  echo "Testing JWT authentication..."
-  AUTH_RESULT=$(curl -s -X POST http://localhost:8000/api/auth/token -H "Content-Type: application/json" -d '{"username":"test","password":"test"}')
-  
-  if [[ $AUTH_RESULT == *"access_token"* ]]; then
-    # Extract token from response
-    TOKEN=$(echo $AUTH_RESULT | grep -o '"access_token":"[^"]*"' | cut -d'"' -f4)
-    log_test_result "JWT Authentication" "PASS" "JWT authentication working correctly"
-    
-    # Test protected endpoint with token
-    echo "Testing protected endpoint with token..."
-    PROTECTED_RESULT=$(curl -s -X GET http://localhost:8000/api/users/me -H "Authorization: Bearer $TOKEN")
-    
-    if [[ $PROTECTED_RESULT == *"error"* ]]; then
-      log_test_result "Protected Endpoint" "FAIL" "Protected endpoint returned error"
-    else
-      log_test_result "Protected Endpoint" "PASS" "Protected endpoint working correctly"
-    fi
-    
-    # Test protected endpoint without token
-    echo "Testing protected endpoint without token..."
-    UNPROTECTED_RESULT=$(curl -s -X GET http://localhost:8000/api/users/me)
-    
-    if [[ $UNPROTECTED_RESULT == *"Unauthorized"* ]]; then
-      log_test_result "Unauthorized Access" "PASS" "Unauthorized access correctly rejected"
-    else
-      log_test_result "Unauthorized Access" "FAIL" "Unauthorized access not correctly rejected"
-    fi
-  else
-    log_test_result "JWT Authentication" "FAIL" "JWT authentication returned error"
-  fi
-  
-  # Test code sanitization
-  echo "Testing code sanitization..."
-  SANITIZE_RESULT=$(curl -s -X POST http://localhost:8000/api/code/execute -H "Content-Type: application/json" -d '{"code":"import os\nos.system(\"ls\")","language":"python"}')
-  
-  if [[ $SANITIZE_RESULT == *"security"* ]]; then
-    log_test_result "Code Sanitization" "PASS" "Code sanitization working correctly"
-  else
-    log_test_result "Code Sanitization" "FAIL" "Code sanitization not working correctly"
-  fi
+	echo "Testing security features..."
+
+	# Test JWT authentication
+	echo "Testing JWT authentication..."
+	AUTH_RESULT=$(curl -s -X POST http://localhost:8000/api/auth/token -H "Content-Type: application/json" -d '{"username":"test","password":"test"}')
+
+	if [[ $AUTH_RESULT == *"access_token"* ]]; then
+		# Extract token from response
+		TOKEN=$(echo $AUTH_RESULT | grep -o '"access_token":"[^"]*"' | cut -d'"' -f4)
+		log_test_result "JWT Authentication" "PASS" "JWT authentication working correctly"
+
+		# Test protected endpoint with token
+		echo "Testing protected endpoint with token..."
+		PROTECTED_RESULT=$(curl -s -X GET http://localhost:8000/api/users/me -H "Authorization: Bearer $TOKEN")
+
+		if [[ $PROTECTED_RESULT == *"error"* ]]; then
+			log_test_result "Protected Endpoint" "FAIL" "Protected endpoint returned error"
+		else
+			log_test_result "Protected Endpoint" "PASS" "Protected endpoint working correctly"
+		fi
+
+		# Test protected endpoint without token
+		echo "Testing protected endpoint without token..."
+		UNPROTECTED_RESULT=$(curl -s -X GET http://localhost:8000/api/users/me)
+
+		if [[ $UNPROTECTED_RESULT == *"Unauthorized"* ]]; then
+			log_test_result "Unauthorized Access" "PASS" "Unauthorized access correctly rejected"
+		else
+			log_test_result "Unauthorized Access" "FAIL" "Unauthorized access not correctly rejected"
+		fi
+	else
+		log_test_result "JWT Authentication" "FAIL" "JWT authentication returned error"
+	fi
+
+	# Test code sanitization
+	echo "Testing code sanitization..."
+	SANITIZE_RESULT=$(curl -s -X POST http://localhost:8000/api/code/execute -H "Content-Type: application/json" -d '{"code":"import os\nos.system(\"ls\")","language":"python"}')
+
+	if [[ $SANITIZE_RESULT == *"security"* ]]; then
+		log_test_result "Code Sanitization" "PASS" "Code sanitization working correctly"
+	else
+		log_test_result "Code Sanitization" "FAIL" "Code sanitization not working correctly"
+	fi
 }
 
 # Function to test performance optimizations
 test_performance() {
-  echo "Testing performance optimizations..."
-  
-  # Test response time for code execution
-  echo "Testing code execution response time..."
-  START_TIME=$(date +%s.%N)
-  curl -s -X POST http://localhost:8000/api/code/execute -H "Content-Type: application/json" -d '{"code":"print(\"Hello, World!\")","language":"python"}' > /dev/null
-  END_TIME=$(date +%s.%N)
-  EXECUTION_TIME=$(echo "$END_TIME - $START_TIME" | bc)
-  
-  if (( $(echo "$EXECUTION_TIME < 2.0" | bc -l) )); then
-    log_test_result "Code Execution Performance" "PASS" "Code execution response time is acceptable: $EXECUTION_TIME seconds"
-  else
-    log_test_result "Code Execution Performance" "FAIL" "Code execution response time is too slow: $EXECUTION_TIME seconds"
-  fi
-  
-  # Test response time for chat messages
-  echo "Testing chat message response time..."
-  START_TIME=$(date +%s.%N)
-  curl -s -X POST http://localhost:8000/api/chat/messages -H "Content-Type: application/json" -d '{"content":"Hello, World!","conversationId":"test"}' > /dev/null
-  END_TIME=$(date +%s.%N)
-  MESSAGE_TIME=$(echo "$END_TIME - $START_TIME" | bc)
-  
-  if (( $(echo "$MESSAGE_TIME < 1.0" | bc -l) )); then
-    log_test_result "Chat Message Performance" "PASS" "Chat message response time is acceptable: $MESSAGE_TIME seconds"
-  else
-    log_test_result "Chat Message Performance" "FAIL" "Chat message response time is too slow: $MESSAGE_TIME seconds"
-  fi
-  
-  # Test memory usage
-  echo "Testing memory usage..."
-  MEMORY_USAGE=$(ps -o rss= -p $(pgrep -f "python.*app/main.py") | awk '{print $1/1024}')
-  
-  if (( $(echo "$MEMORY_USAGE < 500.0" | bc -l) )); then
-    log_test_result "Memory Usage" "PASS" "Memory usage is acceptable: $MEMORY_USAGE MB"
-  else
-    log_test_result "Memory Usage" "FAIL" "Memory usage is too high: $MEMORY_USAGE MB"
-  fi
+	echo "Testing performance optimizations..."
+
+	# Test response time for code execution
+	echo "Testing code execution response time..."
+	START_TIME=$(date +%s.%N)
+	curl -s -X POST http://localhost:8000/api/code/execute -H "Content-Type: application/json" -d '{"code":"print(\"Hello, World!\")","language":"python"}' >/dev/null
+	END_TIME=$(date +%s.%N)
+	EXECUTION_TIME=$(echo "$END_TIME - $START_TIME" | bc)
+
+	if (($(echo "$EXECUTION_TIME < 2.0" | bc -l))); then
+		log_test_result "Code Execution Performance" "PASS" "Code execution response time is acceptable: $EXECUTION_TIME seconds"
+	else
+		log_test_result "Code Execution Performance" "FAIL" "Code execution response time is too slow: $EXECUTION_TIME seconds"
+	fi
+
+	# Test response time for chat messages
+	echo "Testing chat message response time..."
+	START_TIME=$(date +%s.%N)
+	curl -s -X POST http://localhost:8000/api/chat/messages -H "Content-Type: application/json" -d '{"content":"Hello, World!","conversationId":"test"}' >/dev/null
+	END_TIME=$(date +%s.%N)
+	MESSAGE_TIME=$(echo "$END_TIME - $START_TIME" | bc)
+
+	if (($(echo "$MESSAGE_TIME < 1.0" | bc -l))); then
+		log_test_result "Chat Message Performance" "PASS" "Chat message response time is acceptable: $MESSAGE_TIME seconds"
+	else
+		log_test_result "Chat Message Performance" "FAIL" "Chat message response time is too slow: $MESSAGE_TIME seconds"
+	fi
+
+	# Test memory usage
+	echo "Testing memory usage..."
+	MEMORY_USAGE=$(ps -o rss= -p $(pgrep -f "python.*app/main.py") | awk '{print $1/1024}')
+
+	if (($(echo "$MEMORY_USAGE < 500.0" | bc -l))); then
+		log_test_result "Memory Usage" "PASS" "Memory usage is acceptable: $MEMORY_USAGE MB"
+	else
+		log_test_result "Memory Usage" "FAIL" "Memory usage is too high: $MEMORY_USAGE MB"
+	fi
 }
 
 # Function to test Docker configuration
 test_docker_configuration() {
-  echo "Testing Docker configuration..."
-  
-  # Check if Docker is installed
-  if ! command -v docker &> /dev/null; then
-    log_test_result "Docker Installation" "FAIL" "Docker is not installed"
-    return 1
-  fi
-  
-  # Check if Docker Compose is installed
-  if ! command -v docker-compose &> /dev/null; then
-    log_test_result "Docker Compose Installation" "FAIL" "Docker Compose is not installed"
-    return 1
-  fi
-  
-  # Validate docker-compose.yml
-  echo "Validating docker-compose.yml..."
-  if docker-compose config > /dev/null; then
-    log_test_result "Docker Compose Configuration" "PASS" "docker-compose.yml is valid"
-  else
-    log_test_result "Docker Compose Configuration" "FAIL" "docker-compose.yml is invalid"
-  fi
-  
-  # Check if all required services are defined
-  echo "Checking required services..."
-  REQUIRED_SERVICES=("mongodb" "postgres" "redis" "backend" "e2b-codeinterpreter" "frontend" "nginx")
-  
-  for service in "${REQUIRED_SERVICES[@]}"; do
-    if grep -q "^  $service:" docker-compose.yml; then
-      log_test_result "Docker Service: $service" "PASS" "Service is defined in docker-compose.yml"
-    else
-      log_test_result "Docker Service: $service" "FAIL" "Service is not defined in docker-compose.yml"
-    fi
-  done
-  
-  # Check if all required volumes are defined
-  echo "Checking required volumes..."
-  REQUIRED_VOLUMES=("mongodb_data" "postgres_data" "redis_data" "backend_data" "e2b_data")
-  
-  for volume in "${REQUIRED_VOLUMES[@]}"; do
-    if grep -q "^  $volume:" docker-compose.yml; then
-      log_test_result "Docker Volume: $volume" "PASS" "Volume is defined in docker-compose.yml"
-    else
-      log_test_result "Docker Volume: $volume" "FAIL" "Volume is not defined in docker-compose.yml"
-    fi
-  done
+	echo "Testing Docker configuration..."
+
+	# Check if Docker is installed
+	if ! command -v docker &>/dev/null; then
+		log_test_result "Docker Installation" "FAIL" "Docker is not installed"
+		return 1
+	fi
+
+	# Check if Docker Compose is installed
+	if ! command -v docker-compose &>/dev/null; then
+		log_test_result "Docker Compose Installation" "FAIL" "Docker Compose is not installed"
+		return 1
+	fi
+
+	# Validate docker-compose.yml
+	echo "Validating docker-compose.yml..."
+	if docker-compose config >/dev/null; then
+		log_test_result "Docker Compose Configuration" "PASS" "docker-compose.yml is valid"
+	else
+		log_test_result "Docker Compose Configuration" "FAIL" "docker-compose.yml is invalid"
+	fi
+
+	# Check if all required services are defined
+	echo "Checking required services..."
+	REQUIRED_SERVICES=("mongodb" "postgres" "redis" "backend" "e2b-codeinterpreter" "frontend" "nginx")
+
+	for service in "${REQUIRED_SERVICES[@]}"; do
+		if grep -q "^  $service:" docker-compose.yml; then
+			log_test_result "Docker Service: $service" "PASS" "Service is defined in docker-compose.yml"
+		else
+			log_test_result "Docker Service: $service" "FAIL" "Service is not defined in docker-compose.yml"
+		fi
+	done
+
+	# Check if all required volumes are defined
+	echo "Checking required volumes..."
+	REQUIRED_VOLUMES=("mongodb_data" "postgres_data" "redis_data" "backend_data" "e2b_data")
+
+	for volume in "${REQUIRED_VOLUMES[@]}"; do
+		if grep -q "^  $volume:" docker-compose.yml; then
+			log_test_result "Docker Volume: $volume" "PASS" "Volume is defined in docker-compose.yml"
+		else
+			log_test_result "Docker Volume: $volume" "FAIL" "Volume is not defined in docker-compose.yml"
+		fi
+	done
 }
 
 # Function to fix identified issues
 fix_issues() {
-  echo "Fixing identified issues..."
-  
-  # Read test results
-  ISSUES=$(grep "FAIL" "$RESULTS_DIR/test_results.log")
-  
-  if [ -z "$ISSUES" ]; then
-    echo "No issues to fix!"
-    return 0
-  fi
-  
-  echo "Found issues to fix:"
-  echo "$ISSUES"
-  
-  # Fix E2B code interpreter timeout handling
-  if grep -q "Timeout Handling.*FAIL" "$RESULTS_DIR/test_results.log"; then
-    echo "Fixing E2B code interpreter timeout handling..."
-    
-    # Check if the file exists
-    if [ -f "backend/app/core/services/e2b/session.py" ]; then
-      # Add timeout handling code
-      cat << 'EOF' > backend/app/core/services/e2b/session.py.fixed
+	echo "Fixing identified issues..."
+
+	# Read test results
+	ISSUES=$(grep "FAIL" "$RESULTS_DIR/test_results.log")
+
+	if [ -z "$ISSUES" ]; then
+		echo "No issues to fix!"
+		return 0
+	fi
+
+	echo "Found issues to fix:"
+	echo "$ISSUES"
+
+	# Fix E2B code interpreter timeout handling
+	if grep -q "Timeout Handling.*FAIL" "$RESULTS_DIR/test_results.log"; then
+		echo "Fixing E2B code interpreter timeout handling..."
+
+		# Check if the file exists
+		if [ -f "backend/app/core/services/e2b/session.py" ]; then
+			# Add timeout handling code
+			cat <<'EOF' >backend/app/core/services/e2b/session.py.fixed
 import asyncio
 import logging
 from typing import Dict, Any, Optional
@@ -479,24 +479,24 @@ class E2BSession:
             finally:
                 self.session = None
 EOF
-      
-      # Replace the original file
-      mv backend/app/core/services/e2b/session.py.fixed backend/app/core/services/e2b/session.py
-      
-      log_test_result "Fix: E2B Timeout Handling" "DONE" "Fixed E2B code interpreter timeout handling"
-    else
-      log_test_result "Fix: E2B Timeout Handling" "SKIP" "File not found: backend/app/core/services/e2b/session.py"
-    fi
-  fi
-  
-  # Fix agent delegation error recovery
-  if grep -q "Agent Delegation.*FAIL" "$RESULTS_DIR/test_results.log"; then
-    echo "Fixing agent delegation error recovery..."
-    
-    # Check if the file exists
-    if [ -f "backend/app/core/services/agent_service.py" ]; then
-      # Add error recovery code
-      cat << 'EOF' > backend/app/core/services/agent_service.py.fixed
+
+			# Replace the original file
+			mv backend/app/core/services/e2b/session.py.fixed backend/app/core/services/e2b/session.py
+
+			log_test_result "Fix: E2B Timeout Handling" "DONE" "Fixed E2B code interpreter timeout handling"
+		else
+			log_test_result "Fix: E2B Timeout Handling" "SKIP" "File not found: backend/app/core/services/e2b/session.py"
+		fi
+	fi
+
+	# Fix agent delegation error recovery
+	if grep -q "Agent Delegation.*FAIL" "$RESULTS_DIR/test_results.log"; then
+		echo "Fixing agent delegation error recovery..."
+
+		# Check if the file exists
+		if [ -f "backend/app/core/services/agent_service.py" ]; then
+			# Add error recovery code
+			cat <<'EOF' >backend/app/core/services/agent_service.py.fixed
 import logging
 import uuid
 from typing import Dict, List, Optional, Any, Union
@@ -910,24 +910,24 @@ class AgentService:
             "message": "Task completed successfully"
         }
 EOF
-      
-      # Replace the original file
-      mv backend/app/core/services/agent_service.py.fixed backend/app/core/services/agent_service.py
-      
-      log_test_result "Fix: Agent Delegation Error Recovery" "DONE" "Fixed agent delegation error recovery"
-    else
-      log_test_result "Fix: Agent Delegation Error Recovery" "SKIP" "File not found: backend/app/core/services/agent_service.py"
-    fi
-  fi
-  
-  # Fix frontend UI responsiveness
-  if grep -q "Frontend.*FAIL" "$RESULTS_DIR/test_results.log"; then
-    echo "Fixing frontend UI responsiveness..."
-    
-    # Check if the file exists
-    if [ -f "frontend/client/src/styles/main.css" ]; then
-      # Add responsive styles
-      cat << 'EOF' >> frontend/client/src/styles/main.css
+
+			# Replace the original file
+			mv backend/app/core/services/agent_service.py.fixed backend/app/core/services/agent_service.py
+
+			log_test_result "Fix: Agent Delegation Error Recovery" "DONE" "Fixed agent delegation error recovery"
+		else
+			log_test_result "Fix: Agent Delegation Error Recovery" "SKIP" "File not found: backend/app/core/services/agent_service.py"
+		fi
+	fi
+
+	# Fix frontend UI responsiveness
+	if grep -q "Frontend.*FAIL" "$RESULTS_DIR/test_results.log"; then
+		echo "Fixing frontend UI responsiveness..."
+
+		# Check if the file exists
+		if [ -f "frontend/client/src/styles/main.css" ]; then
+			# Add responsive styles
+			cat <<'EOF' >>frontend/client/src/styles/main.css
 
 /* Responsive styles */
 @media (max-width: 768px) {
@@ -1031,21 +1031,21 @@ EOF
   }
 }
 EOF
-      
-      log_test_result "Fix: Frontend UI Responsiveness" "DONE" "Added responsive styles to main.css"
-    else
-      log_test_result "Fix: Frontend UI Responsiveness" "SKIP" "File not found: frontend/client/src/styles/main.css"
-    fi
-  fi
-  
-  # Fix artifact display
-  if grep -q "Artifact.*FAIL" "$RESULTS_DIR/test_results.log"; then
-    echo "Fixing artifact display..."
-    
-    # Check if the file exists
-    if [ -f "frontend/client/src/components/Artifacts/ArtifactDisplay.jsx" ]; then
-      # Add support for more file types
-      cat << 'EOF' > frontend/client/src/components/Artifacts/ArtifactDisplay.jsx.fixed
+
+			log_test_result "Fix: Frontend UI Responsiveness" "DONE" "Added responsive styles to main.css"
+		else
+			log_test_result "Fix: Frontend UI Responsiveness" "SKIP" "File not found: frontend/client/src/styles/main.css"
+		fi
+	fi
+
+	# Fix artifact display
+	if grep -q "Artifact.*FAIL" "$RESULTS_DIR/test_results.log"; then
+		echo "Fixing artifact display..."
+
+		# Check if the file exists
+		if [ -f "frontend/client/src/components/Artifacts/ArtifactDisplay.jsx" ]; then
+			# Add support for more file types
+			cat <<'EOF' >frontend/client/src/components/Artifacts/ArtifactDisplay.jsx.fixed
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FiDownload, FiTrash2, FiMaximize2, FiMinimize2 } from 'react-icons/fi';
@@ -1368,24 +1368,24 @@ const ArtifactDisplay = ({
 
 export default ArtifactDisplay;
 EOF
-      
-      # Replace the original file
-      mv frontend/client/src/components/Artifacts/ArtifactDisplay.jsx.fixed frontend/client/src/components/Artifacts/ArtifactDisplay.jsx
-      
-      log_test_result "Fix: Artifact Display" "DONE" "Enhanced artifact display for various file types"
-    else
-      log_test_result "Fix: Artifact Display" "SKIP" "File not found: frontend/client/src/components/Artifacts/ArtifactDisplay.jsx"
-    fi
-  fi
-  
-  # Fix performance issues
-  if grep -q "Performance.*FAIL" "$RESULTS_DIR/test_results.log"; then
-    echo "Fixing performance issues..."
-    
-    # Check if the file exists
-    if [ -f "frontend/client/src/components/Chat/Conversation.jsx" ]; then
-      # Add pagination for conversation history
-      cat << 'EOF' > frontend/client/src/components/Chat/Conversation.jsx.fixed
+
+			# Replace the original file
+			mv frontend/client/src/components/Artifacts/ArtifactDisplay.jsx.fixed frontend/client/src/components/Artifacts/ArtifactDisplay.jsx
+
+			log_test_result "Fix: Artifact Display" "DONE" "Enhanced artifact display for various file types"
+		else
+			log_test_result "Fix: Artifact Display" "SKIP" "File not found: frontend/client/src/components/Artifacts/ArtifactDisplay.jsx"
+		fi
+	fi
+
+	# Fix performance issues
+	if grep -q "Performance.*FAIL" "$RESULTS_DIR/test_results.log"; then
+		echo "Fixing performance issues..."
+
+		# Check if the file exists
+		if [ -f "frontend/client/src/components/Chat/Conversation.jsx" ]; then
+			# Add pagination for conversation history
+			cat <<'EOF' >frontend/client/src/components/Chat/Conversation.jsx.fixed
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FiChevronUp, FiChevronDown } from 'react-icons/fi';
@@ -1494,17 +1494,17 @@ const Conversation = ({
 
 export default Conversation;
 EOF
-      
-      # Replace the original file
-      mv frontend/client/src/components/Chat/Conversation.jsx.fixed frontend/client/src/components/Chat/Conversation.jsx
-      
-      log_test_result "Fix: Performance Issues" "DONE" "Added pagination for conversation history"
-    else
-      log_test_result "Fix: Performance Issues" "SKIP" "File not found: frontend/client/src/components/Chat/Conversation.jsx"
-    fi
-  fi
-  
-  echo "Fixes applied successfully!"
+
+			# Replace the original file
+			mv frontend/client/src/components/Chat/Conversation.jsx.fixed frontend/client/src/components/Chat/Conversation.jsx
+
+			log_test_result "Fix: Performance Issues" "DONE" "Added pagination for conversation history"
+		else
+			log_test_result "Fix: Performance Issues" "SKIP" "File not found: frontend/client/src/components/Chat/Conversation.jsx"
+		fi
+	fi
+
+	echo "Fixes applied successfully!"
 }
 
 # Main execution
@@ -1529,20 +1529,20 @@ FAIL_COUNT=$(grep "FAIL" "$RESULTS_DIR/test_results.log" | wc -l)
 DONE_COUNT=$(grep "DONE" "$RESULTS_DIR/test_results.log" | wc -l)
 SKIP_COUNT=$(grep "SKIP" "$RESULTS_DIR/test_results.log" | wc -l)
 
-echo "# Test Summary" > "$RESULTS_DIR/summary.md"
-echo "" >> "$RESULTS_DIR/summary.md"
-echo "- **Date:** $(date)" >> "$RESULTS_DIR/summary.md"
-echo "- **Total Tests:** $(($PASS_COUNT + $FAIL_COUNT))" >> "$RESULTS_DIR/summary.md"
-echo "- **Passed:** $PASS_COUNT" >> "$RESULTS_DIR/summary.md"
-echo "- **Failed:** $FAIL_COUNT" >> "$RESULTS_DIR/summary.md"
-echo "- **Fixed:** $DONE_COUNT" >> "$RESULTS_DIR/summary.md"
-echo "- **Skipped Fixes:** $SKIP_COUNT" >> "$RESULTS_DIR/summary.md"
-echo "" >> "$RESULTS_DIR/summary.md"
-echo "## Test Results" >> "$RESULTS_DIR/summary.md"
-echo "" >> "$RESULTS_DIR/summary.md"
-echo "```" >> "$RESULTS_DIR/summary.md"
+echo "# Test Summary" >"$RESULTS_DIR/summary.md"
+echo "" >>"$RESULTS_DIR/summary.md"
+echo "- **Date:** $(date)" >>"$RESULTS_DIR/summary.md"
+echo "- **Total Tests:** $((PASS_COUNT + FAIL_COUNT))" >>"$RESULTS_DIR/summary.md"
+echo "- **Passed:** $PASS_COUNT" >>"$RESULTS_DIR/summary.md"
+echo "- **Failed:** $FAIL_COUNT" >>"$RESULTS_DIR/summary.md"
+echo "- **Fixed:** $DONE_COUNT" >>"$RESULTS_DIR/summary.md"
+echo "- **Skipped Fixes:** $SKIP_COUNT" >>"$RESULTS_DIR/summary.md"
+echo "" >>"$RESULTS_DIR/summary.md"
+echo "## Test Results" >>"$RESULTS_DIR/summary.md"
+echo "" >>"$RESULTS_DIR/summary.md"
+echo "$()$(" >> "$RESULTS_DIR/summary.md"
 cat "$RESULTS_DIR/test_results.log" >> "$RESULTS_DIR/summary.md"
-echo "```" >> "$RESULTS_DIR/summary.md"
+echo ")$()" >>"$RESULTS_DIR/summary.md"
 
 echo "Testing completed successfully!"
 echo "Test results saved to: $RESULTS_DIR/test_results.log"
