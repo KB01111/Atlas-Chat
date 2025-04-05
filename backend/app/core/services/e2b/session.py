@@ -231,6 +231,19 @@ class ProcessResult:
         self.exit_code = exit_code
         self.stdout = stdout
         self.stderr = stderr
+    
+    def to_dict(self) -> Dict[str, Any]:
+        """
+        Convert the process result to a dictionary.
+        
+        Returns:
+            Dictionary representation of the process result
+        """
+        return {
+            "exit_code": self.exit_code,
+            "stdout": self.stdout,
+            "stderr": self.stderr
+        }
 
 
 class FileSystemManager:
@@ -246,120 +259,109 @@ class FileSystemManager:
             session: The E2B session
         """
         self.session = session
-        self.fs: Filesystem = self.session.session.filesystem
     
-    async def list(self, path: str) -> List[Dict[str, Any]]:
-        """
-        List files and directories in the specified path.
-        
-        Args:
-            path: The path to list
-            
-        Returns:
-            List of file and directory information
-        """
-        try:
-            entries = await self.fs.list(path)
-            return [
-                {
-                    "name": entry.name,
-                    "type": "directory" if entry.is_dir else "file",
-                    "size": entry.size if not entry.is_dir else 0,
-                    "modified": entry.modified_at.isoformat() if entry.modified_at else None
-                }
-                for entry in entries
-            ]
-        except Exception as e:
-            logger.error(f"Error listing files in {path}: {str(e)}")
-            return []
-    
-    async def read_file(self, path: str) -> bytes:
+    async def read_file(self, path: str) -> str:
         """
         Read a file from the E2B sandbox.
         
         Args:
-            path: The path to the file
+            path: Path to the file
             
         Returns:
-            File content as bytes
+            File content as string
         """
+        logger.info(f"Reading file: {path}")
         try:
-            content = await self.fs.read_file(path)
+            content = await self.session.session.filesystem.read_file(path)
             return content
         except Exception as e:
             logger.error(f"Error reading file {path}: {str(e)}")
             raise
     
-    async def write_file(self, path: str, content: Union[bytes, str]) -> bool:
+    async def write_file(self, path: str, content: str):
         """
-        Write a file to the E2B sandbox.
+        Write content to a file in the E2B sandbox.
         
         Args:
-            path: The path to the file
-            content: The file content
+            path: Path to the file
+            content: Content to write
+        """
+        logger.info(f"Writing to file: {path}")
+        try:
+            await self.session.session.filesystem.write_file(path, content)
+            logger.info(f"Successfully wrote to file: {path}")
+        except Exception as e:
+            logger.error(f"Error writing to file {path}: {str(e)}")
+            raise
+    
+    async def list_dir(self, path: str) -> List[Dict[str, Any]]:
+        """
+        List directory contents in the E2B sandbox.
+        
+        Args:
+            path: Path to the directory
             
         Returns:
-            True if successful, False otherwise
+            List of directory entries
         """
+        logger.info(f"Listing directory: {path}")
         try:
-            # Convert string to bytes if necessary
-            if isinstance(content, str):
-                content = content.encode('utf-8')
-                
-            logger.info(f"Writing file: {path} ({len(content)} bytes)")
-            await self.fs.write_file(path, content)
-            return True
+            entries = await self.session.session.filesystem.list(path)
+            return [
+                {
+                    "name": entry.name,
+                    "type": "file" if entry.is_file else "directory",
+                    "size": entry.size,
+                    "modified": entry.modified
+                }
+                for entry in entries
+            ]
         except Exception as e:
-            logger.error(f"Error writing file {path}: {str(e)}")
-            return False
+            logger.error(f"Error listing directory {path}: {str(e)}")
+            return []
     
-    async def mkdir(self, path: str) -> bool:
+    async def make_dir(self, path: str):
         """
         Create a directory in the E2B sandbox.
         
         Args:
-            path: The path to create
-            
-        Returns:
-            True if successful, False otherwise
+            path: Path to the directory
         """
+        logger.info(f"Creating directory: {path}")
         try:
-            await self.fs.mkdir(path)
-            return True
+            await self.session.session.filesystem.make_dir(path)
+            logger.info(f"Successfully created directory: {path}")
         except Exception as e:
             logger.error(f"Error creating directory {path}: {str(e)}")
-            return False
+            raise
     
-    async def remove(self, path: str) -> bool:
+    async def remove(self, path: str):
         """
         Remove a file or directory from the E2B sandbox.
         
         Args:
-            path: The path to remove
-            
-        Returns:
-            True if successful, False otherwise
+            path: Path to the file or directory
         """
+        logger.info(f"Removing: {path}")
         try:
-            await self.fs.remove(path)
-            return True
+            await self.session.session.filesystem.remove(path)
+            logger.info(f"Successfully removed: {path}")
         except Exception as e:
             logger.error(f"Error removing {path}: {str(e)}")
-            return False
+            raise
     
-    async def glob(self, pattern: str) -> List[str]:
+    async def exists(self, path: str) -> bool:
         """
-        Find files matching the specified pattern.
+        Check if a file or directory exists in the E2B sandbox.
         
         Args:
-            pattern: The glob pattern
+            path: Path to the file or directory
             
         Returns:
-            List of matching file paths
+            True if the file or directory exists, False otherwise
         """
         try:
-            matches = await self.fs.glob(pattern)
-            return matches
+            return await self.session.session.filesystem.exists(path)
         except Exception as e:
-            logger.error(f"Error globbing {pattern}: {str(e)}")
-            return []
+            logger.error(f"Error checking if {path} exists: {str(e)}")
+            return False

@@ -104,7 +104,7 @@ class AgentTask:
             data: Dictionary representation of the task
             
         Returns:
-            Task object
+            AgentTask instance
         """
         task = cls(
             task_id=data["id"],
@@ -118,85 +118,74 @@ class AgentTask:
             artifacts=data.get("artifacts", []),
             metadata=data.get("metadata", {})
         )
+        task.created_at = data.get("created_at", task.created_at)
+        task.updated_at = data.get("updated_at", task.updated_at)
         task.completion_percentage = data.get("completion_percentage", 0)
         task.comments = data.get("comments", [])
         return task
     
-    def update_status(self, status: str, comment: Optional[str] = None) -> None:
+    def update_status(self, status: str) -> None:
         """
         Update the status of the task.
         
         Args:
-            status: New status
-            comment: Optional comment about the status update
+            status: New status of the task
         """
         self.status = status
         self.updated_at = datetime.now().isoformat()
-        
-        # Update completion percentage based on status
-        if status == "completed":
-            self.completion_percentage = 100
-        elif status == "in_progress":
-            # Only update if it's still at 0
-            if self.completion_percentage == 0:
-                self.completion_percentage = 10
-        
-        # Add comment if provided
-        if comment:
-            self.add_comment(comment)
     
-    def update_completion_percentage(self, percentage: int) -> None:
+    def update_progress(self, percentage: int) -> None:
         """
-        Update the completion percentage of the task.
+        Update the progress of the task.
         
         Args:
-            percentage: New completion percentage (0-100)
+            percentage: Percentage of completion (0-100)
         """
         self.completion_percentage = max(0, min(100, percentage))
         self.updated_at = datetime.now().isoformat()
         
-        # Update status based on completion percentage
-        if self.completion_percentage == 100 and self.status != "completed":
+        # Update status based on progress
+        if self.completion_percentage == 100:
             self.status = "completed"
-        elif self.completion_percentage > 0 and self.status == "pending":
+        elif self.completion_percentage > 0:
             self.status = "in_progress"
     
-    def add_artifact(self, artifact_id: str) -> None:
-        """
-        Add an artifact to the task.
-        
-        Args:
-            artifact_id: ID of the artifact
-        """
-        if artifact_id not in self.artifacts:
-            self.artifacts.append(artifact_id)
-            self.updated_at = datetime.now().isoformat()
-    
-    def add_comment(self, content: str, author_id: Optional[str] = None) -> Dict[str, Any]:
+    def add_comment(self, author: str, content: str) -> Dict[str, Any]:
         """
         Add a comment to the task.
         
         Args:
-            content: Comment content
-            author_id: ID of the comment author
+            author: ID of the agent or user who wrote the comment
+            content: Content of the comment
             
         Returns:
             The created comment
         """
         comment = {
             "id": str(uuid.uuid4()),
+            "author": author,
             "content": content,
-            "author_id": author_id,
             "created_at": datetime.now().isoformat()
         }
         self.comments.append(comment)
-        self.updated_at = datetime.now().isoformat()
+        self.updated_at = comment["created_at"]
         return comment
+    
+    def add_artifact(self, artifact_id: str) -> None:
+        """
+        Associate an artifact with the task.
+        
+        Args:
+            artifact_id: ID of the artifact to associate
+        """
+        if artifact_id not in self.artifacts:
+            self.artifacts.append(artifact_id)
+            self.updated_at = datetime.now().isoformat()
 
 
 class Agent:
     """
-    Represents an agent in the system.
+    Represents an agent in a team.
     """
     
     def __init__(
@@ -213,7 +202,7 @@ class Agent:
         Args:
             agent_id: Unique identifier for the agent
             name: Name of the agent
-            role: Role of the agent
+            role: Role of the agent in the team
             capabilities: List of capabilities the agent has
             metadata: Additional metadata for the agent
         """
@@ -224,8 +213,6 @@ class Agent:
         self.metadata = metadata or {}
         self.tasks: Dict[str, AgentTask] = {}
         self.created_at = datetime.now().isoformat()
-        self.status = "idle"  # idle, busy, offline
-        self.last_active = self.created_at
     
     def to_dict(self) -> Dict[str, Any]:
         """
@@ -241,9 +228,7 @@ class Agent:
             "capabilities": self.capabilities,
             "metadata": self.metadata,
             "tasks": [task.to_dict() for task in self.tasks.values()],
-            "created_at": self.created_at,
-            "status": self.status,
-            "last_active": self.last_active
+            "created_at": self.created_at
         }
     
     @classmethod
@@ -255,24 +240,22 @@ class Agent:
             data: Dictionary representation of the agent
             
         Returns:
-            Agent object
+            Agent instance
         """
         agent = cls(
             agent_id=data["id"],
             name=data["name"],
-            role=AgentRole(data["role"]),
+            role=data["role"],
             capabilities=data["capabilities"],
             metadata=data.get("metadata", {})
         )
+        agent.created_at = data.get("created_at", agent.created_at)
         
         # Add tasks
         for task_data in data.get("tasks", []):
             task = AgentTask.from_dict(task_data)
             agent.tasks[task.id] = task
-        
-        agent.status = data.get("status", "idle")
-        agent.last_active = data.get("last_active", agent.created_at)
-        
+            
         return agent
     
     def assign_task(self, task: AgentTask) -> None:
@@ -283,60 +266,18 @@ class Agent:
             task: Task to assign
         """
         self.tasks[task.id] = task
-        self.status = "busy"
-        self.last_active = datetime.now().isoformat()
     
     def get_task(self, task_id: str) -> Optional[AgentTask]:
         """
         Get a task by ID.
         
         Args:
-            task_id: ID of the task
+            task_id: ID of the task to get
             
         Returns:
-            Task object or None if not found
+            Task if found, None otherwise
         """
         return self.tasks.get(task_id)
-    
-    def list_tasks(self, status: Optional[str] = None) -> List[AgentTask]:
-        """
-        List tasks assigned to the agent.
-        
-        Args:
-            status: Filter tasks by status
-            
-        Returns:
-            List of tasks
-        """
-        if status is None:
-            return list(self.tasks.values())
-        else:
-            return [task for task in self.tasks.values() if task.status == status]
-    
-    def update_task_status(self, task_id: str, status: str, comment: Optional[str] = None) -> bool:
-        """
-        Update the status of a task.
-        
-        Args:
-            task_id: ID of the task
-            status: New status
-            comment: Optional comment about the status update
-            
-        Returns:
-            True if the task was updated, False otherwise
-        """
-        if task_id in self.tasks:
-            self.tasks[task_id].update_status(status, comment)
-            self.last_active = datetime.now().isoformat()
-            
-            # Update agent status if all tasks are completed
-            if all(task.status in ["completed", "failed"] for task in self.tasks.values()):
-                self.status = "idle"
-            else:
-                self.status = "busy"
-                
-            return True
-        return False
     
     def has_capability(self, capability: str) -> bool:
         """
@@ -350,15 +291,29 @@ class Agent:
         """
         return capability in self.capabilities
     
-    def update_status(self, status: str) -> None:
+    def has_all_capabilities(self, capabilities: List[str]) -> bool:
         """
-        Update the agent's status.
+        Check if the agent has all the specified capabilities.
         
         Args:
-            status: New status (idle, busy, offline)
+            capabilities: List of capabilities to check
+            
+        Returns:
+            True if the agent has all the capabilities, False otherwise
         """
-        self.status = status
-        self.last_active = datetime.now().isoformat()
+        return all(self.has_capability(cap) for cap in capabilities)
+    
+    def has_any_capability(self, capabilities: List[str]) -> bool:
+        """
+        Check if the agent has any of the specified capabilities.
+        
+        Args:
+            capabilities: List of capabilities to check
+            
+        Returns:
+            True if the agent has any of the capabilities, False otherwise
+        """
+        return any(self.has_capability(cap) for cap in capabilities)
 
 
 class AgentTeam:
@@ -388,8 +343,7 @@ class AgentTeam:
         self.metadata = metadata or {}
         self.agents: Dict[str, Agent] = {}
         self.created_at = datetime.now().isoformat()
-        self.last_active = self.created_at
-        self.chat_history: List[Dict[str, Any]] = []
+        self.messages: List[Dict[str, Any]] = []
     
     def to_dict(self) -> Dict[str, Any]:
         """
@@ -405,8 +359,7 @@ class AgentTeam:
             "metadata": self.metadata,
             "agents": [agent.to_dict() for agent in self.agents.values()],
             "created_at": self.created_at,
-            "last_active": self.last_active,
-            "chat_history": self.chat_history
+            "messages": self.messages
         }
     
     @classmethod
@@ -418,7 +371,7 @@ class AgentTeam:
             data: Dictionary representation of the team
             
         Returns:
-            Team object
+            AgentTeam instance
         """
         team = cls(
             team_id=data["id"],
@@ -426,15 +379,14 @@ class AgentTeam:
             supervisor_id=data["supervisor_id"],
             metadata=data.get("metadata", {})
         )
+        team.created_at = data.get("created_at", team.created_at)
+        team.messages = data.get("messages", [])
         
         # Add agents
         for agent_data in data.get("agents", []):
             agent = Agent.from_dict(agent_data)
             team.agents[agent.id] = agent
-        
-        team.last_active = data.get("last_active", team.created_at)
-        team.chat_history = data.get("chat_history", [])
-        
+            
         return team
     
     def add_agent(self, agent: Agent) -> None:
@@ -445,80 +397,76 @@ class AgentTeam:
             agent: Agent to add
         """
         self.agents[agent.id] = agent
-        self.last_active = datetime.now().isoformat()
-    
-    def remove_agent(self, agent_id: str) -> bool:
-        """
-        Remove an agent from the team.
-        
-        Args:
-            agent_id: ID of the agent
-            
-        Returns:
-            True if the agent was removed, False otherwise
-        """
-        if agent_id in self.agents:
-            del self.agents[agent_id]
-            self.last_active = datetime.now().isoformat()
-            return True
-        return False
     
     def get_agent(self, agent_id: str) -> Optional[Agent]:
         """
         Get an agent by ID.
         
         Args:
-            agent_id: ID of the agent
+            agent_id: ID of the agent to get
             
         Returns:
-            Agent object or None if not found
+            Agent if found, None otherwise
         """
         return self.agents.get(agent_id)
-    
-    def list_agents(self, role: Optional[AgentRole] = None) -> List[Agent]:
-        """
-        List agents in the team.
-        
-        Args:
-            role: Filter agents by role
-            
-        Returns:
-            List of agents
-        """
-        if role is None:
-            return list(self.agents.values())
-        else:
-            return [agent for agent in self.agents.values() if agent.role == role]
     
     def get_supervisor(self) -> Optional[Agent]:
         """
         Get the supervisor agent.
         
         Returns:
-            Supervisor agent or None if not found
+            Supervisor agent if found, None otherwise
         """
-        return self.agents.get(self.supervisor_id)
+        return self.get_agent(self.supervisor_id)
     
-    def find_agents_with_capability(self, capability: str) -> List[Agent]:
+    def get_agents_by_role(self, role: AgentRole) -> List[Agent]:
         """
-        Find agents with a specific capability.
+        Get all agents with a specific role.
         
         Args:
-            capability: Capability to search for
+            role: Role to filter by
             
         Returns:
-            List of agents with the capability
+            List of agents with the specified role
+        """
+        return [agent for agent in self.agents.values() if agent.role == role]
+    
+    def get_agents_by_capability(self, capability: str) -> List[Agent]:
+        """
+        Get all agents with a specific capability.
+        
+        Args:
+            capability: Capability to filter by
+            
+        Returns:
+            List of agents with the specified capability
         """
         return [agent for agent in self.agents.values() if agent.has_capability(capability)]
     
-    def add_chat_message(self, content: str, sender_id: str, message_type: str = "text") -> Dict[str, Any]:
+    def get_agents_by_capabilities(self, capabilities: List[str], require_all: bool = True) -> List[Agent]:
         """
-        Add a message to the team chat history.
+        Get all agents with specific capabilities.
         
         Args:
-            content: Message content
-            sender_id: ID of the message sender
-            message_type: Type of message (text, code, result, etc.)
+            capabilities: List of capabilities to filter by
+            require_all: If True, agents must have all capabilities; if False, any capability is sufficient
+            
+        Returns:
+            List of agents with the specified capabilities
+        """
+        if require_all:
+            return [agent for agent in self.agents.values() if agent.has_all_capabilities(capabilities)]
+        else:
+            return [agent for agent in self.agents.values() if agent.has_any_capability(capabilities)]
+    
+    def add_message(self, content: str, sender_id: str, message_type: str = "text") -> Dict[str, Any]:
+        """
+        Add a message to the team chat.
+        
+        Args:
+            content: Content of the message
+            sender_id: ID of the agent or user who sent the message
+            message_type: Type of the message (text, code, image, etc.)
             
         Returns:
             The created message
@@ -528,22 +476,38 @@ class AgentTeam:
             "content": content,
             "sender_id": sender_id,
             "type": message_type,
-            "timestamp": datetime.now().isoformat()
+            "created_at": datetime.now().isoformat()
         }
-        self.chat_history.append(message)
-        self.last_active = datetime.now().isoformat()
-        
-        # Update the sender's last active time
-        sender = self.get_agent(sender_id)
-        if sender:
-            sender.last_active = datetime.now().isoformat()
-            
+        self.messages.append(message)
         return message
+    
+    def get_messages(self, limit: Optional[int] = None, before: Optional[str] = None) -> List[Dict[str, Any]]:
+        """
+        Get messages from the team chat.
+        
+        Args:
+            limit: Maximum number of messages to return
+            before: Return messages created before this timestamp
+            
+        Returns:
+            List of messages
+        """
+        messages = self.messages
+        
+        if before:
+            messages = [msg for msg in messages if msg["created_at"] < before]
+            
+        messages = sorted(messages, key=lambda msg: msg["created_at"], reverse=True)
+        
+        if limit:
+            messages = messages[:limit]
+            
+        return messages
 
 
 class AgentDelegationService:
     """
-    Service for managing agent delegation.
+    Service for delegating tasks to agents.
     """
     
     def __init__(self, e2b_session: E2BSession):
@@ -551,25 +515,20 @@ class AgentDelegationService:
         Initialize the agent delegation service.
         
         Args:
-            e2b_session: E2B session for code execution
+            e2b_session: E2B session for executing code and managing files
         """
         self.e2b_session = e2b_session
         self.artifact_manager = ArtifactManager(e2b_session)
         self.teams: Dict[str, AgentTeam] = {}
         self.task_callbacks: Dict[str, List[Callable[[AgentTask], Awaitable[None]]]] = {}
     
-    async def initialize(self):
+    async def initialize(self) -> None:
         """
         Initialize the agent delegation service.
         """
         await self.artifact_manager.initialize()
     
-    def create_team(
-        self,
-        name: str,
-        supervisor_name: str,
-        metadata: Optional[Dict[str, Any]] = None
-    ) -> AgentTeam:
+    def create_team(self, name: str, supervisor_name: str, metadata: Optional[Dict[str, Any]] = None) -> AgentTeam:
         """
         Create a new team with a supervisor.
         
@@ -579,20 +538,11 @@ class AgentDelegationService:
             metadata: Additional metadata for the team
             
         Returns:
-            Team object
+            The created team
         """
-        # Create the supervisor agent
-        supervisor_id = str(uuid.uuid4())
-        supervisor = Agent(
-            agent_id=supervisor_id,
-            name=supervisor_name,
-            role=AgentRole.SUPERVISOR,
-            capabilities=["task_delegation", "team_management", "progress_monitoring"],
-            metadata={"is_supervisor": True}
-        )
-        
-        # Create the team
         team_id = str(uuid.uuid4())
+        supervisor_id = str(uuid.uuid4())
+        
         team = AgentTeam(
             team_id=team_id,
             name=name,
@@ -600,10 +550,15 @@ class AgentDelegationService:
             metadata=metadata
         )
         
-        # Add the supervisor to the team
-        team.add_agent(supervisor)
+        supervisor = Agent(
+            agent_id=supervisor_id,
+            name=supervisor_name,
+            role=AgentRole.SUPERVISOR,
+            capabilities=["task_delegation", "team_management"],
+            metadata={"is_supervisor": True}
+        )
         
-        # Store the team
+        team.add_agent(supervisor)
         self.teams[team_id] = team
         
         return team
@@ -613,21 +568,12 @@ class AgentDelegationService:
         Get a team by ID.
         
         Args:
-            team_id: ID of the team
+            team_id: ID of the team to get
             
         Returns:
-            Team object or None if not found
+            Team if found, None otherwise
         """
         return self.teams.get(team_id)
-    
-    def list_teams(self) -> List[AgentTeam]:
-        """
-        List all teams.
-        
-        Returns:
-            List of teams
-        """
-        return list(self.teams.values())
     
     def add_agent_to_team(
         self,
@@ -641,20 +587,20 @@ class AgentDelegationService:
         Add an agent to a team.
         
         Args:
-            team_id: ID of the team
+            team_id: ID of the team to add the agent to
             name: Name of the agent
-            role: Role of the agent
+            role: Role of the agent in the team
             capabilities: List of capabilities the agent has
             metadata: Additional metadata for the agent
             
         Returns:
-            Agent object or None if the team was not found
+            The created agent if successful, None otherwise
         """
         team = self.get_team(team_id)
-        if team is None:
+        if not team:
+            logger.error(f"Team with ID {team_id} not found")
             return None
         
-        # Create the agent
         agent_id = str(uuid.uuid4())
         agent = Agent(
             agent_id=agent_id,
@@ -664,9 +610,7 @@ class AgentDelegationService:
             metadata=metadata
         )
         
-        # Add the agent to the team
         team.add_agent(agent)
-        
         return agent
     
     def create_coding_agent(
@@ -680,32 +624,91 @@ class AgentDelegationService:
         Create a coding agent and add it to a team.
         
         Args:
-            team_id: ID of the team
+            team_id: ID of the team to add the agent to
             name: Name of the agent
             languages: List of programming languages the agent can work with
             metadata: Additional metadata for the agent
             
         Returns:
-            Agent object or None if the team was not found
+            The created agent if successful, None otherwise
         """
-        # Prepare capabilities based on languages
-        capabilities = ["code_execution", "code_generation", "code_review"]
-        for language in languages:
-            capabilities.append(f"language_{language.lower()}")
+        if metadata is None:
+            metadata = {}
+            
+        metadata["languages"] = languages
+        metadata["is_coding_agent"] = True
         
-        # Prepare metadata
-        agent_metadata = metadata or {}
-        agent_metadata["languages"] = languages
-        agent_metadata["is_coding_agent"] = True
+        capabilities = ["code_execution"]
+        for lang in languages:
+            capabilities.append(f"language_{lang.lower()}")
         
-        # Create and add the agent
         return self.add_agent_to_team(
             team_id=team_id,
             name=name,
             role=AgentRole.CODER,
             capabilities=capabilities,
-            metadata=agent_metadata
+            metadata=metadata
         )
+    
+    async def delegate_task(
+        self,
+        team_id: str,
+        title: str,
+        description: str,
+        required_capabilities: List[str],
+        priority: str = "medium",
+        metadata: Optional[Dict[str, Any]] = None
+    ) -> Optional[AgentTask]:
+        """
+        Delegate a task to an appropriate agent in the team.
+        
+        Args:
+            team_id: ID of the team to delegate the task to
+            title: Title of the task
+            description: Description of the task
+            required_capabilities: List of capabilities required to complete the task
+            priority: Priority of the task (low, medium, high, critical)
+            metadata: Additional metadata for the task
+            
+        Returns:
+            The created task if successful, None otherwise
+        """
+        team = self.get_team(team_id)
+        if not team:
+            logger.error(f"Team with ID {team_id} not found")
+            return None
+        
+        supervisor = team.get_supervisor()
+        if not supervisor:
+            logger.error(f"Supervisor not found for team {team_id}")
+            return None
+        
+        # Find agents with the required capabilities
+        agents = team.get_agents_by_capabilities(required_capabilities)
+        if not agents:
+            logger.error(f"No agents found with capabilities {required_capabilities}")
+            return None
+        
+        # Choose the agent with the fewest tasks
+        agent = min(agents, key=lambda a: len(a.tasks))
+        
+        # Create the task
+        task_id = str(uuid.uuid4())
+        task = AgentTask(
+            task_id=task_id,
+            title=title,
+            description=description,
+            assigned_to=agent.id,
+            assigned_by=supervisor.id,
+            status="pending",
+            priority=priority,
+            metadata=metadata
+        )
+        
+        # Assign the task to the agent
+        agent.assign_task(task)
+        
+        return task
     
     async def delegate_coding_task(
         self,
@@ -721,315 +724,157 @@ class AgentDelegationService:
         Delegate a coding task to an appropriate agent in the team.
         
         Args:
-            team_id: ID of the team
+            team_id: ID of the team to delegate the task to
             title: Title of the task
             description: Description of the task
             language: Programming language for the task
             code: Initial code for the task
-            priority: Priority of the task
+            priority: Priority of the task (low, medium, high, critical)
             metadata: Additional metadata for the task
             
         Returns:
-            Task object or None if no suitable agent was found
+            The created task if successful, None otherwise
         """
-        team = self.get_team(team_id)
-        if team is None:
-            logger.error(f"Team not found: {team_id}")
-            return None
-        
-        # Get the supervisor
-        supervisor = team.get_supervisor()
-        if supervisor is None:
-            logger.error(f"Supervisor not found for team: {team_id}")
-            return None
-        
-        # Find agents with the required language capability
-        language_capability = f"language_{language.lower()}"
-        suitable_agents = team.find_agents_with_capability(language_capability)
-        
-        # Filter for coding agents
-        coding_agents = [
-            agent for agent in suitable_agents
-            if agent.role == AgentRole.CODER and agent.has_capability("code_execution")
-        ]
-        
-        if not coding_agents:
-            logger.warning(f"No suitable coding agents found for language: {language}")
+        if metadata is None:
+            metadata = {}
             
-            # Add a message to the team chat
-            team.add_chat_message(
-                content=f"No suitable coding agents found for language: {language}. Please add an agent with {language} capability.",
-                sender_id=supervisor.id,
-                message_type="system"
-            )
-            
-            return None
-        
-        # Select the agent with the fewest pending tasks
-        selected_agent = min(
-            coding_agents,
-            key=lambda agent: len(agent.list_tasks(status="pending"))
-        )
-        
-        # Create task metadata
-        task_metadata = metadata or {}
-        task_metadata["language"] = language
+        metadata["language"] = language
         if code:
-            task_metadata["initial_code"] = code
+            metadata["initial_code"] = code
         
-        # Create the task
-        task_id = str(uuid.uuid4())
-        task = AgentTask(
-            task_id=task_id,
+        required_capabilities = [f"language_{language.lower()}", "code_execution"]
+        
+        task = await self.delegate_task(
+            team_id=team_id,
             title=title,
             description=description,
-            assigned_to=selected_agent.id,
-            assigned_by=supervisor.id,
-            status="pending",
+            required_capabilities=required_capabilities,
             priority=priority,
-            metadata=task_metadata
+            metadata=metadata
         )
         
-        # Assign the task to the agent
-        selected_agent.assign_task(task)
-        
-        # Add a message to the team chat
-        team.add_chat_message(
-            content=f"Task '{title}' assigned to {selected_agent.name}",
-            sender_id=supervisor.id,
-            message_type="system"
-        )
-        
-        # If code is provided, create an artifact
-        if code:
-            try:
-                artifact = await self.artifact_manager.create_artifact(
-                    content=code,
-                    name=f"task_{task_id}_initial_code.{language.lower()}",
-                    content_type=f"text/x-{language.lower()}",
-                    metadata={"task_id": task_id, "type": "initial_code"}
-                )
-                task.add_artifact(artifact.id)
-                
-                # Add a message to the team chat
-                team.add_chat_message(
-                    content=f"Initial code added to task '{title}'",
-                    sender_id=supervisor.id,
-                    message_type="system"
-                )
-            except Exception as e:
-                logger.error(f"Error creating artifact for task {task_id}: {str(e)}")
-        
-        # Trigger task callbacks
-        await self._trigger_task_callbacks(task)
+        if task and code:
+            # Create an artifact for the initial code
+            artifact = await self.artifact_manager.create_artifact(
+                content=code,
+                name=f"initial_code_{task.id}.{language.lower()}",
+                content_type=f"text/{language.lower()}",
+                metadata={"task_id": task.id, "type": "initial_code"}
+            )
+            
+            # Associate the artifact with the task
+            task.add_artifact(artifact.id)
         
         return task
     
-    async def execute_coding_task(
-        self,
-        team_id: str,
-        task_id: str
-    ) -> Dict[str, Any]:
+    async def execute_coding_task(self, team_id: str, task_id: str) -> Dict[str, Any]:
         """
         Execute a coding task using the E2B code interpreter.
         
         Args:
-            team_id: ID of the team
-            task_id: ID of the task
+            team_id: ID of the team containing the task
+            task_id: ID of the task to execute
             
         Returns:
             Result of the execution
         """
         team = self.get_team(team_id)
-        if team is None:
-            logger.error(f"Team not found: {team_id}")
-            return {"success": False, "error": "Team not found"}
+        if not team:
+            return {"success": False, "error": f"Team with ID {team_id} not found"}
         
-        # Find the agent with the task
+        # Find the agent assigned to the task
         agent = None
         task = None
         for a in team.agents.values():
             t = a.get_task(task_id)
-            if t is not None:
+            if t:
                 agent = a
                 task = t
                 break
         
-        if agent is None or task is None:
-            logger.error(f"Task not found: {task_id}")
-            return {"success": False, "error": "Task not found"}
+        if not task:
+            return {"success": False, "error": f"Task with ID {task_id} not found"}
+        
+        if not agent:
+            return {"success": False, "error": f"Agent assigned to task {task_id} not found"}
         
         # Update task status
         task.update_status("in_progress")
+        await self._notify_task_update(task)
         
-        # Add a message to the team chat
-        team.add_chat_message(
-            content=f"Starting execution of task '{task.title}'",
-            sender_id=agent.id,
-            message_type="system"
-        )
+        # Get the code to execute
+        code = task.metadata.get("initial_code", "")
+        language = task.metadata.get("language", "python").lower()
+        
+        # Create a file for the code
+        file_name = f"task_{task_id}.{language}"
+        file_path = f"/tmp/{file_name}"
+        await self.e2b_session.create_file(file_path, code)
+        
+        # Execute the code
+        result = {"success": False, "error": "Execution failed"}
         
         try:
-            # Get the code to execute
-            code = task.metadata.get("initial_code", "")
-            if not code:
-                # Try to get code from artifacts
-                for artifact_id in task.artifacts:
-                    artifact = await self.artifact_manager.get_artifact(artifact_id)
-                    if artifact and "initial_code" in artifact.metadata.get("type", ""):
-                        code = artifact.content.decode("utf-8")
-                        break
-            
-            if not code:
-                logger.error(f"No code to execute for task {task_id}")
-                task.update_status("failed", "No code to execute")
-                
-                # Add a message to the team chat
-                team.add_chat_message(
-                    content=f"Failed to execute task '{task.title}': No code to execute",
-                    sender_id=agent.id,
-                    message_type="error"
-                )
-                
-                return {"success": False, "error": "No code to execute"}
-            
-            # Get the language
-            language = task.metadata.get("language", "python").lower()
-            
-            # Add a message to the team chat with the code
-            team.add_chat_message(
-                content=code,
-                sender_id=agent.id,
-                message_type="code"
-            )
-            
-            # Prepare the command based on the language
-            cmd = []
             if language == "python":
-                cmd = ["python", "-c", "import sys; exec(sys.stdin.read())"]
+                process = await self.e2b_session.process.start(cmd=["python3", file_path])
             elif language == "javascript" or language == "js":
-                cmd = ["node", "-e", "eval(require('fs').readFileSync(0, 'utf-8'))"]
-            elif language == "bash" or language == "shell":
-                cmd = ["bash", "-c", "source /dev/stdin"]
+                process = await self.e2b_session.process.start(cmd=["node", file_path])
+            elif language == "typescript" or language == "ts":
+                # Compile TypeScript to JavaScript first
+                await self.e2b_session.process.start(cmd=["tsc", file_path])
+                js_file_path = file_path.replace(".ts", ".js")
+                process = await self.e2b_session.process.start(cmd=["node", js_file_path])
+            elif language == "bash" or language == "sh":
+                process = await self.e2b_session.process.start(cmd=["bash", file_path])
             else:
-                # Default to Python
-                cmd = ["python", "-c", "import sys; exec(sys.stdin.read())"]
-                language = "python"
+                return {"success": False, "error": f"Unsupported language: {language}"}
             
-            # Execute the code
-            try:
-                process = await self.e2b_session.process.start({
-                    "cmd": cmd,
-                    "env": {"PYTHONIOENCODING": "utf-8", "NODE_OPTIONS": "--no-warnings"}
-                })
+            execution_result = await process.wait()
+            
+            result = {
+                "success": execution_result.exit_code == 0,
+                "exit_code": execution_result.exit_code,
+                "stdout": execution_result.stdout,
+                "stderr": execution_result.stderr
+            }
+            
+            # Update task status based on execution result
+            if result["success"]:
+                task.update_status("completed")
+                task.update_progress(100)
+            else:
+                task.update_status("failed")
                 
-                # Write the code to stdin
-                await process.stdin.write(code)
-                await process.stdin.end()
-                
-                # Wait for the process to complete
-                result = await process.wait()
-                
-                # Create artifacts for stdout and stderr
-                if result.stdout:
-                    stdout_artifact = await self.artifact_manager.create_artifact(
-                        content=result.stdout,
-                        name=f"task_{task_id}_stdout.txt",
-                        content_type="text/plain",
-                        metadata={"task_id": task_id, "type": "stdout"}
-                    )
-                    task.add_artifact(stdout_artifact.id)
-                    
-                    # Add a message to the team chat with the stdout
-                    team.add_chat_message(
-                        content=result.stdout,
-                        sender_id=agent.id,
-                        message_type="result"
-                    )
-                
-                if result.stderr:
-                    stderr_artifact = await self.artifact_manager.create_artifact(
-                        content=result.stderr,
-                        name=f"task_{task_id}_stderr.txt",
-                        content_type="text/plain",
-                        metadata={"task_id": task_id, "type": "stderr"}
-                    )
-                    task.add_artifact(stderr_artifact.id)
-                    
-                    # Add a message to the team chat with the stderr
-                    team.add_chat_message(
-                        content=result.stderr,
-                        sender_id=agent.id,
-                        message_type="error"
-                    )
-                
-                # Scan for additional artifacts
-                additional_artifacts = await self.artifact_manager.scan_for_artifacts()
-                for artifact in additional_artifacts:
-                    artifact.metadata["task_id"] = task_id
-                    task.add_artifact(artifact.id)
-                
-                # Update task status based on exit code
-                if result.exit_code == 0:
-                    task.update_status("completed", "Code executed successfully")
-                    
-                    # Add a message to the team chat
-                    team.add_chat_message(
-                        content=f"Task '{task.title}' completed successfully",
-                        sender_id=agent.id,
-                        message_type="system"
-                    )
-                    
-                    return {
-                        "success": True,
-                        "exit_code": result.exit_code,
-                        "stdout": result.stdout,
-                        "stderr": result.stderr,
-                        "artifacts": [a.id for a in additional_artifacts]
-                    }
-                else:
-                    task.update_status("failed", f"Code execution failed with exit code {result.exit_code}")
-                    
-                    # Add a message to the team chat
-                    team.add_chat_message(
-                        content=f"Task '{task.title}' failed with exit code {result.exit_code}",
-                        sender_id=agent.id,
-                        message_type="error"
-                    )
-                    
-                    return {
-                        "success": False,
-                        "exit_code": result.exit_code,
-                        "stdout": result.stdout,
-                        "stderr": result.stderr,
-                        "artifacts": [a.id for a in additional_artifacts]
-                    }
-            except Exception as e:
-                logger.error(f"Error executing code for task {task_id}: {str(e)}")
-                task.update_status("failed", f"Error executing code: {str(e)}")
-                
-                # Add a message to the team chat
-                team.add_chat_message(
-                    content=f"Error executing task '{task.title}': {str(e)}",
-                    sender_id=agent.id,
-                    message_type="error"
+            # Add a comment with the execution result
+            if result["success"]:
+                task.add_comment(
+                    author=agent.id,
+                    content=f"Task executed successfully. Output:\n```\n{result['stdout']}\n```"
                 )
-                
-                return {"success": False, "error": str(e)}
-        
+            else:
+                task.add_comment(
+                    author=agent.id,
+                    content=f"Task execution failed. Error:\n```\n{result['stderr']}\n```"
+                )
+            
+            # Scan for artifacts created during execution
+            artifacts = await self.artifact_manager.scan_for_artifacts()
+            for artifact in artifacts:
+                task.add_artifact(artifact.id)
+            
+            await self._notify_task_update(task)
+            
         except Exception as e:
-            # Handle any exceptions
-            logger.error(f"Error in execute_coding_task: {str(e)}")
-            task.update_status("failed", f"Error: {str(e)}")
-            
-            # Add a message to the team chat
-            team.add_chat_message(
-                content=f"Error in task '{task.title}': {str(e)}",
-                sender_id=agent.id,
-                message_type="error"
+            logger.error(f"Error executing task {task_id}: {str(e)}")
+            task.update_status("failed")
+            task.add_comment(
+                author=agent.id,
+                content=f"Task execution failed with exception: {str(e)}"
             )
-            
-            return {"success": False, "error": str(e)}
+            await self._notify_task_update(task)
+            result = {"success": False, "error": str(e)}
+        
+        return result
     
     async def update_task_progress(
         self,
@@ -1043,59 +888,51 @@ class AgentDelegationService:
         Update the progress of a task.
         
         Args:
-            team_id: ID of the team
-            task_id: ID of the task
-            progress: Progress percentage (0-100)
-            status: Optional new status
-            comment: Optional comment
+            team_id: ID of the team containing the task
+            task_id: ID of the task to update
+            progress: Percentage of completion (0-100)
+            status: New status of the task (optional)
+            comment: Comment to add to the task (optional)
             
         Returns:
-            True if the task was updated, False otherwise
+            True if successful, False otherwise
         """
         team = self.get_team(team_id)
-        if team is None:
-            logger.error(f"Team not found: {team_id}")
+        if not team:
+            logger.error(f"Team with ID {team_id} not found")
             return False
         
-        # Find the agent with the task
+        # Find the agent assigned to the task
         agent = None
         task = None
         for a in team.agents.values():
             t = a.get_task(task_id)
-            if t is not None:
+            if t:
                 agent = a
                 task = t
                 break
         
-        if agent is None or task is None:
-            logger.error(f"Task not found: {task_id}")
+        if not task:
+            logger.error(f"Task with ID {task_id} not found")
+            return False
+        
+        if not agent:
+            logger.error(f"Agent assigned to task {task_id} not found")
             return False
         
         # Update task progress
-        task.update_completion_percentage(progress)
+        task.update_progress(progress)
         
-        # Update status if provided
+        # Update task status if provided
         if status:
-            task.update_status(status, comment)
-        elif comment:
-            task.add_comment(comment, agent.id)
+            task.update_status(status)
         
-        # Add a message to the team chat
+        # Add comment if provided
         if comment:
-            team.add_chat_message(
-                content=f"Task '{task.title}' progress: {progress}% - {comment}",
-                sender_id=agent.id,
-                message_type="progress"
-            )
-        else:
-            team.add_chat_message(
-                content=f"Task '{task.title}' progress: {progress}%",
-                sender_id=agent.id,
-                message_type="progress"
-            )
+            task.add_comment(author=agent.id, content=comment)
         
-        # Trigger task callbacks
-        await self._trigger_task_callbacks(task)
+        # Notify task update
+        await self._notify_task_update(task)
         
         return True
     
@@ -1104,15 +941,15 @@ class AgentDelegationService:
         Register a callback function to be called when a task is updated.
         
         Args:
-            callback: Callback function
+            callback: Callback function that takes a task as argument
             
         Returns:
-            Callback ID
+            ID of the registered callback
         """
         callback_id = str(uuid.uuid4())
-        if "global" not in self.task_callbacks:
-            self.task_callbacks["global"] = []
-        self.task_callbacks["global"].append(callback)
+        if "all" not in self.task_callbacks:
+            self.task_callbacks["all"] = []
+        self.task_callbacks["all"].append(callback)
         return callback_id
     
     def register_task_callback_for_team(self, team_id: str, callback: Callable[[AgentTask], Awaitable[None]]) -> str:
@@ -1120,11 +957,11 @@ class AgentDelegationService:
         Register a callback function to be called when a task in a specific team is updated.
         
         Args:
-            team_id: ID of the team
-            callback: Callback function
+            team_id: ID of the team to register the callback for
+            callback: Callback function that takes a task as argument
             
         Returns:
-            Callback ID
+            ID of the registered callback
         """
         callback_id = str(uuid.uuid4())
         if team_id not in self.task_callbacks:
@@ -1132,14 +969,14 @@ class AgentDelegationService:
         self.task_callbacks[team_id].append(callback)
         return callback_id
     
-    async def _trigger_task_callbacks(self, task: AgentTask) -> None:
+    async def _notify_task_update(self, task: AgentTask) -> None:
         """
-        Trigger all registered callbacks for a task.
+        Notify all registered callbacks about a task update.
         
         Args:
-            task: The updated task
+            task: Updated task
         """
-        # Find the team that contains this task
+        # Get the team ID for the task
         team_id = None
         for tid, team in self.teams.items():
             for agent in team.agents.values():
@@ -1149,21 +986,25 @@ class AgentDelegationService:
             if team_id:
                 break
         
-        # Trigger global callbacks
-        if "global" in self.task_callbacks:
-            for callback in self.task_callbacks["global"]:
+        if not team_id:
+            logger.error(f"Team not found for task {task.id}")
+            return
+        
+        # Call team-specific callbacks
+        if team_id in self.task_callbacks:
+            for callback in self.task_callbacks[team_id]:
                 try:
                     await callback(task)
                 except Exception as e:
                     logger.error(f"Error in task callback: {str(e)}")
         
-        # Trigger team-specific callbacks
-        if team_id and team_id in self.task_callbacks:
-            for callback in self.task_callbacks[team_id]:
+        # Call global callbacks
+        if "all" in self.task_callbacks:
+            for callback in self.task_callbacks["all"]:
                 try:
                     await callback(task)
                 except Exception as e:
-                    logger.error(f"Error in team-specific task callback: {str(e)}")
+                    logger.error(f"Error in task callback: {str(e)}")
     
     async def send_team_message(
         self,
@@ -1176,92 +1017,111 @@ class AgentDelegationService:
         Send a message to a team chat.
         
         Args:
-            team_id: ID of the team
-            content: Message content
-            sender_id: ID of the sender
-            message_type: Type of message
+            team_id: ID of the team to send the message to
+            content: Content of the message
+            sender_id: ID of the agent or user who sent the message
+            message_type: Type of the message (text, code, image, etc.)
             
         Returns:
-            The created message or None if the team was not found
+            The created message if successful, None otherwise
         """
         team = self.get_team(team_id)
-        if team is None:
-            logger.error(f"Team not found: {team_id}")
+        if not team:
+            logger.error(f"Team with ID {team_id} not found")
             return None
         
-        # Verify sender exists in the team
-        if sender_id not in team.agents:
-            logger.error(f"Sender not found in team: {sender_id}")
+        # Check if sender is a member of the team or a user
+        if sender_id not in team.agents and not sender_id.startswith("user_"):
+            logger.error(f"Sender {sender_id} is not a member of team {team_id}")
             return None
         
-        # Add the message to the team chat
-        return team.add_chat_message(content, sender_id, message_type)
+        return team.add_message(content=content, sender_id=sender_id, message_type=message_type)
     
-    async def get_team_chat_history(
+    def get_team_messages(
         self,
         team_id: str,
-        limit: int = 100,
+        limit: Optional[int] = None,
         before: Optional[str] = None
     ) -> List[Dict[str, Any]]:
         """
-        Get the chat history for a team.
+        Get messages from a team chat.
         
         Args:
-            team_id: ID of the team
+            team_id: ID of the team to get messages from
             limit: Maximum number of messages to return
-            before: Return messages before this message ID
+            before: Return messages created before this timestamp
             
         Returns:
             List of messages
         """
         team = self.get_team(team_id)
-        if team is None:
-            logger.error(f"Team not found: {team_id}")
+        if not team:
+            logger.error(f"Team with ID {team_id} not found")
             return []
         
-        # Get the chat history
-        history = team.chat_history
-        
-        # Filter by before if provided
-        if before:
-            before_index = next((i for i, m in enumerate(history) if m["id"] == before), None)
-            if before_index is not None:
-                history = history[:before_index]
-        
-        # Apply limit
-        return history[-limit:] if limit < len(history) else history
+        return team.get_messages(limit=limit, before=before)
     
-    def export_team_data(self, team_id: str) -> Optional[Dict[str, Any]]:
+    def to_dict(self) -> Dict[str, Any]:
         """
-        Export all data for a team.
+        Convert the agent delegation service to a dictionary.
+        
+        Returns:
+            Dictionary representation of the agent delegation service
+        """
+        return {
+            "teams": [team.to_dict() for team in self.teams.values()]
+        }
+    
+    @classmethod
+    async def from_dict(cls, data: Dict[str, Any], e2b_session: E2BSession) -> 'AgentDelegationService':
+        """
+        Create an agent delegation service from a dictionary.
         
         Args:
-            team_id: ID of the team
+            data: Dictionary representation of the agent delegation service
+            e2b_session: E2B session for executing code and managing files
             
         Returns:
-            Dictionary with all team data or None if the team was not found
+            AgentDelegationService instance
         """
-        team = self.get_team(team_id)
-        if team is None:
-            logger.error(f"Team not found: {team_id}")
-            return None
+        service = cls(e2b_session=e2b_session)
+        await service.initialize()
         
-        return team.to_dict()
+        # Add teams
+        for team_data in data.get("teams", []):
+            team = AgentTeam.from_dict(team_data)
+            service.teams[team.id] = team
+            
+        return service
     
-    def import_team_data(self, team_data: Dict[str, Any]) -> Optional[AgentTeam]:
+    async def save_state(self, file_path: str) -> None:
         """
-        Import team data.
+        Save the state of the agent delegation service to a file.
         
         Args:
-            team_data: Team data dictionary
+            file_path: Path to save the state to
+        """
+        state = self.to_dict()
+        await self.e2b_session.create_file(file_path, json.dumps(state, indent=2))
+    
+    @classmethod
+    async def load_state(cls, file_path: str, e2b_session: E2BSession) -> 'AgentDelegationService':
+        """
+        Load the state of the agent delegation service from a file.
+        
+        Args:
+            file_path: Path to load the state from
+            e2b_session: E2B session for executing code and managing files
             
         Returns:
-            The imported team or None if the import failed
+            AgentDelegationService instance
         """
         try:
-            team = AgentTeam.from_dict(team_data)
-            self.teams[team.id] = team
-            return team
+            state_json = await e2b_session.read_file(file_path)
+            state = json.loads(state_json)
+            return await cls.from_dict(state, e2b_session)
         except Exception as e:
-            logger.error(f"Error importing team data: {str(e)}")
-            return None
+            logger.error(f"Error loading state: {str(e)}")
+            service = cls(e2b_session=e2b_session)
+            await service.initialize()
+            return service
