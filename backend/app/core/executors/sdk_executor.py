@@ -489,7 +489,7 @@ class SDKExecutor:
             return await self.tool_executor.execute_code(
                 args.get("code", ""), 
                 args.get("language", "python"),
-                None  # We'll need to pass the request_context here in a real implementation
+                request_context  # We'll need to pass the request_context here in a real implementation
             )
         
         elif function_name == "list_files":
