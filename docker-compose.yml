@@ -1,127 +1,421 @@
 version: '3.8'
 
 services:
+  # MongoDB database service
+  mongodb:
+    image: mongo:latest
+    container_name: atlas-chat-mongodb
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD}
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - atlas-network
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    # Security enhancements
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # PostgreSQL database service
+  postgres:
+    image: postgres:latest
+    container_name: atlas-chat-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - atlas-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    # Security and performance enhancements
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Redis cache service
+  redis:
+    image: redis:latest
+    container_name: atlas-chat-redis
+    restart: always
+    command: redis-server --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - redis_data:/data
+    networks:
+      - atlas-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    # Security enhancements
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
   # Backend API service
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    ports:
-      - "8000:8000"
+      args:
+        ENVIRONMENT: ${ENVIRONMENT}
+    container_name: atlas-chat-backend
+    restart: always
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     environment:
-      - ENVIRONMENT=production
-      - DEBUG=false
-      - CORS_ORIGINS=${CORS_ORIGINS:-http://localhost:3000}
-      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
-      - JWT_ALGORITHM=HS256
-      - ACCESS_TOKEN_EXPIRE_MINUTES=60
-      - DATABASE_URL=${DATABASE_URL}
-      - QDRANT_URL=${QDRANT_URL:-http://qdrant:6333}
-      - NEO4J_URI=${NEO4J_URI:-bolt://neo4j:7687}
-      - NEO4J_USERNAME=${NEO4J_USERNAME:-neo4j}
-      - NEO4J_PASSWORD=${NEO4J_PASSWORD}
-      - E2B_API_KEY=${E2B_API_KEY}
-      - E2B_WARMUP_ON_STARTUP=true
-      - MAX_CODE_LENGTH=10000
-      - ALLOWED_FILE_DIRECTORIES=workspace,data,temp
-      - BLOCKED_PACKAGES=subprocess,shutil,os
-      - RATE_LIMIT_MAX_REQUESTS=100
-      - RATE_LIMIT_WINDOW_SECONDS=60
-      - UVICORN_WORKERS=4
+      # Database configurations
+      MONGODB_URI: mongodb://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@mongodb:27017/atlas-chat?authSource=admin
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      # Redis configuration
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      # API configurations
+      API_HOST: 0.0.0.0
+      API_PORT: 8000
+      # Security configurations
+      SECRET_KEY: ${SECRET_KEY}
+      ALGORITHM: ${ALGORITHM}
+      ACCESS_TOKEN_EXPIRE_MINUTES: ${ACCESS_TOKEN_EXPIRE_MINUTES}
+      # E2B configurations
+      E2B_API_KEY: ${E2B_API_KEY}
+      # OpenAI configurations
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      # Other configurations
+      LOG_LEVEL: ${LOG_LEVEL}
+      ENVIRONMENT: ${ENVIRONMENT}
     volumes:
+      - backend_data:/app/data
       - ./backend/logs:/app/logs
-      - ./backend/workspace:/app/workspace
-    depends_on:
-      - qdrant
-      - neo4j
-    restart: unless-stopped
+    networks:
+      - atlas-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/api/ping"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 20s
-
-  # Frontend service
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
-    environment:
-      - NEXT_PUBLIC_BACKEND_URL=${NEXT_PUBLIC_BACKEND_URL:-http://localhost:8000}
-    depends_on:
-      - backend
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 20s
-
-  # Qdrant vector database
-  qdrant:
-    image: qdrant/qdrant:latest
-    ports:
-      - "6333:6333"
-      - "6334:6334"
-    volumes:
-      - qdrant_data:/qdrant/storage
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:6333/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
+    # Performance and security enhancements
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "20m"
+        max-file: "5"
 
-  # Neo4j database (optional, can be disabled)
-  neo4j:
-    image: neo4j:5-enterprise
-    ports:
-      - "7474:7474"
-      - "7687:7687"
+  # E2B Code Interpreter service
+  e2b-codeinterpreter:
+    build:
+      context: ./e2b-codeinterpreter
+      dockerfile: Dockerfile
+      args:
+        ENVIRONMENT: ${ENVIRONMENT}
+    container_name: atlas-chat-e2b-codeinterpreter
+    restart: always
     environment:
-      - NEO4J_AUTH=${NEO4J_USERNAME:-neo4j}/${NEO4J_PASSWORD:-password}
-      - NEO4J_ACCEPT_LICENSE_AGREEMENT=yes
-      - NEO4J_apoc_export_file_enabled=true
-      - NEO4J_apoc_import_file_enabled=true
-      - NEO4J_apoc_import_file_use__neo4j__config=true
-      - NEO4J_dbms_security_procedures_unrestricted=apoc.*,gds.*
+      E2B_API_KEY: ${E2B_API_KEY}
+      SERVICE_HOST: 0.0.0.0
+      SERVICE_PORT: 8080
+      LOG_LEVEL: ${LOG_LEVEL}
+      ENVIRONMENT: ${ENVIRONMENT}
+      # Add OpenAI API key for Agent SDK integration
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
     volumes:
-      - neo4j_data:/data
-      - neo4j_logs:/logs
-      - neo4j_import:/import
-      - neo4j_plugins:/plugins
-    restart: unless-stopped
+      - e2b_data:/app/data
+      - ./e2b-codeinterpreter/logs:/app/logs
+    networks:
+      - atlas-network
     healthcheck:
-      test: ["CMD", "cypher-shell", "-u", "${NEO4J_USERNAME:-neo4j}", "-p", "${NEO4J_PASSWORD:-password}", "RETURN 1;"]
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 60s
+      start_period: 40s
+    # Performance and security enhancements
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "20m"
+        max-file: "5"
 
-  # Nginx reverse proxy (optional, for production)
-  # Uncomment to use in production with SSL
-  # nginx:
-  #   image: nginx:alpine
-  #   ports:
-  #     - "80:80"
-  #     - "443:443"
-  #   volumes:
-  #     - ./nginx/conf.d:/etc/nginx/conf.d
-  #     - ./nginx/ssl:/etc/nginx/ssl
-  #     - ./nginx/www:/var/www/html
-  #   depends_on:
-  #     - backend
-  #     - frontend
-  #   restart: unless-stopped
+  # Frontend client service
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE_URL: ${API_BASE_URL}
+        VITE_E2B_CODEINTERPRETER_URL: ${E2B_CODEINTERPRETER_URL}
+        NODE_ENV: production
+    container_name: atlas-chat-frontend
+    restart: always
+    depends_on:
+      backend:
+        condition: service_healthy
+      e2b-codeinterpreter:
+        condition: service_healthy
+    networks:
+      - atlas-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    # Performance enhancements
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Nginx reverse proxy service
+  nginx:
+    image: nginx:latest
+    container_name: atlas-chat-nginx
+    restart: always
+    depends_on:
+      frontend:
+        condition: service_healthy
+      backend:
+        condition: service_healthy
+      e2b-codeinterpreter:
+        condition: service_healthy
+    ports:
+      - "${NGINX_PORT}:80"
+      - "${NGINX_SSL_PORT}:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - ./nginx/logs:/var/log/nginx
+      - ./nginx/cache:/var/cache/nginx
+    networks:
+      - atlas-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    # Security enhancements
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Prometheus monitoring service
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: atlas-chat-prometheus
+    restart: always
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+      - '--storage.tsdb.retention.time=15d'
+      - '--web.enable-lifecycle'
+    networks:
+      - atlas-network
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:9090/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    # Security enhancements
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Grafana dashboard service
+  grafana:
+    image: grafana/grafana:latest
+    container_name: atlas-chat-grafana
+    restart: always
+    depends_on:
+      prometheus:
+        condition: service_healthy
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - grafana_data:/var/lib/grafana
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_INSTALL_PLUGINS: "grafana-piechart-panel,grafana-worldmap-panel"
+    networks:
+      - atlas-network
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    # Security enhancements
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Backup service
+  backup:
+    image: alpine:latest
+    container_name: atlas-chat-backup
+    restart: always
+    volumes:
+      - mongodb_data:/data/mongodb:ro
+      - postgres_data:/data/postgres:ro
+      - redis_data:/data/redis:ro
+      - backend_data:/data/backend:ro
+      - e2b_data:/data/e2b:ro
+      - ./backups:/backups
+      - ./scripts/backup.sh:/backup.sh:ro
+    command: sh -c "chmod +x /backup.sh && crond -f"
+    environment:
+      BACKUP_SCHEDULE: ${BACKUP_SCHEDULE:-0 0 * * *}
+      BACKUP_RETENTION_DAYS: ${BACKUP_RETENTION_DAYS:-7}
+    networks:
+      - atlas-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
 volumes:
-  qdrant_data:
-  neo4j_data:
-  neo4j_logs:
-  neo4j_import:
-  neo4j_plugins:
+  mongodb_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${DATA_PATH}/mongodb
+      o: bind
+  postgres_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${DATA_PATH}/postgres
+      o: bind
+  redis_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${DATA_PATH}/redis
+      o: bind
+  backend_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${DATA_PATH}/backend
+      o: bind
+  e2b_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${DATA_PATH}/e2b
+      o: bind
+  prometheus_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${DATA_PATH}/prometheus
+      o: bind
+  grafana_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${DATA_PATH}/grafana
+      o: bind
+
+networks:
+  atlas-network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.28.0.0/16
