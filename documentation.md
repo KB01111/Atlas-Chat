@@ -91,13 +91,13 @@ from app.core.services.e2b.session import E2BSession
 async def execute_code():
     session = E2BSession(session_id="example-session")
     await session.initialize()
-    
+
     result = await session.execute_code(
         code="print('Hello, World!')",
         language="python",
         timeout=30
     )
-    
+
     print(result)
     await session.close()
 ```
@@ -122,14 +122,14 @@ from app.core.services.agent_service import AgentService
 
 async def delegate_task():
     agent_service = AgentService(db=db_session)
-    
+
     # Create a team
     team = await agent_service.create_team(
         name="Development Team",
         supervisor_name="Tech Lead",
         user_id="user123"
     )
-    
+
     # Add an agent
     agent = await agent_service.add_agent(
         team_id=team["id"],
@@ -138,7 +138,7 @@ async def delegate_task():
         languages=["python"],
         user_id="user123"
     )
-    
+
     # Create a task
     task = await agent_service.create_task(
         team_id=team["id"],
@@ -147,7 +147,7 @@ async def delegate_task():
         assigned_to=agent["id"],
         user_id="user123"
     )
-    
+
     print(task)
 ```
 
@@ -226,51 +226,65 @@ The `docker-compose.yml` file defines all services and their configurations, inc
 ### Docker Installation
 
 1. Clone the repository:
+
+
    ```bash
    git clone https://github.com/KB01111/Atlas-Chat.git
    cd Atlas-Chat
    ```
 
+
 2. Create a `.env` file with required environment variables:
+
    ```bash
    cp .env.example .env
    # Edit .env with your configuration
    ```
 
+
 3. Start the application:
+
    ```bash
    docker-compose up -d
    ```
 
 4. Access the application at `http://localhost:3000`
 
+
 ### Local Development
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/KB01111/Atlas-Chat.git
    cd Atlas-Chat
    ```
 
 2. Install backend dependencies:
+
    ```bash
+
    cd backend
    pip install -r requirements.txt
    ```
 
 3. Install frontend dependencies:
+
+
    ```bash
    cd frontend/client
    npm install
    ```
 
 4. Start the backend:
+
    ```bash
    cd backend
    uvicorn app.main:app --reload
    ```
 
 5. Start the frontend:
+
    ```bash
    cd frontend/client
    npm start
@@ -287,21 +301,17 @@ The `docker-compose.yml` file defines all services and their configurations, inc
 3. Type your message and press Enter
 4. The AI assistant will respond to your message
 
+
 ### Executing Code
 
-1. In a conversation, use code blocks with language specification:
-   ```
-   ```python
-   print("Hello, World!")
-   ```
-   ```
-
-2. Click the "Run" button to execute the code
-3. View the execution results and any generated artifacts
+1. In a conversation, type code within triple backticks with language specification
+2. The code will be automatically detected and a "Run" button will appear
+3. Click "Run" to execute the code
+4. Results will be displayed as artifacts in the conversation
 
 ### Managing Teams
 
-1. Navigate to the Teams section
+1. Navigate to the Team Management interface
 2. Click "Create Team" to create a new team
 3. Add agents with specific roles to the team
 4. Create tasks and assign them to agents
@@ -309,49 +319,59 @@ The `docker-compose.yml` file defines all services and their configurations, inc
 
 ## API Reference
 
+The Atlas-Chat API provides endpoints for all application features.
+
 ### Authentication
 
-- `POST /api/auth/token`: Get JWT token
-- `POST /api/auth/refresh`: Refresh JWT token
-- `POST /api/auth/register`: Register new user
-- `POST /api/auth/logout`: Logout user
+- `POST /api/auth/login`: Authenticate a user
+- `POST /api/auth/register`: Register a new user
+- `POST /api/auth/refresh`: Refresh an access token
 
 ### Conversations
 
 - `GET /api/conversations`: List conversations
-- `POST /api/conversations`: Create conversation
-- `GET /api/conversations/{id}`: Get conversation
-- `DELETE /api/conversations/{id}`: Delete conversation
+- `POST /api/conversations`: Create a new conversation
+- `GET /api/conversations/{id}`: Get a conversation
+- `DELETE /api/conversations/{id}`: Delete a conversation
 
 ### Messages
 
-- `GET /api/conversations/{id}/messages`: List messages
-- `POST /api/conversations/{id}/messages`: Create message
-- `DELETE /api/messages/{id}`: Delete message
+- `GET /api/conversations/{id}/messages`: List messages in a conversation
+- `POST /api/conversations/{id}/messages`: Send a message
+- `DELETE /api/messages/{id}`: Delete a message
 
 ### Code Execution
 
 - `POST /api/code/execute`: Execute code
-- `GET /api/code/languages`: List supported languages
-- `POST /api/code/install`: Install package
-
-### Artifacts
-
-- `GET /api/artifacts`: List artifacts
-- `GET /api/artifacts/{id}`: Get artifact
-- `DELETE /api/artifacts/{id}`: Delete artifact
-- `GET /api/artifacts/{id}/download`: Download artifact
+- `GET /api/code/status/{id}`: Get execution status
+- `DELETE /api/code/cancel/{id}`: Cancel execution
 
 ### Teams
 
 - `GET /api/teams`: List teams
-- `POST /api/teams`: Create team
-- `GET /api/teams/{id}`: Get team
-- `DELETE /api/teams/{id}`: Delete team
-- `POST /api/teams/{id}/agents`: Add agent
-- `DELETE /api/teams/{id}/agents/{agent_id}`: Remove agent
-- `POST /api/teams/{id}/tasks`: Create task
-- `GET /api/teams/{id}/tasks`: List tasks
+- `POST /api/teams`: Create a team
+- `GET /api/teams/{id}`: Get a team
+- `DELETE /api/teams/{id}`: Delete a team
+
+### Agents
+
+- `GET /api/teams/{id}/agents`: List agents in a team
+- `POST /api/teams/{id}/agents`: Add an agent to a team
+- `DELETE /api/agents/{id}`: Remove an agent
+
+### Tasks
+
+- `GET /api/teams/{id}/tasks`: List tasks in a team
+- `POST /api/teams/{id}/tasks`: Create a task
+- `GET /api/tasks/{id}`: Get a task
+- `PUT /api/tasks/{id}`: Update a task
+- `DELETE /api/tasks/{id}`: Delete a task
+
+### Artifacts
+
+- `GET /api/artifacts`: List artifacts
+- `GET /api/artifacts/{id}`: Get an artifact
+- `DELETE /api/artifacts/{id}`: Delete an artifact
 
 ## Contributing
 
@@ -363,7 +383,7 @@ We welcome contributions to Atlas-Chat! Please follow these steps:
 4. Run tests
 5. Submit a pull request
 
-Please ensure your code follows our coding standards and includes appropriate tests.
+Please follow the coding standards and write tests for new features.
 
 ## License
 

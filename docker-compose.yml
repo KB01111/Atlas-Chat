@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   # MongoDB database service
@@ -19,6 +19,17 @@ services:
       timeout: 5s
       retries: 5
       start_period: 30s
+    # Security enhancements
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: 1G
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   # PostgreSQL database service
   postgres:
@@ -39,6 +50,17 @@ services:
       timeout: 5s
       retries: 5
       start_period: 30s
+    # Security and performance enhancements
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: 1G
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   # Redis cache service
   redis:
@@ -51,17 +73,30 @@ services:
     networks:
       - atlas-network
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 10s
+    # Security enhancements
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   # Backend API service
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
+      args:
+        ENVIRONMENT: ${ENVIRONMENT}
     container_name: atlas-chat-backend
     restart: always
     depends_on:
@@ -99,6 +134,7 @@ services:
       ENVIRONMENT: ${ENVIRONMENT}
     volumes:
       - backend_data:/app/data
+      - ./backend/logs:/app/logs
     networks:
       - atlas-network
     healthcheck:
@@ -107,12 +143,25 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+    # Performance and security enhancements
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 2G
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "20m"
+        max-file: "5"
 
   # E2B Code Interpreter service
   e2b-codeinterpreter:
     build:
       context: ./e2b-codeinterpreter
       dockerfile: Dockerfile
+      args:
+        ENVIRONMENT: ${ENVIRONMENT}
     container_name: atlas-chat-e2b-codeinterpreter
     restart: always
     environment:
@@ -121,8 +170,11 @@ services:
       SERVICE_PORT: 8080
       LOG_LEVEL: ${LOG_LEVEL}
       ENVIRONMENT: ${ENVIRONMENT}
+      # Add OpenAI API key for Agent SDK integration
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
     volumes:
       - e2b_data:/app/data
+      - ./e2b-codeinterpreter/logs:/app/logs
     networks:
       - atlas-network
     healthcheck:
@@ -131,6 +183,17 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+    # Performance and security enhancements
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 2G
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "20m"
+        max-file: "5"
 
   # Frontend client service
   frontend:
@@ -140,6 +203,7 @@ services:
       args:
         VITE_API_BASE_URL: ${API_BASE_URL}
         VITE_E2B_CODEINTERPRETER_URL: ${E2B_CODEINTERPRETER_URL}
+        NODE_ENV: production
     container_name: atlas-chat-frontend
     restart: always
     depends_on:
@@ -155,6 +219,17 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+    # Performance enhancements
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   # Nginx reverse proxy service
   nginx:
@@ -170,10 +245,13 @@ services:
         condition: service_healthy
     ports:
       - "${NGINX_PORT}:80"
+      - "${NGINX_SSL_PORT}:443"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
       - ./nginx/ssl:/etc/nginx/ssl:ro
+      - ./nginx/logs:/var/log/nginx
+      - ./nginx/cache:/var/cache/nginx
     networks:
       - atlas-network
     healthcheck:
@@ -182,6 +260,17 @@ services:
       timeout: 10s
       retries: 3
       start_period: 20s
+    # Security enhancements
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: 512M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   # Prometheus monitoring service
   prometheus:
@@ -192,10 +281,12 @@ services:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus_data:/prometheus
     command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/prometheus'
-      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
-      - '--web.console.templates=/usr/share/prometheus/consoles'
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.console.libraries=/usr/share/prometheus/console_libraries"
+      - "--web.console.templates=/usr/share/prometheus/consoles"
+      - "--storage.tsdb.retention.time=15d"
+      - "--web.enable-lifecycle"
     networks:
       - atlas-network
     healthcheck:
@@ -204,6 +295,17 @@ services:
       timeout: 10s
       retries: 3
       start_period: 30s
+    # Security enhancements
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   # Grafana dashboard service
   grafana:
@@ -220,24 +322,101 @@ services:
       GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER}
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD}
       GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_INSTALL_PLUGINS: "grafana-piechart-panel,grafana-worldmap-panel"
     networks:
       - atlas-network
     healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3000/api/health"]
+      test:
+        ["CMD", "wget", "-q", "--spider", "http://localhost:3000/api/health"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 30s
+    # Security enhancements
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Backup service
+  backup:
+    image: alpine:latest
+    container_name: atlas-chat-backup
+    restart: always
+    volumes:
+      - mongodb_data:/data/mongodb:ro
+      - postgres_data:/data/postgres:ro
+      - redis_data:/data/redis:ro
+      - backend_data:/data/backend:ro
+      - e2b_data:/data/e2b:ro
+      - ./backups:/backups
+      - ./scripts/backup.sh:/backup.sh:ro
+    command: sh -c "chmod +x /backup.sh && crond -f"
+    environment:
+      BACKUP_SCHEDULE: ${BACKUP_SCHEDULE:-0 0 * * *}
+      BACKUP_RETENTION_DAYS: ${BACKUP_RETENTION_DAYS:-7}
+    networks:
+      - atlas-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
 volumes:
   mongodb_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${DATA_PATH}/mongodb
+      o: bind
   postgres_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${DATA_PATH}/postgres
+      o: bind
   redis_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${DATA_PATH}/redis
+      o: bind
   backend_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${DATA_PATH}/backend
+      o: bind
   e2b_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${DATA_PATH}/e2b
+      o: bind
   prometheus_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${DATA_PATH}/prometheus
+      o: bind
   grafana_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${DATA_PATH}/grafana
+      o: bind
 
 networks:
   atlas-network:
     driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.28.0.0/16

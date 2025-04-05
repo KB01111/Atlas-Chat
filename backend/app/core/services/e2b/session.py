@@ -1,8 +1,12 @@
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional, Any, Union
 import asyncio
 import time
 import base64
 import logging
+import os
+import json
+from e2b import Session, Filesystem, Process as E2BProcess
+from e2b.api.process import ProcessOpts, ProcessOutput
 
 logger = logging.getLogger(__name__)
 
@@ -11,7 +15,7 @@ class E2BSession:
     Wrapper for E2B SDK session to interact with the E2B sandbox environment.
     """
     
-    def __init__(self, api_key: str):
+    def __init__(self, api_key: str = None):
         """
         Initialize the E2B session.
         
@@ -19,7 +23,15 @@ class E2BSession:
             api_key: The E2B API key
         """
         self.id = f"session_{int(time.time())}"
-        self.api_key = api_key
+        self.api_key = api_key or os.environ.get("E2B_API_KEY")
+        
+        # Initialize the actual E2B SDK session
+        self.session = Session(
+            id=self.id,
+            api_key=self.api_key,
+            template="base"  # Use the base template for general purpose tasks
+        )
+        
         self.process = ProcessManager(self)
         self.filesystem = FileSystemManager(self)
         logger.info(f"Initialized E2B session: {self.id}")
@@ -29,8 +41,12 @@ class E2BSession:
         Close the E2B session and clean up resources.
         """
         logger.info(f"Closing E2B session: {self.id}")
-        # In a real implementation, this would call the E2B SDK to close the session
-        await asyncio.sleep(0.1)  # Simulate async operation
+        try:
+            await self.session.close()
+            logger.info(f"Successfully closed E2B session: {self.id}")
+        except Exception as e:
+            logger.error(f"Error closing E2B session {self.id}: {str(e)}")
+            raise
 
 
 class ProcessManager:
@@ -57,8 +73,24 @@ class ProcessManager:
         Returns:
             Process object
         """
-        logger.info(f"Starting process with command: {options.get('cmd', [])}")
-        return Process(self.session, options)
+        cmd = options.get("cmd", [])
+        env = options.get("env", {})
+        cwd = options.get("cwd", "/")
+        
+        logger.info(f"Starting process with command: {cmd}")
+        
+        try:
+            process_opts = ProcessOpts(
+                cmd=cmd,
+                env=env,
+                cwd=cwd
+            )
+            
+            e2b_process = await self.session.session.process.start(process_opts)
+            return Process(self.session, options, e2b_process)
+        except Exception as e:
+            logger.error(f"Error starting process: {str(e)}")
+            raise
     
     async def list(self) -> List[Dict[str, Any]]:
         """
@@ -67,8 +99,19 @@ class ProcessManager:
         Returns:
             List of process information
         """
-        # In a real implementation, this would call the E2B SDK to list processes
-        return [{"pid": 1234, "memory": 1024000, "cpu": 0.5}]
+        try:
+            processes = await self.session.session.process.list()
+            return [
+                {
+                    "pid": process.pid,
+                    "cmd": process.cmd,
+                    "status": process.status
+                }
+                for process in processes
+            ]
+        except Exception as e:
+            logger.error(f"Error listing processes: {str(e)}")
+            return []
 
 
 class Process:
@@ -76,16 +119,18 @@ class Process:
     Represents a process running in the E2B sandbox.
     """
     
-    def __init__(self, session: E2BSession, options: Dict[str, Any]):
+    def __init__(self, session: E2BSession, options: Dict[str, Any], e2b_process: E2BProcess):
         """
         Initialize the process.
         
         Args:
             session: The E2B session
             options: Process options
+            e2b_process: The actual E2B process object
         """
         self.session = session
         self.options = options
+        self.e2b_process = e2b_process
         self.stdin = StdinStream(self)
         self.stdout = ""
         self.stderr = ""
@@ -97,41 +142,34 @@ class Process:
         Returns:
             Process result
         """
-        # In a real implementation, this would wait for the process to complete
-        await asyncio.sleep(0.5)  # Simulate process execution time
-        
-        # Simulate process execution based on the command
-        cmd = self.options.get("cmd", [])
-        if len(cmd) >= 2:
-            if cmd[0] == "python" and "import" in self.stdin.buffer:
-                # Simulate Python execution
-                if "syntax error" in self.stdin.buffer.lower():
-                    return ProcessResult(1, "Executed Python code", "SyntaxError: invalid syntax")
-                else:
-                    return ProcessResult(0, "Executed Python code successfully", "")
-            elif cmd[0] == "node" and "console.log" in self.stdin.buffer:
-                # Simulate Node.js execution
-                if "ReferenceError" in self.stdin.buffer:
-                    return ProcessResult(1, "Executed JavaScript code", "ReferenceError: variable is not defined")
-                else:
-                    return ProcessResult(0, "Executed JavaScript code successfully", "")
-            elif cmd[0] == "bash":
-                # Simulate Bash execution
-                if "rm -rf" in self.stdin.buffer:
-                    return ProcessResult(1, "", "Operation not permitted")
-                else:
-                    return ProcessResult(0, "Executed Bash command successfully", "")
-        
-        # Default successful execution
-        return ProcessResult(0, "Process completed successfully", "")
+        try:
+            # Wait for the process to complete and get the output
+            output: ProcessOutput = await self.e2b_process.wait()
+            
+            # Store the output
+            self.stdout = output.stdout
+            self.stderr = output.stderr
+            
+            return ProcessResult(
+                output.exit_code,
+                output.stdout,
+                output.stderr
+            )
+        except Exception as e:
+            logger.error(f"Error waiting for process: {str(e)}")
+            return ProcessResult(1, "", str(e))
     
     async def kill(self):
         """
         Kill the process.
         """
         logger.info(f"Killing process in session: {self.session.id}")
-        # In a real implementation, this would call the E2B SDK to kill the process
-        await asyncio.sleep(0.1)  # Simulate async operation
+        try:
+            await self.e2b_process.kill()
+            logger.info(f"Successfully killed process in session: {self.session.id}")
+        except Exception as e:
+            logger.error(f"Error killing process: {str(e)}")
+            raise
 
 
 class StdinStream:
@@ -157,14 +195,23 @@ class StdinStream:
             data: The data to write
         """
         self.buffer += data
+        try:
+            await self.process.e2b_process.stdin.write(data)
+        except Exception as e:
+            logger.error(f"Error writing to stdin: {str(e)}")
+            raise
     
     async def end(self):
         """
         End the standard input stream.
         """
-        logger.info(f"Ended stdin stream for process in session: {self.process.session.id}")
-        # In a real implementation, this would close the stdin stream
-        await asyncio.sleep(0.1)  # Simulate async operation
+        logger.info(f"Ending stdin stream for process in session: {self.process.session.id}")
+        try:
+            await self.process.e2b_process.stdin.end()
+            logger.info(f"Successfully ended stdin stream for process in session: {self.process.session.id}")
+        except Exception as e:
+            logger.error(f"Error ending stdin stream: {str(e)}")
+            raise
 
 
 class ProcessResult:
@@ -184,6 +231,19 @@ class ProcessResult:
         self.exit_code = exit_code
         self.stdout = stdout
         self.stderr = stderr
+    
+    def to_dict(self) -> Dict[str, Any]:
+        """
+        Convert the process result to a dictionary.
+        
+        Returns:
+            Dictionary representation of the process result
+        """
+        return {
+            "exit_code": self.exit_code,
+            "stdout": self.stdout,
+            "stderr": self.stderr
+        }
 
 
 class FileSystemManager:
@@ -200,86 +260,108 @@ class FileSystemManager:
         """
         self.session = session
     
-    async def list(self, path: str) -> List[Dict[str, Any]]:
-        """
-        List files and directories in the specified path.
-        
-        Args:
-            path: The path to list
-            
-        Returns:
-            List of file and directory information
-        """
-        # In a real implementation, this would call the E2B SDK to list files
-        if path == "./output":
-            return [
-                {"name": "result.txt", "type": "file", "size": 1024},
-                {"name": "data.json", "type": "file", "size": 2048},
-                {"name": "images", "type": "directory"}
-            ]
-        elif path == "./artifacts":
-            return [
-                {"name": "chart.png", "type": "file", "size": 10240},
-                {"name": "report.pdf", "type": "file", "size": 20480}
-            ]
-        else:
-            return []
-    
-    async def read_file(self, path: str) -> bytes:
+    async def read_file(self, path: str) -> str:
         """
         Read a file from the E2B sandbox.
         
         Args:
-            path: The path to the file
+            path: Path to the file
             
         Returns:
-            File content as bytes
+            File content as string
         """
-        # In a real implementation, this would call the E2B SDK to read the file
-        if path.endswith(".txt"):
-            return b"This is a text file content"
-        elif path.endswith(".json"):
-            return b'{"key": "value", "number": 42}'
-        elif path.endswith(".png"):
-            # Return a small base64-encoded PNG
-            return base64.b64decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==")
-        elif path.endswith(".pdf"):
-            # Return a small base64-encoded PDF
-            return base64.b64decode("JVBERi0xLjAKJeKAow0KMSAwIG9iago8PAovVHlwZSAvQ2F0YWxvZwovUGFnZXMgMiAwIFIKPj4KZW5kb2JqCjIgMCBvYmoKPDwKL1R5cGUgL1BhZ2VzCi9LaWRzIFszIDAgUl0KL0NvdW50IDEKPj4KZW5kb2JqCjMgMCBvYmoKPDwKL1R5cGUgL1BhZ2UKL01lZGlhQm94IFswIDAgMyAzXQovUmVzb3VyY2VzIDw8Cj4+Ci9Db250ZW50cyA0IDAgUgo+PgplbmRvYmoKNCAwIG9iago8PCAvTGVuZ3RoIDUyID4+CnN0cmVhbQpCVAovRjEgMTIgVGYKMSAwIDAgMSAxMCAxMCBUbQooSGVsbG8sIHdvcmxkISkgVGoKRVQKZW5kc3RyZWFtCmVuZG9iagp4cmVmCjAgNQowMDAwMDAwMDAwIDY1NTM1IGYNCjAwMDAwMDAwMTAgMDAwMDAgbg0KMDAwMDAwMDA3OSAwMDAwMCBuDQowMDAwMDAwMTczIDAwMDAwIG4NCjAwMDAwMDAzMDEgMDAwMDAgbg0KdHJhaWxlcgo8PAovU2l6ZSA1Ci9Sb290IDEgMCBSCj4+CnN0YXJ0eHJlZgo0MDQKJSVFTw==")
-        else:
-            return b""
+        logger.info(f"Reading file: {path}")
+        try:
+            content = await self.session.session.filesystem.read_file(path)
+            return content
+        except Exception as e:
+            logger.error(f"Error reading file {path}: {str(e)}")
+            raise
     
-    async def write_file(self, path: str, content: bytes) -> bool:
+    async def write_file(self, path: str, content: str):
         """
-        Write a file to the E2B sandbox.
+        Write content to a file in the E2B sandbox.
         
         Args:
-            path: The path to the file
-            content: The file content
-            
-        Returns:
-            True if successful, False otherwise
+            path: Path to the file
+            content: Content to write
         """
-        # In a real implementation, this would call the E2B SDK to write the file
-        logger.info(f"Writing file: {path} ({len(content)} bytes)")
-        return True
+        logger.info(f"Writing to file: {path}")
+        try:
+            await self.session.session.filesystem.write_file(path, content)
+            logger.info(f"Successfully wrote to file: {path}")
+        except Exception as e:
+            logger.error(f"Error writing to file {path}: {str(e)}")
+            raise
     
-    async def glob(self, pattern: str) -> List[str]:
+    async def list_dir(self, path: str) -> List[Dict[str, Any]]:
         """
-        Find files matching the specified pattern.
+        List directory contents in the E2B sandbox.
         
         Args:
-            pattern: The glob pattern
+            path: Path to the directory
             
         Returns:
-            List of matching file paths
+            List of directory entries
         """
-        # In a real implementation, this would call the E2B SDK to find files
-        if pattern == "*.png":
-            return ["chart.png", "logo.png"]
-        elif pattern == "*.txt":
-            return ["result.txt", "log.txt"]
-        elif pattern == "*.json":
-            return ["data.json", "config.json"]
-        else:
+        logger.info(f"Listing directory: {path}")
+        try:
+            entries = await self.session.session.filesystem.list(path)
+            return [
+                {
+                    "name": entry.name,
+                    "type": "file" if entry.is_file else "directory",
+                    "size": entry.size,
+                    "modified": entry.modified
+                }
+                for entry in entries
+            ]
+        except Exception as e:
+            logger.error(f"Error listing directory {path}: {str(e)}")
             return []
+    
+    async def make_dir(self, path: str):
+        """
+        Create a directory in the E2B sandbox.
+        
+        Args:
+            path: Path to the directory
+        """
+        logger.info(f"Creating directory: {path}")
+        try:
+            await self.session.session.filesystem.make_dir(path)
+            logger.info(f"Successfully created directory: {path}")
+        except Exception as e:
+            logger.error(f"Error creating directory {path}: {str(e)}")
+            raise
+    
+    async def remove(self, path: str):
+        """
+        Remove a file or directory from the E2B sandbox.
+        
+        Args:
+            path: Path to the file or directory
+        """
+        logger.info(f"Removing: {path}")
+        try:
+            await self.session.session.filesystem.remove(path)
+            logger.info(f"Successfully removed: {path}")
+        except Exception as e:
+            logger.error(f"Error removing {path}: {str(e)}")
+            raise
+    
+    async def exists(self, path: str) -> bool:
+        """
+        Check if a file or directory exists in the E2B sandbox.
+        
+        Args:
+            path: Path to the file or directory
+            
+        Returns:
+            True if the file or directory exists, False otherwise
+        """
+        try:
+            return await self.session.session.filesystem.exists(path)
+        except Exception as e:
+            logger.error(f"Error checking if {path} exists: {str(e)}")
+            return False
