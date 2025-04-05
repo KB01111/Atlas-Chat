@@ -76,8 +76,7 @@ class TestOpenAIAgentSDKExecutor(unittest.TestCase):
         self.assertEqual(params['arg2']['type'], 'integer')
     
     @patch('backend.app.core.executors.sdk_executor.OpenAI')
-    @patch('backend.app.core.executors.sdk_executor.AsyncMock')
-    async def test_execute_agent(self, mock_async_mock, mock_openai):
+    async def test_execute_agent(self, mock_openai):
         """Test that the agent can be executed correctly."""
         # Set up the mocks
         mock_client = MagicMock()
