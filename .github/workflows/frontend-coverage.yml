@@ -1,0 +1,43 @@
+name: Frontend Code Coverage
+
+on:
+  push:
+    branches: [ main, master ]
+    paths:
+      - 'frontend/**'
+  pull_request:
+    branches: [ main, master ]
+    paths:
+      - 'frontend/**'
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend/client
+
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: './frontend/client/package.json'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run tests with coverage
+        run: npm test -- --coverage
+        
+      - name: Display coverage summary
+        run: cat ./coverage/lcov-report/index.html | grep -A 5 "<div class='fl pad1y space-right2'>"
+      
+      - name: Upload coverage to Qlty
+        uses: qltysh/qlty-action/coverage@main
+        with:
+          coverage-token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
+          files: ./frontend/client/coverage/lcov.info
