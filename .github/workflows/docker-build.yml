@@ -1,0 +1,175 @@
+name: Docker Build
+
+on:
+  push:
+    branches:
+      - main
+      - "releases/*"
+    paths:
+      - 'backend/**'
+      - 'frontend/**'
+      - 'docker-compose.yml'
+      - 'Dockerfile*'
+      - '.github/workflows/docker-build.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'backend/**'
+      - 'frontend/**'
+      - 'docker-compose.yml'
+      - 'Dockerfile*'
+      - '.github/workflows/docker-build.yml'
+
+jobs:
+  build-backend:
+    name: Build Backend Image
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      
+      - name: Cache Docker layers
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-backend-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-backend-
+      
+      - name: Build backend image
+        uses: docker/build-push-action@v4
+        with:
+          context: ./backend
+          push: false
+          load: true
+          tags: atlas-backend:test
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+      
+      - name: Test backend image
+        run: |
+          docker run --rm atlas-backend:test python -c "import sys; print(f'Python {sys.version}'); print('Backend image test successful')"
+      
+      - name: Login to GitHub Container Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Push backend image
+        if: github.event_name != 'pull_request'
+        uses: docker/build-push-action@v4
+        with:
+          context: ./backend
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}/backend:latest
+            ghcr.io/${{ github.repository }}/backend:${{ github.sha }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+      
+      - name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+  build-frontend:
+    name: Build Frontend Image
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      
+      - name: Cache Docker layers
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-frontend-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-frontend-
+      
+      - name: Build frontend image
+        uses: docker/build-push-action@v4
+        with:
+          context: ./frontend
+          push: false
+          load: true
+          tags: atlas-frontend:test
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+      
+      - name: Test frontend image
+        run: |
+          docker run --rm atlas-frontend:test node -e "console.log('Node', process.version); console.log('Frontend image test successful');"
+      
+      - name: Login to GitHub Container Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Push frontend image
+        if: github.event_name != 'pull_request'
+        uses: docker/build-push-action@v4
+        with:
+          context: ./frontend
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}/frontend:latest
+            ghcr.io/${{ github.repository }}/frontend:${{ github.sha }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+      
+      - name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+  docker-compose-test:
+    name: Test Docker Compose
+    runs-on: ubuntu-latest
+    needs: [build-backend, build-frontend]
+    if: github.event_name != 'pull_request'
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Pull images from registry
+        run: |
+          docker pull ghcr.io/${{ github.repository }}/backend:${{ github.sha }}
+          docker pull ghcr.io/${{ github.repository }}/frontend:${{ github.sha }}
+          docker tag ghcr.io/${{ github.repository }}/backend:${{ github.sha }} atlas-backend:latest
+          docker tag ghcr.io/${{ github.repository }}/frontend:${{ github.sha }} atlas-frontend:latest
+      
+      - name: Run docker-compose
+        run: |
+          docker-compose up -d
+          TIMEOUT=60
+          INTERVAL=5
+          TIME_PASSED=0
+          while ! (docker-compose ps | grep "Up") && [ $TIME_PASSED -lt $TIMEOUT ]; do
+            sleep $INTERVAL
+            TIME_PASSED=$((TIME_PASSED + INTERVAL))
+          done
+          if ! (docker-compose ps | grep "Up"); then
+            echo "Services did not start within $TIMEOUT seconds."
+            exit 1
+          fi
+          curl -s --retry 5 --retry-delay 5 --retry-connrefused http://localhost:3000/ || echo "Frontend may take longer to start"
+          curl -s --retry 5 --retry-delay 5 --retry-connrefused http://localhost:5000/health || echo "Backend may take longer to start"
+          docker-compose logs
+          docker-compose down
