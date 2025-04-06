@@ -39,4 +39,4 @@ jobs:
 
       - name: Run pylint
         run: |
-          find backend -type f -name "*.py" | xargs pylint
+          find backend -type f -name "*.py" -print0 | xargs -0 pylint
