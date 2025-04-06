@@ -11,7 +11,7 @@ from pydantic import BaseModel
 
 class ModelMetrics(BaseModel):
     """Metrics for a specific model."""
-    
+
     model_id: str
     avg_latency: float = 0.0
     success_rate: float = 0.0
@@ -26,39 +26,39 @@ class ModelMetrics(BaseModel):
 
 class PerformanceMetrics:
     """Repository of performance metrics for models."""
-    
+
     def __init__(self, config: Optional[Dict[str, Any]] = None):
         """
         Initialize performance metrics.
-        
+
         Args:
             config: Optional configuration dictionary
         """
         self.config = config or {}
         self.metrics_file = self.config.get("metrics_file", "model_metrics.json")
         self.metrics = self._load_metrics()
-        
+
     def get_metrics(self, model_id: str) -> Optional[ModelMetrics]:
         """
         Get metrics for a model.
-        
+
         Args:
             model_id: Model ID
-            
+
         Returns:
             Model metrics or None if not found
         """
         return self.metrics.get(model_id)
-        
+
     def get_all_metrics(self) -> Dict[str, ModelMetrics]:
         """
         Get all model metrics.
-        
+
         Returns:
             Dictionary of model metrics
         """
         return self.metrics
-        
+
     def record_request(self, 
                      model_id: str, 
                      success: bool, 
@@ -66,7 +66,7 @@ class PerformanceMetrics:
                      tokens: int = 0) -> None:
         """
         Record a request to a model.
-        
+
         Args:
             model_id: Model ID
             success: Whether the request was successful
@@ -76,33 +76,33 @@ class PerformanceMetrics:
         # Create metrics if not exists
         if model_id not in self.metrics:
             self.metrics[model_id] = ModelMetrics(model_id=model_id)
-            
+
         # Update metrics
         metrics = self.metrics[model_id]
         metrics.total_requests += 1
-        
+
         if success:
             metrics.success_count += 1
         else:
             metrics.error_count += 1
-            
+
         metrics.total_duration += duration
         metrics.avg_latency = metrics.total_duration / metrics.total_requests
         metrics.success_rate = metrics.success_count / metrics.total_requests
-        
+
         if tokens > 0:
             metrics.total_tokens += tokens
             metrics.avg_tokens_per_request = metrics.total_tokens / metrics.total_requests
-            
+
         metrics.last_updated = time.time()
-        
+
         # Save metrics
         self._save_metrics()
-        
+
     def reset_metrics(self, model_id: Optional[str] = None) -> None:
         """
         Reset metrics for a model or all models.
-        
+
         Args:
             model_id: Optional model ID to reset, or None to reset all
         """
@@ -111,36 +111,36 @@ class PerformanceMetrics:
                 self.metrics[model_id] = ModelMetrics(model_id=model_id)
         else:
             self.metrics = {}
-            
+
         # Save metrics
         self._save_metrics()
-        
+
     def _load_metrics(self) -> Dict[str, ModelMetrics]:
         """
         Load metrics from file.
-        
+
         Returns:
             Dictionary of model metrics
         """
         metrics = {}
-        
+
         # Try to load from file
         if os.path.exists(self.metrics_file):
             try:
                 with open(self.metrics_file, "r") as f:
                     data = json.load(f)
-                    
+
                 for model_id, metrics_dict in data.items():
                     metrics[model_id] = ModelMetrics(**metrics_dict)
             except Exception as e:
                 print(f"Error loading metrics: {e}")
-                
+
         # Load default metrics if no file or error
         if not metrics:
             metrics = self._load_default_metrics()
-            
+
         return metrics
-        
+
     def _save_metrics(self) -> None:
         """Save metrics to file."""
         try:
@@ -152,11 +152,11 @@ class PerformanceMetrics:
                 json.dump(data, f, indent=2)
         except Exception as e:
             print(f"Error saving metrics: {e}")
-            
+
     def _load_default_metrics(self) -> Dict[str, ModelMetrics]:
         """
         Load default metrics.
-        
+
         Returns:
             Dictionary of default model metrics
         """

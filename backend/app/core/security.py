@@ -61,11 +61,11 @@ class SecurityAuditLog(BaseModel):
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """
     Verify a password against a hash.
-    
+
     Args:
         plain_password: Plain text password
         hashed_password: Hashed password
-        
+
     Returns:
         True if the password matches the hash, False otherwise
     """
@@ -77,10 +77,10 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 def get_password_hash(password: str) -> str:
     """
     Hash a password.
-    
+
     Args:
         password: Plain text password
-        
+
     Returns:
         Hashed password
     """
@@ -91,34 +91,34 @@ def get_password_hash(password: str) -> str:
 def create_access_token(data: Dict[str, Any], expires_delta: Optional[timedelta] = None) -> str:
     """
     Create a JWT access token.
-    
+
     Args:
         data: Data to encode in the token
         expires_delta: Token expiration time
-        
+
     Returns:
         JWT token
     """
     to_encode = data.copy()
-    
+
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:
         expire = datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    
+
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
-    
+
     return encoded_jwt
 
 
 def decode_token(token: str) -> TokenData:
     """
     Decode a JWT token.
-    
+
     Args:
         token: JWT token
-        
+
     Returns:
         TokenData object
     """
@@ -127,17 +127,17 @@ def decode_token(token: str) -> TokenData:
         username: str = payload.get("sub")
         token_scopes = payload.get("scopes", [])
         exp = datetime.fromtimestamp(payload.get("exp"))
-        
+
         if username is None:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid authentication credentials",
                 headers={"WWW-Authenticate": "Bearer"},
             )
-        
+
         token_data = TokenData(username=username, scopes=token_scopes, exp=exp)
         return token_data
-    
+
     except jwt.PyJWTError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -153,12 +153,12 @@ async def get_current_user(
 ) -> User:
     """
     Get the current user from a JWT token.
-    
+
     Args:
         security_scopes: Security scopes required for the endpoint
         token: JWT token
         db: Database session
-        
+
     Returns:
         User object
     """
@@ -166,24 +166,24 @@ async def get_current_user(
         authenticate_value = f'Bearer scope="{security_scopes.scope_str}"'
     else:
         authenticate_value = "Bearer"
-    
+
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Invalid authentication credentials",
         headers={"WWW-Authenticate": authenticate_value},
     )
-    
+
     try:
         token_data = decode_token(token)
-        
+
         if token_data.exp < datetime.utcnow():
             raise credentials_exception
-        
+
         user = db.query(User).filter(User.username == token_data.username).first()
-        
+
         if user is None:
             raise credentials_exception
-        
+
         # Check if the user has the required scopes
         for scope in security_scopes.scopes:
             if scope not in token_data.scopes:
@@ -192,9 +192,9 @@ async def get_current_user(
                     detail=f"Not enough permissions. Required scope: {scope}",
                     headers={"WWW-Authenticate": authenticate_value},
                 )
-        
+
         return user
-    
+
     except (jwt.PyJWTError, ValidationError):
         raise credentials_exception
 
@@ -204,10 +204,10 @@ def get_current_active_user(
 ) -> User:
     """
     Get the current active user.
-    
+
     Args:
         current_user: Current user
-        
+
     Returns:
         User object
     """
@@ -221,10 +221,10 @@ def get_current_admin_user(
 ) -> User:
     """
     Get the current admin user.
-    
+
     Args:
         current_user: Current user
-        
+
     Returns:
         User object
     """
@@ -241,10 +241,10 @@ def get_user_with_code_execution_permission(
 ) -> User:
     """
     Get the current user with code execution permission.
-    
+
     Args:
         current_user: Current user
-        
+
     Returns:
         User object
     """
@@ -256,10 +256,10 @@ def get_user_with_team_management_permission(
 ) -> User:
     """
     Get the current user with team management permission.
-    
+
     Args:
         current_user: Current user
-        
+
     Returns:
         User object
     """
@@ -271,10 +271,10 @@ def get_user_with_artifact_management_permission(
 ) -> User:
     """
     Get the current user with artifact management permission.
-    
+
     Args:
         current_user: Current user
-        
+
     Returns:
         User object
     """
@@ -285,10 +285,10 @@ def get_user_with_artifact_management_permission(
 def sanitize_code(code: str) -> str:
     """
     Sanitize code to prevent security vulnerabilities.
-    
+
     Args:
         code: Code to sanitize
-        
+
     Returns:
         Sanitized code
     """
@@ -307,10 +307,10 @@ def sanitize_code(code: str) -> str:
         r"__import__\s*\(\s*['\"]sys['\"].*\)",
         r"__import__\s*\(\s*['\"]shutil['\"].*\)",
     ]
-    
+
     for pattern in dangerous_imports:
         code = re.sub(pattern, "# Removed for security reasons", code, flags=re.IGNORECASE)
-    
+
     # Remove potentially dangerous functions
     dangerous_functions = [
         r"eval\s*\(",
@@ -397,20 +397,20 @@ def sanitize_code(code: str) -> str:
         r"shutil\.chown\s*\(",
         r"shutil\.get_terminal_size\s*\(",
     ]
-    
+
     for pattern in dangerous_functions:
         code = re.sub(pattern, "# Removed for security reasons(", code, flags=re.IGNORECASE)
-    
+
     return code
 
 
 def validate_code_security(code: str) -> Dict[str, Any]:
     """
     Validate code security.
-    
+
     Args:
         code: Code to validate
-        
+
     Returns:
         Validation result
     """
@@ -448,24 +448,24 @@ def validate_code_security(code: str) -> Dict[str, Any]:
         (r"sys\.exit\s*\(", "Using sys.exit() is not allowed"),
         (r"shutil\.rmtree\s*\(", "Using shutil.rmtree() is not allowed"),
     ]
-    
+
     issues = []
     for pattern, message in dangerous_patterns:
         if re.search(pattern, code, re.IGNORECASE):
             issues.append(message)
-    
+
     # Check for resource usage
     if len(code) > 100000:
         issues.append("Code is too large (> 100KB)")
-    
+
     # Check for infinite loops
     if re.search(r"while\s+True", code, re.IGNORECASE):
         issues.append("Potential infinite loop detected (while True)")
-    
+
     # Check for network access
     if re.search(r"import\s+socket", code, re.IGNORECASE) or re.search(r"import\s+requests", code, re.IGNORECASE):
         issues.append("Network access is not allowed")
-    
+
     return {
         "is_safe": len(issues) == 0,
         "issues": issues
@@ -485,7 +485,7 @@ def log_security_event(
 ) -> None:
     """
     Log a security event.
-    
+
     Args:
         db: Database session
         user_id: User ID
@@ -508,7 +508,7 @@ def log_security_event(
         status=status,
         details=details
     )
-    
+
     # In a real implementation, save to database
     logger.info(f"Security event: {json.dumps(log_entry.dict(), default=str)}")
 
@@ -516,10 +516,10 @@ def log_security_event(
 def generate_secure_random_string(length: int = 32) -> str:
     """
     Generate a secure random string.
-    
+
     Args:
         length: Length of the string
-        
+
     Returns:
         Secure random string
     """
@@ -534,13 +534,13 @@ def rate_limit_check(
 ) -> bool:
     """
     Check if a user has exceeded the rate limit for an action.
-    
+
     Args:
         user_id: User ID
         action: Action to check
         max_requests: Maximum number of requests allowed
         time_window: Time window in seconds
-        
+
     Returns:
         True if the user has not exceeded the rate limit, False otherwise
     """

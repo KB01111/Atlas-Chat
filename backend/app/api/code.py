@@ -51,14 +51,14 @@ async def execute_code(
         user_id=user["user_id"],
         agent_definition={"agent_id": request.agent_id}
     )
-    
+
     # Execute code
     result = await tool_executor.execute_code(
         code=request.code,
         language=request.language,
         context=context
     )
-    
+
     return result
 
 @router.post("/write-file")
@@ -72,21 +72,21 @@ async def write_file(
     """
     if not request.content:
         raise HTTPException(status_code=400, detail="Content is required")
-    
+
     # Create request context
     context = RequestContext(
         thread_id=request.thread_id,
         user_id=user["user_id"],
         agent_definition={"agent_id": request.agent_id}
     )
-    
+
     # Write file
     result = await tool_executor.write_file(
         file_path=request.file_path,
         content=request.content,
         context=context
     )
-    
+
     return result
 
 @router.post("/read-file")
@@ -104,13 +104,13 @@ async def read_file(
         user_id=user["user_id"],
         agent_definition={"agent_id": request.agent_id}
     )
-    
+
     # Read file
     result = await tool_executor.read_file(
         file_path=request.file_path,
         context=context
     )
-    
+
     return result
 
 @router.post("/install-packages")
@@ -128,12 +128,12 @@ async def install_packages(
         user_id=user["user_id"],
         agent_definition={"agent_id": request.agent_id}
     )
-    
+
     # Install packages
     result = await tool_executor.install_packages(
         packages=request.packages,
         language=request.language,
         context=context
     )
-    
+
     return result

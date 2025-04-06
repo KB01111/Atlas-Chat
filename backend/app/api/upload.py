@@ -37,11 +37,11 @@ async def initialize_upload(
     try:
         # Generate unique upload ID
         upload_id = str(uuid.uuid4())
-        
+
         # Create session directory for chunks
         session_dir = os.path.join(CHUNK_DIR, upload_id)
         os.makedirs(session_dir, exist_ok=True)
-        
+
         # Store session info
         upload_sessions[upload_id] = {
             "user_id": current_user["user_id"],
@@ -57,12 +57,12 @@ async def initialize_upload(
             "created_at": datetime.utcnow().isoformat(),
             "expires_at": None  # Set expiration in production
         }
-        
+
         # Set up automatic cleanup after 24 hours in production
         # background_tasks.add_task(cleanup_expired_session, upload_id)
-        
+
         return {"uploadId": upload_id, "status": "initialized"}
-    
+
     except Exception as e:
         logging.error(f"Error initializing upload: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to initialize upload: {str(e)}")
@@ -78,24 +78,24 @@ async def upload_chunk(
         # Validate upload session
         if uploadId not in upload_sessions:
             raise HTTPException(status_code=404, detail="Upload session not found")
-        
+
         session = upload_sessions[uploadId]
-        
+
         # Validate chunk index
         if chunkIndex < 0 or chunkIndex >= session["total_chunks"]:
             raise HTTPException(status_code=400, detail="Invalid chunk index")
-        
+
         # Save chunk to session directory
         chunk_filename = f"{chunkIndex}.chunk"
         chunk_path = os.path.join(session["session_dir"], chunk_filename)
-        
+
         with open(chunk_path, "wb") as f:
             shutil.copyfileobj(chunk.file, f)
-        
+
         # Update session info
         session["chunk_files"].append(chunk_path)
         session["uploaded_chunks"] += 1
-        
+
         return {
             "uploadId": uploadId,
             "chunkIndex": chunkIndex,
@@ -106,10 +106,10 @@ async def upload_chunk(
                 "percentage": round((session["uploaded_chunks"] / session["total_chunks"]) * 100)
             }
         }
-    
+
     except HTTPException:
         raise
-    
+
     except Exception as e:
         logging.error(f"Error uploading chunk: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to upload chunk: {str(e)}")
@@ -125,40 +125,40 @@ async def complete_upload(
         # Validate upload session
         if uploadId not in upload_sessions:
             raise HTTPException(status_code=404, detail="Upload session not found")
-        
+
         session = upload_sessions[uploadId]
-        
+
         # Validate user
         if session["user_id"] != current_user["user_id"]:
             raise HTTPException(status_code=403, detail="Not authorized to complete this upload")
-        
+
         # Validate all chunks are uploaded
         if session["uploaded_chunks"] != session["total_chunks"]:
             raise HTTPException(
                 status_code=400, 
                 detail=f"Upload incomplete. Expected {session['total_chunks']} chunks, got {session['uploaded_chunks']}"
             )
-        
+
         # Combine chunks into final file
         output_filename = session["filename"]
         output_path = os.path.join(UPLOAD_DIR, f"{uploadId}_{output_filename}")
-        
+
         with open(output_path, "wb") as output_file:
             # Sort chunks by index (extracted from filename)
             sorted_chunks = sorted(
                 session["chunk_files"],
                 key=lambda x: int(os.path.basename(x).split('.')[0])
             )
-            
+
             # Combine chunks
             for chunk_path in sorted_chunks:
                 with open(chunk_path, "rb") as chunk_file:
                     shutil.copyfileobj(chunk_file, output_file)
-        
+
         # Update session status
         session["status"] = "completed"
         session["output_path"] = output_path
-        
+
         # Process file with Unstructured if appropriate
         file_elements = None
         if session["file_type"] in ["application/pdf", "text/plain", "text/html"]:
@@ -168,10 +168,10 @@ async def complete_upload(
             except Exception as e:
                 logging.error(f"Error processing file with Unstructured: {str(e)}")
                 # Continue even if processing fails
-        
+
         # Clean up chunks in background
         background_tasks.add_task(cleanup_chunks, session["session_dir"])
-        
+
         return {
             "uploadId": uploadId,
             "filename": output_filename,
@@ -180,10 +180,10 @@ async def complete_upload(
             "status": "completed",
             "processingStatus": "pending" if file_elements is None else "completed"
         }
-    
+
     except HTTPException:
         raise
-    
+
     except Exception as e:
         logging.error(f"Error completing upload: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to complete upload: {str(e)}")
@@ -199,24 +199,24 @@ async def abort_upload(
         # Validate upload session
         if uploadId not in upload_sessions:
             raise HTTPException(status_code=404, detail="Upload session not found")
-        
+
         session = upload_sessions[uploadId]
-        
+
         # Validate user
         if session["user_id"] != current_user["user_id"]:
             raise HTTPException(status_code=403, detail="Not authorized to abort this upload")
-        
+
         # Update session status
         session["status"] = "aborted"
-        
+
         # Clean up chunks in background
         background_tasks.add_task(cleanup_chunks, session["session_dir"])
-        
+
         return {"uploadId": uploadId, "status": "aborted"}
-    
+
     except HTTPException:
         raise
-    
+
     except Exception as e:
         logging.error(f"Error aborting upload: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to abort upload: {str(e)}")
@@ -231,13 +231,13 @@ async def get_upload_status(
         # Validate upload session
         if uploadId not in upload_sessions:
             raise HTTPException(status_code=404, detail="Upload session not found")
-        
+
         session = upload_sessions[uploadId]
-        
+
         # Validate user
         if session["user_id"] != current_user["user_id"]:
             raise HTTPException(status_code=403, detail="Not authorized to view this upload")
-        
+
         return {
             "uploadId": uploadId,
             "filename": session["filename"],
@@ -250,10 +250,10 @@ async def get_upload_status(
                 "percentage": round((session["uploaded_chunks"] / session["total_chunks"]) * 100)
             }
         }
-    
+
     except HTTPException:
         raise
-    
+
     except Exception as e:
         logging.error(f"Error getting upload status: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to get upload status: {str(e)}")
@@ -275,10 +275,10 @@ def process_file_with_unstructured(file_path: str, upload_id: str):
         if not os.path.exists(file_path):
             logging.error(f"File not found for processing: {file_path}")
             return
-        
+
         # Process file with Unstructured
         elements = partition(filename=file_path)
-        
+
         # Store processing results
         if upload_id in upload_sessions:
             upload_sessions[upload_id]["processing_results"] = {
@@ -287,7 +287,7 @@ def process_file_with_unstructured(file_path: str, upload_id: str):
                 "processed_at": datetime.utcnow().isoformat()
             }
             upload_sessions[upload_id]["processing_status"] = "completed"
-        
+
         logging.info(f"Successfully processed file with Unstructured: {file_path}")
     except Exception as e:
         logging.error(f"Error processing file with Unstructured: {str(e)}")

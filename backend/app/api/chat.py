@@ -25,27 +25,27 @@ async def chat(
 ):
     """
     Chat endpoint for communicating with an agent
-    
+
     Args:
         request_data: Request data containing agent_id, message, and history
         agent_service: AgentService instance
         user_id: ID of the current user
-    
+
     Returns:
         StreamingResponse with agent's response
     """
     agent_id = request_data.get("agent_id")
     message = request_data.get("message")
     history = request_data.get("history", [])
-    
+
     if not agent_id or not message:
         raise HTTPException(status_code=400, detail="agent_id and message are required")
-    
+
     async def generate():
         async for chunk in agent_service.handle_chat_request(agent_id, message, history, user_id):
             yield f"data: {chunk}\n\n"
         yield "data: [DONE]\n\n"
-    
+
     return StreamingResponse(
         generate(),
         media_type="text/event-stream"

@@ -19,11 +19,11 @@ async def get_current_user():
 async def get_agents(db: Session = Depends(get_db), user_id: str = Depends(get_current_user)):
     """
     Get all agent definitions
-    
+
     Args:
         db: Database session
         user_id: ID of the current user
-    
+
     Returns:
         List of agent definitions
     """
@@ -64,7 +64,7 @@ async def get_agents(db: Session = Depends(get_db), user_id: str = Depends(get_c
                 "allowed_tools": ["execute_code", "add_graphiti_episode", "search_graphiti"]
             }
         ]
-        
+
         logger.info(f"Retrieved {len(agents)} agent definitions")
         return agents
     except Exception as e:
@@ -75,12 +75,12 @@ async def get_agents(db: Session = Depends(get_db), user_id: str = Depends(get_c
 async def get_agent(agent_id: str, db: Session = Depends(get_db), user_id: str = Depends(get_current_user)):
     """
     Get a specific agent definition
-    
+
     Args:
         agent_id: ID of the agent
         db: Database session
         user_id: ID of the current user
-    
+
     Returns:
         Agent definition
     """
@@ -162,12 +162,12 @@ async def create_agent(
 ):
     """
     Create a new agent definition
-    
+
     Args:
         agent: Agent definition
         db: Database session
         user_id: ID of the current user
-    
+
     Returns:
         Created agent definition
     """
@@ -175,22 +175,22 @@ async def create_agent(
         # Validate agent_type
         if agent.get("agent_type") not in ["sdk", "langgraph"]:
             raise HTTPException(status_code=400, detail="agent_type must be 'sdk' or 'langgraph'")
-        
+
         # Validate uses_graphiti
         if not isinstance(agent.get("uses_graphiti"), bool):
             raise HTTPException(status_code=400, detail="uses_graphiti must be a boolean")
-        
+
         # Validate allowed_tools
         if not isinstance(agent.get("allowed_tools"), list):
             raise HTTPException(status_code=400, detail="allowed_tools must be a list")
-        
+
         # Generate agent_id if not provided
         if not agent.get("agent_id"):
             agent["agent_id"] = str(uuid.uuid4())
-        
+
         # In a real implementation, we would save to the database
         # For now, just return the agent with the generated ID
-        
+
         logger.info(f"Created agent definition with ID {agent['agent_id']}")
         return agent
     except HTTPException:
@@ -208,13 +208,13 @@ async def update_agent(
 ):
     """
     Update an agent definition
-    
+
     Args:
         agent_id: ID of the agent
         agent: Updated agent definition
         db: Database session
         user_id: ID of the current user
-    
+
     Returns:
         Updated agent definition
     """
@@ -222,21 +222,21 @@ async def update_agent(
         # Validate agent_type
         if agent.get("agent_type") not in ["sdk", "langgraph"]:
             raise HTTPException(status_code=400, detail="agent_type must be 'sdk' or 'langgraph'")
-        
+
         # Validate uses_graphiti
         if not isinstance(agent.get("uses_graphiti"), bool):
             raise HTTPException(status_code=400, detail="uses_graphiti must be a boolean")
-        
+
         # Validate allowed_tools
         if not isinstance(agent.get("allowed_tools"), list):
             raise HTTPException(status_code=400, detail="allowed_tools must be a list")
-        
+
         # In a real implementation, we would check if the agent exists and update it
         # For now, just return the updated agent
-        
+
         # Ensure agent_id in path matches agent_id in body
         agent["agent_id"] = agent_id
-        
+
         logger.info(f"Updated agent definition with ID {agent_id}")
         return agent
     except HTTPException:
@@ -253,7 +253,7 @@ async def delete_agent(
 ):
     """
     Delete an agent definition
-    
+
     Args:
         agent_id: ID of the agent
         db: Database session
@@ -262,7 +262,7 @@ async def delete_agent(
     try:
         # In a real implementation, we would check if the agent exists and delete it
         # For now, just log the deletion
-        
+
         logger.info(f"Deleted agent definition with ID {agent_id}")
         return None
     except Exception as e:

@@ -34,10 +34,10 @@ async def login(
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,
             detail="Too many login attempts. Please try again later."
         )
-    
+
     # Get user from database
     user = await db_session.query(User).filter(User.email == form_data.username).first()
-    
+
     # Verify user exists and password is correct
     if not user or not verify_password(form_data.password, user.hashed_password):
         logger.warning(f"Failed login attempt for user: {form_data.username}")
@@ -46,14 +46,14 @@ async def login(
             detail="Incorrect email or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    
+
     # Create access token
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
         data={"sub": str(user.id)},
         expires_delta=access_token_expires
     )
-    
+
     logger.info(f"User logged in: {user.email}")
     return {"access_token": access_token, "token_type": "bearer"}
 
@@ -73,7 +73,7 @@ async def register(
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,
             detail="Too many registration attempts. Please try again later."
         )
-    
+
     # Check if user already exists
     existing_user = await db_session.query(User).filter(User.email == user_data.email).first()
     if existing_user:
@@ -81,14 +81,14 @@ async def register(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Email already registered"
         )
-    
+
     # Validate password strength
     if not validate_password_strength(user_data.password):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Password does not meet security requirements. It must be at least 8 characters long and contain uppercase, lowercase, number, and special character."
         )
-    
+
     # Create new user
     hashed_password = get_password_hash(user_data.password)
     new_user = User(
@@ -96,12 +96,12 @@ async def register(
         email=user_data.email,
         hashed_password=hashed_password
     )
-    
+
     # Save to database
     db_session.add(new_user)
     await db_session.commit()
     await db_session.refresh(new_user)
-    
+
     logger.info(f"New user registered: {new_user.email}")
     return {"message": "User registered successfully"}
 
@@ -114,13 +114,13 @@ async def get_user_info(
     Get current user information
     """
     user = await db_session.query(User).filter(User.id == current_user["user_id"]).first()
-    
+
     if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User not found"
         )
-    
+
     return {
         "id": str(user.id),
         "name": user.name,
@@ -144,16 +144,16 @@ async def change_password(
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,
             detail="Too many password change attempts. Please try again later."
         )
-    
+
     # Get user from database
     user = await db_session.query(User).filter(User.id == current_user["user_id"]).first()
-    
+
     if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User not found"
         )
-    
+
     # Verify current password
     if not verify_password(password_data["current_password"], user.hashed_password):
         logger.warning(f"Failed password change attempt for user: {user.email}")
@@ -161,18 +161,18 @@ async def change_password(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Current password is incorrect"
         )
-    
+
     # Validate new password strength
     if not validate_password_strength(password_data["new_password"]):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="New password does not meet security requirements. It must be at least 8 characters long and contain uppercase, lowercase, number, and special character."
         )
-    
+
     # Update password
     user.hashed_password = get_password_hash(password_data["new_password"])
     await db_session.commit()
-    
+
     logger.info(f"Password changed for user: {user.email}")
     return {"message": "Password changed successfully"}
 

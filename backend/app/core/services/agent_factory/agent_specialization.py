@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 class AgentSpecialization(BaseModel):
     """Specialization for an agent."""
-    
+
     name: str
     description: str
     capabilities: List[str]
@@ -19,10 +19,10 @@ class AgentSpecialization(BaseModel):
     tools: List[str] = []
     recommended_models: List[str] = []
     metadata: Dict[str, Any] = Field(default_factory=dict)
-    
+
     class Config:
         """Pydantic configuration."""
-        
+
         schema_extra = {
             "example": {
                 "name": "research",
@@ -37,12 +37,12 @@ class AgentSpecialization(BaseModel):
 
 class SpecializationRegistry:
     """Registry for agent specializations."""
-    
+
     def __init__(self):
         """Initialize specialization registry."""
         self.specializations: Dict[str, AgentSpecialization] = {}
         self._load_default_specializations()
-        
+
     def _load_default_specializations(self):
         """Load default specializations."""
         defaults = [
@@ -87,45 +87,45 @@ class SpecializationRegistry:
                 recommended_models=["claude-3-5-sonnet", "gpt-4o", "gemini-2-5-pro"]
             )
         ]
-        
+
         for spec in defaults:
             self.register_specialization(spec)
-            
+
     def register_specialization(self, specialization: AgentSpecialization):
         """
         Register a specialization.
-        
+
         Args:
             specialization: Agent specialization
         """
         self.specializations[specialization.name] = specialization
         logger.info(f"Registered agent specialization: {specialization.name}")
-        
+
     def get_specialization(self, name: str) -> Optional[AgentSpecialization]:
         """
         Get a specialization by name.
-        
+
         Args:
             name: Specialization name
-            
+
         Returns:
             Agent specialization or None if not found
         """
         return self.specializations.get(name)
-        
+
     def get_all_specializations(self) -> Dict[str, AgentSpecialization]:
         """
         Get all specializations.
-        
+
         Returns:
             Dictionary of specializations
         """
         return self.specializations
-        
+
     def get_specialization_names(self) -> Set[str]:
         """
         Get all specialization names.
-        
+
         Returns:
             Set of specialization names
         """

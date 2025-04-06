@@ -8,7 +8,7 @@ from pydantic import BaseModel, Field
 
 class ModelSpecification(BaseModel):
     """Specification for an AI model."""
-    
+
     model_id: str
     provider: str
     capability_score: float = Field(ge=0, le=10)
@@ -27,45 +27,45 @@ class ModelSpecification(BaseModel):
 
 class ModelSpecs:
     """Repository of model specifications."""
-    
+
     def __init__(self, config: Optional[Dict[str, Any]] = None):
         """
         Initialize model specifications.
-        
+
         Args:
             config: Optional configuration dictionary
         """
         self.config = config or {}
         self.specs = self._load_model_specs()
-        
+
     def get_spec(self, model_id: str) -> Optional[ModelSpecification]:
         """
         Get specification for a model.
-        
+
         Args:
             model_id: Model ID
-            
+
         Returns:
             Model specification or None if not found
         """
         return self.specs.get(model_id)
-        
+
     def get_all_specs(self) -> Dict[str, ModelSpecification]:
         """
         Get all model specifications.
-        
+
         Returns:
             Dictionary of model specifications
         """
         return self.specs
-        
+
     def get_models_by_provider(self, provider: str) -> List[ModelSpecification]:
         """
         Get models by provider.
-        
+
         Args:
             provider: Provider name
-            
+
         Returns:
             List of model specifications
         """
@@ -73,14 +73,14 @@ class ModelSpecs:
             spec for spec in self.specs.values()
             if spec.provider.lower() == provider.lower()
         ]
-        
+
     def get_models_by_strength(self, strength: str) -> List[ModelSpecification]:
         """
         Get models by strength.
-        
+
         Args:
             strength: Strength category
-            
+
         Returns:
             List of model specifications
         """
@@ -88,14 +88,14 @@ class ModelSpecs:
             spec for spec in self.specs.values()
             if strength in spec.strengths
         ]
-        
+
     def get_models_by_capability(self, min_score: float = 0.0) -> List[ModelSpecification]:
         """
         Get models by capability score.
-        
+
         Args:
             min_score: Minimum capability score
-            
+
         Returns:
             List of model specifications
         """
@@ -103,49 +103,49 @@ class ModelSpecs:
             spec for spec in self.specs.values()
             if spec.capability_score >= min_score
         ]
-        
+
     def add_spec(self, spec: ModelSpecification) -> None:
         """
         Add a model specification.
-        
+
         Args:
             spec: Model specification
         """
         self.specs[spec.model_id] = spec
-        
+
     def update_spec(self, model_id: str, updates: Dict[str, Any]) -> Optional[ModelSpecification]:
         """
         Update a model specification.
-        
+
         Args:
             model_id: Model ID
             updates: Updates to apply
-            
+
         Returns:
             Updated model specification or None if not found
         """
         if model_id not in self.specs:
             return None
-            
+
         # Get current spec
         current = self.specs[model_id]
-        
+
         # Apply updates
         updated_dict = current.dict()
         updated_dict.update(updates)
-        
+
         # Create new spec
         updated = ModelSpecification(**updated_dict)
-        
+
         # Update specs
         self.specs[model_id] = updated
-        
+
         return updated
-        
+
     def _load_model_specs(self) -> Dict[str, ModelSpecification]:
         """
         Load model specifications.
-        
+
         Returns:
             Dictionary of model specifications
         """
@@ -242,7 +242,7 @@ class ModelSpecs:
                 context_window=16385,
                 description="Fast, flexible, intelligent reasoning model"
             ),
-            
+
             # Anthropic Models
             "claude-3-7-sonnet": ModelSpecification(
                 model_id="claude-3-7-sonnet",
@@ -319,7 +319,7 @@ class ModelSpecs:
                 context_window=200000,
                 description="Anthropic's Claude 3 Haiku model"
             ),
-            
+
             # Google Models
             "gemini-2-5-pro": ModelSpecification(
                 model_id="gemini-2-5-pro",
@@ -381,7 +381,7 @@ class ModelSpecs:
                 context_window=1000000,  # 1M token context window
                 description="Google's Gemini 1.5 Flash model"
             ),
-            
+
             # OpenRouter Models
             "deepseek-v3": ModelSpecification(
                 model_id="deepseek-v3",
@@ -444,7 +444,7 @@ class ModelSpecs:
                 description="Meta's Llama 3 70B model via OpenRouter"
             )
         }
-        
+
         # Override with config if provided
         if "model_specs" in self.config:
             for model_id, spec_dict in self.config["model_specs"].items():
@@ -456,5 +456,5 @@ class ModelSpecs:
                 else:
                     # Add new spec
                     default_specs[model_id] = ModelSpecification(model_id=model_id, **spec_dict)
-                    
+
         return default_specs

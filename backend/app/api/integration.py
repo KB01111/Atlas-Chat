@@ -34,11 +34,11 @@ class MessageResponse(BaseModel):
 async def process_message(request: MessageRequest, current_user: Dict = Depends(get_current_user)):
     """
     Process a user message using the integrated components.
-    
+
     Args:
         request: Message request
         current_user: Current authenticated user
-        
+
     Returns:
         Processed message response
     """
@@ -57,7 +57,7 @@ async def process_message(request: MessageRequest, current_user: Dict = Depends(
                 message=request.message,
                 use_team=request.use_team
             )
-        
+
         return MessageResponse(
             response=result["response"],
             format=result.get("format", "text"),
@@ -71,11 +71,11 @@ async def process_message(request: MessageRequest, current_user: Dict = Depends(
 async def end_session(session_id: str = Body(..., embed=True), current_user: Dict = Depends(get_current_user)):
     """
     End a conversation session.
-    
+
     Args:
         session_id: ID of the session to end
         current_user: Current authenticated user
-        
+
     Returns:
         Success status
     """
@@ -90,10 +90,10 @@ async def end_session(session_id: str = Body(..., embed=True), current_user: Dic
 async def get_agents(current_user: Dict = Depends(get_current_user)):
     """
     Get all available agents.
-    
+
     Args:
         current_user: Current authenticated user
-        
+
     Returns:
         List of agents
     """
@@ -117,11 +117,11 @@ async def get_agents(current_user: Dict = Depends(get_current_user)):
 async def get_agents_by_type(agent_type: str, current_user: Dict = Depends(get_current_user)):
     """
     Get agents by type.
-    
+
     Args:
         agent_type: Type of agents to retrieve
         current_user: Current authenticated user
-        
+
     Returns:
         List of agents of the specified type
     """
