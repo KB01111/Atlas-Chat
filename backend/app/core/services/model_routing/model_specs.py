@@ -8,7 +8,7 @@ from pydantic import BaseModel, Field
 
 class ModelSpecification(BaseModel):
     """Specification for an AI model."""
-    
+
     model_id: str
     provider: str
     capability_score: float = Field(ge=0, le=10)
@@ -27,125 +27,126 @@ class ModelSpecification(BaseModel):
 
 class ModelSpecs:
     """Repository of model specifications."""
-    
+
     def __init__(self, config: Optional[Dict[str, Any]] = None):
         """
         Initialize model specifications.
-        
+
         Args:
             config: Optional configuration dictionary
         """
         self.config = config or {}
         self.specs = self._load_model_specs()
-        
+
     def get_spec(self, model_id: str) -> Optional[ModelSpecification]:
         """
         Get specification for a model.
-        
+
         Args:
             model_id: Model ID
-            
+
         Returns:
             Model specification or None if not found
         """
         return self.specs.get(model_id)
-        
+
     def get_all_specs(self) -> Dict[str, ModelSpecification]:
         """
         Get all model specifications.
-        
+
         Returns:
             Dictionary of model specifications
         """
         return self.specs
-        
+
     def get_models_by_provider(self, provider: str) -> List[ModelSpecification]:
         """
         Get models by provider.
-        
+
         Args:
             provider: Provider name
-            
+
         Returns:
             List of model specifications
         """
         return [
-            spec for spec in self.specs.values()
+            spec
+            for spec in self.specs.values()
             if spec.provider.lower() == provider.lower()
         ]
-        
+
     def get_models_by_strength(self, strength: str) -> List[ModelSpecification]:
         """
         Get models by strength.
-        
+
         Args:
             strength: Strength category
-            
+
         Returns:
             List of model specifications
         """
-        return [
-            spec for spec in self.specs.values()
-            if strength in spec.strengths
-        ]
-        
-    def get_models_by_capability(self, min_score: float = 0.0) -> List[ModelSpecification]:
+        return [spec for spec in self.specs.values() if strength in spec.strengths]
+
+    def get_models_by_capability(
+        self, min_score: float = 0.0
+    ) -> List[ModelSpecification]:
         """
         Get models by capability score.
-        
+
         Args:
             min_score: Minimum capability score
-            
+
         Returns:
             List of model specifications
         """
         return [
-            spec for spec in self.specs.values()
-            if spec.capability_score >= min_score
+            spec for spec in self.specs.values() if spec.capability_score >= min_score
         ]
-        
+
     def add_spec(self, spec: ModelSpecification) -> None:
         """
         Add a model specification.
-        
+
         Args:
             spec: Model specification
         """
         self.specs[spec.model_id] = spec
-        
-    def update_spec(self, model_id: str, updates: Dict[str, Any]) -> Optional[ModelSpecification]:
+
+    def update_spec(
+        self, model_id: str, updates: Dict[str, Any]
+    ) -> Optional[ModelSpecification]:
         """
         Update a model specification.
-        
+
         Args:
             model_id: Model ID
             updates: Updates to apply
-            
+
         Returns:
             Updated model specification or None if not found
         """
         if model_id not in self.specs:
             return None
-            
+
         # Get current spec
         current = self.specs[model_id]
-        
+
         # Apply updates
         updated_dict = current.dict()
         updated_dict.update(updates)
-        
+
         # Create new spec
         updated = ModelSpecification(**updated_dict)
-        
+
         # Update specs
         self.specs[model_id] = updated
-        
+
         return updated
-        
+
     def _load_model_specs(self) -> Dict[str, ModelSpecification]:
         """
         Load model specifications.
-        
+
         Returns:
             Dictionary of model specifications
         """
@@ -165,7 +166,7 @@ class ModelSpecs:
                 supports_vision=True,
                 supports_function_calling=True,
                 context_window=128000,
-                description="OpenAI's largest and most capable GPT model"
+                description="OpenAI's largest and most capable GPT model",
             ),
             "gpt-4o": ModelSpecification(
                 model_id="gpt-4o",
@@ -180,7 +181,7 @@ class ModelSpecs:
                 supports_vision=True,
                 supports_function_calling=True,
                 context_window=128000,
-                description="OpenAI's fast, intelligent, flexible GPT model"
+                description="OpenAI's fast, intelligent, flexible GPT model",
             ),
             "gpt-4o-mini": ModelSpecification(
                 model_id="gpt-4o-mini",
@@ -195,7 +196,7 @@ class ModelSpecs:
                 supports_vision=True,
                 supports_function_calling=True,
                 context_window=128000,
-                description="Smaller, faster version of GPT-4o"
+                description="Smaller, faster version of GPT-4o",
             ),
             "gpt-4-turbo": ModelSpecification(
                 model_id="gpt-4-turbo",
@@ -210,7 +211,7 @@ class ModelSpecs:
                 supports_vision=True,
                 supports_function_calling=True,
                 context_window=128000,
-                description="OpenAI's GPT-4 Turbo model"
+                description="OpenAI's GPT-4 Turbo model",
             ),
             "gpt-3.5-turbo": ModelSpecification(
                 model_id="gpt-3.5-turbo",
@@ -225,7 +226,7 @@ class ModelSpecs:
                 supports_vision=False,
                 supports_function_calling=True,
                 context_window=16385,
-                description="OpenAI's GPT-3.5 Turbo model"
+                description="OpenAI's GPT-3.5 Turbo model",
             ),
             "o3-mini": ModelSpecification(
                 model_id="o3-mini",
@@ -240,9 +241,8 @@ class ModelSpecs:
                 supports_vision=False,
                 supports_function_calling=True,
                 context_window=16385,
-                description="Fast, flexible, intelligent reasoning model"
+                description="Fast, flexible, intelligent reasoning model",
             ),
-            
             # Anthropic Models
             "claude-3-7-sonnet": ModelSpecification(
                 model_id="claude-3-7-sonnet",
@@ -257,7 +257,7 @@ class ModelSpecs:
                 supports_vision=True,
                 supports_function_calling=True,
                 context_window=200000,
-                description="Anthropic's Claude 3.7 Sonnet model with hybrid reasoning and state-of-the-art coding skills"
+                description="Anthropic's Claude 3.7 Sonnet model with hybrid reasoning and state-of-the-art coding skills",
             ),
             "claude-3-5-sonnet": ModelSpecification(
                 model_id="claude-3-5-sonnet",
@@ -272,7 +272,7 @@ class ModelSpecs:
                 supports_vision=True,
                 supports_function_calling=True,
                 context_window=200000,
-                description="Anthropic's Claude 3.5 Sonnet model"
+                description="Anthropic's Claude 3.5 Sonnet model",
             ),
             "claude-3-opus": ModelSpecification(
                 model_id="claude-3-opus",
@@ -287,7 +287,7 @@ class ModelSpecs:
                 supports_vision=True,
                 supports_function_calling=True,
                 context_window=200000,
-                description="Anthropic's Claude 3 Opus model"
+                description="Anthropic's Claude 3 Opus model",
             ),
             "claude-3-sonnet": ModelSpecification(
                 model_id="claude-3-sonnet",
@@ -302,7 +302,7 @@ class ModelSpecs:
                 supports_vision=True,
                 supports_function_calling=True,
                 context_window=200000,
-                description="Anthropic's Claude 3 Sonnet model"
+                description="Anthropic's Claude 3 Sonnet model",
             ),
             "claude-3-haiku": ModelSpecification(
                 model_id="claude-3-haiku",
@@ -317,9 +317,8 @@ class ModelSpecs:
                 supports_vision=True,
                 supports_function_calling=True,
                 context_window=200000,
-                description="Anthropic's Claude 3 Haiku model"
+                description="Anthropic's Claude 3 Haiku model",
             ),
-            
             # Google Models
             "gemini-2-5-pro": ModelSpecification(
                 model_id="gemini-2-5-pro",
@@ -334,7 +333,7 @@ class ModelSpecs:
                 supports_vision=True,
                 supports_function_calling=True,
                 context_window=1000000,  # 1M token context window
-                description="Google's Gemini 2.5 Pro model with reasoning capabilities"
+                description="Google's Gemini 2.5 Pro model with reasoning capabilities",
             ),
             "gemini-2-5-flash": ModelSpecification(
                 model_id="gemini-2-5-flash",
@@ -349,7 +348,7 @@ class ModelSpecs:
                 supports_vision=True,
                 supports_function_calling=True,
                 context_window=1000000,  # 1M token context window
-                description="Google's Gemini 2.5 Flash model"
+                description="Google's Gemini 2.5 Flash model",
             ),
             "gemini-1-5-pro": ModelSpecification(
                 model_id="gemini-1-5-pro",
@@ -364,7 +363,7 @@ class ModelSpecs:
                 supports_vision=True,
                 supports_function_calling=True,
                 context_window=2000000,  # 2M token context window
-                description="Google's Gemini 1.5 Pro model with extended context window"
+                description="Google's Gemini 1.5 Pro model with extended context window",
             ),
             "gemini-1-5-flash": ModelSpecification(
                 model_id="gemini-1-5-flash",
@@ -379,9 +378,8 @@ class ModelSpecs:
                 supports_vision=True,
                 supports_function_calling=True,
                 context_window=1000000,  # 1M token context window
-                description="Google's Gemini 1.5 Flash model"
+                description="Google's Gemini 1.5 Flash model",
             ),
-            
             # OpenRouter Models
             "deepseek-v3": ModelSpecification(
                 model_id="deepseek-v3",
@@ -396,7 +394,7 @@ class ModelSpecs:
                 supports_vision=False,
                 supports_function_calling=True,
                 context_window=32768,
-                description="DeepSeek v3 model via OpenRouter"
+                description="DeepSeek v3 model via OpenRouter",
             ),
             "deepseek-coder": ModelSpecification(
                 model_id="deepseek-coder",
@@ -411,7 +409,7 @@ class ModelSpecs:
                 supports_vision=False,
                 supports_function_calling=True,
                 context_window=32768,
-                description="DeepSeek Coder model via OpenRouter"
+                description="DeepSeek Coder model via OpenRouter",
             ),
             "mistral-large": ModelSpecification(
                 model_id="mistral-large",
@@ -426,7 +424,7 @@ class ModelSpecs:
                 supports_vision=False,
                 supports_function_calling=True,
                 context_window=32768,
-                description="Mistral Large model via OpenRouter"
+                description="Mistral Large model via OpenRouter",
             ),
             "llama-3-70b": ModelSpecification(
                 model_id="llama-3-70b",
@@ -441,10 +439,10 @@ class ModelSpecs:
                 supports_vision=False,
                 supports_function_calling=True,
                 context_window=8192,
-                description="Meta's Llama 3 70B model via OpenRouter"
-            )
+                description="Meta's Llama 3 70B model via OpenRouter",
+            ),
         }
-        
+
         # Override with config if provided
         if "model_specs" in self.config:
             for model_id, spec_dict in self.config["model_specs"].items():
@@ -455,6 +453,8 @@ class ModelSpecs:
                     default_specs[model_id] = ModelSpecification(**updated_dict)
                 else:
                     # Add new spec
-                    default_specs[model_id] = ModelSpecification(model_id=model_id, **spec_dict)
-                    
+                    default_specs[model_id] = ModelSpecification(
+                        model_id=model_id, **spec_dict
+                    )
+
         return default_specs
