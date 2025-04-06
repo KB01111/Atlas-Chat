@@ -17,21 +17,28 @@ router = APIRouter(prefix="/integration", tags=["integration"])
 # Initialize integration
 integration = AtlasIntegration()
 
+
 class MessageRequest(BaseModel):
     """Request model for processing a message"""
+
     session_id: str
     message: str
     use_team: bool = False
     agent_type: Optional[str] = None
 
+
 class MessageResponse(BaseModel):
     """Response model for a processed message"""
+
     response: str
     format: str = "text"
     metadata: Dict[str, Any] = {}
 
+
 @router.post("/message", response_model=MessageResponse)
-async def process_message(request: MessageRequest, current_user: Dict = Depends(get_current_user)):
+async def process_message(
+    request: MessageRequest, current_user: Dict = Depends(get_current_user)
+):
     """
     Process a user message using the integrated components.
 
@@ -48,27 +55,33 @@ async def process_message(request: MessageRequest, current_user: Dict = Depends(
             result = await integration.process_message_with_agent(
                 session_id=request.session_id,
                 message=request.message,
-                agent_type=request.agent_type
+                agent_type=request.agent_type,
             )
         # Otherwise, process with team or single agent based on use_team
         else:
             result = await integration.process_message(
                 session_id=request.session_id,
                 message=request.message,
-                use_team=request.use_team
+                use_team=request.use_team,
             )
 
         return MessageResponse(
             response=result["response"],
             format=result.get("format", "text"),
-            metadata=result.get("metadata", {})
+            metadata=result.get("metadata", {}),
         )
     except Exception as e:
         # Sanitize error message to avoid exposing internal details
-        raise HTTPException(status_code=500, detail="An error occurred while processing the message")
+        raise HTTPException(
+            status_code=500, detail="An error occurred while processing the message"
+        )
+
 
 @router.post("/session/end")
-async def end_session(session_id: str = Body(..., embed=True), current_user: Dict = Depends(get_current_user)):
+async def end_session(
+    session_id: str = Body(..., embed=True),
+    current_user: Dict = Depends(get_current_user),
+):
     """
     End a conversation session.
 
@@ -84,7 +97,10 @@ async def end_session(session_id: str = Body(..., embed=True), current_user: Dic
         return {"success": result}
     except Exception as e:
         # Sanitize error message to avoid exposing internal details
-        raise HTTPException(status_code=500, detail="An error occurred while ending the session")
+        raise HTTPException(
+            status_code=500, detail="An error occurred while ending the session"
+        )
+
 
 @router.get("/agents")
 async def get_agents(current_user: Dict = Depends(get_current_user)):
@@ -104,17 +120,22 @@ async def get_agents(current_user: Dict = Depends(get_current_user)):
                 {
                     "id": agent.agent_id,
                     "type": agent.agent_type,
-                    "capabilities": agent.capabilities
+                    "capabilities": agent.capabilities,
                 }
                 for agent in agents
             ]
         }
     except Exception as e:
         # Sanitize error message to avoid exposing internal details
-        raise HTTPException(status_code=500, detail="An error occurred while retrieving agents")
+        raise HTTPException(
+            status_code=500, detail="An error occurred while retrieving agents"
+        )
+
 
 @router.get("/agents/{agent_type}")
-async def get_agents_by_type(agent_type: str, current_user: Dict = Depends(get_current_user)):
+async def get_agents_by_type(
+    agent_type: str, current_user: Dict = Depends(get_current_user)
+):
     """
     Get agents by type.
 
@@ -132,11 +153,13 @@ async def get_agents_by_type(agent_type: str, current_user: Dict = Depends(get_c
                 {
                     "id": agent.agent_id,
                     "type": agent.agent_type,
-                    "capabilities": agent.capabilities
+                    "capabilities": agent.capabilities,
                 }
                 for agent in agents
             ]
         }
     except Exception as e:
         # Sanitize error message to avoid exposing internal details
-        raise HTTPException(status_code=500, detail="An error occurred while retrieving agents by type")
+        raise HTTPException(
+            status_code=500, detail="An error occurred while retrieving agents by type"
+        )

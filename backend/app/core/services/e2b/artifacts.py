@@ -11,6 +11,7 @@ from .session import E2BSession
 
 logger = logging.getLogger(__name__)
 
+
 class Artifact:
     """
     Represents an artifact generated during code execution.
@@ -22,7 +23,7 @@ class Artifact:
         name: str,
         content_type: str,
         content: Union[bytes, str],
-        metadata: Optional[Dict[str, Any]] = None
+        metadata: Optional[Dict[str, Any]] = None,
     ):
         """
         Initialize an artifact.
@@ -37,7 +38,9 @@ class Artifact:
         self.id = artifact_id
         self.name = name
         self.content_type = content_type
-        self.content = content if isinstance(content, bytes) else content.encode('utf-8')
+        self.content = (
+            content if isinstance(content, bytes) else content.encode("utf-8")
+        )
         self.metadata = metadata or {}
         self.created_at = datetime.now().isoformat()
 
@@ -52,13 +55,13 @@ class Artifact:
             "id": self.id,
             "name": self.name,
             "content_type": self.content_type,
-            "content_base64": base64.b64encode(self.content).decode('utf-8'),
+            "content_base64": base64.b64encode(self.content).decode("utf-8"),
             "metadata": self.metadata,
-            "created_at": self.created_at
+            "created_at": self.created_at,
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> 'Artifact':
+    def from_dict(cls, data: Dict[str, Any]) -> "Artifact":
         """
         Create an artifact from a dictionary.
 
@@ -74,7 +77,7 @@ class Artifact:
             name=data["name"],
             content_type=data["content_type"],
             content=content,
-            metadata=data.get("metadata", {})
+            metadata=data.get("metadata", {}),
         )
 
 
@@ -100,9 +103,9 @@ class ArtifactManager:
         Initialize the artifact manager by creating the artifacts directory.
         """
         # Create the artifacts directory if it doesn't exist
-        process = await self.session.process.start({
-            "cmd": ["mkdir", "-p", self.artifacts_dir]
-        })
+        process = await self.session.process.start(
+            {"cmd": ["mkdir", "-p", self.artifacts_dir]}
+        )
         result = await process.wait()
         if result.exit_code != 0:
             logger.error(f"Failed to create artifacts directory: {result.stderr}")
@@ -113,7 +116,7 @@ class ArtifactManager:
         file_path: str,
         name: Optional[str] = None,
         content_type: Optional[str] = None,
-        metadata: Optional[Dict[str, Any]] = None
+        metadata: Optional[Dict[str, Any]] = None,
     ) -> Artifact:
         """
         Create an artifact from a file in the E2B sandbox.
@@ -145,7 +148,7 @@ class ArtifactManager:
             name=name,
             content_type=content_type,
             content=content,
-            metadata=metadata
+            metadata=metadata,
         )
 
         # Store the artifact
@@ -158,7 +161,7 @@ class ArtifactManager:
         content: Union[bytes, str],
         name: str,
         content_type: str,
-        metadata: Optional[Dict[str, Any]] = None
+        metadata: Optional[Dict[str, Any]] = None,
     ) -> Artifact:
         """
         Create an artifact with the provided content.
@@ -179,7 +182,7 @@ class ArtifactManager:
             name=name,
             content_type=content_type,
             content=content,
-            metadata=metadata
+            metadata=metadata,
         )
 
         # Store the artifact
@@ -227,9 +230,9 @@ class ArtifactManager:
             artifact_path = f"{self.artifacts_dir}/{artifact.name}"
 
             # Delete the artifact file from the E2B sandbox
-            process = await self.session.process.start({
-                "cmd": ["rm", "-f", artifact_path]
-            })
+            process = await self.session.process.start(
+                {"cmd": ["rm", "-f", artifact_path]}
+            )
             result = await process.wait()
             if result.exit_code != 0:
                 logger.warning(f"Failed to delete artifact file: {result.stderr}")
@@ -251,7 +254,9 @@ class ArtifactManager:
             List of created artifacts
         """
         # Find files matching the pattern
-        matching_files = await self.session.filesystem.glob(f"{self.artifacts_dir}/{pattern}")
+        matching_files = await self.session.filesystem.glob(
+            f"{self.artifacts_dir}/{pattern}"
+        )
 
         # Create artifacts for each file
         created_artifacts = []
@@ -307,7 +312,7 @@ class ArtifactManager:
             ".rs": "text/x-rust",
             ".ts": "text/x-typescript",
             ".jsx": "text/x-jsx",
-            ".tsx": "text/x-tsx"
+            ".tsx": "text/x-tsx",
         }
 
         return mime_types.get(extension, "application/octet-stream")

@@ -10,6 +10,7 @@ from e2b.api.process import ProcessOpts, ProcessOutput
 
 logger = logging.getLogger(__name__)
 
+
 class E2BSession:
     """
     Wrapper for E2B SDK session to interact with the E2B sandbox environment.
@@ -29,7 +30,7 @@ class E2BSession:
         self.session = Session(
             id=self.id,
             api_key=self.api_key,
-            template="base"  # Use the base template for general purpose tasks
+            template="base",  # Use the base template for general purpose tasks
         )
 
         self.process = ProcessManager(self)
@@ -80,11 +81,7 @@ class ProcessManager:
         logger.info(f"Starting process with command: {cmd}")
 
         try:
-            process_opts = ProcessOpts(
-                cmd=cmd,
-                env=env,
-                cwd=cwd
-            )
+            process_opts = ProcessOpts(cmd=cmd, env=env, cwd=cwd)
 
             e2b_process = await self.session.session.process.start(process_opts)
             return Process(self.session, options, e2b_process)
@@ -102,11 +99,7 @@ class ProcessManager:
         try:
             processes = await self.session.session.process.list()
             return [
-                {
-                    "pid": process.pid,
-                    "cmd": process.cmd,
-                    "status": process.status
-                }
+                {"pid": process.pid, "cmd": process.cmd, "status": process.status}
                 for process in processes
             ]
         except Exception as e:
@@ -119,7 +112,9 @@ class Process:
     Represents a process running in the E2B sandbox.
     """
 
-    def __init__(self, session: E2BSession, options: Dict[str, Any], e2b_process: E2BProcess):
+    def __init__(
+        self, session: E2BSession, options: Dict[str, Any], e2b_process: E2BProcess
+    ):
         """
         Initialize the process.
 
@@ -150,11 +145,7 @@ class Process:
             self.stdout = output.stdout
             self.stderr = output.stderr
 
-            return ProcessResult(
-                output.exit_code,
-                output.stdout,
-                output.stderr
-            )
+            return ProcessResult(output.exit_code, output.stdout, output.stderr)
         except Exception as e:
             logger.error(f"Error waiting for process: {str(e)}")
             return ProcessResult(1, "", str(e))
@@ -205,10 +196,14 @@ class StdinStream:
         """
         End the standard input stream.
         """
-        logger.info(f"Ending stdin stream for process in session: {self.process.session.id}")
+        logger.info(
+            f"Ending stdin stream for process in session: {self.process.session.id}"
+        )
         try:
             await self.process.e2b_process.stdin.end()
-            logger.info(f"Successfully ended stdin stream for process in session: {self.process.session.id}")
+            logger.info(
+                f"Successfully ended stdin stream for process in session: {self.process.session.id}"
+            )
         except Exception as e:
             logger.error(f"Error ending stdin stream: {str(e)}")
             raise
@@ -242,7 +237,7 @@ class ProcessResult:
         return {
             "exit_code": self.exit_code,
             "stdout": self.stdout,
-            "stderr": self.stderr
+            "stderr": self.stderr,
         }
 
 
@@ -312,7 +307,7 @@ class FileSystemManager:
                     "name": entry.name,
                     "type": "file" if entry.is_file else "directory",
                     "size": entry.size,
-                    "modified": entry.modified
+                    "modified": entry.modified,
                 }
                 for entry in entries
             ]

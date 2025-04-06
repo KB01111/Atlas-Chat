@@ -27,10 +27,7 @@ class MemoryEntry(BaseModel):
             "example": {
                 "agent_id": "agent_123456",
                 "content": "User asked about quantum computing",
-                "metadata": {
-                    "importance": "high",
-                    "category": "user_interest"
-                }
+                "metadata": {"importance": "high", "category": "user_interest"},
             }
         }
 
@@ -63,9 +60,7 @@ class AgentMemory:
         """
         # Create entry
         entry = MemoryEntry(
-            agent_id=self.agent_id,
-            content=content,
-            metadata=metadata or {}
+            agent_id=self.agent_id, content=content, metadata=metadata or {}
         )
 
         # Add entry
@@ -73,7 +68,7 @@ class AgentMemory:
 
         # Trim if necessary
         if len(self.entries) > self.max_entries:
-            self.entries = self.entries[-self.max_entries:]
+            self.entries = self.entries[-self.max_entries :]
 
         return entry.entry_id
 
@@ -120,8 +115,7 @@ class AgentMemory:
         """
         # Simple substring search for now
         return [
-            entry for entry in self.entries
-            if query.lower() in entry.content.lower()
+            entry for entry in self.entries if query.lower() in entry.content.lower()
         ]
 
     def clear(self):
@@ -171,7 +165,9 @@ class MemoryManager:
 
         return self.memories[agent_id]
 
-    def add_entry(self, agent_id: str, content: str, metadata: Optional[Dict[str, Any]] = None) -> str:
+    def add_entry(
+        self, agent_id: str, content: str, metadata: Optional[Dict[str, Any]] = None
+    ) -> str:
         """
         Add a memory entry for an agent.
 
@@ -186,7 +182,9 @@ class MemoryManager:
         memory = self.get_memory(agent_id)
         return memory.add_entry(content, metadata)
 
-    def get_entries(self, agent_id: str, limit: Optional[int] = None) -> List[MemoryEntry]:
+    def get_entries(
+        self, agent_id: str, limit: Optional[int] = None
+    ) -> List[MemoryEntry]:
         """
         Get memory entries for an agent.
 

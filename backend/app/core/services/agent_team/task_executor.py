@@ -14,13 +14,16 @@ from pydantic import BaseModel, Field
 
 logger = logging.getLogger(__name__)
 
+
 class TaskStatus(str, Enum):
     """Enum for task status"""
+
     PENDING = "pending"
     IN_PROGRESS = "in_progress"
     COMPLETED = "completed"
     FAILED = "failed"
     SKIPPED = "skipped"
+
 
 class TaskExecutor:
     """
@@ -37,7 +40,9 @@ class TaskExecutor:
         """Initialize the task executor."""
         self.executions: Dict[str, Dict[str, Any]] = {}
 
-    async def execute_plan(self, coordinator, plan_id: str, agents: Dict[str, Any]) -> Dict[str, Any]:
+    async def execute_plan(
+        self, coordinator, plan_id: str, agents: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """
         Execute a task plan using the specified agents.
 
@@ -62,7 +67,7 @@ class TaskExecutor:
             "thread_id": plan.thread_id,
             "started_at": datetime.now().isoformat(),
             "status": TaskStatus.IN_PROGRESS,
-            "steps": {}
+            "steps": {},
         }
 
         # Initialize step statuses
@@ -74,7 +79,7 @@ class TaskExecutor:
                     "status": TaskStatus.PENDING,
                     "dependencies": step.get("dependencies", []),
                     "agent_id": step.get("agent_id"),
-                    "task_description": step.get("task_description")
+                    "task_description": step.get("task_description"),
                 }
 
         # Execute steps
@@ -89,7 +94,9 @@ class TaskExecutor:
                 # No executable steps, but still have pending steps
                 # This means we have a dependency cycle or all remaining steps
                 # have failed dependencies
-                logger.warning(f"No executable steps, but still have pending steps for execution {execution_id}")
+                logger.warning(
+                    f"No executable steps, but still have pending steps for execution {execution_id}"
+                )
                 all_completed = False
                 break
 
@@ -98,18 +105,24 @@ class TaskExecutor:
             task_description = step["task_description"]
 
             # Update step status
-            self.executions[execution_id]["steps"][step_id]["status"] = TaskStatus.IN_PROGRESS
+            self.executions[execution_id]["steps"][step_id]["status"] = (
+                TaskStatus.IN_PROGRESS
+            )
 
             # Get agent
             agent = agents.get(agent_id)
             if not agent:
                 logger.warning(f"Agent not found: {agent_id}")
-                self.executions[execution_id]["steps"][step_id]["status"] = TaskStatus.FAILED
-                self.executions[execution_id]["steps"][step_id]["error"] = f"Agent not found: {agent_id}"
+                self.executions[execution_id]["steps"][step_id]["status"] = (
+                    TaskStatus.FAILED
+                )
+                self.executions[execution_id]["steps"][step_id]["error"] = (
+                    f"Agent not found: {agent_id}"
+                )
                 results[step_id] = {
                     "step_id": step_id,
                     "status": "failed",
-                    "error": f"Agent not found: {agent_id}"
+                    "error": f"Agent not found: {agent_id}",
                 }
                 all_completed = False
                 continue
@@ -117,12 +130,13 @@ class TaskExecutor:
             # Execute task
             try:
                 result = await agent.execute_task(
-                    thread_id=plan.thread_id,
-                    task_description=task_description
+                    thread_id=plan.thread_id, task_description=task_description
                 )
 
                 # Update step status
-                self.executions[execution_id]["steps"][step_id]["status"] = TaskStatus.COMPLETED
+                self.executions[execution_id]["steps"][step_id]["status"] = (
+                    TaskStatus.COMPLETED
+                )
                 self.executions[execution_id]["steps"][step_id]["result"] = result
 
                 # Create task result
@@ -137,8 +151,8 @@ class TaskExecutor:
                     "created_at": datetime.now().isoformat(),
                     "metadata": {
                         "agent_id": agent_id,
-                        "agent_type": getattr(agent, "agent_type", "unknown")
-                    }
+                        "agent_type": getattr(agent, "agent_type", "unknown"),
+                    },
                 }
 
                 # Add to results
@@ -146,21 +160,25 @@ class TaskExecutor:
                     "step_id": step_id,
                     "status": "completed",
                     "result_id": task_result_id,
-                    "content": result.get("content", "")
+                    "content": result.get("content", ""),
                 }
             except Exception as e:
                 logger.error(f"Task execution failed: {e}")
-                self.executions[execution_id]["steps"][step_id]["status"] = TaskStatus.FAILED
+                self.executions[execution_id]["steps"][step_id]["status"] = (
+                    TaskStatus.FAILED
+                )
                 self.executions[execution_id]["steps"][step_id]["error"] = str(e)
                 results[step_id] = {
                     "step_id": step_id,
                     "status": "failed",
-                    "error": str(e)
+                    "error": str(e),
                 }
                 all_completed = False
 
         # Update execution status
-        self.executions[execution_id]["status"] = TaskStatus.COMPLETED if all_completed else TaskStatus.FAILED
+        self.executions[execution_id]["status"] = (
+            TaskStatus.COMPLETED if all_completed else TaskStatus.FAILED
+        )
         self.executions[execution_id]["completed_at"] = datetime.now().isoformat()
 
         return results

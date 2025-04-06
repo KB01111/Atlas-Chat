@@ -18,6 +18,7 @@ from ..model_routing import ModelRouter
 
 logger = logging.getLogger(__name__)
 
+
 class AtlasIntegration:
     """
     Implements the central integration point for all components.
@@ -46,8 +47,9 @@ class AtlasIntegration:
         # Connect components
         self.team_manager.context_manager.tiered_context_manager = self.context_manager
 
-    async def process_message(self, session_id: str, message: str, 
-                            use_team: bool = False) -> Dict[str, Any]:
+    async def process_message(
+        self, session_id: str, message: str, use_team: bool = False
+    ) -> Dict[str, Any]:
         """
         Process a user message using the integrated components.
 
@@ -61,42 +63,36 @@ class AtlasIntegration:
         """
         # Add message to context manager
         self.context_manager.add_message(
-            session_id=session_id,
-            message=message,
-            role="user"
+            session_id=session_id, message=message, role="user"
         )
 
         # Process with agent team if requested
         if use_team:
             result = await self.team_manager.process_request(
-                thread_id=session_id,
-                user_request=message
+                thread_id=session_id, user_request=message
             )
 
             return {
                 "response": result["synthesis"]["content"],
                 "format": result["synthesis"]["format"],
-                "metadata": {
-                    "processing_type": "team",
-                    "plan_id": result["plan_id"]
-                }
+                "metadata": {"processing_type": "team", "plan_id": result["plan_id"]},
             }
 
         # Otherwise, process with single agent
         else:
             # Get context
             context_bundle = await self.context_manager.retrieve_context(
-                session_id=session_id,
-                query=message
+                session_id=session_id, query=message
             )
 
             # Format context for prompt
-            formatted_context = self.context_manager.format_context_for_prompt(context_bundle)
+            formatted_context = self.context_manager.format_context_for_prompt(
+                context_bundle
+            )
 
             # Select model
             model = self.model_router.select_model(
-                query=message,
-                context=formatted_context
+                query=message, context=formatted_context
             )
 
             # In a real implementation, this would use the selected model
@@ -107,22 +103,18 @@ class AtlasIntegration:
 
             # Add response to context manager
             self.context_manager.add_message(
-                session_id=session_id,
-                message=response,
-                role="assistant"
+                session_id=session_id, message=response, role="assistant"
             )
 
             return {
                 "response": response,
                 "format": "text",
-                "metadata": {
-                    "processing_type": "single",
-                    "model": model
-                }
+                "metadata": {"processing_type": "single", "model": model},
             }
 
-    async def process_message_with_agent(self, session_id: str, message: str, 
-                                      agent_type: str) -> Dict[str, Any]:
+    async def process_message_with_agent(
+        self, session_id: str, message: str, agent_type: str
+    ) -> Dict[str, Any]:
         """
         Process a user message using a specific agent type.
 
@@ -136,9 +128,7 @@ class AtlasIntegration:
         """
         # Add message to context manager
         self.context_manager.add_message(
-            session_id=session_id,
-            message=message,
-            role="user"
+            session_id=session_id, message=message, role="user"
         )
 
         # Get agents of the specified type
@@ -151,9 +141,7 @@ class AtlasIntegration:
 
         # Process with the agent
         result = await self.team_manager.process_request_with_agent(
-            thread_id=session_id,
-            user_request=message,
-            agent_id=agent.agent_id
+            thread_id=session_id, user_request=message, agent_id=agent.agent_id
         )
 
         return {
@@ -162,8 +150,8 @@ class AtlasIntegration:
             "metadata": {
                 "processing_type": "agent",
                 "agent_id": result["agent_id"],
-                "agent_type": agent_type
-            }
+                "agent_type": agent_type,
+            },
         }
 
     def end_session(self, session_id: str) -> bool:

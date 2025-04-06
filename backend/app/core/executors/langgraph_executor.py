@@ -5,6 +5,7 @@ from app.core.services.tool_executor import ToolExecutor
 
 logger = setup_logging()
 
+
 class LangGraphExecutor:
     """Executor for LangGraph based agents"""
 
@@ -23,7 +24,7 @@ class LangGraphExecutor:
         agent_definition: Dict[str, Any],
         request_context: RequestContext,
         message: str,
-        history: List[Dict[str, str]]
+        history: List[Dict[str, str]],
     ) -> AsyncGenerator[str, None]:
         """
         Execute an agent using LangGraph
@@ -37,7 +38,9 @@ class LangGraphExecutor:
         Returns:
             AsyncGenerator yielding response chunks
         """
-        logger.info(f"LangGraphExecutor.execute: Starting execution for agent_id={agent_definition['agent_id']}")
+        logger.info(
+            f"LangGraphExecutor.execute: Starting execution for agent_id={agent_definition['agent_id']}"
+        )
 
         try:
             # Get allowed_tools and uses_graphiti from agent_definition
@@ -70,7 +73,9 @@ class LangGraphExecutor:
 
             yield "The LangGraph integration is still being implemented."
 
-            logger.info(f"LangGraphExecutor.execute: Completed execution for agent_id={agent_definition['agent_id']}")
+            logger.info(
+                f"LangGraphExecutor.execute: Completed execution for agent_id={agent_definition['agent_id']}"
+            )
 
         except Exception as e:
             logger.error(f"Error in LangGraphExecutor.execute: {str(e)}")

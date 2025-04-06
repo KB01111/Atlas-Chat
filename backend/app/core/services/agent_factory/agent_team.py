@@ -27,7 +27,7 @@ class TeamMember(BaseModel):
             "example": {
                 "agent_id": "agent_123456",
                 "role": "researcher",
-                "description": "Responsible for gathering information"
+                "description": "Responsible for gathering information",
             }
         }
 
@@ -53,15 +53,15 @@ class AgentTeam(BaseModel):
                     {
                         "agent_id": "agent_123456",
                         "role": "researcher",
-                        "description": "Responsible for gathering information"
+                        "description": "Responsible for gathering information",
                     },
                     {
                         "agent_id": "agent_789012",
                         "role": "writer",
-                        "description": "Responsible for writing reports"
-                    }
+                        "description": "Responsible for writing reports",
+                    },
                 ],
-                "coordinator_id": "agent_345678"
+                "coordinator_id": "agent_345678",
             }
         }
 

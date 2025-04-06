@@ -16,8 +16,10 @@ from .team_context_manager import TeamContextManager
 
 logger = logging.getLogger(__name__)
 
+
 class TaskPlan(BaseModel):
     """Represents a task plan created by the coordinator agent"""
+
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     thread_id: str
     user_request: str
@@ -26,8 +28,10 @@ class TaskPlan(BaseModel):
     status: str = "created"  # created, in_progress, completed, failed
     metadata: Dict[str, Any] = {}
 
+
 class TaskResult(BaseModel):
     """Represents a result from a task execution"""
+
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     plan_id: str
     step_id: str
@@ -36,6 +40,7 @@ class TaskResult(BaseModel):
     format: str = "text"  # text, markdown, json, html
     created_at: datetime = Field(default_factory=datetime.now)
     metadata: Dict[str, Any] = {}
+
 
 class CoordinatorAgent:
     """
@@ -62,8 +67,9 @@ class CoordinatorAgent:
         self.plans: Dict[str, TaskPlan] = {}
         self.results: Dict[str, TaskResult] = {}
 
-    async def create_plan(self, thread_id: str, user_request: str, 
-                        available_agents: List[str]) -> TaskPlan:
+    async def create_plan(
+        self, thread_id: str, user_request: str, available_agents: List[str]
+    ) -> TaskPlan:
         """
         Create a task plan for a user request.
 
@@ -79,20 +85,19 @@ class CoordinatorAgent:
         # to analyze the request and create a task plan
 
         # Simulate plan creation
-        plan = TaskPlan(
-            thread_id=thread_id,
-            user_request=user_request
-        )
+        plan = TaskPlan(thread_id=thread_id, user_request=user_request)
 
         # Add steps based on available agents
         step_id = 1
         for agent_id in available_agents[:3]:  # Use up to 3 agents
-            plan.steps.append({
-                "step_id": f"step_{step_id}",
-                "agent_id": agent_id,
-                "task_description": f"Process the following request: {user_request}",
-                "dependencies": [] if step_id == 1 else [f"step_{step_id-1}"]
-            })
+            plan.steps.append(
+                {
+                    "step_id": f"step_{step_id}",
+                    "agent_id": agent_id,
+                    "task_description": f"Process the following request: {user_request}",
+                    "dependencies": [] if step_id == 1 else [f"step_{step_id-1}"],
+                }
+            )
             step_id += 1
 
         # Store plan
@@ -103,7 +108,9 @@ class CoordinatorAgent:
 
         return plan
 
-    async def execute_plan(self, plan_id: str, agent_instances: Dict[str, Any]) -> Dict[str, Any]:
+    async def execute_plan(
+        self, plan_id: str, agent_instances: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """
         Execute a task plan using the specified agent instances.
 
@@ -141,7 +148,7 @@ class CoordinatorAgent:
                 results[step_id] = {
                     "step_id": step_id,
                     "status": "failed",
-                    "error": f"Agent not found: {agent_id}"
+                    "error": f"Agent not found: {agent_id}",
                 }
                 continue
 
@@ -149,7 +156,10 @@ class CoordinatorAgent:
             dependencies = step.get("dependencies", [])
             dependency_failed = False
             for dep_id in dependencies:
-                if dep_id not in results or results[dep_id].get("status") != "completed":
+                if (
+                    dep_id not in results
+                    or results[dep_id].get("status") != "completed"
+                ):
                     dependency_failed = True
                     break
 
@@ -157,15 +167,14 @@ class CoordinatorAgent:
                 results[step_id] = {
                     "step_id": step_id,
                     "status": "failed",
-                    "error": "Dependency failed or not completed"
+                    "error": "Dependency failed or not completed",
                 }
                 continue
 
             # Execute task
             try:
                 result = await agent.execute_task(
-                    thread_id=plan.thread_id,
-                    task_description=task_description
+                    thread_id=plan.thread_id, task_description=task_description
                 )
 
                 # Create task result
@@ -177,8 +186,8 @@ class CoordinatorAgent:
                     format=result.get("format", "text"),
                     metadata={
                         "agent_id": agent_id,
-                        "agent_type": getattr(agent, "agent_type", "unknown")
-                    }
+                        "agent_type": getattr(agent, "agent_type", "unknown"),
+                    },
                 )
 
                 # Store result
@@ -192,14 +201,14 @@ class CoordinatorAgent:
                     "step_id": step_id,
                     "status": "completed",
                     "result_id": task_result.id,
-                    "content": task_result.content
+                    "content": task_result.content,
                 }
             except Exception as e:
                 logger.error(f"Task execution failed: {e}")
                 results[step_id] = {
                     "step_id": step_id,
                     "status": "failed",
-                    "error": str(e)
+                    "error": str(e),
                 }
 
         # Update plan status
@@ -208,7 +217,9 @@ class CoordinatorAgent:
 
         return results
 
-    async def synthesize_results(self, result_ids: List[str], format: str = "markdown") -> Dict[str, Any]:
+    async def synthesize_results(
+        self, result_ids: List[str], format: str = "markdown"
+    ) -> Dict[str, Any]:
         """
         Synthesize results from multiple tasks.
 
@@ -231,10 +242,7 @@ class CoordinatorAgent:
 
         # Simulate synthesis
         if not results:
-            return {
-                "content": "No results to synthesize.",
-                "format": format
-            }
+            return {"content": "No results to synthesize.", "format": format}
 
         # Simple concatenation for demonstration
         synthesis = "# Synthesized Results\n\n"
@@ -243,10 +251,7 @@ class CoordinatorAgent:
             synthesis += result.content
             synthesis += "\n\n"
 
-        return {
-            "content": synthesis,
-            "format": format
-        }
+        return {"content": synthesis, "format": format}
 
     def get_plan(self, plan_id: str) -> Optional[TaskPlan]:
         """

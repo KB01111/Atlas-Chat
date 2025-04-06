@@ -1,4 +1,12 @@
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, BackgroundTasks
+from fastapi import (
+    APIRouter,
+    Depends,
+    HTTPException,
+    UploadFile,
+    File,
+    Form,
+    BackgroundTasks,
+)
 from fastapi.responses import JSONResponse
 from typing import Dict, List, Optional
 import os
@@ -23,6 +31,7 @@ CHUNK_DIR = os.path.join(UPLOAD_DIR, "chunks")
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 os.makedirs(CHUNK_DIR, exist_ok=True)
 
+
 @router.post("/upload/init")
 async def initialize_upload(
     background_tasks: BackgroundTasks,
@@ -31,7 +40,7 @@ async def initialize_upload(
     fileType: str,
     totalChunks: int,
     metadata: Optional[Dict] = None,
-    current_user: Dict = Depends(get_current_user)
+    current_user: Dict = Depends(get_current_user),
 ):
     """Initialize a chunked file upload session"""
     try:
@@ -55,7 +64,7 @@ async def initialize_upload(
             "metadata": metadata or {},
             "status": "initialized",
             "created_at": datetime.utcnow().isoformat(),
-            "expires_at": None  # Set expiration in production
+            "expires_at": None,  # Set expiration in production
         }
 
         # Set up automatic cleanup after 24 hours in production
@@ -65,13 +74,16 @@ async def initialize_upload(
 
     except Exception as e:
         logging.error(f"Error initializing upload: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Failed to initialize upload: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Failed to initialize upload: {str(e)}"
+        )
+
 
 @router.post("/upload/chunk")
 async def upload_chunk(
     uploadId: str = Form(...),
     chunkIndex: int = Form(...),
-    chunk: UploadFile = File(...)
+    chunk: UploadFile = File(...),
 ):
     """Upload a single chunk of a file"""
     try:
@@ -103,8 +115,10 @@ async def upload_chunk(
             "progress": {
                 "uploaded": session["uploaded_chunks"],
                 "total": session["total_chunks"],
-                "percentage": round((session["uploaded_chunks"] / session["total_chunks"]) * 100)
-            }
+                "percentage": round(
+                    (session["uploaded_chunks"] / session["total_chunks"]) * 100
+                ),
+            },
         }
 
     except HTTPException:
@@ -114,11 +128,12 @@ async def upload_chunk(
         logging.error(f"Error uploading chunk: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to upload chunk: {str(e)}")
 
+
 @router.post("/upload/complete")
 async def complete_upload(
     uploadId: str,
     background_tasks: BackgroundTasks,
-    current_user: Dict = Depends(get_current_user)
+    current_user: Dict = Depends(get_current_user),
 ):
     """Complete a chunked file upload by combining chunks"""
     try:
@@ -130,13 +145,15 @@ async def complete_upload(
 
         # Validate user
         if session["user_id"] != current_user["user_id"]:
-            raise HTTPException(status_code=403, detail="Not authorized to complete this upload")
+            raise HTTPException(
+                status_code=403, detail="Not authorized to complete this upload"
+            )
 
         # Validate all chunks are uploaded
         if session["uploaded_chunks"] != session["total_chunks"]:
             raise HTTPException(
-                status_code=400, 
-                detail=f"Upload incomplete. Expected {session['total_chunks']} chunks, got {session['uploaded_chunks']}"
+                status_code=400,
+                detail=f"Upload incomplete. Expected {session['total_chunks']} chunks, got {session['uploaded_chunks']}",
             )
 
         # Combine chunks into final file
@@ -147,7 +164,7 @@ async def complete_upload(
             # Sort chunks by index (extracted from filename)
             sorted_chunks = sorted(
                 session["chunk_files"],
-                key=lambda x: int(os.path.basename(x).split('.')[0])
+                key=lambda x: int(os.path.basename(x).split(".")[0]),
             )
 
             # Combine chunks
@@ -164,7 +181,9 @@ async def complete_upload(
         if session["file_type"] in ["application/pdf", "text/plain", "text/html"]:
             try:
                 # Process file with Unstructured in background
-                background_tasks.add_task(process_file_with_unstructured, output_path, uploadId)
+                background_tasks.add_task(
+                    process_file_with_unstructured, output_path, uploadId
+                )
             except Exception as e:
                 logging.error(f"Error processing file with Unstructured: {str(e)}")
                 # Continue even if processing fails
@@ -178,7 +197,7 @@ async def complete_upload(
             "fileSize": session["file_size"],
             "fileType": session["file_type"],
             "status": "completed",
-            "processingStatus": "pending" if file_elements is None else "completed"
+            "processingStatus": "pending" if file_elements is None else "completed",
         }
 
     except HTTPException:
@@ -186,13 +205,16 @@ async def complete_upload(
 
     except Exception as e:
         logging.error(f"Error completing upload: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Failed to complete upload: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Failed to complete upload: {str(e)}"
+        )
+
 
 @router.post("/upload/abort")
 async def abort_upload(
     uploadId: str,
     background_tasks: BackgroundTasks,
-    current_user: Dict = Depends(get_current_user)
+    current_user: Dict = Depends(get_current_user),
 ):
     """Abort an in-progress upload and clean up resources"""
     try:
@@ -204,7 +226,9 @@ async def abort_upload(
 
         # Validate user
         if session["user_id"] != current_user["user_id"]:
-            raise HTTPException(status_code=403, detail="Not authorized to abort this upload")
+            raise HTTPException(
+                status_code=403, detail="Not authorized to abort this upload"
+            )
 
         # Update session status
         session["status"] = "aborted"
@@ -221,10 +245,10 @@ async def abort_upload(
         logging.error(f"Error aborting upload: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to abort upload: {str(e)}")
 
+
 @router.get("/upload/status/{uploadId}")
 async def get_upload_status(
-    uploadId: str,
-    current_user: Dict = Depends(get_current_user)
+    uploadId: str, current_user: Dict = Depends(get_current_user)
 ):
     """Get the status of an upload session"""
     try:
@@ -236,7 +260,9 @@ async def get_upload_status(
 
         # Validate user
         if session["user_id"] != current_user["user_id"]:
-            raise HTTPException(status_code=403, detail="Not authorized to view this upload")
+            raise HTTPException(
+                status_code=403, detail="Not authorized to view this upload"
+            )
 
         return {
             "uploadId": uploadId,
@@ -247,8 +273,10 @@ async def get_upload_status(
             "progress": {
                 "uploaded": session["uploaded_chunks"],
                 "total": session["total_chunks"],
-                "percentage": round((session["uploaded_chunks"] / session["total_chunks"]) * 100)
-            }
+                "percentage": round(
+                    (session["uploaded_chunks"] / session["total_chunks"]) * 100
+                ),
+            },
         }
 
     except HTTPException:
@@ -256,9 +284,13 @@ async def get_upload_status(
 
     except Exception as e:
         logging.error(f"Error getting upload status: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Failed to get upload status: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Failed to get upload status: {str(e)}"
+        )
+
 
 # Background tasks
+
 
 def cleanup_chunks(session_dir: str):
     """Clean up chunk files after successful upload"""
@@ -267,6 +299,7 @@ def cleanup_chunks(session_dir: str):
             shutil.rmtree(session_dir)
     except Exception as e:
         logging.error(f"Error cleaning up chunks: {str(e)}")
+
 
 def process_file_with_unstructured(file_path: str, upload_id: str):
     """Process uploaded file with Unstructured library"""
@@ -284,7 +317,7 @@ def process_file_with_unstructured(file_path: str, upload_id: str):
             upload_sessions[upload_id]["processing_results"] = {
                 "element_count": len(elements),
                 "element_types": [type(el).__name__ for el in elements],
-                "processed_at": datetime.utcnow().isoformat()
+                "processed_at": datetime.utcnow().isoformat(),
             }
             upload_sessions[upload_id]["processing_status"] = "completed"
 

@@ -16,6 +16,7 @@ logger = logging.getLogger(__name__)
 # Thread pool for CPU-bound tasks
 thread_pool = ThreadPoolExecutor(max_workers=settings.MAX_WORKERS)
 
+
 # Performance monitoring
 class PerformanceMonitor:
     """
@@ -55,7 +56,7 @@ class PerformanceMonitor:
                 "count": 0,
                 "total_time": 0,
                 "min_time": float("inf"),
-                "max_time": 0
+                "max_time": 0,
             }
 
         self.metrics[name]["count"] += 1
@@ -80,9 +81,11 @@ class PerformanceMonitor:
             result[name] = {
                 "count": data["count"],
                 "total_time": data["total_time"],
-                "avg_time": data["total_time"] / data["count"] if data["count"] > 0 else 0,
+                "avg_time": data["total_time"] / data["count"]
+                if data["count"] > 0
+                else 0,
                 "min_time": data["min_time"] if data["min_time"] != float("inf") else 0,
-                "max_time": data["max_time"]
+                "max_time": data["max_time"],
             }
 
         return result
@@ -110,6 +113,7 @@ def measure_performance(func):
     Returns:
         Wrapped function
     """
+
     @wraps(func)
     async def async_wrapper(*args, **kwargs):
         operation_name = f"{func.__module__}.{func.__name__}"
@@ -150,11 +154,11 @@ def run_in_threadpool(func):
     Returns:
         Wrapped function
     """
+
     @wraps(func)
     async def wrapper(*args, **kwargs):
         return await asyncio.get_event_loop().run_in_executor(
-            thread_pool, 
-            lambda: func(*args, **kwargs)
+            thread_pool, lambda: func(*args, **kwargs)
         )
 
     return wrapper
@@ -325,7 +329,9 @@ class MemoryOptimizer:
 
 
 # Pagination utilities
-def paginate_results(results: List[Any], page: int = 1, page_size: int = 20) -> Dict[str, Any]:
+def paginate_results(
+    results: List[Any], page: int = 1, page_size: int = 20
+) -> Dict[str, Any]:
     """
     Paginate a list of results.
 
@@ -357,7 +363,7 @@ def paginate_results(results: List[Any], page: int = 1, page_size: int = 20) -> 
         "total_items": total_items,
         "total_pages": total_pages,
         "has_previous": page > 1,
-        "has_next": page < total_pages
+        "has_next": page < total_pages,
     }
 
 
@@ -392,7 +398,11 @@ class RateLimiter:
         current_time = time.time()
 
         # Remove expired requests
-        self.requests = {k: v for k, v in self.requests.items() if current_time - v[-1] < self.time_window}
+        self.requests = {
+            k: v
+            for k, v in self.requests.items()
+            if current_time - v[-1] < self.time_window
+        }
 
         # Get the requests for this key
         key_requests = self.requests.get(key, [])
@@ -420,6 +430,7 @@ class TimeoutError(Exception):
     """
     Exception raised when an operation times out.
     """
+
     pass
 
 
@@ -494,7 +505,7 @@ class E2BSessionManager:
         if session_id not in self.sessions:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Session {session_id} not found"
+                detail=f"Session {session_id} not found",
             )
 
         # Update the last used time
@@ -554,7 +565,8 @@ class E2BSessionManager:
 
         # Find sessions that have timed out
         timed_out_sessions = [
-            session_id for session_id, last_used in self.last_used.items()
+            session_id
+            for session_id, last_used in self.last_used.items()
             if current_time - last_used > self.session_timeout
         ]
 
@@ -565,13 +577,12 @@ class E2BSessionManager:
         # If we still have too many sessions, delete the oldest ones
         if len(self.sessions) >= self.max_sessions:
             # Sort sessions by last used time
-            sorted_sessions = sorted(
-                self.last_used.items(),
-                key=lambda x: x[1]
-            )
+            sorted_sessions = sorted(self.last_used.items(), key=lambda x: x[1])
 
             # Delete the oldest sessions
-            for session_id, _ in sorted_sessions[:len(self.sessions) - self.max_sessions + 1]:
+            for session_id, _ in sorted_sessions[
+                : len(self.sessions) - self.max_sessions + 1
+            ]:
                 await self.delete_session(session_id)
 
 

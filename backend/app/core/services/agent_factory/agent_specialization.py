@@ -30,7 +30,7 @@ class AgentSpecialization(BaseModel):
                 "capabilities": ["web search", "information synthesis", "citation"],
                 "system_prompt_template": "You are a research expert that helps find and analyze information. {additional_instructions}",
                 "tools": ["search_web", "search_graphiti"],
-                "recommended_models": ["claude-3-5-sonnet", "gpt-4o", "gemini-2-5-pro"]
+                "recommended_models": ["claude-3-5-sonnet", "gpt-4o", "gemini-2-5-pro"],
             }
         }
 
@@ -52,7 +52,7 @@ class SpecializationRegistry:
                 capabilities=["web search", "information synthesis", "citation"],
                 system_prompt_template="You are a research expert that helps find and analyze information. {additional_instructions}",
                 tools=["search_web", "search_graphiti"],
-                recommended_models=["claude-3-5-sonnet", "gpt-4o", "gemini-2-5-pro"]
+                recommended_models=["claude-3-5-sonnet", "gpt-4o", "gemini-2-5-pro"],
             ),
             AgentSpecialization(
                 name="coding",
@@ -60,7 +60,12 @@ class SpecializationRegistry:
                 capabilities=["code generation", "code explanation", "debugging"],
                 system_prompt_template="You are a coding expert that helps write, explain, and debug code. {additional_instructions}",
                 tools=["execute_code", "search_documentation"],
-                recommended_models=["claude-3-7-sonnet", "gpt-4o", "gemini-2-5-pro", "deepseek-coder"]
+                recommended_models=[
+                    "claude-3-7-sonnet",
+                    "gpt-4o",
+                    "gemini-2-5-pro",
+                    "deepseek-coder",
+                ],
             ),
             AgentSpecialization(
                 name="writing",
@@ -68,15 +73,23 @@ class SpecializationRegistry:
                 capabilities=["content creation", "editing", "summarization"],
                 system_prompt_template="You are a writing expert that helps create, edit, and improve written content. {additional_instructions}",
                 tools=["check_grammar", "search_web"],
-                recommended_models=["claude-3-opus", "gpt-4-5-preview", "gemini-2-5-pro"]
+                recommended_models=[
+                    "claude-3-opus",
+                    "gpt-4-5-preview",
+                    "gemini-2-5-pro",
+                ],
             ),
             AgentSpecialization(
                 name="data_analysis",
                 description="Specialization for data analysis tasks",
-                capabilities=["data processing", "visualization", "statistical analysis"],
+                capabilities=[
+                    "data processing",
+                    "visualization",
+                    "statistical analysis",
+                ],
                 system_prompt_template="You are a data analysis expert that helps process, visualize, and analyze data. {additional_instructions}",
                 tools=["execute_code", "plot_data"],
-                recommended_models=["claude-3-5-sonnet", "gpt-4o", "gemini-2-5-pro"]
+                recommended_models=["claude-3-5-sonnet", "gpt-4o", "gemini-2-5-pro"],
             ),
             AgentSpecialization(
                 name="planning",
@@ -84,8 +97,8 @@ class SpecializationRegistry:
                 capabilities=["task breakdown", "scheduling", "resource allocation"],
                 system_prompt_template="You are a planning expert that helps organize tasks, schedules, and resources. {additional_instructions}",
                 tools=["create_todo", "search_calendar"],
-                recommended_models=["claude-3-5-sonnet", "gpt-4o", "gemini-2-5-pro"]
-            )
+                recommended_models=["claude-3-5-sonnet", "gpt-4o", "gemini-2-5-pro"],
+            ),
         ]
 
         for spec in defaults:

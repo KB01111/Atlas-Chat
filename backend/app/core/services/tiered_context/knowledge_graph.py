@@ -13,8 +13,10 @@ from pydantic import BaseModel, Field
 
 logger = logging.getLogger(__name__)
 
+
 class KnowledgeNode(BaseModel):
     """Represents a node in the knowledge graph"""
+
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     label: str
     content: str
@@ -23,8 +25,10 @@ class KnowledgeNode(BaseModel):
     updated_at: datetime = Field(default_factory=datetime.now)
     metadata: Dict[str, Any] = {}
 
+
 class KnowledgeRelation(BaseModel):
     """Represents a relation between nodes in the knowledge graph"""
+
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     source_id: str
     target_id: str
@@ -33,6 +37,7 @@ class KnowledgeRelation(BaseModel):
     created_at: datetime = Field(default_factory=datetime.now)
     updated_at: datetime = Field(default_factory=datetime.now)
     metadata: Dict[str, Any] = {}
+
 
 class KnowledgeGraph:
     """
@@ -55,12 +60,19 @@ class KnowledgeGraph:
         self.client = openai_client
         self.nodes: Dict[str, KnowledgeNode] = {}
         self.relations: Dict[str, KnowledgeRelation] = {}
-        self.node_relations: Dict[str, List[str]] = {}  # node_id -> list of relation_ids
+        self.node_relations: Dict[
+            str, List[str]
+        ] = {}  # node_id -> list of relation_ids
         self.session_nodes: Dict[str, List[str]] = {}  # session_id -> list of node_ids
 
-    def add_node(self, label: str, content: str, node_type: str, 
-                session_id: Optional[str] = None,
-                metadata: Optional[Dict[str, Any]] = None) -> str:
+    def add_node(
+        self,
+        label: str,
+        content: str,
+        node_type: str,
+        session_id: Optional[str] = None,
+        metadata: Optional[Dict[str, Any]] = None,
+    ) -> str:
         """
         Add a node to the knowledge graph.
 
@@ -76,10 +88,7 @@ class KnowledgeGraph:
         """
         # Create node
         node = KnowledgeNode(
-            label=label,
-            content=content,
-            node_type=node_type,
-            metadata=metadata or {}
+            label=label, content=content, node_type=node_type, metadata=metadata or {}
         )
 
         # Store node
@@ -93,9 +102,14 @@ class KnowledgeGraph:
 
         return node.id
 
-    def add_relation(self, source_id: str, target_id: str, relation_type: str, 
-                    weight: float = 1.0,
-                    metadata: Optional[Dict[str, Any]] = None) -> str:
+    def add_relation(
+        self,
+        source_id: str,
+        target_id: str,
+        relation_type: str,
+        weight: float = 1.0,
+        metadata: Optional[Dict[str, Any]] = None,
+    ) -> str:
         """
         Add a relation between nodes.
 
@@ -119,7 +133,7 @@ class KnowledgeGraph:
             target_id=target_id,
             relation_type=relation_type,
             weight=weight,
-            metadata=metadata or {}
+            metadata=metadata or {},
         )
 
         # Store relation
@@ -180,7 +194,9 @@ class KnowledgeGraph:
 
         return relations
 
-    def get_connected_nodes(self, node_id: str, relation_types: Optional[List[str]] = None) -> List[KnowledgeNode]:
+    def get_connected_nodes(
+        self, node_id: str, relation_types: Optional[List[str]] = None
+    ) -> List[KnowledgeNode]:
         """
         Get nodes connected to a node.
 
@@ -210,8 +226,9 @@ class KnowledgeGraph:
 
         return connected_nodes
 
-    def search_nodes(self, query: str, node_types: Optional[List[str]] = None, 
-                   limit: int = 10) -> List[KnowledgeNode]:
+    def search_nodes(
+        self, query: str, node_types: Optional[List[str]] = None, limit: int = 10
+    ) -> List[KnowledgeNode]:
         """
         Search for nodes matching the query.
 
@@ -240,12 +257,18 @@ class KnowledgeGraph:
                 matching_nodes.append(node)
 
         # Sort by relevance (simple implementation)
-        matching_nodes.sort(key=lambda n: n.label.lower().count(query_lower) + n.content.lower().count(query_lower), reverse=True)
+        matching_nodes.sort(
+            key=lambda n: n.label.lower().count(query_lower)
+            + n.content.lower().count(query_lower),
+            reverse=True,
+        )
 
         # Apply limit
         return matching_nodes[:limit]
 
-    async def extract_knowledge(self, content: str, session_id: Optional[str] = None) -> List[str]:
+    async def extract_knowledge(
+        self, content: str, session_id: Optional[str] = None
+    ) -> List[str]:
         """
         Extract knowledge from content and add to the graph.
 
@@ -269,7 +292,7 @@ class KnowledgeGraph:
                 label=f"Fact from session {session_id}",
                 content=f"Extracted fact: {content[:50]}...",
                 node_type="fact",
-                session_id=session_id
+                session_id=session_id,
             )
             added_nodes.append(fact_node_id)
 
@@ -329,8 +352,15 @@ class KnowledgeGraph:
                     relation = self.relations[relation_id]
 
                     # Remove from node relations
-                    other_node_id = relation.target_id if relation.source_id == node_id else relation.source_id
-                    if other_node_id in self.node_relations and relation_id in self.node_relations[other_node_id]:
+                    other_node_id = (
+                        relation.target_id
+                        if relation.source_id == node_id
+                        else relation.source_id
+                    )
+                    if (
+                        other_node_id in self.node_relations
+                        and relation_id in self.node_relations[other_node_id]
+                    ):
                         self.node_relations[other_node_id].remove(relation_id)
 
                     # Remove relation

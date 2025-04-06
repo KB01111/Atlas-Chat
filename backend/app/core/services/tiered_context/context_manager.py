@@ -18,13 +18,16 @@ from .knowledge_graph import KnowledgeGraph
 
 logger = logging.getLogger(__name__)
 
+
 class ContextBundle(BaseModel):
     """Represents a bundle of context from different memory tiers"""
+
     working_memory: List[Dict[str, Any]] = []
     episodic_memory: List[Dict[str, Any]] = []
     knowledge_graph: List[Dict[str, Any]] = []
     total_tokens: int = 0
     metadata: Dict[str, Any] = {}
+
 
 class TieredContextManager:
     """
@@ -51,14 +54,21 @@ class TieredContextManager:
         # Initialize components
         self.context_summarizer = ContextSummarizer(openrouter_client=self.client)
         self.working_memory = WorkingMemory()
-        self.episodic_memory = EpisodicMemory(context_summarizer=self.context_summarizer)
+        self.episodic_memory = EpisodicMemory(
+            context_summarizer=self.context_summarizer
+        )
         self.knowledge_graph = KnowledgeGraph(openrouter_client=self.client)
 
         # Initialize active sessions
         self.active_sessions: Dict[str, Dict[str, Any]] = {}
 
-    async def add_message(self, session_id: str, message: str, role: str, 
-                   metadata: Optional[Dict[str, Any]] = None) -> str:
+    async def add_message(
+        self,
+        session_id: str,
+        message: str,
+        role: str,
+        metadata: Optional[Dict[str, Any]] = None,
+    ) -> str:
         """
         Add a message to the context manager.
 
@@ -76,10 +86,7 @@ class TieredContextManager:
 
         # Add to working memory
         message_id = self.working_memory.add_entry(
-            session_id=session_id,
-            content=message,
-            role=role,
-            metadata=metadata
+            session_id=session_id, content=message, role=role, metadata=metadata
         )
 
         # Process for episodic memory if appropriate
@@ -87,27 +94,29 @@ class TieredContextManager:
         # logic to determine when to create episodes
         if len(message) > 100:
             # Get recent messages for context
-            recent_messages = self.working_memory.get_conversation_history(session_id, limit=5)
+            recent_messages = self.working_memory.get_conversation_history(
+                session_id, limit=5
+            )
 
             # Add to episodic memory
             await self.episodic_memory.add_episode(
                 session_id=session_id,
                 content=f"{recent_messages}\n\n{role}: {message}",
                 speakers=[role],
-                metadata=metadata
+                metadata=metadata,
             )
 
         # Extract knowledge if appropriate
         if role == "assistant" and len(message) > 200:
             await self.knowledge_graph.extract_knowledge(
-                content=message,
-                session_id=session_id
+                content=message, session_id=session_id
             )
 
         return message_id
 
-    async def retrieve_context(self, session_id: str, query: str, 
-                             depth: int = 2) -> ContextBundle:
+    async def retrieve_context(
+        self, session_id: str, query: str, depth: int = 2
+    ) -> ContextBundle:
         """
         Retrieve context based on query relevance.
 
@@ -125,8 +134,7 @@ class TieredContextManager:
         # Get working memory entries
         working_memory_limit = 10 if depth == 1 else (20 if depth == 2 else 30)
         working_memory_entries = self.working_memory.get_session_entries(
-            session_id=session_id,
-            limit=working_memory_limit
+            session_id=session_id, limit=working_memory_limit
         )
 
         # Add to context bundle
@@ -136,37 +144,40 @@ class TieredContextManager:
                 "content": entry.content,
                 "role": entry.role,
                 "created_at": entry.created_at.isoformat(),
-                "metadata": entry.metadata
+                "metadata": entry.metadata,
             }
             for entry in working_memory_entries
         ]
 
         # Update token count
-        context_bundle.total_tokens += sum(len(entry.content.split()) for entry in working_memory_entries)
+        context_bundle.total_tokens += sum(
+            len(entry.content.split()) for entry in working_memory_entries
+        )
 
         # Check if we need more context
         if context_bundle.total_tokens < self.max_context_tokens:
             # Get episodic memory entries
             episodic_memory_limit = 3 if depth == 1 else (5 if depth == 2 else 10)
-            episodic_memory_entries = await self.episodic_memory.retrieve_relevant_episodes(
-                session_id=session_id,
-                query=query,
-                limit=episodic_memory_limit
+            episodic_memory_entries = (
+                await self.episodic_memory.retrieve_relevant_episodes(
+                    session_id=session_id, query=query, limit=episodic_memory_limit
+                )
             )
 
             # Add to context bundle
             context_bundle.episodic_memory = episodic_memory_entries
 
             # Update token count
-            context_bundle.total_tokens += sum(len(entry["content"].split()) for entry in episodic_memory_entries)
+            context_bundle.total_tokens += sum(
+                len(entry["content"].split()) for entry in episodic_memory_entries
+            )
 
         # Check if we need more context
         if context_bundle.total_tokens < self.max_context_tokens:
             # Get knowledge graph nodes
             knowledge_limit = 2 if depth == 1 else (3 if depth == 2 else 5)
             knowledge_nodes = await self.knowledge_graph.search_nodes(
-                query=query,
-                limit=knowledge_limit
+                query=query, limit=knowledge_limit
             )
 
             # Add to context bundle
@@ -177,13 +188,15 @@ class TieredContextManager:
                     "content": node.content,
                     "node_type": node.node_type,
                     "created_at": node.created_at.isoformat(),
-                    "metadata": node.metadata
+                    "metadata": node.metadata,
                 }
                 for node in knowledge_nodes
             ]
 
             # Update token count
-            context_bundle.total_tokens += sum(len(node.content.split()) for node in knowledge_nodes)
+            context_bundle.total_tokens += sum(
+                len(node.content.split()) for node in knowledge_nodes
+            )
 
         return context_bundle
 
@@ -203,7 +216,13 @@ class TieredContextManager:
         if context_bundle.working_memory:
             working_memory_str = "## Recent Conversation\n\n"
             for entry in context_bundle.working_memory:
-                role_display = "User" if entry["role"] == "user" else "Assistant" if entry["role"] == "assistant" else "System"
+                role_display = (
+                    "User"
+                    if entry["role"] == "user"
+                    else "Assistant"
+                    if entry["role"] == "assistant"
+                    else "System"
+                )
                 working_memory_str += f"{role_display}: {entry['content']}\n\n"
             context_parts.append(working_memory_str)
 
@@ -266,7 +285,7 @@ class TieredContextManager:
                 "created_at": datetime.now().isoformat(),
                 "last_updated": datetime.now().isoformat(),
                 "message_count": 0,
-                "title": f"Conversation {session_id[:8]}"
+                "title": f"Conversation {session_id[:8]}",
             }
 
         # Update session
@@ -275,4 +294,6 @@ class TieredContextManager:
 
         # Update title if first user message
         if self.active_sessions[session_id]["message_count"] <= 2 and len(message) > 10:
-            self.active_sessions[session_id]["title"] = message[:50] + ("..." if len(message) > 50 else "")
+            self.active_sessions[session_id]["title"] = message[:50] + (
+                "..." if len(message) > 50 else ""
+            )

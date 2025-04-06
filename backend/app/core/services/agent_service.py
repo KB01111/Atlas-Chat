@@ -6,6 +6,7 @@ from app.core.logging_config import setup_logging
 
 logger = setup_logging()
 
+
 class AgentService:
     """Service for handling agent requests and orchestrating execution"""
 
@@ -14,7 +15,9 @@ class AgentService:
         self.tool_executor = tool_executor or ToolExecutor()
         logger.info("AgentService initialized")
 
-    async def handle_chat_request(self, agent_id: str, message: str, history: list, user_id: str) -> AsyncGenerator[str, None]:
+    async def handle_chat_request(
+        self, agent_id: str, message: str, history: list, user_id: str
+    ) -> AsyncGenerator[str, None]:
         """
         Handle a chat request from the user
 
@@ -36,13 +39,13 @@ class AgentService:
 
         # Create RequestContext
         context = RequestContext(
-            thread_id=thread_id,
-            user_id=user_id,
-            agent_definition=agent_definition
+            thread_id=thread_id, user_id=user_id, agent_definition=agent_definition
         )
 
         # Log audit event
-        logger.info(f"AUDIT: CHAT_REQUEST_RECEIVED - user_id={user_id}, agent_id={agent_id}, thread_id={thread_id}")
+        logger.info(
+            f"AUDIT: CHAT_REQUEST_RECEIVED - user_id={user_id}, agent_id={agent_id}, thread_id={thread_id}"
+        )
 
         # Check agent_definition['agent_type']
         agent_type = agent_definition.get("agent_type", "sdk")
@@ -51,9 +54,11 @@ class AgentService:
             # Instantiate appropriate executor based on agent_type
             if agent_type == "sdk":
                 from app.core.executors.sdk_executor import SDKExecutor
+
                 executor = SDKExecutor(self.tool_executor)
             elif agent_type == "langgraph":
                 from app.core.executors.langgraph_executor import LangGraphExecutor
+
                 executor = LangGraphExecutor(self.tool_executor)
             else:
                 error_msg = f"Unsupported agent type: {agent_type}"
@@ -62,7 +67,9 @@ class AgentService:
                 return
 
             # Call the executor's execute method
-            async for chunk in executor.execute(agent_definition, context, message, history):
+            async for chunk in executor.execute(
+                agent_definition, context, message, history
+            ):
                 yield chunk
 
             # Handle conversation history persistence
@@ -70,7 +77,9 @@ class AgentService:
             # await self._save_conversation_history(thread_id, user_id, message, response)
 
             # Log audit event
-            logger.info(f"AUDIT: CHAT_RESPONSE_SENT - user_id={user_id}, agent_id={agent_id}, thread_id={thread_id}")
+            logger.info(
+                f"AUDIT: CHAT_RESPONSE_SENT - user_id={user_id}, agent_id={agent_id}, thread_id={thread_id}"
+            )
 
         except Exception as e:
             error_msg = f"Error handling chat request: {str(e)}"
@@ -95,9 +104,11 @@ class AgentService:
             "description": "Test agent with code execution capability",
             "agent_type": "sdk",
             "uses_graphiti": False,
-            "allowed_tools": ["execute_code", "write_file", "read_file", "install_packages"],
-            "sdk_config": {
-                "model": "gpt-4",
-                "temperature": 0.7
-            }
+            "allowed_tools": [
+                "execute_code",
+                "write_file",
+                "read_file",
+                "install_packages",
+            ],
+            "sdk_config": {"model": "gpt-4", "temperature": 0.7},
         }

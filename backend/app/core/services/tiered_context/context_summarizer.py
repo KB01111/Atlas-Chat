@@ -15,8 +15,10 @@ from pydantic import BaseModel, Field
 
 logger = logging.getLogger(__name__)
 
+
 class ConversationSegment(BaseModel):
     """Represents a segment of conversation for summarization"""
+
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     content: str
     segment_type: str  # raw, detailed, condensed, topic
@@ -24,6 +26,7 @@ class ConversationSegment(BaseModel):
     speakers: List[str]
     created_at: datetime = Field(default_factory=datetime.now)
     metadata: Dict[str, Any] = {}
+
 
 class ContextSummarizer:
     """
@@ -45,8 +48,12 @@ class ContextSummarizer:
         """
         self.client = openrouter_client
 
-    async def create_detailed_summary(self, content: str, speakers: List[str], 
-                                    metadata: Optional[Dict[str, Any]] = None) -> ConversationSegment:
+    async def create_detailed_summary(
+        self,
+        content: str,
+        speakers: List[str],
+        metadata: Optional[Dict[str, Any]] = None,
+    ) -> ConversationSegment:
         """
         Create a detailed summary of the content.
 
@@ -74,11 +81,15 @@ class ContextSummarizer:
             segment_type="detailed",
             tokens=summary_tokens,
             speakers=speakers,
-            metadata=metadata or {}
+            metadata=metadata or {},
         )
 
-    async def create_condensed_summary(self, content: str, speakers: List[str], 
-                                     metadata: Optional[Dict[str, Any]] = None) -> ConversationSegment:
+    async def create_condensed_summary(
+        self,
+        content: str,
+        speakers: List[str],
+        metadata: Optional[Dict[str, Any]] = None,
+    ) -> ConversationSegment:
         """
         Create a condensed summary of the content.
 
@@ -106,11 +117,15 @@ class ContextSummarizer:
             segment_type="condensed",
             tokens=summary_tokens,
             speakers=speakers,
-            metadata=metadata or {}
+            metadata=metadata or {},
         )
 
-    async def create_topic_summary(self, content: str, speakers: List[str], 
-                                 metadata: Optional[Dict[str, Any]] = None) -> ConversationSegment:
+    async def create_topic_summary(
+        self,
+        content: str,
+        speakers: List[str],
+        metadata: Optional[Dict[str, Any]] = None,
+    ) -> ConversationSegment:
         """
         Create a topic summary of the content.
 
@@ -138,11 +153,15 @@ class ContextSummarizer:
             segment_type="topic",
             tokens=summary_tokens,
             speakers=speakers,
-            metadata=metadata or {}
+            metadata=metadata or {},
         )
 
-    async def progressive_summarize(self, content: str, speakers: List[str], 
-                                  metadata: Optional[Dict[str, Any]] = None) -> Dict[str, ConversationSegment]:
+    async def progressive_summarize(
+        self,
+        content: str,
+        speakers: List[str],
+        metadata: Optional[Dict[str, Any]] = None,
+    ) -> Dict[str, ConversationSegment]:
         """
         Create all levels of summaries for the content.
 
@@ -161,19 +180,23 @@ class ContextSummarizer:
             segment_type="raw",
             tokens=tokens,
             speakers=speakers,
-            metadata=metadata or {}
+            metadata=metadata or {},
         )
 
         # Create summaries
-        detailed_segment = await self.create_detailed_summary(content, speakers, metadata)
-        condensed_segment = await self.create_condensed_summary(content, speakers, metadata)
+        detailed_segment = await self.create_detailed_summary(
+            content, speakers, metadata
+        )
+        condensed_segment = await self.create_condensed_summary(
+            content, speakers, metadata
+        )
         topic_segment = await self.create_topic_summary(content, speakers, metadata)
 
         return {
             "raw": raw_segment,
             "detailed": detailed_segment,
             "condensed": condensed_segment,
-            "topic": topic_segment
+            "topic": topic_segment,
         }
 
     def _analyze_query(self, query: str) -> Dict[str, Any]:
@@ -191,12 +214,11 @@ class ContextSummarizer:
 
         # Simple analysis
         words = query.lower().split()
-        return {
-            "words": words,
-            "length": len(words)
-        }
+        return {"words": words, "length": len(words)}
 
-    def _calculate_relevance(self, segment: ConversationSegment, query_analysis: Dict[str, Any]) -> float:
+    def _calculate_relevance(
+        self, segment: ConversationSegment, query_analysis: Dict[str, Any]
+    ) -> float:
         """
         Calculate relevance between a segment and a query.
 
@@ -223,8 +245,9 @@ class ContextSummarizer:
 
         return 0.0
 
-    async def retrieve_relevant_segments(self, segments: List[ConversationSegment], 
-                                       query: str, limit: int = 5) -> List[ConversationSegment]:
+    async def retrieve_relevant_segments(
+        self, segments: List[ConversationSegment], query: str, limit: int = 5
+    ) -> List[ConversationSegment]:
         """
         Retrieve segments relevant to the query.
 

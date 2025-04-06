@@ -15,8 +15,10 @@ from .context_summarizer import ConversationSegment
 
 logger = logging.getLogger(__name__)
 
+
 class WorkingMemoryEntry(BaseModel):
     """Represents an entry in working memory"""
+
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     session_id: str
     content: str
@@ -24,6 +26,7 @@ class WorkingMemoryEntry(BaseModel):
     created_at: datetime = Field(default_factory=datetime.now)
     expires_at: Optional[datetime] = None
     metadata: Dict[str, Any] = {}
+
 
 class WorkingMemory:
     """
@@ -46,10 +49,17 @@ class WorkingMemory:
         self.max_entries = max_entries
         self.ttl_minutes = ttl_minutes
         self.entries: Dict[str, WorkingMemoryEntry] = {}
-        self.session_entries: Dict[str, List[str]] = {}  # session_id -> list of entry_ids
+        self.session_entries: Dict[
+            str, List[str]
+        ] = {}  # session_id -> list of entry_ids
 
-    def add_entry(self, session_id: str, content: str, role: str, 
-                 metadata: Optional[Dict[str, Any]] = None) -> str:
+    def add_entry(
+        self,
+        session_id: str,
+        content: str,
+        role: str,
+        metadata: Optional[Dict[str, Any]] = None,
+    ) -> str:
         """
         Add an entry to working memory.
 
@@ -68,7 +78,7 @@ class WorkingMemory:
             content=content,
             role=role,
             expires_at=datetime.now() + timedelta(minutes=self.ttl_minutes),
-            metadata=metadata or {}
+            metadata=metadata or {},
         )
 
         # Store entry
@@ -103,7 +113,9 @@ class WorkingMemory:
 
         return entry
 
-    def get_session_entries(self, session_id: str, limit: Optional[int] = None) -> List[WorkingMemoryEntry]:
+    def get_session_entries(
+        self, session_id: str, limit: Optional[int] = None
+    ) -> List[WorkingMemoryEntry]:
         """
         Get entries for a session.
 
@@ -133,7 +145,9 @@ class WorkingMemory:
 
         return entries
 
-    def get_conversation_history(self, session_id: str, limit: Optional[int] = None) -> str:
+    def get_conversation_history(
+        self, session_id: str, limit: Optional[int] = None
+    ) -> str:
         """
         Get conversation history for a session.
 
@@ -260,7 +274,7 @@ class WorkingMemory:
                 segment_type="raw",
                 tokens=len(entry.content.split()),
                 speakers=[entry.role],
-                metadata=entry.metadata
+                metadata=entry.metadata,
             )
             segments.append(segment)
 

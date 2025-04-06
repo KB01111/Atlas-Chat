@@ -13,6 +13,7 @@ from pydantic import BaseModel, Field
 
 logger = logging.getLogger(__name__)
 
+
 class SpecializedAgent:
     """
     Base class for specialized agents in the agent team coordination framework.
@@ -24,8 +25,14 @@ class SpecializedAgent:
     - Interacting with the coordinator agent
     """
 
-    def __init__(self, agent_id: str, context_manager=None, model: str = "gpt-4o", 
-                capabilities: Optional[List[str]] = None, openai_client=None):
+    def __init__(
+        self,
+        agent_id: str,
+        context_manager=None,
+        model: str = "gpt-4o",
+        capabilities: Optional[List[str]] = None,
+        openai_client=None,
+    ):
         """
         Initialize the specialized agent.
 
@@ -43,8 +50,12 @@ class SpecializedAgent:
         self.capabilities = capabilities or []
         self.client = openai_client
 
-    async def execute_task(self, thread_id: str, task_description: str, 
-                         context_ids: Optional[List[str]] = None) -> Dict[str, Any]:
+    async def execute_task(
+        self,
+        thread_id: str,
+        task_description: str,
+        context_ids: Optional[List[str]] = None,
+    ) -> Dict[str, Any]:
         """
         Execute a task assigned by the coordinator.
 
@@ -82,8 +93,8 @@ class SpecializedAgent:
                 content=result,
                 metadata={
                     "agent_type": self.agent_type,
-                    "task_description": task_description
-                }
+                    "task_description": task_description,
+                },
             )
 
         return {
@@ -92,8 +103,8 @@ class SpecializedAgent:
             "metadata": {
                 "agent_id": self.agent_id,
                 "agent_type": self.agent_type,
-                "model": self.model
-            }
+                "model": self.model,
+            },
         }
 
     def can_handle_task(self, task_description: str) -> bool:
@@ -129,8 +140,13 @@ class ResearchAgent(SpecializedAgent):
     - Providing comprehensive research reports
     """
 
-    def __init__(self, agent_id: str, context_manager=None, model: str = "gpt-4o", 
-                openai_client=None):
+    def __init__(
+        self,
+        agent_id: str,
+        context_manager=None,
+        model: str = "gpt-4o",
+        openai_client=None,
+    ):
         """
         Initialize the research agent.
 
@@ -146,7 +162,7 @@ class ResearchAgent(SpecializedAgent):
             "fact verification",
             "information synthesis",
             "source evaluation",
-            "literature review"
+            "literature review",
         ]
 
         super().__init__(
@@ -154,13 +170,17 @@ class ResearchAgent(SpecializedAgent):
             context_manager=context_manager,
             model=model,
             capabilities=capabilities,
-            openai_client=openai_client
+            openai_client=openai_client,
         )
 
         self.agent_type = "research"
 
-    async def execute_task(self, thread_id: str, task_description: str, 
-                         context_ids: Optional[List[str]] = None) -> Dict[str, Any]:
+    async def execute_task(
+        self,
+        thread_id: str,
+        task_description: str,
+        context_ids: Optional[List[str]] = None,
+    ) -> Dict[str, Any]:
         """
         Execute a research task.
 
@@ -199,8 +219,13 @@ class CoderAgent(SpecializedAgent):
     - Optimizing and refactoring code
     """
 
-    def __init__(self, agent_id: str, context_manager=None, model: str = "gpt-4o", 
-                openai_client=None):
+    def __init__(
+        self,
+        agent_id: str,
+        context_manager=None,
+        model: str = "gpt-4o",
+        openai_client=None,
+    ):
         """
         Initialize the coder agent.
 
@@ -216,7 +241,7 @@ class CoderAgent(SpecializedAgent):
             "code explanation",
             "refactoring",
             "code review",
-            "algorithm design"
+            "algorithm design",
         ]
 
         super().__init__(
@@ -224,13 +249,17 @@ class CoderAgent(SpecializedAgent):
             context_manager=context_manager,
             model=model,
             capabilities=capabilities,
-            openai_client=openai_client
+            openai_client=openai_client,
         )
 
         self.agent_type = "coder"
 
-    async def execute_task(self, thread_id: str, task_description: str, 
-                         context_ids: Optional[List[str]] = None) -> Dict[str, Any]:
+    async def execute_task(
+        self,
+        thread_id: str,
+        task_description: str,
+        context_ids: Optional[List[str]] = None,
+    ) -> Dict[str, Any]:
         """
         Execute a coding task.
 
@@ -272,8 +301,13 @@ class WritingAgent(SpecializedAgent):
     - Adapting content for different audiences
     """
 
-    def __init__(self, agent_id: str, context_manager=None, model: str = "gpt-4o", 
-                openai_client=None):
+    def __init__(
+        self,
+        agent_id: str,
+        context_manager=None,
+        model: str = "gpt-4o",
+        openai_client=None,
+    ):
         """
         Initialize the writing agent.
 
@@ -289,7 +323,7 @@ class WritingAgent(SpecializedAgent):
             "proofreading",
             "summarization",
             "style adaptation",
-            "formatting"
+            "formatting",
         ]
 
         super().__init__(
@@ -297,13 +331,17 @@ class WritingAgent(SpecializedAgent):
             context_manager=context_manager,
             model=model,
             capabilities=capabilities,
-            openai_client=openai_client
+            openai_client=openai_client,
         )
 
         self.agent_type = "writing"
 
-    async def execute_task(self, thread_id: str, task_description: str, 
-                         context_ids: Optional[List[str]] = None) -> Dict[str, Any]:
+    async def execute_task(
+        self,
+        thread_id: str,
+        task_description: str,
+        context_ids: Optional[List[str]] = None,
+    ) -> Dict[str, Any]:
         """
         Execute a writing task.
 
@@ -323,10 +361,18 @@ class WritingAgent(SpecializedAgent):
 
         # Add writing-specific information
         result["content"] += "\n\n## Writing Sample\n\n"
-        result["content"] += "The sun cast long shadows across the valley as the day drew to a close. "
-        result["content"] += "Birds returned to their nests, singing their evening songs, while the gentle "
-        result["content"] += "breeze carried the scent of wildflowers through the air. It was a perfect "
-        result["content"] += "moment of tranquility, a brief pause before the world transitioned from day to night.\n\n"
+        result["content"] += (
+            "The sun cast long shadows across the valley as the day drew to a close. "
+        )
+        result["content"] += (
+            "Birds returned to their nests, singing their evening songs, while the gentle "
+        )
+        result["content"] += (
+            "breeze carried the scent of wildflowers through the air. It was a perfect "
+        )
+        result["content"] += (
+            "moment of tranquility, a brief pause before the world transitioned from day to night.\n\n"
+        )
 
         return result
 
@@ -342,8 +388,13 @@ class AnalysisAgent(SpecializedAgent):
     - Providing statistical analysis
     """
 
-    def __init__(self, agent_id: str, context_manager=None, model: str = "gpt-4o", 
-                openai_client=None):
+    def __init__(
+        self,
+        agent_id: str,
+        context_manager=None,
+        model: str = "gpt-4o",
+        openai_client=None,
+    ):
         """
         Initialize the analysis agent.
 
@@ -359,7 +410,7 @@ class AnalysisAgent(SpecializedAgent):
             "interpretation",
             "visualization",
             "statistics",
-            "trend identification"
+            "trend identification",
         ]
 
         super().__init__(
@@ -367,13 +418,17 @@ class AnalysisAgent(SpecializedAgent):
             context_manager=context_manager,
             model=model,
             capabilities=capabilities,
-            openai_client=openai_client
+            openai_client=openai_client,
         )
 
         self.agent_type = "analysis"
 
-    async def execute_task(self, thread_id: str, task_description: str, 
-                         context_ids: Optional[List[str]] = None) -> Dict[str, Any]:
+    async def execute_task(
+        self,
+        thread_id: str,
+        task_description: str,
+        context_ids: Optional[List[str]] = None,
+    ) -> Dict[str, Any]:
         """
         Execute an analysis task.
 

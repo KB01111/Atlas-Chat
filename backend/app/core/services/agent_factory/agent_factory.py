@@ -58,7 +58,9 @@ class AgentProvider(ABC):
         pass
 
     @abstractmethod
-    def update_agent(self, agent_id: str, updates: Dict[str, Any]) -> Optional[AgentDefinition]:
+    def update_agent(
+        self, agent_id: str, updates: Dict[str, Any]
+    ) -> Optional[AgentDefinition]:
         """
         Update agent definition.
 
@@ -107,26 +109,35 @@ class AgentFactory:
         try:
             # Register SDK provider
             from ..services.openai_sdk_agent import OpenAISDKProvider
+
             self.register_provider("sdk", OpenAISDKProvider(self.model_router))
 
             # Register LangGraph provider
             from ..services.langgraph_agent import LangGraphProvider
+
             self.register_provider("langgraph", LangGraphProvider(self.model_router))
 
             # Register OpenRouter provider
             from ..services.openrouter_sdk_agent import OpenRouterSDKProvider
-            self.register_provider("openrouter", OpenRouterSDKProvider(self.model_router))
+
+            self.register_provider(
+                "openrouter", OpenRouterSDKProvider(self.model_router)
+            )
 
             # Try to register Anthropic provider if available
             try:
                 from ..services.anthropic_agent import AnthropicProvider
-                self.register_provider("anthropic", AnthropicProvider(self.model_router))
+
+                self.register_provider(
+                    "anthropic", AnthropicProvider(self.model_router)
+                )
             except ImportError:
                 logger.info("Anthropic provider not available")
 
             # Try to register Google provider if available
             try:
                 from ..services.google_agent import GoogleProvider
+
                 self.register_provider("google", GoogleProvider(self.model_router))
             except ImportError:
                 logger.info("Google provider not available")
@@ -215,7 +226,9 @@ class AgentFactory:
         """
         return self.agents.get(agent_id)
 
-    def update_agent(self, agent_id: str, updates: Dict[str, Any]) -> Optional[AgentDefinition]:
+    def update_agent(
+        self, agent_id: str, updates: Dict[str, Any]
+    ) -> Optional[AgentDefinition]:
         """
         Update agent definition.
 
@@ -293,7 +306,11 @@ class AgentFactory:
         model_id = definition.model_id
 
         # Check for OpenRouter models
-        if model_id.startswith("deepseek") or model_id.startswith("mistral") or model_id.startswith("llama"):
+        if (
+            model_id.startswith("deepseek")
+            or model_id.startswith("mistral")
+            or model_id.startswith("llama")
+        ):
             return "openrouter"
 
         # Check for Anthropic models

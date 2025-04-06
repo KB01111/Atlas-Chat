@@ -12,7 +12,12 @@ import json
 from pydantic import BaseModel, Field
 
 # Import agent factory components
-from ...services.agent_factory.agent_definition import AgentDefinition, AgentRequest, AgentResponse, AgentMessage
+from ...services.agent_factory.agent_definition import (
+    AgentDefinition,
+    AgentRequest,
+    AgentResponse,
+    AgentMessage,
+)
 from ...services.agent_factory.agent_factory import AgentProvider
 from ...services.model_routing.model_router import ModelRouter
 
@@ -22,9 +27,12 @@ logger = logging.getLogger(__name__)
 try:
     # This is a placeholder - actual import would depend on how Roo-Code is packaged
     import roo_code
+
     ROO_CODE_AVAILABLE = True
 except ImportError:
-    logger.warning("roo_code library not available. Install from https://github.com/RooVetGit/Roo-Code")
+    logger.warning(
+        "roo_code library not available. Install from https://github.com/RooVetGit/Roo-Code"
+    )
     ROO_CODE_AVAILABLE = False
 
 
@@ -43,7 +51,11 @@ class RooCodeConfig(BaseModel):
 class RooCodeAdapter(AgentProvider):
     """Roo-Code adapter for agent factory."""
 
-    def __init__(self, model_router: Optional[ModelRouter] = None, config: Optional[RooCodeConfig] = None):
+    def __init__(
+        self,
+        model_router: Optional[ModelRouter] = None,
+        config: Optional[RooCodeConfig] = None,
+    ):
         """
         Initialize Roo-Code adapter.
 
@@ -58,7 +70,9 @@ class RooCodeAdapter(AgentProvider):
 
         # Check if Roo-Code is available
         if not ROO_CODE_AVAILABLE:
-            logger.warning("Roo-Code is not available. Some functionality will be limited.")
+            logger.warning(
+                "Roo-Code is not available. Some functionality will be limited."
+            )
 
         # Create workspace directory if it doesn't exist
         os.makedirs(self.config.workspace_dir, exist_ok=True)
@@ -77,7 +91,9 @@ class RooCodeAdapter(AgentProvider):
             # Fallback implementation when Roo-Code is not available
             agent_id = definition.agent_id
             self.agents[agent_id] = definition
-            logger.info(f"Created Roo-Code agent (fallback mode): {definition.name} ({agent_id})")
+            logger.info(
+                f"Created Roo-Code agent (fallback mode): {definition.name} ({agent_id})"
+            )
             return agent_id
 
         # Store agent definition
@@ -137,7 +153,9 @@ class RooCodeAdapter(AgentProvider):
         """
         return self.agents.get(agent_id)
 
-    def update_agent(self, agent_id: str, updates: Dict[str, Any]) -> Optional[AgentDefinition]:
+    def update_agent(
+        self, agent_id: str, updates: Dict[str, Any]
+    ) -> Optional[AgentDefinition]:
         """
         Update agent definition.
 
@@ -222,12 +240,14 @@ class RooCodeAdapter(AgentProvider):
             "description": definition.description,
             "system_prompt": definition.system_prompt,
             "model": definition.model_id,
-            "workspace_dir": os.path.join(self.config.workspace_dir, definition.agent_id),
+            "workspace_dir": os.path.join(
+                self.config.workspace_dir, definition.agent_id
+            ),
             "max_iterations": self.config.max_iterations,
             "auto_improve": self.config.auto_improve,
             "verbose": self.config.verbose,
             "memory_enabled": definition.memory_enabled,
-            "tools": definition.tools
+            "tools": definition.tools,
         }
 
         # Create agent workspace directory
@@ -263,14 +283,16 @@ class RooCodeAdapter(AgentProvider):
             raise ValueError(f"Roo-Code agent not found: {agent_id}")
 
         # Update agent configuration
-        roo_agent.update({
-            "name": definition.name,
-            "description": definition.description,
-            "system_prompt": definition.system_prompt,
-            "model": definition.model_id,
-            "memory_enabled": definition.memory_enabled,
-            "tools": definition.tools
-        })
+        roo_agent.update(
+            {
+                "name": definition.name,
+                "description": definition.description,
+                "system_prompt": definition.system_prompt,
+                "model": definition.model_id,
+                "memory_enabled": definition.memory_enabled,
+                "tools": definition.tools,
+            }
+        )
 
         # Save updated configuration
         workspace_dir = roo_agent.get("workspace_dir")
@@ -309,7 +331,9 @@ class RooCodeAdapter(AgentProvider):
             # shutil.rmtree(workspace_dir)
             pass
 
-    def _process_with_roo(self, request: AgentRequest, definition: AgentDefinition) -> AgentResponse:
+    def _process_with_roo(
+        self, request: AgentRequest, definition: AgentDefinition
+    ) -> AgentResponse:
         """
         Process a request with Roo-Code.
 
@@ -338,10 +362,14 @@ class RooCodeAdapter(AgentProvider):
                 user_message = msg.content
                 if isinstance(user_message, list):
                     # Handle multimodal content
-                    user_message = " ".join([
-                        part.get("text", "") if isinstance(part, dict) and "text" in part
-                        else str(part) for part in user_message
-                    ])
+                    user_message = " ".join(
+                        [
+                            part.get("text", "")
+                            if isinstance(part, dict) and "text" in part
+                            else str(part)
+                            for part in user_message
+                        ]
+                    )
                 break
 
         if not user_message:
@@ -357,17 +385,16 @@ class RooCodeAdapter(AgentProvider):
         # Create response
         response = AgentResponse(
             agent_id=agent_id,
-            message=AgentMessage(
-                role="assistant",
-                content=response_content
-            ),
+            message=AgentMessage(role="assistant", content=response_content),
             usage={},
-            metadata={"processor": "roo_code"}
+            metadata={"processor": "roo_code"},
         )
 
         return response
 
-    def _process_with_model(self, request: AgentRequest, definition: AgentDefinition) -> AgentResponse:
+    def _process_with_model(
+        self, request: AgentRequest, definition: AgentDefinition
+    ) -> AgentResponse:
         """
         Process a request with a model (fallback).
 
@@ -390,10 +417,10 @@ class RooCodeAdapter(AgentProvider):
                 agent_id=agent_id,
                 message=AgentMessage(
                     role="assistant",
-                    content="I'm sorry, I cannot process your request at this time due to configuration issues."
+                    content="I'm sorry, I cannot process your request at this time due to configuration issues.",
                 ),
                 usage={},
-                metadata={"processor": "fallback"}
+                metadata={"processor": "fallback"},
             )
 
             return response
@@ -404,17 +431,11 @@ class RooCodeAdapter(AgentProvider):
         # Add system prompt if not present
         has_system = any(msg.role == "system" for msg in request.messages)
         if not has_system and definition.system_prompt:
-            messages.append({
-                "role": "system",
-                "content": definition.system_prompt
-            })
+            messages.append({"role": "system", "content": definition.system_prompt})
 
         # Add user and assistant messages
         for msg in request.messages:
-            messages.append({
-                "role": msg.role,
-                "content": msg.content
-            })
+            messages.append({"role": msg.role, "content": msg.content})
 
         try:
             # Get model
@@ -425,18 +446,15 @@ class RooCodeAdapter(AgentProvider):
                 messages=messages,
                 max_tokens=request.max_tokens,
                 temperature=request.temperature,
-                stream=request.stream
+                stream=request.stream,
             )
 
             # Create response
             response = AgentResponse(
                 agent_id=agent_id,
-                message=AgentMessage(
-                    role="assistant",
-                    content=response_content
-                ),
+                message=AgentMessage(role="assistant", content=response_content),
                 usage=usage,
-                metadata={"processor": "model_fallback"}
+                metadata={"processor": "model_fallback"},
             )
 
             return response
@@ -449,10 +467,10 @@ class RooCodeAdapter(AgentProvider):
                 agent_id=agent_id,
                 message=AgentMessage(
                     role="assistant",
-                    content="I encountered an error while processing your request."
+                    content="I encountered an error while processing your request.",
                 ),
                 usage={},
-                metadata={"processor": "error", "error": str(e)}
+                metadata={"processor": "error", "error": str(e)},
             )
 
             return response

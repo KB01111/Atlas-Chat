@@ -7,9 +7,11 @@ from app.core.logging_config import setup_logging
 logger = setup_logging()
 router = APIRouter()
 
+
 # Simple dependency to get AgentService
 def get_agent_service():
     return AgentService()
+
 
 # Simple dependency to get user_id from request
 # In a real implementation, this would verify the JWT token
@@ -17,11 +19,12 @@ async def get_current_user(request: Request):
     # Placeholder - would normally extract from JWT token
     return "test_user_id"
 
+
 @router.post("/chat")
 async def chat(
     request_data: Dict[str, Any],
     agent_service: AgentService = Depends(get_agent_service),
-    user_id: str = Depends(get_current_user)
+    user_id: str = Depends(get_current_user),
 ):
     """
     Chat endpoint for communicating with an agent
@@ -42,11 +45,10 @@ async def chat(
         raise HTTPException(status_code=400, detail="agent_id and message are required")
 
     async def generate():
-        async for chunk in agent_service.handle_chat_request(agent_id, message, history, user_id):
+        async for chunk in agent_service.handle_chat_request(
+            agent_id, message, history, user_id
+        ):
             yield f"data: {chunk}\n\n"
         yield "data: [DONE]\n\n"
 
-    return StreamingResponse(
-        generate(),
-        media_type="text/event-stream"
-    )
+    return StreamingResponse(generate(), media_type="text/event-stream")

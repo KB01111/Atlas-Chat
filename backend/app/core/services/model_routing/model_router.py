@@ -15,7 +15,7 @@ from .routing_strategies import (
     CostAwareStrategy,
     PerformanceBasedStrategy,
     UserPreferenceStrategy,
-    CompositeStrategy
+    CompositeStrategy,
 )
 
 
@@ -34,13 +34,17 @@ class ModelRouter:
 
         # Initialize components
         self.model_specs = ModelSpecs(self.config.get("model_specs"))
-        self.performance_metrics = PerformanceMetrics(self.config.get("performance_metrics"))
+        self.performance_metrics = PerformanceMetrics(
+            self.config.get("performance_metrics")
+        )
 
         # Initialize strategies
         self.task_strategy = TaskBasedStrategy(self.model_specs)
         self.complexity_strategy = ComplexityBasedStrategy(self.model_specs)
         self.cost_strategy = CostAwareStrategy(self.model_specs)
-        self.performance_strategy = PerformanceBasedStrategy(self.model_specs, self.performance_metrics)
+        self.performance_strategy = PerformanceBasedStrategy(
+            self.model_specs, self.performance_metrics
+        )
         self.user_preference_strategy = UserPreferenceStrategy(self.model_specs)
 
         # Create composite strategy with default weights
@@ -50,22 +54,22 @@ class ModelRouter:
         self.default_model = self.config.get("default_model", "gpt-4o")
 
         # Fallback chain
-        self.fallback_chain = self.config.get("fallback_chain", [
-            "gpt-4o", 
-            "claude-3-5-sonnet", 
-            "gemini-2-5-pro", 
-            "gpt-3.5-turbo"
-        ])
+        self.fallback_chain = self.config.get(
+            "fallback_chain",
+            ["gpt-4o", "claude-3-5-sonnet", "gemini-2-5-pro", "gpt-3.5-turbo"],
+        )
 
         # Enable fallback
         self.enable_fallback = self.config.get("enable_fallback", True)
 
-    def select_model(self, 
-                   message: str, 
-                   history: Optional[List[Dict[str, str]]] = None,
-                   task_type: Optional[str] = None,
-                   user_id: Optional[str] = None,
-                   context: Optional[Dict[str, Any]] = None) -> str:
+    def select_model(
+        self,
+        message: str,
+        history: Optional[List[Dict[str, str]]] = None,
+        task_type: Optional[str] = None,
+        user_id: Optional[str] = None,
+        context: Optional[Dict[str, Any]] = None,
+    ) -> str:
         """
         Select the most appropriate model based on context.
 
@@ -104,10 +108,7 @@ class ModelRouter:
 
         # Score models
         scored_models = self._score_models(
-            models=available_models,
-            message=message,
-            history=history,
-            context=context
+            models=available_models, message=message, history=history, context=context
         )
 
         # Select highest-scoring model
@@ -118,16 +119,14 @@ class ModelRouter:
             selected_model=selected_model,
             scored_models=scored_models,
             message=message,
-            context=context
+            context=context,
         )
 
         return selected_model
 
-    def record_model_performance(self, 
-                               model_id: str, 
-                               success: bool, 
-                               duration: float, 
-                               tokens: int = 0) -> None:
+    def record_model_performance(
+        self, model_id: str, success: bool, duration: float, tokens: int = 0
+    ) -> None:
         """
         Record model performance for future routing decisions.
 
@@ -138,16 +137,12 @@ class ModelRouter:
             tokens: Number of tokens used
         """
         self.performance_metrics.record_request(
-            model_id=model_id,
-            success=success,
-            duration=duration,
-            tokens=tokens
+            model_id=model_id, success=success, duration=duration, tokens=tokens
         )
 
-    def set_user_preference(self, 
-                          user_id: str,
-                          preferred_model: str,
-                          strict_preference: bool = False) -> None:
+    def set_user_preference(
+        self, user_id: str, preferred_model: str, strict_preference: bool = False
+    ) -> None:
         """
         Set user preference for model selection.
 
@@ -159,7 +154,7 @@ class ModelRouter:
         self.user_preference_strategy.set_user_preference(
             user_id=user_id,
             preferred_model=preferred_model,
-            strict_preference=strict_preference
+            strict_preference=strict_preference,
         )
 
     def get_user_preference(self, user_id: str) -> Optional[Dict[str, Any]]:
@@ -196,22 +191,28 @@ class ModelRouter:
             # Get performance metrics if available
             metrics = self.performance_metrics.get_metrics(model_id)
 
-            models.append({
-                "model_id": model_id,
-                "provider": spec.provider,
-                "capabilities": spec.strengths,
-                "capability_score": spec.capability_score,
-                "cost_per_token": spec.cost_per_token,
-                "supports_tools": spec.supports_tools,
-                "supports_vision": spec.supports_vision,
-                "context_window": spec.context_window,
-                "description": spec.description,
-                "performance": {
-                    "avg_latency": metrics.avg_latency if metrics else None,
-                    "success_rate": metrics.success_rate if metrics else None,
-                    "avg_tokens_per_request": metrics.avg_tokens_per_request if metrics else None
-                } if metrics else None
-            })
+            models.append(
+                {
+                    "model_id": model_id,
+                    "provider": spec.provider,
+                    "capabilities": spec.strengths,
+                    "capability_score": spec.capability_score,
+                    "cost_per_token": spec.cost_per_token,
+                    "supports_tools": spec.supports_tools,
+                    "supports_vision": spec.supports_vision,
+                    "context_window": spec.context_window,
+                    "description": spec.description,
+                    "performance": {
+                        "avg_latency": metrics.avg_latency if metrics else None,
+                        "success_rate": metrics.success_rate if metrics else None,
+                        "avg_tokens_per_request": metrics.avg_tokens_per_request
+                        if metrics
+                        else None,
+                    }
+                    if metrics
+                    else None,
+                }
+            )
 
         return models
 
@@ -229,7 +230,9 @@ class ModelRouter:
         models = self.model_specs.get_models_by_strength(task_type)
 
         if not models:
-            self.logger.warning(f"No models found for task type {task_type}, using default model")
+            self.logger.warning(
+                f"No models found for task type {task_type}, using default model"
+            )
             return self.default_model
 
         # Sort by capability score (descending)
@@ -273,7 +276,9 @@ class ModelRouter:
         # Create new composite strategy with updated weights
         self.strategy = self._create_composite_strategy(weights)
 
-    def _create_composite_strategy(self, weights: Optional[Dict[str, float]] = None) -> CompositeStrategy:
+    def _create_composite_strategy(
+        self, weights: Optional[Dict[str, float]] = None
+    ) -> CompositeStrategy:
         """
         Create composite strategy with specified weights.
 
@@ -289,7 +294,7 @@ class ModelRouter:
             "complexity": 1.0,
             "cost": 0.5,
             "performance": 1.0,
-            "user_preference": 2.0
+            "user_preference": 2.0,
         }
 
         # Use provided weights or defaults
@@ -308,15 +313,15 @@ class ModelRouter:
                 self.complexity_strategy,
                 self.cost_strategy,
                 self.performance_strategy,
-                self.user_preference_strategy
+                self.user_preference_strategy,
             ],
             weights=[
                 weights["task"],
                 weights["complexity"],
                 weights["cost"],
                 weights["performance"],
-                weights["user_preference"]
-            ]
+                weights["user_preference"],
+            ],
         )
 
     def _get_available_models(self) -> List[str]:
@@ -330,11 +335,13 @@ class ModelRouter:
         # For now, just return all models
         return list(self.model_specs.get_all_specs().keys())
 
-    def _score_models(self, 
-                    models: List[str],
-                    message: str,
-                    history: List[Dict[str, str]],
-                    context: Dict[str, Any]) -> List[Tuple[str, float]]:
+    def _score_models(
+        self,
+        models: List[str],
+        message: str,
+        history: List[Dict[str, str]],
+        context: Dict[str, Any],
+    ) -> List[Tuple[str, float]]:
         """
         Score models based on the current strategy.
 
@@ -352,10 +359,7 @@ class ModelRouter:
 
         for model_id in models:
             score = self.strategy.score_model(
-                model_id=model_id,
-                message=message,
-                history=history,
-                context=context
+                model_id=model_id, message=message, history=history, context=context
             )
 
             scored_models.append((model_id, score))
@@ -365,11 +369,13 @@ class ModelRouter:
 
         return scored_models
 
-    def _log_selection(self, 
-                     selected_model: str,
-                     scored_models: List[Tuple[str, float]],
-                     message: str,
-                     context: Dict[str, Any]) -> None:
+    def _log_selection(
+        self,
+        selected_model: str,
+        scored_models: List[Tuple[str, float]],
+        message: str,
+        context: Dict[str, Any],
+    ) -> None:
         """
         Log model selection for analysis.
 

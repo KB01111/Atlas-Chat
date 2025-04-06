@@ -11,10 +11,12 @@ from .artifacts import Artifact, ArtifactManager
 
 logger = logging.getLogger(__name__)
 
+
 class AgentRole(str, Enum):
     """
     Roles that agents can have in a team.
     """
+
     SUPERVISOR = "supervisor"
     CODER = "coder"
     REVIEWER = "reviewer"
@@ -39,7 +41,7 @@ class AgentTask:
         priority: str = "medium",
         dependencies: Optional[List[str]] = None,
         artifacts: Optional[List[str]] = None,
-        metadata: Optional[Dict[str, Any]] = None
+        metadata: Optional[Dict[str, Any]] = None,
     ):
         """
         Initialize a task.
@@ -92,11 +94,11 @@ class AgentTask:
             "created_at": self.created_at,
             "updated_at": self.updated_at,
             "completion_percentage": self.completion_percentage,
-            "comments": self.comments
+            "comments": self.comments,
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> 'AgentTask':
+    def from_dict(cls, data: Dict[str, Any]) -> "AgentTask":
         """
         Create a task from a dictionary.
 
@@ -116,7 +118,7 @@ class AgentTask:
             priority=data.get("priority", "medium"),
             dependencies=data.get("dependencies", []),
             artifacts=data.get("artifacts", []),
-            metadata=data.get("metadata", {})
+            metadata=data.get("metadata", {}),
         )
         task.created_at = data.get("created_at", task.created_at)
         task.updated_at = data.get("updated_at", task.updated_at)
@@ -165,7 +167,7 @@ class AgentTask:
             "id": str(uuid.uuid4()),
             "author": author,
             "content": content,
-            "created_at": datetime.now().isoformat()
+            "created_at": datetime.now().isoformat(),
         }
         self.comments.append(comment)
         self.updated_at = comment["created_at"]
@@ -194,7 +196,7 @@ class Agent:
         name: str,
         role: AgentRole,
         capabilities: List[str],
-        metadata: Optional[Dict[str, Any]] = None
+        metadata: Optional[Dict[str, Any]] = None,
     ):
         """
         Initialize an agent.
@@ -228,11 +230,11 @@ class Agent:
             "capabilities": self.capabilities,
             "metadata": self.metadata,
             "tasks": [task.to_dict() for task in self.tasks.values()],
-            "created_at": self.created_at
+            "created_at": self.created_at,
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> 'Agent':
+    def from_dict(cls, data: Dict[str, Any]) -> "Agent":
         """
         Create an agent from a dictionary.
 
@@ -247,7 +249,7 @@ class Agent:
             name=data["name"],
             role=data["role"],
             capabilities=data["capabilities"],
-            metadata=data.get("metadata", {})
+            metadata=data.get("metadata", {}),
         )
         agent.created_at = data.get("created_at", agent.created_at)
 
@@ -326,7 +328,7 @@ class AgentTeam:
         team_id: str,
         name: str,
         supervisor_id: str,
-        metadata: Optional[Dict[str, Any]] = None
+        metadata: Optional[Dict[str, Any]] = None,
     ):
         """
         Initialize a team.
@@ -359,11 +361,11 @@ class AgentTeam:
             "metadata": self.metadata,
             "agents": [agent.to_dict() for agent in self.agents.values()],
             "created_at": self.created_at,
-            "messages": self.messages
+            "messages": self.messages,
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> 'AgentTeam':
+    def from_dict(cls, data: Dict[str, Any]) -> "AgentTeam":
         """
         Create a team from a dictionary.
 
@@ -377,7 +379,7 @@ class AgentTeam:
             team_id=data["id"],
             name=data["name"],
             supervisor_id=data["supervisor_id"],
-            metadata=data.get("metadata", {})
+            metadata=data.get("metadata", {}),
         )
         team.created_at = data.get("created_at", team.created_at)
         team.messages = data.get("messages", [])
@@ -441,9 +443,13 @@ class AgentTeam:
         Returns:
             List of agents with the specified capability
         """
-        return [agent for agent in self.agents.values() if agent.has_capability(capability)]
+        return [
+            agent for agent in self.agents.values() if agent.has_capability(capability)
+        ]
 
-    def get_agents_by_capabilities(self, capabilities: List[str], require_all: bool = True) -> List[Agent]:
+    def get_agents_by_capabilities(
+        self, capabilities: List[str], require_all: bool = True
+    ) -> List[Agent]:
         """
         Get all agents with specific capabilities.
 
@@ -455,11 +461,21 @@ class AgentTeam:
             List of agents with the specified capabilities
         """
         if require_all:
-            return [agent for agent in self.agents.values() if agent.has_all_capabilities(capabilities)]
+            return [
+                agent
+                for agent in self.agents.values()
+                if agent.has_all_capabilities(capabilities)
+            ]
         else:
-            return [agent for agent in self.agents.values() if agent.has_any_capability(capabilities)]
+            return [
+                agent
+                for agent in self.agents.values()
+                if agent.has_any_capability(capabilities)
+            ]
 
-    def add_message(self, content: str, sender_id: str, message_type: str = "text") -> Dict[str, Any]:
+    def add_message(
+        self, content: str, sender_id: str, message_type: str = "text"
+    ) -> Dict[str, Any]:
         """
         Add a message to the team chat.
 
@@ -476,12 +492,14 @@ class AgentTeam:
             "content": content,
             "sender_id": sender_id,
             "type": message_type,
-            "created_at": datetime.now().isoformat()
+            "created_at": datetime.now().isoformat(),
         }
         self.messages.append(message)
         return message
 
-    def get_messages(self, limit: Optional[int] = None, before: Optional[str] = None) -> List[Dict[str, Any]]:
+    def get_messages(
+        self, limit: Optional[int] = None, before: Optional[str] = None
+    ) -> List[Dict[str, Any]]:
         """
         Get messages from the team chat.
 
@@ -520,7 +538,9 @@ class AgentDelegationService:
         self.e2b_session = e2b_session
         self.artifact_manager = ArtifactManager(e2b_session)
         self.teams: Dict[str, AgentTeam] = {}
-        self.task_callbacks: Dict[str, List[Callable[[AgentTask], Awaitable[None]]]] = {}
+        self.task_callbacks: Dict[
+            str, List[Callable[[AgentTask], Awaitable[None]]]
+        ] = {}
 
     async def initialize(self) -> None:
         """
@@ -528,7 +548,9 @@ class AgentDelegationService:
         """
         await self.artifact_manager.initialize()
 
-    def create_team(self, name: str, supervisor_name: str, metadata: Optional[Dict[str, Any]] = None) -> AgentTeam:
+    def create_team(
+        self, name: str, supervisor_name: str, metadata: Optional[Dict[str, Any]] = None
+    ) -> AgentTeam:
         """
         Create a new team with a supervisor.
 
@@ -544,10 +566,7 @@ class AgentDelegationService:
         supervisor_id = str(uuid.uuid4())
 
         team = AgentTeam(
-            team_id=team_id,
-            name=name,
-            supervisor_id=supervisor_id,
-            metadata=metadata
+            team_id=team_id, name=name, supervisor_id=supervisor_id, metadata=metadata
         )
 
         supervisor = Agent(
@@ -555,7 +574,7 @@ class AgentDelegationService:
             name=supervisor_name,
             role=AgentRole.SUPERVISOR,
             capabilities=["task_delegation", "team_management"],
-            metadata={"is_supervisor": True}
+            metadata={"is_supervisor": True},
         )
 
         team.add_agent(supervisor)
@@ -581,7 +600,7 @@ class AgentDelegationService:
         name: str,
         role: AgentRole,
         capabilities: List[str],
-        metadata: Optional[Dict[str, Any]] = None
+        metadata: Optional[Dict[str, Any]] = None,
     ) -> Optional[Agent]:
         """
         Add an agent to a team.
@@ -607,7 +626,7 @@ class AgentDelegationService:
             name=name,
             role=role,
             capabilities=capabilities,
-            metadata=metadata
+            metadata=metadata,
         )
 
         team.add_agent(agent)
@@ -618,7 +637,7 @@ class AgentDelegationService:
         team_id: str,
         name: str,
         languages: List[str],
-        metadata: Optional[Dict[str, Any]] = None
+        metadata: Optional[Dict[str, Any]] = None,
     ) -> Optional[Agent]:
         """
         Create a coding agent and add it to a team.
@@ -647,7 +666,7 @@ class AgentDelegationService:
             name=name,
             role=AgentRole.CODER,
             capabilities=capabilities,
-            metadata=metadata
+            metadata=metadata,
         )
 
     async def delegate_task(
@@ -657,7 +676,7 @@ class AgentDelegationService:
         description: str,
         required_capabilities: List[str],
         priority: str = "medium",
-        metadata: Optional[Dict[str, Any]] = None
+        metadata: Optional[Dict[str, Any]] = None,
     ) -> Optional[AgentTask]:
         """
         Delegate a task to an appropriate agent in the team.
@@ -702,7 +721,7 @@ class AgentDelegationService:
             assigned_by=supervisor.id,
             status="pending",
             priority=priority,
-            metadata=metadata
+            metadata=metadata,
         )
 
         # Assign the task to the agent
@@ -718,7 +737,7 @@ class AgentDelegationService:
         language: str,
         code: Optional[str] = None,
         priority: str = "medium",
-        metadata: Optional[Dict[str, Any]] = None
+        metadata: Optional[Dict[str, Any]] = None,
     ) -> Optional[AgentTask]:
         """
         Delegate a coding task to an appropriate agent in the team.
@@ -750,7 +769,7 @@ class AgentDelegationService:
             description=description,
             required_capabilities=required_capabilities,
             priority=priority,
-            metadata=metadata
+            metadata=metadata,
         )
 
         if task and code:
@@ -759,7 +778,7 @@ class AgentDelegationService:
                 content=code,
                 name=f"initial_code_{task.id}.{language.lower()}",
                 content_type=f"text/{language.lower()}",
-                metadata={"task_id": task.id, "type": "initial_code"}
+                metadata={"task_id": task.id, "type": "initial_code"},
             )
 
             # Associate the artifact with the task
@@ -796,7 +815,10 @@ class AgentDelegationService:
             return {"success": False, "error": f"Task with ID {task_id} not found"}
 
         if not agent:
-            return {"success": False, "error": f"Agent assigned to task {task_id} not found"}
+            return {
+                "success": False,
+                "error": f"Agent assigned to task {task_id} not found",
+            }
 
         # Update task status
         task.update_status("in_progress")
@@ -816,14 +838,18 @@ class AgentDelegationService:
 
         try:
             if language == "python":
-                process = await self.e2b_session.process.start(cmd=["python3", file_path])
+                process = await self.e2b_session.process.start(
+                    cmd=["python3", file_path]
+                )
             elif language == "javascript" or language == "js":
                 process = await self.e2b_session.process.start(cmd=["node", file_path])
             elif language == "typescript" or language == "ts":
                 # Compile TypeScript to JavaScript first
                 await self.e2b_session.process.start(cmd=["tsc", file_path])
                 js_file_path = file_path.replace(".ts", ".js")
-                process = await self.e2b_session.process.start(cmd=["node", js_file_path])
+                process = await self.e2b_session.process.start(
+                    cmd=["node", js_file_path]
+                )
             elif language == "bash" or language == "sh":
                 process = await self.e2b_session.process.start(cmd=["bash", file_path])
             else:
@@ -835,7 +861,7 @@ class AgentDelegationService:
                 "success": execution_result.exit_code == 0,
                 "exit_code": execution_result.exit_code,
                 "stdout": execution_result.stdout,
-                "stderr": execution_result.stderr
+                "stderr": execution_result.stderr,
             }
 
             # Update task status based on execution result
@@ -849,12 +875,12 @@ class AgentDelegationService:
             if result["success"]:
                 task.add_comment(
                     author=agent.id,
-                    content=f"Task executed successfully. Output:\n```\n{result['stdout']}\n```"
+                    content=f"Task executed successfully. Output:\n```\n{result['stdout']}\n```",
                 )
             else:
                 task.add_comment(
                     author=agent.id,
-                    content=f"Task execution failed. Error:\n```\n{result['stderr']}\n```"
+                    content=f"Task execution failed. Error:\n```\n{result['stderr']}\n```",
                 )
 
             # Scan for artifacts created during execution
@@ -869,7 +895,7 @@ class AgentDelegationService:
             task.update_status("failed")
             task.add_comment(
                 author=agent.id,
-                content=f"Task execution failed with exception: {str(e)}"
+                content=f"Task execution failed with exception: {str(e)}",
             )
             await self._notify_task_update(task)
             result = {"success": False, "error": str(e)}
@@ -882,7 +908,7 @@ class AgentDelegationService:
         task_id: str,
         progress: int,
         status: Optional[str] = None,
-        comment: Optional[str] = None
+        comment: Optional[str] = None,
     ) -> bool:
         """
         Update the progress of a task.
@@ -936,7 +962,9 @@ class AgentDelegationService:
 
         return True
 
-    def register_task_callback(self, callback: Callable[[AgentTask], Awaitable[None]]) -> str:
+    def register_task_callback(
+        self, callback: Callable[[AgentTask], Awaitable[None]]
+    ) -> str:
         """
         Register a callback function to be called when a task is updated.
 
@@ -952,7 +980,9 @@ class AgentDelegationService:
         self.task_callbacks["all"].append(callback)
         return callback_id
 
-    def register_task_callback_for_team(self, team_id: str, callback: Callable[[AgentTask], Awaitable[None]]) -> str:
+    def register_task_callback_for_team(
+        self, team_id: str, callback: Callable[[AgentTask], Awaitable[None]]
+    ) -> str:
         """
         Register a callback function to be called when a task in a specific team is updated.
 
@@ -1007,11 +1037,7 @@ class AgentDelegationService:
                     logger.error(f"Error in task callback: {str(e)}")
 
     async def send_team_message(
-        self,
-        team_id: str,
-        content: str,
-        sender_id: str,
-        message_type: str = "text"
+        self, team_id: str, content: str, sender_id: str, message_type: str = "text"
     ) -> Optional[Dict[str, Any]]:
         """
         Send a message to a team chat.
@@ -1035,13 +1061,12 @@ class AgentDelegationService:
             logger.error(f"Sender {sender_id} is not a member of team {team_id}")
             return None
 
-        return team.add_message(content=content, sender_id=sender_id, message_type=message_type)
+        return team.add_message(
+            content=content, sender_id=sender_id, message_type=message_type
+        )
 
     def get_team_messages(
-        self,
-        team_id: str,
-        limit: Optional[int] = None,
-        before: Optional[str] = None
+        self, team_id: str, limit: Optional[int] = None, before: Optional[str] = None
     ) -> List[Dict[str, Any]]:
         """
         Get messages from a team chat.
@@ -1068,12 +1093,12 @@ class AgentDelegationService:
         Returns:
             Dictionary representation of the agent delegation service
         """
-        return {
-            "teams": [team.to_dict() for team in self.teams.values()]
-        }
+        return {"teams": [team.to_dict() for team in self.teams.values()]}
 
     @classmethod
-    async def from_dict(cls, data: Dict[str, Any], e2b_session: E2BSession) -> 'AgentDelegationService':
+    async def from_dict(
+        cls, data: Dict[str, Any], e2b_session: E2BSession
+    ) -> "AgentDelegationService":
         """
         Create an agent delegation service from a dictionary.
 
@@ -1105,7 +1130,9 @@ class AgentDelegationService:
         await self.e2b_session.create_file(file_path, json.dumps(state, indent=2))
 
     @classmethod
-    async def load_state(cls, file_path: str, e2b_session: E2BSession) -> 'AgentDelegationService':
+    async def load_state(
+        cls, file_path: str, e2b_session: E2BSession
+    ) -> "AgentDelegationService":
         """
         Load the state of the agent delegation service from a file.
 

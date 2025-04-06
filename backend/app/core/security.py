@@ -28,9 +28,10 @@ oauth2_scheme = OAuth2PasswordBearer(
         "admin": "Administrator access",
         "execute_code": "Execute code in sandbox",
         "manage_teams": "Create and manage agent teams",
-        "manage_artifacts": "Access and manage artifacts"
-    }
+        "manage_artifacts": "Access and manage artifacts",
+    },
 )
+
 
 # Security models
 class Token(BaseModel):
@@ -88,7 +89,9 @@ def get_password_hash(password: str) -> str:
     return hashlib.sha256(password.encode()).hexdigest()
 
 
-def create_access_token(data: Dict[str, Any], expires_delta: Optional[timedelta] = None) -> str:
+def create_access_token(
+    data: Dict[str, Any], expires_delta: Optional[timedelta] = None
+) -> str:
     """
     Create a JWT access token.
 
@@ -104,10 +107,14 @@ def create_access_token(data: Dict[str, Any], expires_delta: Optional[timedelta]
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+        expire = datetime.utcnow() + timedelta(
+            minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
+        )
 
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+    encoded_jwt = jwt.encode(
+        to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM
+    )
 
     return encoded_jwt
 
@@ -123,7 +130,9 @@ def decode_token(token: str) -> TokenData:
         TokenData object
     """
     try:
-        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        payload = jwt.decode(
+            token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
+        )
         username: str = payload.get("sub")
         token_scopes = payload.get("scopes", [])
         exp = datetime.fromtimestamp(payload.get("exp"))
@@ -149,7 +158,7 @@ def decode_token(token: str) -> TokenData:
 async def get_current_user(
     security_scopes: SecurityScopes,
     token: str = Depends(oauth2_scheme),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ) -> User:
     """
     Get the current user from a JWT token.
@@ -200,7 +209,7 @@ async def get_current_user(
 
 
 def get_current_active_user(
-    current_user: User = Security(get_current_user, scopes=["user"])
+    current_user: User = Security(get_current_user, scopes=["user"]),
 ) -> User:
     """
     Get the current active user.
@@ -217,7 +226,7 @@ def get_current_active_user(
 
 
 def get_current_admin_user(
-    current_user: User = Security(get_current_user, scopes=["admin"])
+    current_user: User = Security(get_current_user, scopes=["admin"]),
 ) -> User:
     """
     Get the current admin user.
@@ -237,7 +246,7 @@ def get_current_admin_user(
 
 
 def get_user_with_code_execution_permission(
-    current_user: User = Security(get_current_user, scopes=["user", "execute_code"])
+    current_user: User = Security(get_current_user, scopes=["user", "execute_code"]),
 ) -> User:
     """
     Get the current user with code execution permission.
@@ -252,7 +261,7 @@ def get_user_with_code_execution_permission(
 
 
 def get_user_with_team_management_permission(
-    current_user: User = Security(get_current_user, scopes=["user", "manage_teams"])
+    current_user: User = Security(get_current_user, scopes=["user", "manage_teams"]),
 ) -> User:
     """
     Get the current user with team management permission.
@@ -267,7 +276,9 @@ def get_user_with_team_management_permission(
 
 
 def get_user_with_artifact_management_permission(
-    current_user: User = Security(get_current_user, scopes=["user", "manage_artifacts"])
+    current_user: User = Security(
+        get_current_user, scopes=["user", "manage_artifacts"]
+    ),
 ) -> User:
     """
     Get the current user with artifact management permission.
@@ -309,7 +320,9 @@ def sanitize_code(code: str) -> str:
     ]
 
     for pattern in dangerous_imports:
-        code = re.sub(pattern, "# Removed for security reasons", code, flags=re.IGNORECASE)
+        code = re.sub(
+            pattern, "# Removed for security reasons", code, flags=re.IGNORECASE
+        )
 
     # Remove potentially dangerous functions
     dangerous_functions = [
@@ -399,7 +412,9 @@ def sanitize_code(code: str) -> str:
     ]
 
     for pattern in dangerous_functions:
-        code = re.sub(pattern, "# Removed for security reasons(", code, flags=re.IGNORECASE)
+        code = re.sub(
+            pattern, "# Removed for security reasons(", code, flags=re.IGNORECASE
+        )
 
     return code
 
@@ -421,13 +436,28 @@ def validate_code_security(code: str) -> Dict[str, Any]:
         (r"import\s+sys", "Importing sys module is not allowed"),
         (r"import\s+shutil", "Importing shutil module is not allowed"),
         (r"from\s+os\s+import", "Importing from os module is not allowed"),
-        (r"from\s+subprocess\s+import", "Importing from subprocess module is not allowed"),
+        (
+            r"from\s+subprocess\s+import",
+            "Importing from subprocess module is not allowed",
+        ),
         (r"from\s+sys\s+import", "Importing from sys module is not allowed"),
         (r"from\s+shutil\s+import", "Importing from shutil module is not allowed"),
-        (r"__import__\s*\(\s*['\"]os['\"]", "Importing os module using __import__ is not allowed"),
-        (r"__import__\s*\(\s*['\"]subprocess['\"]", "Importing subprocess module using __import__ is not allowed"),
-        (r"__import__\s*\(\s*['\"]sys['\"]", "Importing sys module using __import__ is not allowed"),
-        (r"__import__\s*\(\s*['\"]shutil['\"]", "Importing shutil module using __import__ is not allowed"),
+        (
+            r"__import__\s*\(\s*['\"]os['\"]",
+            "Importing os module using __import__ is not allowed",
+        ),
+        (
+            r"__import__\s*\(\s*['\"]subprocess['\"]",
+            "Importing subprocess module using __import__ is not allowed",
+        ),
+        (
+            r"__import__\s*\(\s*['\"]sys['\"]",
+            "Importing sys module using __import__ is not allowed",
+        ),
+        (
+            r"__import__\s*\(\s*['\"]shutil['\"]",
+            "Importing shutil module using __import__ is not allowed",
+        ),
         (r"eval\s*\(", "Using eval() is not allowed"),
         (r"exec\s*\(", "Using exec() is not allowed"),
         (r"execfile\s*\(", "Using execfile() is not allowed"),
@@ -441,10 +471,19 @@ def validate_code_security(code: str) -> Dict[str, Any]:
         (r"subprocess\.Popen\s*\(", "Using subprocess.Popen() is not allowed"),
         (r"subprocess\.call\s*\(", "Using subprocess.call() is not allowed"),
         (r"subprocess\.run\s*\(", "Using subprocess.run() is not allowed"),
-        (r"subprocess\.check_output\s*\(", "Using subprocess.check_output() is not allowed"),
-        (r"subprocess\.check_call\s*\(", "Using subprocess.check_call() is not allowed"),
+        (
+            r"subprocess\.check_output\s*\(",
+            "Using subprocess.check_output() is not allowed",
+        ),
+        (
+            r"subprocess\.check_call\s*\(",
+            "Using subprocess.check_call() is not allowed",
+        ),
         (r"subprocess\.getoutput\s*\(", "Using subprocess.getoutput() is not allowed"),
-        (r"subprocess\.getstatusoutput\s*\(", "Using subprocess.getstatusoutput() is not allowed"),
+        (
+            r"subprocess\.getstatusoutput\s*\(",
+            "Using subprocess.getstatusoutput() is not allowed",
+        ),
         (r"sys\.exit\s*\(", "Using sys.exit() is not allowed"),
         (r"shutil\.rmtree\s*\(", "Using shutil.rmtree() is not allowed"),
     ]
@@ -463,13 +502,12 @@ def validate_code_security(code: str) -> Dict[str, Any]:
         issues.append("Potential infinite loop detected (while True)")
 
     # Check for network access
-    if re.search(r"import\s+socket", code, re.IGNORECASE) or re.search(r"import\s+requests", code, re.IGNORECASE):
+    if re.search(r"import\s+socket", code, re.IGNORECASE) or re.search(
+        r"import\s+requests", code, re.IGNORECASE
+    ):
         issues.append("Network access is not allowed")
 
-    return {
-        "is_safe": len(issues) == 0,
-        "issues": issues
-    }
+    return {"is_safe": len(issues) == 0, "issues": issues}
 
 
 def log_security_event(
@@ -481,7 +519,7 @@ def log_security_event(
     ip_address: str = "0.0.0.0",
     user_agent: str = "Unknown",
     status: str = "success",
-    details: Optional[Dict[str, Any]] = None
+    details: Optional[Dict[str, Any]] = None,
 ) -> None:
     """
     Log a security event.
@@ -506,7 +544,7 @@ def log_security_event(
         ip_address=ip_address,
         user_agent=user_agent,
         status=status,
-        details=details
+        details=details,
     )
 
     # In a real implementation, save to database
@@ -527,10 +565,7 @@ def generate_secure_random_string(length: int = 32) -> str:
 
 
 def rate_limit_check(
-    user_id: str,
-    action: str,
-    max_requests: int = 100,
-    time_window: int = 3600
+    user_id: str, action: str, max_requests: int = 100, time_window: int = 3600
 ) -> bool:
     """
     Check if a user has exceeded the rate limit for an action.

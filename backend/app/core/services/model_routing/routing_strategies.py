@@ -14,11 +14,13 @@ class RoutingStrategy(ABC):
     """Abstract base class for routing strategies."""
 
     @abstractmethod
-    def score_model(self, 
-                  model_id: str,
-                  message: str,
-                  history: List[Dict[str, str]],
-                  context: Dict[str, Any]) -> float:
+    def score_model(
+        self,
+        model_id: str,
+        message: str,
+        history: List[Dict[str, str]],
+        context: Dict[str, Any],
+    ) -> float:
         """
         Score a model based on the strategy.
 
@@ -47,42 +49,143 @@ class TaskBasedStrategy(RoutingStrategy):
         self.model_specs = model_specs
         self.task_keywords = {
             "coding": [
-                "code", "function", "programming", "algorithm", "bug", "error",
-                "javascript", "python", "java", "c++", "typescript", "html", "css",
-                "api", "database", "sql", "debug", "compiler", "runtime", "syntax",
-                "library", "framework", "git", "github", "repository", "commit"
+                "code",
+                "function",
+                "programming",
+                "algorithm",
+                "bug",
+                "error",
+                "javascript",
+                "python",
+                "java",
+                "c++",
+                "typescript",
+                "html",
+                "css",
+                "api",
+                "database",
+                "sql",
+                "debug",
+                "compiler",
+                "runtime",
+                "syntax",
+                "library",
+                "framework",
+                "git",
+                "github",
+                "repository",
+                "commit",
             ],
             "writing": [
-                "write", "story", "creative", "poem", "essay", "blog", "article",
-                "content", "draft", "edit", "proofread", "grammar", "spelling",
-                "narrative", "character", "plot", "setting", "theme", "tone",
-                "style", "voice", "audience", "paragraph", "sentence", "word"
+                "write",
+                "story",
+                "creative",
+                "poem",
+                "essay",
+                "blog",
+                "article",
+                "content",
+                "draft",
+                "edit",
+                "proofread",
+                "grammar",
+                "spelling",
+                "narrative",
+                "character",
+                "plot",
+                "setting",
+                "theme",
+                "tone",
+                "style",
+                "voice",
+                "audience",
+                "paragraph",
+                "sentence",
+                "word",
             ],
             "research": [
-                "research", "information", "data", "analysis", "find", "search",
-                "investigate", "explore", "discover", "learn", "study", "examine",
-                "review", "evaluate", "assess", "compare", "contrast", "synthesize",
-                "summarize", "report", "paper", "source", "citation", "reference"
+                "research",
+                "information",
+                "data",
+                "analysis",
+                "find",
+                "search",
+                "investigate",
+                "explore",
+                "discover",
+                "learn",
+                "study",
+                "examine",
+                "review",
+                "evaluate",
+                "assess",
+                "compare",
+                "contrast",
+                "synthesize",
+                "summarize",
+                "report",
+                "paper",
+                "source",
+                "citation",
+                "reference",
             ],
             "math": [
-                "math", "calculation", "equation", "formula", "solve", "compute",
-                "algebra", "calculus", "geometry", "statistics", "probability",
-                "number", "variable", "function", "graph", "plot", "chart",
-                "dataset", "regression", "correlation", "distribution", "average"
+                "math",
+                "calculation",
+                "equation",
+                "formula",
+                "solve",
+                "compute",
+                "algebra",
+                "calculus",
+                "geometry",
+                "statistics",
+                "probability",
+                "number",
+                "variable",
+                "function",
+                "graph",
+                "plot",
+                "chart",
+                "dataset",
+                "regression",
+                "correlation",
+                "distribution",
+                "average",
             ],
             "general": [
-                "help", "question", "answer", "explain", "describe", "define",
-                "summarize", "list", "example", "suggestion", "recommendation",
-                "opinion", "thought", "idea", "concept", "understand", "clarify",
-                "elaborate", "detail", "overview", "summary", "introduction"
-            ]
+                "help",
+                "question",
+                "answer",
+                "explain",
+                "describe",
+                "define",
+                "summarize",
+                "list",
+                "example",
+                "suggestion",
+                "recommendation",
+                "opinion",
+                "thought",
+                "idea",
+                "concept",
+                "understand",
+                "clarify",
+                "elaborate",
+                "detail",
+                "overview",
+                "summary",
+                "introduction",
+            ],
         }
 
-    def score_model(self, 
-                  model_id: str,
-                  message: str,
-                  history: List[Dict[str, str]],
-                  context: Dict[str, Any]) -> float:
+    def score_model(
+        self,
+        model_id: str,
+        message: str,
+        history: List[Dict[str, str]],
+        context: Dict[str, Any],
+    ) -> float:
         """
         Score a model based on task type.
 
@@ -112,9 +215,7 @@ class TaskBasedStrategy(RoutingStrategy):
 
         return score
 
-    def _analyze_task_type(self, 
-                         message: str, 
-                         history: List[Dict[str, str]]) -> str:
+    def _analyze_task_type(self, message: str, history: List[Dict[str, str]]) -> str:
         """
         Analyze message to determine task type.
 
@@ -158,11 +259,13 @@ class ComplexityBasedStrategy(RoutingStrategy):
         """
         self.model_specs = model_specs
 
-    def score_model(self, 
-                  model_id: str,
-                  message: str,
-                  history: List[Dict[str, str]],
-                  context: Dict[str, Any]) -> float:
+    def score_model(
+        self,
+        model_id: str,
+        message: str,
+        history: List[Dict[str, str]],
+        context: Dict[str, Any],
+    ) -> float:
         """
         Score a model based on message complexity.
 
@@ -196,9 +299,7 @@ class ComplexityBasedStrategy(RoutingStrategy):
 
         return score
 
-    def _estimate_complexity(self, 
-                           message: str, 
-                           history: List[Dict[str, str]]) -> str:
+    def _estimate_complexity(self, message: str, history: List[Dict[str, str]]) -> str:
         """
         Estimate message complexity.
 
@@ -221,8 +322,10 @@ class ComplexityBasedStrategy(RoutingStrategy):
             length_score = 0  # low
 
         # 2. Sentence complexity
-        sentences = re.split(r'[.!?]+', message)
-        avg_words_per_sentence = sum(len(s.split()) for s in sentences if s) / max(len(sentences), 1)
+        sentences = re.split(r"[.!?]+", message)
+        avg_words_per_sentence = sum(len(s.split()) for s in sentences if s) / max(
+            len(sentences), 1
+        )
 
         sentence_score = 0
         if avg_words_per_sentence > 20:
@@ -234,12 +337,15 @@ class ComplexityBasedStrategy(RoutingStrategy):
 
         # 3. Vocabulary complexity
         complex_word_patterns = [
-            r'\b\w{10,}\b',  # Words with 10+ characters
-            r'\b(?:therefore|consequently|furthermore|nevertheless|accordingly)\b',  # Complex conjunctions
-            r'\b(?:analyze|synthesize|evaluate|hypothesize|theorize)\b'  # Complex verbs
+            r"\b\w{10,}\b",  # Words with 10+ characters
+            r"\b(?:therefore|consequently|furthermore|nevertheless|accordingly)\b",  # Complex conjunctions
+            r"\b(?:analyze|synthesize|evaluate|hypothesize|theorize)\b",  # Complex verbs
         ]
 
-        complex_word_count = sum(len(re.findall(pattern, message, re.IGNORECASE)) for pattern in complex_word_patterns)
+        complex_word_count = sum(
+            len(re.findall(pattern, message, re.IGNORECASE))
+            for pattern in complex_word_patterns
+        )
 
         vocabulary_score = 0
         if complex_word_count > 5:
@@ -281,11 +387,13 @@ class CostAwareStrategy(RoutingStrategy):
         """
         self.model_specs = model_specs
 
-    def score_model(self, 
-                  model_id: str,
-                  message: str,
-                  history: List[Dict[str, str]],
-                  context: Dict[str, Any]) -> float:
+    def score_model(
+        self,
+        model_id: str,
+        message: str,
+        history: List[Dict[str, str]],
+        context: Dict[str, Any],
+    ) -> float:
         """
         Score a model based on cost efficiency.
 
@@ -316,9 +424,9 @@ class CostAwareStrategy(RoutingStrategy):
 class PerformanceBasedStrategy(RoutingStrategy):
     """Strategy that scores models based on performance metrics."""
 
-    def __init__(self, 
-               model_specs: ModelSpecs,
-               performance_metrics: PerformanceMetrics):
+    def __init__(
+        self, model_specs: ModelSpecs, performance_metrics: PerformanceMetrics
+    ):
         """
         Initialize performance-based strategy.
 
@@ -329,11 +437,13 @@ class PerformanceBasedStrategy(RoutingStrategy):
         self.model_specs = model_specs
         self.performance_metrics = performance_metrics
 
-    def score_model(self, 
-                  model_id: str,
-                  message: str,
-                  history: List[Dict[str, str]],
-                  context: Dict[str, Any]) -> float:
+    def score_model(
+        self,
+        model_id: str,
+        message: str,
+        history: List[Dict[str, str]],
+        context: Dict[str, Any],
+    ) -> float:
         """
         Score a model based on performance metrics.
 
@@ -378,11 +488,13 @@ class UserPreferenceStrategy(RoutingStrategy):
         self.model_specs = model_specs
         self.user_preferences = {}
 
-    def score_model(self, 
-                  model_id: str,
-                  message: str,
-                  history: List[Dict[str, str]],
-                  context: Dict[str, Any]) -> float:
+    def score_model(
+        self,
+        model_id: str,
+        message: str,
+        history: List[Dict[str, str]],
+        context: Dict[str, Any],
+    ) -> float:
         """
         Score a model based on user preferences.
 
@@ -418,10 +530,9 @@ class UserPreferenceStrategy(RoutingStrategy):
 
         return score
 
-    def set_user_preference(self, 
-                          user_id: str,
-                          preferred_model: str,
-                          strict_preference: bool = False) -> None:
+    def set_user_preference(
+        self, user_id: str, preferred_model: str, strict_preference: bool = False
+    ) -> None:
         """
         Set user preference for model selection.
 
@@ -432,7 +543,7 @@ class UserPreferenceStrategy(RoutingStrategy):
         """
         self.user_preferences[user_id] = {
             "preferred_model": preferred_model,
-            "strict_preference": strict_preference
+            "strict_preference": strict_preference,
         }
 
     def get_user_preference(self, user_id: str) -> Optional[Dict[str, Any]]:
@@ -479,11 +590,13 @@ class CompositeStrategy(RoutingStrategy):
                 raise ValueError("Weights must match strategies length")
             self.weights = weights
 
-    def score_model(self, 
-                  model_id: str,
-                  message: str,
-                  history: List[Dict[str, str]],
-                  context: Dict[str, Any]) -> float:
+    def score_model(
+        self,
+        model_id: str,
+        message: str,
+        history: List[Dict[str, str]],
+        context: Dict[str, Any],
+    ) -> float:
         """
         Score a model based on combined strategies.
 
@@ -503,6 +616,8 @@ class CompositeStrategy(RoutingStrategy):
         ]
 
         # Calculate weighted sum
-        weighted_sum = sum(score * weight for score, weight in zip(scores, self.weights))
+        weighted_sum = sum(
+            score * weight for score, weight in zip(scores, self.weights)
+        )
 
         return weighted_sum

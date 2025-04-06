@@ -15,8 +15,10 @@ from .context_summarizer import ConversationSegment, ContextSummarizer
 
 logger = logging.getLogger(__name__)
 
+
 class EpisodeEntry(BaseModel):
     """Represents an episode entry in episodic memory"""
+
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     session_id: str
     raw_content: str
@@ -26,6 +28,7 @@ class EpisodeEntry(BaseModel):
     created_at: datetime = Field(default_factory=datetime.now)
     expires_at: Optional[datetime] = None
     metadata: Dict[str, Any] = {}
+
 
 class EpisodicMemory:
     """
@@ -37,8 +40,9 @@ class EpisodicMemory:
     - Providing access to conversation history at different levels of detail
     """
 
-    def __init__(self, context_summarizer: Optional[ContextSummarizer] = None, 
-                ttl_days: int = 30):
+    def __init__(
+        self, context_summarizer: Optional[ContextSummarizer] = None, ttl_days: int = 30
+    ):
         """
         Initialize the episodic memory.
 
@@ -49,10 +53,17 @@ class EpisodicMemory:
         self.context_summarizer = context_summarizer or ContextSummarizer()
         self.ttl_days = ttl_days
         self.episodes: Dict[str, EpisodeEntry] = {}
-        self.session_episodes: Dict[str, List[str]] = {}  # session_id -> list of episode_ids
+        self.session_episodes: Dict[
+            str, List[str]
+        ] = {}  # session_id -> list of episode_ids
 
-    async def add_episode(self, session_id: str, content: str, speakers: List[str],
-                        metadata: Optional[Dict[str, Any]] = None) -> str:
+    async def add_episode(
+        self,
+        session_id: str,
+        content: str,
+        speakers: List[str],
+        metadata: Optional[Dict[str, Any]] = None,
+    ) -> str:
         """
         Add an episode to episodic memory with progressive summarization.
 
@@ -67,9 +78,7 @@ class EpisodicMemory:
         """
         # Create summaries
         summaries = await self.context_summarizer.progressive_summarize(
-            content=content,
-            speakers=speakers,
-            metadata=metadata
+            content=content, speakers=speakers, metadata=metadata
         )
 
         # Create episode
@@ -80,7 +89,7 @@ class EpisodicMemory:
             condensed_summary=summaries["condensed"].content,
             topic_summary=summaries["topic"].content,
             expires_at=datetime.now() + timedelta(days=self.ttl_days),
-            metadata=metadata or {}
+            metadata=metadata or {},
         )
 
         # Store episode
@@ -112,8 +121,9 @@ class EpisodicMemory:
 
         return episode
 
-    def get_session_episodes(self, session_id: str, 
-                           summary_level: str = "detailed") -> List[Dict[str, Any]]:
+    def get_session_episodes(
+        self, session_id: str, summary_level: str = "detailed"
+    ) -> List[Dict[str, Any]]:
         """
         Get episodes for a session at the specified summary level.
 
@@ -141,23 +151,35 @@ class EpisodicMemory:
                 elif summary_level == "detailed":
                     content = episode.detailed_summary or episode.raw_content
                 elif summary_level == "condensed":
-                    content = episode.condensed_summary or episode.detailed_summary or episode.raw_content
+                    content = (
+                        episode.condensed_summary
+                        or episode.detailed_summary
+                        or episode.raw_content
+                    )
                 elif summary_level == "topic":
-                    content = episode.topic_summary or episode.condensed_summary or episode.detailed_summary or episode.raw_content
+                    content = (
+                        episode.topic_summary
+                        or episode.condensed_summary
+                        or episode.detailed_summary
+                        or episode.raw_content
+                    )
                 else:
                     content = episode.detailed_summary or episode.raw_content
 
-                episodes.append({
-                    "id": episode.id,
-                    "content": content,
-                    "created_at": episode.created_at,
-                    "metadata": episode.metadata
-                })
+                episodes.append(
+                    {
+                        "id": episode.id,
+                        "content": content,
+                        "created_at": episode.created_at,
+                        "metadata": episode.metadata,
+                    }
+                )
 
         return episodes
 
-    async def retrieve_relevant_episodes(self, session_id: str, query: str, 
-                                      limit: int = 5) -> List[Dict[str, Any]]:
+    async def retrieve_relevant_episodes(
+        self, session_id: str, query: str, limit: int = 5
+    ) -> List[Dict[str, Any]]:
         """
         Retrieve episodes relevant to the query.
 
@@ -180,20 +202,20 @@ class EpisodicMemory:
                 segment_type="condensed",
                 tokens=len(episode["content"].split()),
                 speakers=["user", "assistant"],  # Simplified
-                metadata=episode["metadata"]
+                metadata=episode["metadata"],
             )
             segments.append((segment, episode))
 
         # Retrieve relevant segments
         relevant_segments = await self.context_summarizer.retrieve_relevant_segments(
-            segments=[s for s, _ in segments],
-            query=query,
-            limit=limit
+            segments=[s for s, _ in segments], query=query, limit=limit
         )
 
         # Map back to episodes
         segment_map = {s.id: e for s, e in segments}
-        relevant_episodes = [segment_map[s.id] for s in relevant_segments if s.id in segment_map]
+        relevant_episodes = [
+            segment_map[s.id] for s in relevant_segments if s.id in segment_map
+        ]
 
         return relevant_episodes
 

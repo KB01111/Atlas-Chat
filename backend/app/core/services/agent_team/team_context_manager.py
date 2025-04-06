@@ -13,8 +13,10 @@ from pydantic import BaseModel, Field
 
 logger = logging.getLogger(__name__)
 
+
 class TeamMessage(BaseModel):
     """Represents a message in the team context"""
+
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     thread_id: str
     sender_type: str  # user, assistant, agent, system
@@ -23,14 +25,17 @@ class TeamMessage(BaseModel):
     created_at: datetime = Field(default_factory=datetime.now)
     metadata: Dict[str, Any] = {}
 
+
 class TeamContext(BaseModel):
     """Represents the shared context for a team"""
+
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     thread_id: str
     messages: List[TeamMessage] = []
     plans: List[Dict[str, Any]] = []
     results: List[Dict[str, Any]] = []
     metadata: Dict[str, Any] = {}
+
 
 class TeamContextManager:
     """
@@ -68,8 +73,9 @@ class TeamContextManager:
 
         return self.contexts[thread_id]
 
-    def add_user_message(self, thread_id: str, content: str, 
-                       metadata: Optional[Dict[str, Any]] = None) -> str:
+    def add_user_message(
+        self, thread_id: str, content: str, metadata: Optional[Dict[str, Any]] = None
+    ) -> str:
         """
         Add a user message to the team context.
 
@@ -89,7 +95,7 @@ class TeamContextManager:
             thread_id=thread_id,
             sender_type="user",
             content=content,
-            metadata=metadata or {}
+            metadata=metadata or {},
         )
 
         # Add to context
@@ -98,16 +104,14 @@ class TeamContextManager:
         # Add to tiered context manager if available
         if self.tiered_context_manager:
             self.tiered_context_manager.add_message(
-                session_id=thread_id,
-                message=content,
-                role="user",
-                metadata=metadata
+                session_id=thread_id, message=content, role="user", metadata=metadata
             )
 
         return message.id
 
-    def add_assistant_message(self, thread_id: str, content: str, 
-                            metadata: Optional[Dict[str, Any]] = None) -> str:
+    def add_assistant_message(
+        self, thread_id: str, content: str, metadata: Optional[Dict[str, Any]] = None
+    ) -> str:
         """
         Add an assistant message to the team context.
 
@@ -127,7 +131,7 @@ class TeamContextManager:
             thread_id=thread_id,
             sender_type="assistant",
             content=content,
-            metadata=metadata or {}
+            metadata=metadata or {},
         )
 
         # Add to context
@@ -139,13 +143,18 @@ class TeamContextManager:
                 session_id=thread_id,
                 message=content,
                 role="assistant",
-                metadata=metadata
+                metadata=metadata,
             )
 
         return message.id
 
-    def add_agent_message(self, thread_id: str, agent_id: str, content: str, 
-                        metadata: Optional[Dict[str, Any]] = None) -> str:
+    def add_agent_message(
+        self,
+        thread_id: str,
+        agent_id: str,
+        content: str,
+        metadata: Optional[Dict[str, Any]] = None,
+    ) -> str:
         """
         Add an agent message to the team context.
 
@@ -167,7 +176,7 @@ class TeamContextManager:
             sender_type="agent",
             sender_id=agent_id,
             content=content,
-            metadata=metadata or {}
+            metadata=metadata or {},
         )
 
         # Add to context
@@ -175,8 +184,9 @@ class TeamContextManager:
 
         return message.id
 
-    def add_system_message(self, thread_id: str, content: str, 
-                         metadata: Optional[Dict[str, Any]] = None) -> str:
+    def add_system_message(
+        self, thread_id: str, content: str, metadata: Optional[Dict[str, Any]] = None
+    ) -> str:
         """
         Add a system message to the team context.
 
@@ -196,7 +206,7 @@ class TeamContextManager:
             thread_id=thread_id,
             sender_type="system",
             content=content,
-            metadata=metadata or {}
+            metadata=metadata or {},
         )
 
         # Add to context
@@ -205,15 +215,14 @@ class TeamContextManager:
         # Add to tiered context manager if available
         if self.tiered_context_manager:
             self.tiered_context_manager.add_message(
-                session_id=thread_id,
-                message=content,
-                role="system",
-                metadata=metadata
+                session_id=thread_id, message=content, role="system", metadata=metadata
             )
 
         return message.id
 
-    def get_conversation_history(self, thread_id: str, limit: Optional[int] = None) -> List[Dict[str, Any]]:
+    def get_conversation_history(
+        self, thread_id: str, limit: Optional[int] = None
+    ) -> List[Dict[str, Any]]:
         """
         Get conversation history for a thread.
 
@@ -242,7 +251,7 @@ class TeamContextManager:
                 "sender_id": message.sender_id,
                 "content": message.content,
                 "created_at": message.created_at.isoformat(),
-                "metadata": message.metadata
+                "metadata": message.metadata,
             }
             for message in messages
         ]
@@ -291,8 +300,9 @@ class TeamContextManager:
         # Simulate context retrieval
         return f"Context for IDs: {', '.join(context_ids)}"
 
-    async def get_relevant_context(self, thread_id: str, query: str, 
-                                 limit: int = 5) -> str:
+    async def get_relevant_context(
+        self, thread_id: str, query: str, limit: int = 5
+    ) -> str:
         """
         Get context relevant to a query.
 
@@ -307,8 +317,7 @@ class TeamContextManager:
         # Use tiered context manager if available
         if self.tiered_context_manager:
             context_bundle = await self.tiered_context_manager.retrieve_context(
-                session_id=thread_id,
-                query=query
+                session_id=thread_id, query=query
             )
 
             return self.tiered_context_manager.format_context_for_prompt(context_bundle)
@@ -327,7 +336,9 @@ class TeamContextManager:
             elif message.sender_type == "assistant":
                 formatted_context.append(f"Assistant: {message.content}")
             elif message.sender_type == "agent":
-                formatted_context.append(f"Agent ({message.sender_id}): {message.content}")
+                formatted_context.append(
+                    f"Agent ({message.sender_id}): {message.content}"
+                )
             elif message.sender_type == "system":
                 formatted_context.append(f"System: {message.content}")
 

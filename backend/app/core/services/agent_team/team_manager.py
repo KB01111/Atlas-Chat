@@ -12,11 +12,18 @@ import logging
 from pydantic import BaseModel, Field
 
 from .coordinator_agent import CoordinatorAgent
-from .specialized_agent import SpecializedAgent, ResearchAgent, CoderAgent, WritingAgent, AnalysisAgent
+from .specialized_agent import (
+    SpecializedAgent,
+    ResearchAgent,
+    CoderAgent,
+    WritingAgent,
+    AnalysisAgent,
+)
 from .task_executor import TaskExecutor
 from .team_context_manager import TeamContextManager
 
 logger = logging.getLogger(__name__)
+
 
 class AgentTeamManager:
     """
@@ -39,7 +46,9 @@ class AgentTeamManager:
         """
         self.client = openai_client
         self.context_manager = TeamContextManager()
-        self.coordinator = CoordinatorAgent(context_manager=self.context_manager, openai_client=self.client)
+        self.coordinator = CoordinatorAgent(
+            context_manager=self.context_manager, openai_client=self.client
+        )
         self.task_executor = TaskExecutor()
 
         # Initialize agent registry
@@ -54,7 +63,7 @@ class AgentTeamManager:
         research_agent = ResearchAgent(
             agent_id="research_agent",
             context_manager=self.context_manager,
-            openai_client=self.client
+            openai_client=self.client,
         )
         self.register_agent(research_agent)
 
@@ -62,7 +71,7 @@ class AgentTeamManager:
         coder_agent = CoderAgent(
             agent_id="coder_agent",
             context_manager=self.context_manager,
-            openai_client=self.client
+            openai_client=self.client,
         )
         self.register_agent(coder_agent)
 
@@ -70,7 +79,7 @@ class AgentTeamManager:
         writing_agent = WritingAgent(
             agent_id="writing_agent",
             context_manager=self.context_manager,
-            openai_client=self.client
+            openai_client=self.client,
         )
         self.register_agent(writing_agent)
 
@@ -78,7 +87,7 @@ class AgentTeamManager:
         analysis_agent = AnalysisAgent(
             agent_id="analysis_agent",
             context_manager=self.context_manager,
-            openai_client=self.client
+            openai_client=self.client,
         )
         self.register_agent(analysis_agent)
 
@@ -142,7 +151,9 @@ class AgentTeamManager:
         """
         return list(self.agents.values())
 
-    async def process_request(self, thread_id: str, user_request: str) -> Dict[str, Any]:
+    async def process_request(
+        self, thread_id: str, user_request: str
+    ) -> Dict[str, Any]:
         """
         Process a user request using the agent team.
 
@@ -154,23 +165,18 @@ class AgentTeamManager:
             Dictionary with processing results
         """
         # Store user request in context manager
-        self.context_manager.add_user_message(
-            thread_id=thread_id,
-            content=user_request
-        )
+        self.context_manager.add_user_message(thread_id=thread_id, content=user_request)
 
         # Create task plan
         plan = await self.coordinator.create_plan(
             thread_id=thread_id,
             user_request=user_request,
-            available_agents=list(self.agents.keys())
+            available_agents=list(self.agents.keys()),
         )
 
         # Execute plan
         execution_results = await self.task_executor.execute_plan(
-            coordinator=self.coordinator,
-            plan_id=plan.id,
-            agents=self.agents
+            coordinator=self.coordinator, plan_id=plan.id, agents=self.agents
         )
 
         # Get result IDs
@@ -184,18 +190,18 @@ class AgentTeamManager:
 
         # Store assistant response in context manager
         self.context_manager.add_assistant_message(
-            thread_id=thread_id,
-            content=synthesis["content"]
+            thread_id=thread_id, content=synthesis["content"]
         )
 
         return {
             "plan_id": plan.id,
             "execution_results": execution_results,
-            "synthesis": synthesis
+            "synthesis": synthesis,
         }
 
-    async def process_request_with_agent(self, thread_id: str, user_request: str, 
-                                      agent_id: str) -> Dict[str, Any]:
+    async def process_request_with_agent(
+        self, thread_id: str, user_request: str, agent_id: str
+    ) -> Dict[str, Any]:
         """
         Process a user request using a specific agent.
 
@@ -213,27 +219,19 @@ class AgentTeamManager:
             raise ValueError(f"Agent not found: {agent_id}")
 
         # Store user request in context manager
-        self.context_manager.add_user_message(
-            thread_id=thread_id,
-            content=user_request
-        )
+        self.context_manager.add_user_message(thread_id=thread_id, content=user_request)
 
         # Execute task
         result = await agent.execute_task(
-            thread_id=thread_id,
-            task_description=user_request
+            thread_id=thread_id, task_description=user_request
         )
 
         # Store assistant response in context manager
         self.context_manager.add_assistant_message(
-            thread_id=thread_id,
-            content=result["content"]
+            thread_id=thread_id, content=result["content"]
         )
 
-        return {
-            "agent_id": agent_id,
-            "result": result
-        }
+        return {"agent_id": agent_id, "result": result}
 
     def get_conversation_history(self, thread_id: str) -> List[Dict[str, Any]]:
         """

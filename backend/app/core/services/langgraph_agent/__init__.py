@@ -11,7 +11,12 @@ import os
 from pydantic import BaseModel, Field
 
 # Import agent factory components
-from ...services.agent_factory.agent_definition import AgentDefinition, AgentRequest, AgentResponse, AgentMessage
+from ...services.agent_factory.agent_definition import (
+    AgentDefinition,
+    AgentRequest,
+    AgentResponse,
+    AgentMessage,
+)
 from ...services.agent_factory.agent_factory import AgentProvider
 from ...services.model_routing.model_router import ModelRouter
 
@@ -21,9 +26,12 @@ logger = logging.getLogger(__name__)
 try:
     import langgraph.graph as lg
     from langgraph.graph import StateGraph, END
+
     LANGGRAPH_AVAILABLE = True
 except ImportError:
-    logger.warning("langgraph library not available. Install with 'pip install langgraph'")
+    logger.warning(
+        "langgraph library not available. Install with 'pip install langgraph'"
+    )
     LANGGRAPH_AVAILABLE = False
 
 
@@ -54,7 +62,9 @@ class LangGraphProvider(AgentProvider):
 
         # Check if LangGraph is available
         if not LANGGRAPH_AVAILABLE:
-            logger.warning("LangGraph is not available. Some functionality will be limited.")
+            logger.warning(
+                "LangGraph is not available. Some functionality will be limited."
+            )
 
     def create_agent(self, definition: AgentDefinition) -> str:
         """
@@ -113,7 +123,9 @@ class LangGraphProvider(AgentProvider):
         """
         return self.agents.get(agent_id)
 
-    def update_agent(self, agent_id: str, updates: Dict[str, Any]) -> Optional[AgentDefinition]:
+    def update_agent(
+        self, agent_id: str, updates: Dict[str, Any]
+    ) -> Optional[AgentDefinition]:
         """
         Update agent definition.
 
@@ -183,9 +195,9 @@ class LangGraphProvider(AgentProvider):
                 "max_tokens": request.max_tokens,
                 "temperature": request.temperature,
                 "stream": request.stream,
-                "metadata": request.metadata
+                "metadata": request.metadata,
             },
-            tools={tool: {} for tool in definition.tools}
+            tools={tool: {} for tool in definition.tools},
         )
 
         # Run graph
@@ -198,12 +210,9 @@ class LangGraphProvider(AgentProvider):
             # Create response
             response = AgentResponse(
                 agent_id=agent_id,
-                message=AgentMessage(
-                    role="assistant",
-                    content=response_content
-                ),
+                message=AgentMessage(role="assistant", content=response_content),
                 usage={},  # Usage info not available from LangGraph
-                metadata={"graph_execution": "success"}
+                metadata={"graph_execution": "success"},
             )
 
             return response
@@ -216,15 +225,17 @@ class LangGraphProvider(AgentProvider):
                 agent_id=agent_id,
                 message=AgentMessage(
                     role="assistant",
-                    content="I encountered an error while processing your request."
+                    content="I encountered an error while processing your request.",
                 ),
                 usage={},
-                metadata={"graph_execution": "error", "error": str(e)}
+                metadata={"graph_execution": "error", "error": str(e)},
             )
 
             return response
 
-    def _prepare_messages(self, messages: List[AgentMessage], definition: AgentDefinition) -> List[Dict[str, Any]]:
+    def _prepare_messages(
+        self, messages: List[AgentMessage], definition: AgentDefinition
+    ) -> List[Dict[str, Any]]:
         """
         Prepare messages for LangGraph.
 
@@ -241,17 +252,11 @@ class LangGraphProvider(AgentProvider):
         prepared = []
 
         if not has_system and definition.system_prompt:
-            prepared.append({
-                "role": "system",
-                "content": definition.system_prompt
-            })
+            prepared.append({"role": "system", "content": definition.system_prompt})
 
         # Add user and assistant messages
         for msg in messages:
-            prepared.append({
-                "role": msg.role,
-                "content": msg.content
-            })
+            prepared.append({"role": msg.role, "content": msg.content})
 
         return prepared
 
@@ -273,7 +278,7 @@ class LangGraphProvider(AgentProvider):
             "start": self._create_start_node(),
             "process": self._create_process_node(definition),
             "tool_executor": self._create_tool_executor_node(definition),
-            "response_generator": self._create_response_generator_node(definition)
+            "response_generator": self._create_response_generator_node(definition),
         }
 
         # Create graph
@@ -291,8 +296,8 @@ class LangGraphProvider(AgentProvider):
             {
                 "tool_executor": "tool_executor",
                 "response_generator": "response_generator",
-                END: END
-            }
+                END: END,
+            },
         )
         builder.add_edge("tool_executor", "process")
         builder.add_edge("response_generator", END)
@@ -312,6 +317,7 @@ class LangGraphProvider(AgentProvider):
         Returns:
             Node function
         """
+
         def start_node(state: GraphState) -> GraphState:
             """Start node for LangGraph."""
             # Initialize state
@@ -344,7 +350,11 @@ class LangGraphProvider(AgentProvider):
 
             # Check if we need to use a tool
             last_message = state.messages[-1] if state.messages else None
-            if last_message and last_message.get("role") == "assistant" and "tool_calls" in last_message:
+            if (
+                last_message
+                and last_message.get("role") == "assistant"
+                and "tool_calls" in last_message
+            ):
                 state.next_node = "tool_executor"
                 return state
 
@@ -369,6 +379,7 @@ class LangGraphProvider(AgentProvider):
         Returns:
             Node function
         """
+
         def tool_executor_node(state: GraphState) -> GraphState:
             """Tool executor node for LangGraph."""
             # Update current node
@@ -391,22 +402,26 @@ class LangGraphProvider(AgentProvider):
 
                 # Check if tool is available
                 if tool_name not in state.tools:
-                    tool_results.append({
-                        "tool_call_id": tool_id,
-                        "role": "tool",
-                        "name": tool_name,
-                        "content": f"Error: Tool '{tool_name}' not available"
-                    })
+                    tool_results.append(
+                        {
+                            "tool_call_id": tool_id,
+                            "role": "tool",
+                            "name": tool_name,
+                            "content": f"Error: Tool '{tool_name}' not available",
+                        }
+                    )
                     continue
 
                 # TODO: Implement actual tool execution
                 # For now, just return a placeholder result
-                tool_results.append({
-                    "tool_call_id": tool_id,
-                    "role": "tool",
-                    "name": tool_name,
-                    "content": f"Result from {tool_name} with args {tool_args}"
-                })
+                tool_results.append(
+                    {
+                        "tool_call_id": tool_id,
+                        "role": "tool",
+                        "name": tool_name,
+                        "content": f"Result from {tool_name} with args {tool_args}",
+                    }
+                )
 
             # Add tool results to messages
             state.messages.extend(tool_results)
@@ -447,10 +462,7 @@ class LangGraphProvider(AgentProvider):
             # Add system prompt if not present
             has_system = any(msg.get("role") == "system" for msg in state.messages)
             if not has_system and system_prompt:
-                model_messages.append({
-                    "role": "system",
-                    "content": system_prompt
-                })
+                model_messages.append({"role": "system", "content": system_prompt})
 
             # Add other messages
             model_messages.extend(state.messages)
@@ -463,24 +475,23 @@ class LangGraphProvider(AgentProvider):
                 response = model.generate(
                     messages=model_messages,
                     max_tokens=max_tokens,
-                    temperature=temperature
+                    temperature=temperature,
                 )
 
                 # Add response to messages
-                state.messages.append({
-                    "role": "assistant",
-                    "content": response
-                })
+                state.messages.append({"role": "assistant", "content": response})
 
             except Exception as e:
                 logger.error(f"Error generating response: {e}")
                 state.error = str(e)
 
                 # Add error response to messages
-                state.messages.append({
-                    "role": "assistant",
-                    "content": "I encountered an error while processing your request."
-                })
+                state.messages.append(
+                    {
+                        "role": "assistant",
+                        "content": "I encountered an error while processing your request.",
+                    }
+                )
 
             # End graph
             state.next_node = END

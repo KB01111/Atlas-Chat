@@ -5,12 +5,17 @@ Ensures compatibility between OpenRouter and Graphiti knowledge graph system
 
 import logging
 from typing import Dict, Any, List, Optional
-from app.core.models.openrouter_models import GraphitiNode, GraphitiRelationship, GraphitiEpisode
+from app.core.models.openrouter_models import (
+    GraphitiNode,
+    GraphitiRelationship,
+    GraphitiEpisode,
+)
 from pydantic import BaseModel, Field
 import json
 import asyncio
 
 logger = logging.getLogger(__name__)
+
 
 class OpenRouterGraphitiIntegration:
     """
@@ -27,10 +32,12 @@ class OpenRouterGraphitiIntegration:
         """
         self.graphiti_client = graphiti_client
 
-    async def add_conversation_to_graphiti(self, 
-                                         conversation_id: str,
-                                         messages: List[Dict[str, Any]],
-                                         metadata: Optional[Dict[str, Any]] = None) -> str:
+    async def add_conversation_to_graphiti(
+        self,
+        conversation_id: str,
+        messages: List[Dict[str, Any]],
+        metadata: Optional[Dict[str, Any]] = None,
+    ) -> str:
         """
         Add a conversation to Graphiti as an episode
 
@@ -44,7 +51,9 @@ class OpenRouterGraphitiIntegration:
         """
         try:
             if not self.graphiti_client:
-                logger.warning("Graphiti client not initialized, skipping add_conversation_to_graphiti")
+                logger.warning(
+                    "Graphiti client not initialized, skipping add_conversation_to_graphiti"
+                )
                 return "graphiti_not_initialized"
 
             # Create episode content from messages
@@ -55,7 +64,7 @@ class OpenRouterGraphitiIntegration:
                 id=f"conversation:{conversation_id}",
                 timestamp=int(asyncio.get_event_loop().time()),
                 content=content,
-                metadata=metadata or {}
+                metadata=metadata or {},
             )
 
             # Convert episode to nodes and relationships
@@ -68,16 +77,18 @@ class OpenRouterGraphitiIntegration:
             await self.graphiti_client.add_nodes(graph_data["nodes"])
             await self.graphiti_client.add_relationships(graph_data["relationships"])
 
-            logger.info(f"Added conversation {conversation_id} to Graphiti as episode {episode_id}")
+            logger.info(
+                f"Added conversation {conversation_id} to Graphiti as episode {episode_id}"
+            )
             return episode_id
 
         except Exception as e:
             logger.error(f"Error adding conversation to Graphiti: {str(e)}")
             return f"error:{str(e)}"
 
-    async def search_graphiti_for_context(self,
-                                        query: str,
-                                        limit: int = 5) -> List[Dict[str, Any]]:
+    async def search_graphiti_for_context(
+        self, query: str, limit: int = 5
+    ) -> List[Dict[str, Any]]:
         """
         Search Graphiti for relevant context based on a query
 
@@ -90,7 +101,9 @@ class OpenRouterGraphitiIntegration:
         """
         try:
             if not self.graphiti_client:
-                logger.warning("Graphiti client not initialized, skipping search_graphiti_for_context")
+                logger.warning(
+                    "Graphiti client not initialized, skipping search_graphiti_for_context"
+                )
                 return []
 
             # Search Graphiti
@@ -101,22 +114,26 @@ class OpenRouterGraphitiIntegration:
             for result in results:
                 if "content" in result:
                     # This is an episode
-                    formatted_results.append({
-                        "type": "episode",
-                        "id": result.get("id", ""),
-                        "content": result.get("content", ""),
-                        "timestamp": result.get("timestamp", 0),
-                        "relevance": result.get("relevance", 0.0)
-                    })
+                    formatted_results.append(
+                        {
+                            "type": "episode",
+                            "id": result.get("id", ""),
+                            "content": result.get("content", ""),
+                            "timestamp": result.get("timestamp", 0),
+                            "relevance": result.get("relevance", 0.0),
+                        }
+                    )
                 else:
                     # This is a node
-                    formatted_results.append({
-                        "type": "node",
-                        "id": result.get("id", ""),
-                        "label": result.get("label", ""),
-                        "properties": result.get("properties", {}),
-                        "relevance": result.get("relevance", 0.0)
-                    })
+                    formatted_results.append(
+                        {
+                            "type": "node",
+                            "id": result.get("id", ""),
+                            "label": result.get("label", ""),
+                            "properties": result.get("properties", {}),
+                            "relevance": result.get("relevance", 0.0),
+                        }
+                    )
 
             return formatted_results
 
@@ -153,9 +170,9 @@ class OpenRouterGraphitiIntegration:
 
         return content
 
-    async def enhance_messages_with_graphiti_context(self,
-                                                  messages: List[Dict[str, Any]],
-                                                  query: Optional[str] = None) -> List[Dict[str, Any]]:
+    async def enhance_messages_with_graphiti_context(
+        self, messages: List[Dict[str, Any]], query: Optional[str] = None
+    ) -> List[Dict[str, Any]]:
         """
         Enhance messages with relevant context from Graphiti
 
@@ -168,7 +185,9 @@ class OpenRouterGraphitiIntegration:
         """
         try:
             if not self.graphiti_client:
-                logger.warning("Graphiti client not initialized, skipping enhance_messages_with_graphiti_context")
+                logger.warning(
+                    "Graphiti client not initialized, skipping enhance_messages_with_graphiti_context"
+                )
                 return messages
 
             # If no query provided, use the last user message
@@ -193,17 +212,22 @@ class OpenRouterGraphitiIntegration:
                     context += f"{i+1}. {result['label']}: {json.dumps(result['properties'])}\n\n"
 
             # Find system message or create one
-            system_msg_idx = next((i for i, m in enumerate(messages) if m.get("role") == "system"), None)
+            system_msg_idx = next(
+                (i for i, m in enumerate(messages) if m.get("role") == "system"), None
+            )
 
             if system_msg_idx is not None:
                 # Append context to existing system message
                 messages[system_msg_idx]["content"] += f"\n\n{context}"
             else:
                 # Create new system message with context
-                messages.insert(0, {
-                    "role": "system",
-                    "content": f"Use the following context from previous conversations to inform your responses:\n\n{context}"
-                })
+                messages.insert(
+                    0,
+                    {
+                        "role": "system",
+                        "content": f"Use the following context from previous conversations to inform your responses:\n\n{context}",
+                    },
+                )
 
             return messages
 

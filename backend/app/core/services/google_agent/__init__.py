@@ -11,7 +11,12 @@ import os
 from pydantic import BaseModel
 
 # Import agent factory components
-from ...services.agent_factory.agent_definition import AgentDefinition, AgentRequest, AgentResponse, AgentMessage
+from ...services.agent_factory.agent_definition import (
+    AgentDefinition,
+    AgentRequest,
+    AgentResponse,
+    AgentMessage,
+)
 from ...services.agent_factory.agent_factory import AgentProvider
 from ...services.model_routing.model_router import ModelRouter
 
@@ -20,9 +25,12 @@ logger = logging.getLogger(__name__)
 # Try to import google-genai library
 try:
     import google.generativeai as genai
+
     GENAI_AVAILABLE = True
 except ImportError:
-    logger.warning("google-genai library not available. Install with 'pip install google-genai'")
+    logger.warning(
+        "google-genai library not available. Install with 'pip install google-genai'"
+    )
     GENAI_AVAILABLE = False
 
 
@@ -97,7 +105,9 @@ class GoogleProvider(AgentProvider):
         """
         return self.agents.get(agent_id)
 
-    def update_agent(self, agent_id: str, updates: Dict[str, Any]) -> Optional[AgentDefinition]:
+    def update_agent(
+        self, agent_id: str, updates: Dict[str, Any]
+    ) -> Optional[AgentDefinition]:
         """
         Update agent definition.
 
@@ -157,23 +167,22 @@ class GoogleProvider(AgentProvider):
             messages=messages,
             stream=request.stream,
             max_tokens=request.max_tokens,
-            temperature=request.temperature
+            temperature=request.temperature,
         )
 
         # Create response
         response = AgentResponse(
             agent_id=agent_id,
-            message=AgentMessage(
-                role="assistant",
-                content=response_content
-            ),
+            message=AgentMessage(role="assistant", content=response_content),
             usage=usage,
-            metadata={}
+            metadata={},
         )
 
         return response
 
-    def _prepare_messages(self, messages: List[AgentMessage], definition: AgentDefinition) -> List[Dict[str, Any]]:
+    def _prepare_messages(
+        self, messages: List[AgentMessage], definition: AgentDefinition
+    ) -> List[Dict[str, Any]]:
         """
         Prepare messages for Google GenAI.
 
@@ -190,17 +199,11 @@ class GoogleProvider(AgentProvider):
         prepared = []
 
         if not has_system and definition.system_prompt:
-            prepared.append({
-                "role": "system",
-                "content": definition.system_prompt
-            })
+            prepared.append({"role": "system", "content": definition.system_prompt})
 
         # Add user and assistant messages
         for msg in messages:
-            prepared.append({
-                "role": msg.role,
-                "content": msg.content
-            })
+            prepared.append({"role": msg.role, "content": msg.content})
 
         return prepared
 
@@ -210,7 +213,7 @@ class GoogleProvider(AgentProvider):
         messages: List[Dict[str, Any]],
         stream: bool = False,
         max_tokens: Optional[int] = None,
-        temperature: Optional[float] = None
+        temperature: Optional[float] = None,
     ) -> tuple[str, Dict[str, Any]]:
         """
         Call Google GenAI model.
@@ -254,9 +257,7 @@ class GoogleProvider(AgentProvider):
         # Generate response
         if stream:
             response = model.generate_content(
-                google_messages,
-                generation_config=generation_config,
-                stream=True
+                google_messages, generation_config=generation_config, stream=True
             )
 
             # Collect streamed response
@@ -268,24 +269,25 @@ class GoogleProvider(AgentProvider):
             response_text = "".join(chunks)
 
             # Usage info not available for streaming
-            usage = {
-                "prompt_tokens": 0,
-                "completion_tokens": 0,
-                "total_tokens": 0
-            }
+            usage = {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0}
         else:
             response = model.generate_content(
-                google_messages,
-                generation_config=generation_config
+                google_messages, generation_config=generation_config
             )
 
             response_text = response.text
 
             # Extract usage info if available
             usage = {
-                "prompt_tokens": getattr(response, "usage_metadata", {}).get("prompt_token_count", 0),
-                "completion_tokens": getattr(response, "usage_metadata", {}).get("candidates_token_count", 0),
-                "total_tokens": getattr(response, "usage_metadata", {}).get("total_token_count", 0)
+                "prompt_tokens": getattr(response, "usage_metadata", {}).get(
+                    "prompt_token_count", 0
+                ),
+                "completion_tokens": getattr(response, "usage_metadata", {}).get(
+                    "candidates_token_count", 0
+                ),
+                "total_tokens": getattr(response, "usage_metadata", {}).get(
+                    "total_token_count", 0
+                ),
             }
 
         return response_text, usage

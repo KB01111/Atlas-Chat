@@ -59,11 +59,9 @@ class PerformanceMetrics:
         """
         return self.metrics
 
-    def record_request(self, 
-                     model_id: str, 
-                     success: bool, 
-                     duration: float, 
-                     tokens: int = 0) -> None:
+    def record_request(
+        self, model_id: str, success: bool, duration: float, tokens: int = 0
+    ) -> None:
         """
         Record a request to a model.
 
@@ -92,7 +90,9 @@ class PerformanceMetrics:
 
         if tokens > 0:
             metrics.total_tokens += tokens
-            metrics.avg_tokens_per_request = metrics.total_tokens / metrics.total_requests
+            metrics.avg_tokens_per_request = (
+                metrics.total_tokens / metrics.total_requests
+            )
 
         metrics.last_updated = time.time()
 
@@ -146,7 +146,7 @@ class PerformanceMetrics:
         try:
             with open(self.metrics_file, "w") as f:
                 data = {
-                    model_id: metrics.dict() 
+                    model_id: metrics.dict()
                     for model_id, metrics in self.metrics.items()
                 }
                 json.dump(data, f, indent=2)
@@ -172,7 +172,7 @@ class PerformanceMetrics:
                 error_count=5,
                 total_tokens=80000,
                 total_duration=250.0,
-                last_updated=time.time()
+                last_updated=time.time(),
             ),
             "gpt-3.5-turbo": ModelMetrics(
                 model_id="gpt-3.5-turbo",
@@ -184,7 +184,7 @@ class PerformanceMetrics:
                 error_count=20,
                 total_tokens=120000,
                 total_duration=240.0,
-                last_updated=time.time()
+                last_updated=time.time(),
             ),
             "claude-3-5-sonnet": ModelMetrics(
                 model_id="claude-3-5-sonnet",
@@ -196,7 +196,7 @@ class PerformanceMetrics:
                 error_count=7,
                 total_tokens=85000,
                 total_duration=280.0,
-                last_updated=time.time()
+                last_updated=time.time(),
             ),
             "claude-3-opus": ModelMetrics(
                 model_id="claude-3-opus",
@@ -208,7 +208,7 @@ class PerformanceMetrics:
                 error_count=2,
                 total_tokens=45000,
                 total_duration=175.0,
-                last_updated=time.time()
+                last_updated=time.time(),
             ),
             "gemini-2-5-pro": ModelMetrics(
                 model_id="gemini-2-5-pro",
@@ -220,7 +220,7 @@ class PerformanceMetrics:
                 error_count=8,
                 total_tokens=75000,
                 total_duration=220.0,
-                last_updated=time.time()
+                last_updated=time.time(),
             ),
             "deepseek-v3": ModelMetrics(
                 model_id="deepseek-v3",
@@ -232,6 +232,6 @@ class PerformanceMetrics:
                 error_count=5,
                 total_tokens=41000,
                 total_duration=130.0,
-                last_updated=time.time()
-            )
+                last_updated=time.time(),
+            ),
         }
