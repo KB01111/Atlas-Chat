@@ -158,8 +158,17 @@ jobs:
       - name: Run docker-compose
         run: |
           docker-compose up -d
-          sleep 10
-          docker-compose ps
+          TIMEOUT=60
+          INTERVAL=5
+          TIME_PASSED=0
+          while ! (docker-compose ps | grep "Up") && [ $TIME_PASSED -lt $TIMEOUT ]; do
+            sleep $INTERVAL
+            TIME_PASSED=$((TIME_PASSED + INTERVAL))
+          done
+          if ! (docker-compose ps | grep "Up"); then
+            echo "Services did not start within $TIMEOUT seconds."
+            exit 1
+          fi
           curl -s --retry 5 --retry-delay 5 --retry-connrefused http://localhost:3000/ || echo "Frontend may take longer to start"
           curl -s --retry 5 --retry-delay 5 --retry-connrefused http://localhost:5000/health || echo "Backend may take longer to start"
           docker-compose logs
