@@ -2,16 +2,9 @@ import React, { useMemo } from "react";
 import type { ModelSelectorProps } from "~/common";
 import { useLocalize } from "~/hooks";
 import { CustomMenu as Menu } from "./CustomMenu";
-import {
-  renderEndpoints,
-  renderModelSpecs,
-  renderSearchResults,
-} from "./components";
+import { renderEndpoints, renderModelSpecs, renderSearchResults } from "./components";
 import DialogManager from "./DialogManager";
-import {
-  ModelSelectorProvider,
-  useModelSelectorContext,
-} from "./ModelSelectorContext";
+import { ModelSelectorProvider, useModelSelectorContext } from "./ModelSelectorContext";
 import { getDisplayValue, getSelectedIcon } from "./utils";
 
 function ModelSelectorContent() {
@@ -67,9 +60,7 @@ function ModelSelectorContent() {
           {selectedIcon}
         </div>
       )}
-      <span className="flex-grow truncate text-left">
-        {selectedDisplayValue}
-      </span>
+      <span className="flex-grow truncate text-left">{selectedDisplayValue}</span>
     </button>
   );
 
@@ -85,9 +76,7 @@ function ModelSelectorContent() {
           });
         }}
         onSearch={(value) => setSearchValue(value)}
-        combobox={
-          <input placeholder={localize("com_endpoint_search_models")} />
-        }
+        combobox={<input placeholder={localize("com_endpoint_search_models")} />}
         trigger={trigger}
       >
         {searchResults ? (

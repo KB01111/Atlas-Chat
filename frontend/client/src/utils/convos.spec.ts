@@ -39,9 +39,7 @@ describe("Conversation Utilities", () => {
           updatedAt: new Date(Date.now() - 86400000 * 8).toISOString(),
         }, // 8 days ago (previous 30 days)
       ];
-      const grouped = groupConversationsByDate(
-        conversations as TConversation[],
-      );
+      const grouped = groupConversationsByDate(conversations as TConversation[]);
       expect(grouped[0][0]).toBe(dateKeys.today);
       expect(grouped[0][1]).toHaveLength(1);
       expect(grouped[1][0]).toBe(dateKeys.yesterday);
@@ -73,9 +71,7 @@ describe("Conversation Utilities", () => {
       const originalDateNow = Date.now;
       Date.now = jest.fn(() => fixedDate.getTime());
 
-      const grouped = groupConversationsByDate(
-        conversations as TConversation[],
-      );
+      const grouped = groupConversationsByDate(conversations as TConversation[]);
 
       // Restore Date.now
       Date.now = originalDateNow;
@@ -95,8 +91,7 @@ describe("Conversation Utilities", () => {
       expect(grouped.map(([key]) => key)).toEqual(expectedGroups);
 
       // Helper function to safely get group length
-      const getGroupLength = (key: string) =>
-        grouped.find(([k]) => k === key)?.[1]?.length ?? 0;
+      const getGroupLength = (key: string) => grouped.find(([k]) => k === key)?.[1]?.length ?? 0;
 
       // Check specific group contents
       expect(getGroupLength(dateKeys.today)).toBe(1);
@@ -129,27 +124,17 @@ describe("Conversation Utilities", () => {
         { conversationId: "3", updatedAt: "2022-12-01T12:00:00Z" }, // " 2022"
       ];
 
-      const grouped = groupConversationsByDate(
-        conversations as TConversation[],
-      );
+      const grouped = groupConversationsByDate(conversations as TConversation[]);
 
       expect(grouped).toEqual(
         expect.arrayContaining([
-          expect.arrayContaining([
-            " 2023",
-            expect.arrayContaining(conversations.slice(0, 2)),
-          ]),
-          expect.arrayContaining([
-            " 2022",
-            expect.arrayContaining([conversations[3]]),
-          ]),
+          expect.arrayContaining([" 2023", expect.arrayContaining(conversations.slice(0, 2))]),
+          expect.arrayContaining([" 2022", expect.arrayContaining([conversations[3]])]),
         ]),
       );
 
       // No duplicate IDs are present
-      const allGroupedIds = grouped.flatMap(([, convs]) =>
-        convs.map((c) => c.conversationId),
-      );
+      const allGroupedIds = grouped.flatMap(([, convs]) => convs.map((c) => c.conversationId));
       const uniqueIds = [...new Set(allGroupedIds)];
       expect(allGroupedIds.length).toBe(uniqueIds.length);
     });
@@ -163,18 +148,14 @@ describe("Conversation Utilities", () => {
         { conversationId: "5", updatedAt: "2022-12-01T12:00:00Z" }, // December 2022
       ];
 
-      const grouped = groupConversationsByDate(
-        conversations as TConversation[],
-      );
+      const grouped = groupConversationsByDate(conversations as TConversation[]);
 
       // Check if the years are in the correct order (most recent first)
       expect(grouped.map(([key]) => key)).toEqual([" 2023", " 2022"]);
 
       // Check if conversations within 2023 are sorted correctly by month
       const conversationsIn2023 = grouped[0][1];
-      const monthsIn2023 = conversationsIn2023.map((c) =>
-        new Date(c.updatedAt).getMonth(),
-      );
+      const monthsIn2023 = conversationsIn2023.map((c) => new Date(c.updatedAt).getMonth());
       expect(monthsIn2023).toEqual([11, 10, 1, 0]); // December (11), November (10), February (1), January (0)
 
       // Check if the conversation from 2022 is in its own group
@@ -191,20 +172,12 @@ describe("Conversation Utilities", () => {
         { conversationId: "5", updatedAt: "2021-12-01T12:00:00Z" }, // December 2021
       ];
 
-      const grouped = groupConversationsByDate(
-        conversations as TConversation[],
-      );
+      const grouped = groupConversationsByDate(conversations as TConversation[]);
 
       expect(grouped.map(([key]) => key)).toEqual([" 2023", " 2022", " 2021"]);
-      expect(
-        grouped[0][1].map((c) => new Date(c.updatedAt).getMonth()),
-      ).toEqual([5, 0]); // June, January
-      expect(
-        grouped[1][1].map((c) => new Date(c.updatedAt).getMonth()),
-      ).toEqual([11]); // December
-      expect(
-        grouped[2][1].map((c) => new Date(c.updatedAt).getMonth()),
-      ).toEqual([11, 5]); // December, June
+      expect(grouped[0][1].map((c) => new Date(c.updatedAt).getMonth())).toEqual([5, 0]); // June, January
+      expect(grouped[1][1].map((c) => new Date(c.updatedAt).getMonth())).toEqual([11]); // December
+      expect(grouped[2][1].map((c) => new Date(c.updatedAt).getMonth())).toEqual([11, 5]); // December, June
     });
 
     it("handles conversations from the same month correctly", () => {
@@ -214,17 +187,11 @@ describe("Conversation Utilities", () => {
         { conversationId: "3", updatedAt: "2023-06-30T12:00:00Z" },
       ];
 
-      const grouped = groupConversationsByDate(
-        conversations as TConversation[],
-      );
+      const grouped = groupConversationsByDate(conversations as TConversation[]);
 
       expect(grouped.length).toBe(1);
       expect(grouped[0][0]).toBe(" 2023");
-      expect(grouped[0][1].map((c) => c.conversationId)).toEqual([
-        "3",
-        "2",
-        "1",
-      ]);
+      expect(grouped[0][1].map((c) => c.conversationId)).toEqual(["3", "2", "1"]);
     });
 
     it("handles conversations from today, yesterday, and previous days correctly", () => {
@@ -240,9 +207,7 @@ describe("Conversation Utilities", () => {
         { conversationId: "3", updatedAt: twoDaysAgo.toISOString() },
       ];
 
-      const grouped = groupConversationsByDate(
-        conversations as TConversation[],
-      );
+      const grouped = groupConversationsByDate(conversations as TConversation[]);
 
       expect(grouped.map(([key]) => key)).toEqual([
         dateKeys.today,
@@ -258,9 +223,7 @@ describe("Conversation Utilities", () => {
         { conversationId: "3", updatedAt: undefined },
       ];
 
-      const grouped = groupConversationsByDate(
-        conversations as TConversation[],
-      );
+      const grouped = groupConversationsByDate(conversations as TConversation[]);
 
       expect(grouped.length).toBe(2); // One group for 2023 and one for today (null/undefined dates)
       expect(grouped[0][0]).toBe(dateKeys.today);
@@ -303,9 +266,7 @@ describe("Conversation Utilities", () => {
         },
       ]);
 
-      const grouped = groupConversationsByDate(
-        conversations as TConversation[],
-      );
+      const grouped = groupConversationsByDate(conversations as TConversation[]);
 
       // Check that we have two year groups
       expect(grouped.length).toBe(2);
@@ -315,18 +276,18 @@ describe("Conversation Utilities", () => {
       expect(group2023).toBeDefined();
       const grouped2023 = group2023[1];
       expect(grouped2023?.length).toBe(12);
-      expect(grouped2023?.map((c) => new Date(c.updatedAt).getMonth())).toEqual(
-        [11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0],
-      );
+      expect(grouped2023?.map((c) => new Date(c.updatedAt).getMonth())).toEqual([
+        11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0,
+      ]);
 
       // Check 2022 months
       const group2022 = grouped.find(([key]) => key === " 2022") ?? [];
       expect(group2022).toBeDefined();
       const grouped2022 = group2022[1];
       expect(grouped2022?.length).toBe(12);
-      expect(grouped2022?.map((c) => new Date(c.updatedAt).getMonth())).toEqual(
-        [11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0],
-      );
+      expect(grouped2022?.map((c) => new Date(c.updatedAt).getMonth())).toEqual([
+        11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0,
+      ]);
 
       // Check that all conversations are accounted for
       const totalGroupedConversations =
@@ -352,9 +313,7 @@ describe("Conversation Utilities", () => {
         newConversation as TConversation,
       );
       expect(newData.pages[0].conversations).toHaveLength(1);
-      expect(newData.pages[0].conversations[0].conversationId).toBe(
-        Constants.NEW_CONVO,
-      );
+      expect(newData.pages[0].conversations[0].conversationId).toBe(Constants.NEW_CONVO);
     });
   });
 
@@ -437,12 +396,9 @@ describe("Conversation Utilities", () => {
           },
         ],
       };
-      const { pageIndex, index } = findPageForConversation(
-        data as ConversationData,
-        {
-          conversationId: "2",
-        },
-      );
+      const { pageIndex, index } = findPageForConversation(data as ConversationData, {
+        conversationId: "2",
+      });
       expect(pageIndex).toBe(0);
       expect(index).toBe(1);
     });
@@ -470,9 +426,7 @@ describe("Conversation Utilities with Fake Data", () => {
       const initialLength = convoData.pages[0].conversations.length;
       const newData = addConversation(convoData, newConversation);
       expect(newData.pages[0].conversations.length).toBe(initialLength + 1);
-      expect(newData.pages[0].conversations[0].conversationId).toBe(
-        Constants.NEW_CONVO,
-      );
+      expect(newData.pages[0].conversations[0].conversationId).toBe(Constants.NEW_CONVO);
     });
   });
 
@@ -493,10 +447,7 @@ describe("Conversation Utilities with Fake Data", () => {
         conversationId: convoData.pages[0].conversations[0].conversationId,
         title: "Partially Updated Title",
       };
-      const newData = updateConvoFields(
-        convoData,
-        updatedFields as TConversation,
-      );
+      const newData = updateConvoFields(convoData, updatedFields as TConversation);
       const updatedConversation = newData.pages[0].conversations.find(
         (c) => c.conversationId === updatedFields.conversationId,
       );
@@ -506,8 +457,7 @@ describe("Conversation Utilities with Fake Data", () => {
 
   describe("deleteConversation", () => {
     it("removes a conversation by id from fake data", () => {
-      const conversationIdToDelete = convoData.pages[0].conversations[0]
-        .conversationId as string;
+      const conversationIdToDelete = convoData.pages[0].conversations[0].conversationId as string;
       const newData = deleteConversation(convoData, conversationIdToDelete);
       const deletedConvoExists = newData.pages[0].conversations.some(
         (c) => c.conversationId === conversationIdToDelete,
@@ -542,18 +492,12 @@ describe("Conversation Utilities with Fake Data", () => {
       const pageSize = 5;
       const totalPageNumber = Math.ceil(conversations.length / pageSize);
 
-      const paginatedData = Array.from(
-        { length: totalPageNumber },
-        (_, index) => ({
-          conversations: conversations.slice(
-            index * pageSize,
-            (index + 1) * pageSize,
-          ),
-          pages: totalPageNumber,
-          pageNumber: index + 1,
-          pageSize,
-        }),
-      );
+      const paginatedData = Array.from({ length: totalPageNumber }, (_, index) => ({
+        conversations: conversations.slice(index * pageSize, (index + 1) * pageSize),
+        pages: totalPageNumber,
+        pageNumber: index + 1,
+        pageSize,
+      }));
 
       const testData = { pages: paginatedData, pageParams: [null, 2, 3] };
 
@@ -577,17 +521,11 @@ describe("Conversation Utilities with Fake Data", () => {
 
       expect(normalizedData.pages[1].conversations).toHaveLength(5);
       expect(normalizedData.pages[1].conversations[0].conversationId).toBe("7");
-      expect(normalizedData.pages[1].conversations[4].conversationId).toBe(
-        "11",
-      );
+      expect(normalizedData.pages[1].conversations[4].conversationId).toBe("11");
 
       expect(normalizedData.pages[2].conversations).toHaveLength(4);
-      expect(normalizedData.pages[2].conversations[0].conversationId).toBe(
-        "12",
-      );
-      expect(normalizedData.pages[2].conversations[3].conversationId).toBe(
-        "15",
-      );
+      expect(normalizedData.pages[2].conversations[0].conversationId).toBe("12");
+      expect(normalizedData.pages[2].conversations[3].conversationId).toBe("15");
     });
 
     it("normalizes the number of items on each page after data addition", () => {
@@ -605,18 +543,12 @@ describe("Conversation Utilities with Fake Data", () => {
       const pageSize = 5;
       const totalPageNumber = Math.ceil(conversations.length / pageSize);
 
-      const paginatedData = Array.from(
-        { length: totalPageNumber },
-        (_, index) => ({
-          conversations: conversations.slice(
-            index * pageSize,
-            (index + 1) * pageSize,
-          ),
-          pages: totalPageNumber,
-          pageNumber: index + 1,
-          pageSize,
-        }),
-      );
+      const paginatedData = Array.from({ length: totalPageNumber }, (_, index) => ({
+        conversations: conversations.slice(index * pageSize, (index + 1) * pageSize),
+        pages: totalPageNumber,
+        pageNumber: index + 1,
+        pageSize,
+      }));
 
       const testData = { pages: paginatedData, pageParams: [null, 2, 3] };
 
@@ -645,20 +577,14 @@ describe("Conversation Utilities with Fake Data", () => {
 
       // Checks that the items are in the expected order, ensuring that the conversationId values are correctly distributed across the pages.
 
-      expect(normalizedData.pages[0].conversations[0].conversationId).toBe(
-        "16",
-      );
+      expect(normalizedData.pages[0].conversations[0].conversationId).toBe("16");
       expect(normalizedData.pages[0].conversations[4].conversationId).toBe("4");
 
       expect(normalizedData.pages[1].conversations[0].conversationId).toBe("5");
       expect(normalizedData.pages[1].conversations[4].conversationId).toBe("9");
 
-      expect(normalizedData.pages[2].conversations[0].conversationId).toBe(
-        "10",
-      );
-      expect(normalizedData.pages[2].conversations[4].conversationId).toBe(
-        "14",
-      );
+      expect(normalizedData.pages[2].conversations[0].conversationId).toBe("10");
+      expect(normalizedData.pages[2].conversations[4].conversationId).toBe("14");
       expect(normalizedData.pageParams).toHaveLength(3);
     });
 
@@ -678,9 +604,7 @@ describe("Conversation Utilities with Fake Data", () => {
     it("does not normalize data when not needed", () => {
       const normalizedData = normalizeData(
         {
-          pages: [
-            { conversations: ["1"], pageNumber: 1, pageSize: 5, pages: 1 },
-          ],
+          pages: [{ conversations: ["1"], pageNumber: 1, pageSize: 5, pages: 1 }],
           pageParams: [],
         },
         "conversations",
@@ -699,18 +623,12 @@ describe("Conversation Utilities with Fake Data", () => {
       const pageSize = 5;
       const totalPageNumber = Math.ceil(conversations.length / pageSize);
 
-      const paginatedData = Array.from(
-        { length: totalPageNumber },
-        (_, index) => ({
-          conversations: conversations.slice(
-            index * pageSize,
-            (index + 1) * pageSize,
-          ),
-          pages: totalPageNumber,
-          pageNumber: index + 1,
-          pageSize,
-        }),
-      );
+      const paginatedData = Array.from({ length: totalPageNumber }, (_, index) => ({
+        conversations: conversations.slice(index * pageSize, (index + 1) * pageSize),
+        pages: totalPageNumber,
+        pageNumber: index + 1,
+        pageSize,
+      }));
 
       const testData = { pages: paginatedData, pageParams: [null, 2, 3] };
 

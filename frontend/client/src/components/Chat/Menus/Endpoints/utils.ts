@@ -4,10 +4,7 @@ import type {
   TEndpointsConfig,
   TModelSpec,
 } from "librechat-data-provider";
-import {
-  isAgentsEndpoint,
-  isAssistantsEndpoint,
-} from "librechat-data-provider";
+import { isAgentsEndpoint, isAssistantsEndpoint } from "librechat-data-provider";
 import { Bot } from "lucide-react";
 import React from "react";
 import type { Endpoint, SelectedValues } from "~/common";
@@ -48,16 +45,9 @@ export function filterItems<
           return true;
         }
 
-        if (
-          isAgentsEndpoint(item.value) &&
-          agentsMap &&
-          modelId.name in agentsMap
-        ) {
+        if (isAgentsEndpoint(item.value) && agentsMap && modelId.name in agentsMap) {
           const agentName = agentsMap[modelId.name]?.name;
-          return (
-            typeof agentName === "string" &&
-            agentName.toLowerCase().includes(searchTermLower)
-          );
+          return typeof agentName === "string" && agentName.toLowerCase().includes(searchTermLower);
         }
 
         if (isAssistantsEndpoint(item.value) && assistantsMap) {
@@ -101,9 +91,7 @@ export function filterModels(
     ) {
       const assistant = assistantsMap[endpoint.value][modelId];
       modelName =
-        typeof assistant.name === "string" && assistant.name
-          ? (assistant.name as string)
-          : modelId;
+        typeof assistant.name === "string" && assistant.name ? (assistant.name as string) : modelId;
     }
 
     return modelName.toLowerCase().includes(searchTermLower);
@@ -191,9 +179,7 @@ export const getDisplayValue = ({
   }
 
   if (selectedValues.model && selectedValues.endpoint) {
-    const endpoint = mappedEndpoints.find(
-      (e) => e.value === selectedValues.endpoint,
-    );
+    const endpoint = mappedEndpoints.find((e) => e.value === selectedValues.endpoint);
     if (!endpoint) {
       return localize("com_ui_select_model");
     }
@@ -218,9 +204,7 @@ export const getDisplayValue = ({
   }
 
   if (selectedValues.endpoint) {
-    const endpoint = mappedEndpoints.find(
-      (e) => e.value === selectedValues.endpoint,
-    );
+    const endpoint = mappedEndpoints.find((e) => e.value === selectedValues.endpoint);
     return endpoint?.label || localize("com_ui_select_model");
   }
 

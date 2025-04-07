@@ -33,9 +33,7 @@ export default function AudioRecorder({
         return;
       }
       if (text) {
-        const globalAudio = document.getElementById(
-          globalAudioId,
-        ) as HTMLAudioElement | null;
+        const globalAudio = document.getElementById(globalAudioId) as HTMLAudioElement | null;
         if (globalAudio) {
           console.log("Unmuting global audio");
           globalAudio.muted = false;
@@ -56,8 +54,10 @@ export default function AudioRecorder({
     [setValue],
   );
 
-  const { isListening, isLoading, startRecording, stopRecording } =
-    useSpeechToText(setText, onTranscriptionComplete);
+  const { isListening, isLoading, startRecording, stopRecording } = useSpeechToText(
+    setText,
+    onTranscriptionComplete,
+  );
 
   if (!textAreaRef.current) {
     return null;
@@ -85,9 +85,7 @@ export default function AudioRecorder({
           id="audio-recorder"
           type="button"
           aria-label={localize("com_ui_use_micrphone")}
-          onClick={
-            isListening === true ? handleStopRecording : handleStartRecording
-          }
+          onClick={isListening === true ? handleStopRecording : handleStartRecording}
           disabled={disabled}
           className={cn(
             "flex size-9 items-center justify-center rounded-full p-1 transition-colors hover:bg-surface-hover",

@@ -35,9 +35,7 @@ const EditTextPart = ({
   );
 
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
-  const updateMessageContentMutation = useUpdateMessageContentMutation(
-    conversationId ?? "",
-  );
+  const updateMessageContentMutation = useUpdateMessageContentMutation(conversationId ?? "");
 
   const chatDirection = useRecoilValue(store.chatDirection).toLowerCase();
   const isRTL = chatDirection === "rtl";
@@ -183,10 +181,7 @@ const EditTextPart = ({
         >
           {localize("com_ui_save")}
         </button>
-        <button
-          className="btn btn-neutral relative"
-          onClick={() => enterEdit(true)}
-        >
+        <button className="btn btn-neutral relative" onClick={() => enterEdit(true)}>
           {localize("com_ui_cancel")}
         </button>
       </div>

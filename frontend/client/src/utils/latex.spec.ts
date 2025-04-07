@@ -46,8 +46,7 @@ describe("processLaTeX", () => {
   });
 
   test("correctly processes a mix of valid Markdown LaTeX and LaTeX patterns", () => {
-    const content =
-      "Valid $a + b = c$ and LaTeX to convert \\(x^2 + y^2 = z^2\\)";
+    const content = "Valid $a + b = c$ and LaTeX to convert \\(x^2 + y^2 = z^2\\)";
     const expected = "Valid $a + b = c$ and LaTeX to convert $x^2 + y^2 = z^2$";
     expect(processLaTeX(content)).toBe(expected);
   });
@@ -99,8 +98,7 @@ describe("processLaTeX", () => {
     test("processes LaTeX outside of code blocks", () => {
       const content =
         "Outside \\(x^2 + y^2 = z^2\\) and inside code block: ```\n$100\n# $1000\n```";
-      const expected =
-        "Outside $x^2 + y^2 = z^2$ and inside code block: ```\n$100\n# $1000\n```";
+      const expected = "Outside $x^2 + y^2 = z^2$ and inside code block: ```\n$100\n# $1000\n```";
       expect(processLaTeX(content)).toBe(expected);
     });
   });

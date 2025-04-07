@@ -1,10 +1,7 @@
 import type { TMessageProps } from "~/common";
 import { cn } from "~/utils";
 
-type TSiblingSwitchProps = Pick<
-  TMessageProps,
-  "siblingIdx" | "siblingCount" | "setSiblingIdx"
->;
+type TSiblingSwitchProps = Pick<TMessageProps, "siblingIdx" | "siblingCount" | "setSiblingIdx">;
 
 export default function SiblingSwitch({
   siblingIdx,

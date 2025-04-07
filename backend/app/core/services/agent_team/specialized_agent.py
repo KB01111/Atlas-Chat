@@ -5,11 +5,8 @@ This module implements specialized agents with domain-specific capabilities
 for research, coding, writing, and analysis tasks.
 """
 
-from typing import List, Dict, Any, Optional, Union
-from datetime import datetime
-import uuid
 import logging
-from pydantic import BaseModel, Field
+from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -119,14 +116,8 @@ class SpecializedAgent:
         """
         # In a real implementation, this would use more sophisticated
         # logic to determine if the agent can handle the task
-
-        # Simple check based on capabilities
         task_lower = task_description.lower()
-        for capability in self.capabilities:
-            if capability.lower() in task_lower:
-                return True
-
-        return False
+        return any(capability.lower() in task_lower for capability in self.capabilities)
 
 
 class ResearchAgent(SpecializedAgent):
@@ -361,18 +352,20 @@ class WritingAgent(SpecializedAgent):
 
         # Add writing-specific information
         result["content"] += "\n\n## Writing Sample\n\n"
-        result["content"] += (
-            "The sun cast long shadows across the valley as the day drew to a close. "
-        )
-        result["content"] += (
-            "Birds returned to their nests, singing their evening songs, while the gentle "
-        )
-        result["content"] += (
+        result[
+            "content"
+        ] += "The sun cast long shadows across the valley as the day drew to a close. "
+        result[
+            "content"
+        ] += "Birds returned to their nests, singing their evening songs, while the gentle "
+        result[
+            "content"
+        ] += (
             "breeze carried the scent of wildflowers through the air. It was a perfect "
         )
-        result["content"] += (
-            "moment of tranquility, a brief pause before the world transitioned from day to night.\n\n"
-        )
+        result[
+            "content"
+        ] += "moment of tranquility, a brief pause before the world transitioned from day to night.\n\n"
 
         return result
 

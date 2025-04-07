@@ -1,8 +1,10 @@
+from typing import Any, Dict
+
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import StreamingResponse
-from typing import List, Dict, Any
-from app.core.services.agent_service import AgentService
+
 from app.core.logging_config import setup_logging
+from app.core.services.agent_service import AgentService
 
 logger = setup_logging()
 router = APIRouter()

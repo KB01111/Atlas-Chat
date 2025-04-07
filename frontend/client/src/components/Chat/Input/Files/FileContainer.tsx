@@ -23,10 +23,7 @@ const FileContainer = ({
               <div className="truncate font-medium" title={file.filename}>
                 {file.filename}
               </div>
-              <div
-                className="truncate text-text-secondary"
-                title={fileType.title}
-              >
+              <div className="truncate text-text-secondary" title={fileType.title}>
                 {fileType.title}
               </div>
             </div>

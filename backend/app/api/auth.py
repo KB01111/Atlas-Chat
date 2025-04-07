@@ -1,20 +1,21 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Request
-from fastapi.security import OAuth2PasswordRequestForm
-from typing import Dict, Any
 from datetime import timedelta
+from typing import Any, Dict
+
+from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi.security import OAuth2PasswordRequestForm
 from loguru import logger
 
+from app.core.config import settings
+from app.core.database import get_db_session
 from app.core.security import (
     create_access_token,
-    get_password_hash,
-    verify_password,
-    validate_password_strength,
     get_current_user,
+    get_password_hash,
     rate_limiter,
+    validate_password_strength,
+    verify_password,
 )
-from app.core.config import settings
-from app.models.models import User, UserCreate, UserLogin, Token
-from app.core.database import get_db_session
+from app.models.models import Token, User, UserCreate
 
 router = APIRouter()
 

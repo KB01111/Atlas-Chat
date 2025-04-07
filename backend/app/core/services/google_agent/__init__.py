@@ -5,17 +5,18 @@ This module provides integration with Google's Generative AI models using the of
 python-genai library for direct access to Gemini models.
 """
 
-from typing import Dict, Any, List, Optional, Union
 import logging
 import os
+from typing import Any, Dict, List, Optional, Union
+
 from pydantic import BaseModel
 
 # Import agent factory components
 from ...services.agent_factory.agent_definition import (
     AgentDefinition,
+    AgentMessage,
     AgentRequest,
     AgentResponse,
-    AgentMessage,
 )
 from ...services.agent_factory.agent_factory import AgentProvider
 from ...services.model_routing.model_router import ModelRouter

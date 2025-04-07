@@ -138,11 +138,7 @@ export const ApiProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const sendChatMessage = async (
-    agentId: string,
-    message: string,
-    history: any[],
-  ) => {
+  const sendChatMessage = async (agentId: string, message: string, history: any[]) => {
     try {
       const response = await fetch(`${baseUrl}/api/chat`, {
         method: "POST",
@@ -278,8 +274,7 @@ export const dataService = {
   getAgents: () => useApi().getAgents(),
   getAgent: (agentId: string) => useApi().getAgent(agentId),
   createAgent: (agent: any) => useApi().createAgent(agent),
-  updateAgent: (agentId: string, agent: any) =>
-    useApi().updateAgent(agentId, agent),
+  updateAgent: (agentId: string, agent: any) => useApi().updateAgent(agentId, agent),
   deleteAgent: (agentId: string) => useApi().deleteAgent(agentId),
 
   // Chat

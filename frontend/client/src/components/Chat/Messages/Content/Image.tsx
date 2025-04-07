@@ -50,12 +50,8 @@ const Image = ({
   const { width: scaledWidth, height: scaledHeight } = useMemo(
     () =>
       scaleImage({
-        originalWidth: Number(
-          placeholderDimensions?.width?.split("px")[0] ?? width,
-        ),
-        originalHeight: Number(
-          placeholderDimensions?.height?.split("px")[0] ?? height,
-        ),
+        originalWidth: Number(placeholderDimensions?.width?.split("px")[0] ?? width),
+        originalHeight: Number(placeholderDimensions?.height?.split("px")[0] ?? height),
         containerRef,
       }),
     [placeholderDimensions, height, width],
@@ -86,17 +82,13 @@ const Image = ({
                   height: "auto",
                   color: "transparent",
                 }}
-                placeholder={
-                  <div style={{ width: scaledWidth, height: scaledHeight }} />
-                }
+                placeholder={<div style={{ width: scaledWidth, height: scaledHeight }} />}
               />
             </button>
           </Dialog.Trigger>
         </div>
       </div>
-      {isLoaded && (
-        <DialogImage src={imagePath} height={height} width={width} />
-      )}
+      {isLoaded && <DialogImage src={imagePath} height={height} width={width} />}
     </Dialog.Root>
   );
 };

@@ -5,12 +5,14 @@ This module provides API endpoints for accessing the integrated functionality
 of the Tiered Context Management system and Agent Team Coordination framework.
 """
 
-from fastapi import APIRouter, Depends, HTTPException, Body
-from typing import Dict, Any, Optional, List
+import logging
+from typing import Any, Dict, Optional
+
+from fastapi import APIRouter, Body, Depends, HTTPException
 from pydantic import BaseModel
 
-from ..core.services.integration import AtlasIntegration
 from ..core.security import get_current_user
+from ..core.services.integration import AtlasIntegration
 
 router = APIRouter(prefix="/integration", tags=["integration"])
 
@@ -70,10 +72,17 @@ async def process_message(
             format=result.get("format", "text"),
             metadata=result.get("metadata", {}),
         )
+    except HTTPException:  # Re-raise HTTPExceptions directly
+        raise
     except Exception as e:
-        # Sanitize error message to avoid exposing internal details
+        logging.error(
+            f"Error processing message for session {request.session_id}: {e}",
+            exc_info=True,
+        )
+        # Return a generic 500 error without exposing internal details
         raise HTTPException(
-            status_code=500, detail="An error occurred while processing the message"
+            status_code=500,
+            detail="An internal error occurred while processing the message.",
         )
 
 
@@ -95,10 +104,13 @@ async def end_session(
     try:
         result = integration.end_session(session_id)
         return {"success": result}
+    except HTTPException:  # Re-raise HTTPExceptions directly
+        raise
     except Exception as e:
-        # Sanitize error message to avoid exposing internal details
+        logging.error(f"Error ending session {session_id}: {e}", exc_info=True)
         raise HTTPException(
-            status_code=500, detail="An error occurred while ending the session"
+            status_code=500,
+            detail="An internal error occurred while ending the session.",
         )
 
 
@@ -125,10 +137,13 @@ async def get_agents(current_user: Dict = Depends(get_current_user)):
                 for agent in agents
             ]
         }
+    except HTTPException:  # Re-raise HTTPExceptions directly
+        raise
     except Exception as e:
-        # Sanitize error message to avoid exposing internal details
+        logging.error(f"Error retrieving agents: {e}", exc_info=True)
         raise HTTPException(
-            status_code=500, detail="An error occurred while retrieving agents"
+            status_code=500,
+            detail="An internal error occurred while retrieving agents.",
         )
 
 
@@ -158,8 +173,13 @@ async def get_agents_by_type(
                 for agent in agents
             ]
         }
+    except HTTPException:  # Re-raise HTTPExceptions directly
+        raise
     except Exception as e:
-        # Sanitize error message to avoid exposing internal details
-        raise HTTPException(
-            status_code=500, detail="An error occurred while retrieving agents by type"
+        logging.error(
+            f"Error retrieving agents by type '{agent_type}': {e}", exc_info=True
+        )
+        raise HTTPException from e(
+            status_code=500,
+            detail="An internal error occurred while retrieving agents by type.",
         )

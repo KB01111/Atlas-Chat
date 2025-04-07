@@ -28,6 +28,7 @@ The `ToolExecutor` service is the core component that interfaces with the E2B SD
 Location: `/app/core/services/tool_executor.py`
 
 Key methods:
+
 - `execute_code(code, language, context)`: Executes code in the specified language
 - `write_file(file_path, content, context)`: Writes content to a file in the sandbox
 - `read_file(file_path, context)`: Reads content from a file in the sandbox
@@ -40,6 +41,7 @@ The API layer exposes endpoints for interacting with the E2B sandbox:
 Location: `/app/api/code.py`
 
 Endpoints:
+
 - `POST /code/execute`: Execute code in the sandbox
 - `POST /code/write-file`: Write content to a file in the sandbox
 - `POST /code/read-file`: Read content from a file in the sandbox
@@ -52,6 +54,7 @@ The frontend includes a comprehensive code execution component:
 Location: `/frontend/client/src/components/CodeExecution/CodeExecutionComponent.jsx`
 
 Features:
+
 - Monaco code editor with syntax highlighting
 - Language selection (Python, JavaScript, TypeScript, Bash)
 - File management (create, save, load)
@@ -65,6 +68,7 @@ Security is implemented at multiple levels:
 Location: `/app/core/security.py`
 
 Features:
+
 - JWT authentication for API access
 - Code validation to prevent dangerous patterns
 - File path validation to prevent directory traversal
@@ -78,6 +82,7 @@ The E2B code execution capability is integrated with the agent service:
 Location: `/app/core/services/agent_service.py`
 
 Integration points:
+
 - Agent definitions include allowed tools
 - Executors (SDK and LangGraph) have access to the ToolExecutor
 - Tools are exposed to agents based on allowed_tools configuration
@@ -119,9 +124,9 @@ result = await tool_executor.execute_code(
 
 # Frontend API call
 const result = await api.executeCode(
-    "print('Hello, World!')", 
-    "python", 
-    threadId, 
+    "print('Hello, World!')",
+    "python",
+    threadId,
     agentId
 );
 ```
@@ -194,6 +199,7 @@ Comprehensive tests are provided for the E2B integration:
 Location: `/backend/tests/test_code_execution.py`
 
 Test cases:
+
 - Successful code execution
 - Error handling
 - File operations
@@ -215,14 +221,17 @@ When deploying the E2B integration:
 Common issues and solutions:
 
 1. **Sandbox initialization failure**:
+
    - Check E2B SDK installation
    - Verify network connectivity to E2B services
 
 2. **Code execution timeouts**:
+
    - Increase timeout setting in E2B sandbox configuration
    - Optimize code to reduce execution time
 
 3. **Package installation failures**:
+
    - Check package name validity
    - Verify network connectivity from sandbox
    - Ensure package is available in the repository

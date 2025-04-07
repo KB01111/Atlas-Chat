@@ -1,12 +1,11 @@
 import asyncio
 import logging
 import time
-from typing import Dict, List, Optional, Any, Union, Callable
-from functools import wraps, lru_cache
 from concurrent.futures import ThreadPoolExecutor
+from functools import wraps
+from typing import Any, Dict, List, Optional
 
 from fastapi import HTTPException, status
-from sqlalchemy.orm import Session
 
 from app.core.config import settings
 
@@ -81,9 +80,9 @@ class PerformanceMonitor:
             result[name] = {
                 "count": data["count"],
                 "total_time": data["total_time"],
-                "avg_time": data["total_time"] / data["count"]
-                if data["count"] > 0
-                else 0,
+                "avg_time": (
+                    data["total_time"] / data["count"] if data["count"] > 0 else 0
+                ),
                 "min_time": data["min_time"] if data["min_time"] != float("inf") else 0,
                 "max_time": data["max_time"],
             }
@@ -281,7 +280,7 @@ import functools
 # User code
 """
 
-    # Add the user code
+    # Add the use___namede
     optimized_code += code
 
     return optimized_code
@@ -299,7 +298,7 @@ class MemoryOptimizer:
         Clear all caches.
         """
         # Clear LRU caches
-        for name, obj in globals().items():
+        for _, obj in globals().items():  # Renamed unused 'name' to '_'
             if callable(obj) and hasattr(obj, "cache_clear"):
                 obj.cache_clear()
 

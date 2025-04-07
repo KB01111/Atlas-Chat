@@ -16,12 +16,10 @@ export const updateConversationTag = (
   const oldData = queryCache.find((t) => t.tag === tag);
   if (!oldData) {
     // When a new tag is added, it is positioned at the top of the list.
-    return [queryCache[0], response, ...queryCache.slice(1)].map(
-      (t, index) => ({
-        ...t,
-        position: index,
-      }),
-    );
+    return [queryCache[0], response, ...queryCache.slice(1)].map((t, index) => ({
+      ...t,
+      position: index,
+    }));
   }
 
   const oldPosition = oldData.position;

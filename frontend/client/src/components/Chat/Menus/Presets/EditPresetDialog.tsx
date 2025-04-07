@@ -3,14 +3,7 @@ import type { TEndpointsConfig, TModelsConfig } from "librechat-data-provider";
 import { isAgentsEndpoint, QueryKeys } from "librechat-data-provider";
 import { useCallback, useEffect, useMemo } from "react";
 import { useRecoilState } from "recoil";
-import {
-  Dialog,
-  DialogButton,
-  DialogClose,
-  Input,
-  Label,
-  SelectDropDown,
-} from "~/components";
+import { Dialog, DialogButton, DialogClose, Input, Label, SelectDropDown } from "~/components";
 import PopoverButtons from "~/components/Chat/Input/PopoverButtons";
 import { EndpointSettings } from "~/components/Endpoints";
 import DialogTemplate from "~/components/ui/DialogTemplate";
@@ -42,9 +35,7 @@ const EditPresetDialog = ({
     optionKey: "title",
     initialValue: preset?.title,
   });
-  const [presetModalVisible, setPresetModalVisible] = useRecoilState(
-    store.presetModalVisible,
-  );
+  const [presetModalVisible, setPresetModalVisible] = useRecoilState(store.presetModalVisible);
 
   const { data: _endpoints = [] } = useGetEndpointsQuery({
     select: mapEndpoints,
@@ -69,9 +60,7 @@ const EditPresetDialog = ({
       return;
     }
 
-    const modelsConfig = queryClient.getQueryData<TModelsConfig>([
-      QueryKeys.models,
-    ]);
+    const modelsConfig = queryClient.getQueryData<TModelsConfig>([QueryKeys.models]);
     if (!modelsConfig) {
       return;
     }
@@ -117,9 +106,7 @@ const EditPresetDialog = ({
         newEndpoint,
         modularChat: true,
         conversation: null,
-        endpointsConfig:
-          queryClient.getQueryData<TEndpointsConfig>([QueryKeys.endpoints]) ??
-          {},
+        endpointsConfig: queryClient.getQueryData<TEndpointsConfig>([QueryKeys.endpoints]) ?? {},
       });
 
       setOptions({
@@ -159,10 +146,7 @@ const EditPresetDialog = ({
             <div className="grid w-full">
               <div className="col-span-4 flex flex-col items-start justify-start gap-6 pb-4 md:flex-row">
                 <div className="flex w-full flex-col">
-                  <Label
-                    htmlFor="preset-name"
-                    className="mb-1 text-left text-sm font-medium"
-                  >
+                  <Label htmlFor="preset-name" className="mb-1 text-left text-sm font-medium">
                     {localize("com_endpoint_preset_name")}
                   </Label>
                   <Input
@@ -178,10 +162,7 @@ const EditPresetDialog = ({
                   />
                 </div>
                 <div className="flex w-full flex-col">
-                  <Label
-                    htmlFor="endpoint"
-                    className="mb-1 text-left text-sm font-medium"
-                  >
+                  <Label htmlFor="endpoint" className="mb-1 text-left text-sm font-medium">
                     {localize("com_endpoint")}
                   </Label>
                   <SelectDropDown

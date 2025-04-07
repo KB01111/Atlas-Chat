@@ -98,11 +98,13 @@ NEXT_PUBLIC_BACKEND_URL=https://your-backend-domain.com
 ### Using Docker (Recommended)
 
 1. Build the Docker image:
+
    ```bash
    docker build -t atlaschat-backend -f backend/Dockerfile .
    ```
 
 2. Run the container:
+
    ```bash
    docker run -d --name atlaschat-backend \
      -p 8000:8000 \
@@ -113,6 +115,7 @@ NEXT_PUBLIC_BACKEND_URL=https://your-backend-domain.com
 ### Manual Deployment
 
 1. Create a Python virtual environment:
+
    ```bash
    cd backend
    python -m venv venv
@@ -120,16 +123,19 @@ NEXT_PUBLIC_BACKEND_URL=https://your-backend-domain.com
    ```
 
 2. Install dependencies:
+
    ```bash
    pip install -r requirements.txt
    ```
 
 3. Run database migrations:
+
    ```bash
    alembic upgrade head
    ```
 
 4. Start the application:
+
    ```bash
    uvicorn main:app --host 0.0.0.0 --port 8000 --workers 4
    ```
@@ -139,11 +145,13 @@ NEXT_PUBLIC_BACKEND_URL=https://your-backend-domain.com
 ### Using Docker (Recommended)
 
 1. Build the Docker image:
+
    ```bash
    docker build -t atlaschat-frontend -f frontend/Dockerfile .
    ```
 
 2. Run the container:
+
    ```bash
    docker run -d --name atlaschat-frontend \
      -p 3000:3000 \
@@ -154,17 +162,20 @@ NEXT_PUBLIC_BACKEND_URL=https://your-backend-domain.com
 ### Manual Deployment
 
 1. Install dependencies:
+
    ```bash
    cd frontend
    npm install
    ```
 
 2. Build the application:
+
    ```bash
    npm run build
    ```
 
 3. Start the production server:
+
    ```bash
    npm start
    ```
@@ -175,11 +186,13 @@ For a complete deployment using Docker Compose:
 
 1. Ensure you have the `.env` file in the project root
 2. Run Docker Compose:
+
    ```bash
    docker-compose up -d
    ```
 
 This will start:
+
 - Backend API
 - Frontend application
 - Qdrant vector database
@@ -194,6 +207,7 @@ Always use HTTPS in production. Configure your reverse proxy (Nginx, Traefik, et
 ### API Security
 
 The backend implements several security measures:
+
 - JWT authentication
 - Rate limiting
 - Input validation
@@ -202,6 +216,7 @@ The backend implements several security measures:
 ### E2B Sandbox Security
 
 The E2B sandbox provides isolated code execution. Additional security measures:
+
 - Code validation to prevent dangerous patterns
 - File path validation to prevent directory traversal
 - Package name validation to block potentially harmful packages
@@ -225,15 +240,18 @@ For advanced monitoring, integrate with Prometheus and Grafana using the provide
 ### Common Issues
 
 1. **Database Connection Errors**
+
    - Verify connection strings in `.env`
    - Check network connectivity and firewall rules
    - Ensure database user has proper permissions
 
 2. **Authentication Issues**
+
    - Verify JWT_SECRET_KEY is consistent
    - Check token expiration settings
 
 3. **E2B Sandbox Errors**
+
    - Verify E2B_API_KEY is valid
    - Check E2B service status
 

@@ -5,10 +5,11 @@ This module implements the long-term memory component that stores
 structured knowledge using a graph-based approach.
 """
 
-from typing import List, Dict, Any, Optional, Union
-from datetime import datetime
-import uuid
 import logging
+import uuid
+from datetime import datetime
+from typing import Any, Dict, List, Optional
+
 from pydantic import BaseModel, Field
 
 logger = logging.getLogger(__name__)
@@ -60,9 +61,9 @@ class KnowledgeGraph:
         self.client = openai_client
         self.nodes: Dict[str, KnowledgeNode] = {}
         self.relations: Dict[str, KnowledgeRelation] = {}
-        self.node_relations: Dict[
-            str, List[str]
-        ] = {}  # node_id -> list of relation_ids
+        self.node_relations: Dict[str, List[str]] = (
+            {}
+        )  # node_id -> list of relation_ids
         self.session_nodes: Dict[str, List[str]] = {}  # session_id -> list of node_ids
 
     def add_node(

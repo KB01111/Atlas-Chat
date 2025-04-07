@@ -5,19 +5,16 @@ This module implements the team manager that orchestrates the agent team,
 manages agent registration, and handles user interactions.
 """
 
-from typing import List, Dict, Any, Optional, Union
-from datetime import datetime
-import uuid
 import logging
-from pydantic import BaseModel, Field
+from typing import Any, Dict, List, Optional
 
 from .coordinator_agent import CoordinatorAgent
 from .specialized_agent import (
-    SpecializedAgent,
-    ResearchAgent,
-    CoderAgent,
-    WritingAgent,
     AnalysisAgent,
+    CoderAgent,
+    ResearchAgent,
+    SpecializedAgent,
+    WritingAgent,
 )
 from .task_executor import TaskExecutor
 from .team_context_manager import TeamContextManager

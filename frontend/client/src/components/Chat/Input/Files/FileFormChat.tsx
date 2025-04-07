@@ -21,9 +21,7 @@ function FileFormChat({ disableInputs }: { disableInputs: boolean }) {
         abortUpload={abortUpload}
         setFilesLoading={setFilesLoading}
         isRTL={isRTL}
-        Wrapper={({ children }) => (
-          <div className="mx-2 mt-2 flex flex-wrap gap-2">{children}</div>
-        )}
+        Wrapper={({ children }) => <div className="mx-2 mt-2 flex flex-wrap gap-2">{children}</div>}
       />
     </>
   );

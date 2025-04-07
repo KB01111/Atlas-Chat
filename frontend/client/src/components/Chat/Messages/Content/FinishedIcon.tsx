@@ -5,13 +5,7 @@ export default function FinishedIcon() {
       style={{ opacity: 1, transform: "none" }}
       data-projection-id="162"
     >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 8 9"
-        fill="none"
-        width="8"
-        height="9"
-      >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 9" fill="none" width="8" height="9">
         <path
           fillRule="evenodd"
           clipRule="evenodd"

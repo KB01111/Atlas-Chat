@@ -7,10 +7,11 @@ This module implements progressive summarization techniques with three levels of
 - Topic Summaries (20:1 or higher compression ratio)
 """
 
-from typing import List, Dict, Any, Optional, Union
-from datetime import datetime
-import uuid
 import logging
+import uuid
+from datetime import datetime
+from typing import Any, Dict, List, Optional
+
 from pydantic import BaseModel, Field
 
 logger = logging.getLogger(__name__)

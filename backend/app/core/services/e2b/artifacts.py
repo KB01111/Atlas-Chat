@@ -1,11 +1,9 @@
-from typing import Dict, List, Optional, Any, Union
+import base64
+import logging
 import os
 import uuid
-import base64
-import json
-import logging
 from datetime import datetime
-from pathlib import Path
+from typing import Any, Dict, List, Optional, Union
 
 from .session import E2BSession
 

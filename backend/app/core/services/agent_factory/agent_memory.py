@@ -2,11 +2,12 @@
 Agent memory module for persistent agent memory.
 """
 
-from typing import Dict, Any, List, Optional, Union
-from pydantic import BaseModel, Field
+import datetime
 import logging
 import uuid
-import datetime
+from typing import Any, Dict, List, Optional
+
+from pydantic import BaseModel, Field
 
 logger = logging.getLogger(__name__)
 

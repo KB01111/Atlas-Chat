@@ -37,9 +37,7 @@ export default function MentionItem({
           isActive === true ? "bg-surface-active" : "bg-transparent",
         )}
       >
-        <div className="flex h-5 w-5 flex-shrink-0 items-center justify-center">
-          {icon}
-        </div>
+        <div className="flex h-5 w-5 flex-shrink-0 items-center justify-center">{icon}</div>
         <div className="flex min-w-0 flex-grow items-center justify-between">
           <div className="truncate">
             <span className="font-medium">{name}</span>

@@ -2,10 +2,11 @@
 Performance metrics for model routing.
 """
 
-from typing import Dict, Any, List, Optional
-import time
 import json
 import os
+import time
+from typing import Any, Dict, Optional
+
 from pydantic import BaseModel
 
 
@@ -127,7 +128,7 @@ class PerformanceMetrics:
         # Try to load from file
         if os.path.exists(self.metrics_file):
             try:
-                with open(self.metrics_file, "r") as f:
+                with open(self.metrics_file) as f:
                     data = json.load(f)
 
                 for model_id, metrics_dict in data.items():

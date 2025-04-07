@@ -29,9 +29,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
   const [status, setStatus] = useState<null | string>(null);
   const localize = useLocalize();
 
-  const handleFileChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ): void => {
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const file = event.target.files?.[0];
     if (!file) {
       return;

@@ -5,16 +5,16 @@ This module implements the main context manager that coordinates all memory tier
 and provides context retrieval based on query relevance.
 """
 
-from typing import List, Dict, Any, Optional, Union
-from datetime import datetime
-import uuid
 import logging
-from pydantic import BaseModel, Field
+from datetime import datetime
+from typing import Any, Dict, List, Optional
 
-from .context_summarizer import ContextSummarizer, ConversationSegment
-from .working_memory import WorkingMemory
+from pydantic import BaseModel
+
+from .context_summarizer import ContextSummarizer
 from .episodic_memory import EpisodicMemory
 from .knowledge_graph import KnowledgeGraph
+from .working_memory import WorkingMemory
 
 logger = logging.getLogger(__name__)
 
@@ -219,9 +219,7 @@ class TieredContextManager:
                 role_display = (
                     "User"
                     if entry["role"] == "user"
-                    else "Assistant"
-                    if entry["role"] == "assistant"
-                    else "System"
+                    else "Assistant" if entry["role"] == "assistant" else "System"
                 )
                 working_memory_str += f"{role_display}: {entry['content']}\n\n"
             context_parts.append(working_memory_str)

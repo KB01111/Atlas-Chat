@@ -1,18 +1,8 @@
 import * as Ariakit from "@ariakit/react";
 import { EModelEndpoint, EToolResources } from "librechat-data-provider";
-import {
-  FileSearch,
-  FileType2Icon,
-  ImageUpIcon,
-  TerminalSquareIcon,
-} from "lucide-react";
+import { FileSearch, FileType2Icon, ImageUpIcon, TerminalSquareIcon } from "lucide-react";
 import React, { useMemo, useRef, useState } from "react";
-import {
-  AttachmentIcon,
-  DropdownPopup,
-  FileUpload,
-  TooltipAnchor,
-} from "~/components";
+import { AttachmentIcon, DropdownPopup, FileUpload, TooltipAnchor } from "~/components";
 import { useGetEndpointsQuery } from "~/data-provider";
 import { useFileHandling, useLocalize } from "~/hooks";
 import { cn } from "~/utils";
@@ -26,9 +16,7 @@ const AttachFile = ({ disabled }: AttachFileProps) => {
   const isUploadDisabled = disabled ?? false;
   const inputRef = useRef<HTMLInputElement>(null);
   const [isPopoverActive, setIsPopoverActive] = useState(false);
-  const [toolResource, setToolResource] = useState<
-    EToolResources | undefined
-  >();
+  const [toolResource, setToolResource] = useState<EToolResources | undefined>();
   const { data: endpointsConfig } = useGetEndpointsQuery();
   const { handleFileChange } = useFileHandling();
 

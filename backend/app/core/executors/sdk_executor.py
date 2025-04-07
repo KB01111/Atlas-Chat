@@ -1,16 +1,16 @@
-from typing import AsyncGenerator, Dict, Any, List, Callable, Optional
-import os
-import json
 import asyncio
+import json
+import os
+from collections.abc import AsyncGenerator
+from typing import Any, Dict, List, Optional
+
 from openai import OpenAI
-from openai.types.beta.threads import Run
 from openai.types.beta.assistant import Assistant
-from openai.types.beta.threads.thread_message import ThreadMessage
-import openai
-from pydantic import BaseModel, Field
-from app.models.models import RequestContext
+from openai.types.beta.threads import Run
+
 from app.core.logging_config import setup_logging
 from app.core.services.tool_executor import ToolExecutor
+from app.models.models import RequestContext
 
 logger = setup_logging()
 

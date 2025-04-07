@@ -5,17 +5,40 @@ This module provides integration with LangGraph for creating complex agent workf
 and graph-based agent architectures.
 """
 
-from typing import Dict, Any, List, Optional, Union, Callable
+import asyncio  # Added this import back just in case, though not directly used in the diff block
+import json  # Added import
 import logging
-import os
+import os  # Moved os import up
+import uuid  # Added import
+from typing import (  # Consolidated typing imports
+    Any,
+    Callable,
+    Dict,
+    List,
+    Optional,
+    TypedDict,
+    Union,
+)
+
+from langgraph.checkpoint.aiosqlite import AsyncSqliteSaver
+from langgraph.graph import END, StateGraph
 from pydantic import BaseModel, Field
 
+from app.core.services.openrouter_client import OpenRouterClient
+from app.core.services.tool_executor import ToolExecutor  # Added ToolExecutor
+from app.models.models import (
+    AgentDefinition,
+    GraphState,
+    RequestContext,
+)
+
+# Added RequestContext
 # Import agent factory components
 from ...services.agent_factory.agent_definition import (
     AgentDefinition,
+    AgentMessage,
     AgentRequest,
     AgentResponse,
-    AgentMessage,
 )
 from ...services.agent_factory.agent_factory import AgentProvider
 from ...services.model_routing.model_router import ModelRouter
@@ -25,7 +48,7 @@ logger = logging.getLogger(__name__)
 # Try to import langgraph library
 try:
     import langgraph.graph as lg
-    from langgraph.graph import StateGraph, END
+    from langgraph.graph import END, StateGraph
 
     LANGGRAPH_AVAILABLE = True
 except ImportError:
@@ -319,8 +342,7 @@ class LangGraphProvider(AgentProvider):
         """
 
         def start_node(state: GraphState) -> GraphState:
-            """Start node for LangGraph."""
-            # Initialize state
+            """Start node ze state
             state.current_node = "start"
             state.next_node = "process"
             return state
@@ -329,12 +351,7 @@ class LangGraphProvider(AgentProvider):
 
     def _create_process_node(self, definition: AgentDefinition) -> Callable:
         """
-        Create process node for LangGraph.
-
-        Args:
-            definition: Agent definition
-
-        Returns:
+        Create prurns:
             Node function
         """
         model_router = self.model_router
@@ -380,7 +397,9 @@ class LangGraphProvider(AgentProvider):
             Node function
         """
 
-        def tool_executor_node(state: GraphState) -> GraphState:
+        async def tool_executor_node(
+            state: GraphState,
+        ) -> GraphState:  # Changed to async def
             """Tool executor node for LangGraph."""
             # Update current node
             state.current_node = "tool_executor"
@@ -412,14 +431,88 @@ class LangGraphProvider(AgentProvider):
                     )
                     continue
 
-                # TODO: Implement actual tool execution
-                # For now, just return a placeholder result
+                # Execute the tool
+                tool_content = ""
+                tool_executor_instance = None  # Define outside try for finally block
+                try:
+                    # Instantiate ToolExecutor - Consider dependency injection or context management for better resource handling
+                    tool_executor_instance = ToolExecutor()
+                    # Ensure state has necessary attributes - add default fallbacks or raise errors if missing
+                    thread_id = getattr(
+                        state, "thread_id", str(uuid.uuid4())
+                    )  # Generate fallback if missing
+                    user_id = getattr(state, "user_id", "langgraph_user")
+                    agent_id = getattr(state, "agent_id", "unknown_agent")
+
+                    context = RequestContext(
+                        thread_id=thread_id,
+                        user_id=user_id,
+                        agent_definition={"agent_id": agent_id},
+                    )
+
+                    try:
+                        # Ensure tool_args is a string before attempting JSON load
+                        if isinstance(tool_args, str):
+                            parsed_args = json.loads(tool_args)
+                        elif isinstance(tool_args, dict):
+                            parsed_args = tool_args  # Already a dict
+                        else:
+                            # Attempt to convert if possible, otherwise raise error or default
+                            try:
+                                parsed_args = json.loads(str(tool_args))
+                            except (json.JSONDecodeError, TypeError):
+                                logging.warning(
+                                    f"Could not parse tool args for {tool_name}. Type: {type(tool_args)}, Value: {tool_args}. Using empty dict."
+                                )
+                                parsed_args = (
+                                    {}
+                                )  # Default to empty dict if parsing fails
+
+                    except json.JSONDecodeError:
+                        logging.error(
+                            f"Invalid JSON arguments for tool {tool_name}: {tool_args}"
+                        )
+                        raise ValueError(
+                            f"Invalid JSON arguments provided for tool {tool_name}"
+                        )
+
+                    # Execute the tool using the ToolExecutor instance
+                    # Ensure execute_tool is an async method in ToolExecutor class
+                    execution_result = await tool_executor_instance.execute_tool(
+                        tool_name=tool_name, args=parsed_args, context=context
+                    )
+
+                    # Format result appropriately (e.g., JSON string for complex results)
+                    if isinstance(execution_result, (dict, list)):
+                        tool_content = json.dumps(execution_result)
+                    else:
+                        tool_content = str(execution_result)
+
+                except Exception as e:
+                    logging.error(
+                        f"Error executing tool '{tool_name}': {e}", exc_info=True
+                    )
+                    tool_content = f"Error: Failed to execute tool '{tool_name}'. Details: {str(e)}"
+                finally:
+                    # Ensure ToolExecutor resources are cleaned up if it was instantiated
+                    if tool_executor_instance and hasattr(
+                        tool_executor_instance, "close"
+                    ):
+                        try:
+                            # If close is async, it needs await here, but ToolExecutor.close was sync previously
+                            # Assuming it's synchronous based on code.py usage
+                            tool_executor_instance.close()
+                        except Exception as close_e:
+                            logging.error(
+                                f"Error closing tool executor for tool {tool_name}: {close_e}"
+                            )
+
                 tool_results.append(
-                    {
+                    {  # This closing brace was missing in the previous read, ensuring it's here.
                         "tool_call_id": tool_id,
                         "role": "tool",
                         "name": tool_name,
-                        "content": f"Result from {tool_name} with args {tool_args}",
+                        "content": tool_content,  # Use formatted result or error
                     }
                 )
 

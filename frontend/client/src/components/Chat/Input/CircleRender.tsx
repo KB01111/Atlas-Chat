@@ -9,10 +9,7 @@ const CircleRender = ({ rmsLevel, isCameraOn, state }) => {
         return <CircleDotsIcon />;
       default:
         return (
-          <div
-            className="smooth-transition"
-            style={{ transform: `scale(${transformScale})` }}
-          >
+          <div className="smooth-transition" style={{ transform: `scale(${transformScale})` }}>
             <CircleIcon state={state} size="256" />
           </div>
         );

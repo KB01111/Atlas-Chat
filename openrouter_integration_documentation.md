@@ -20,16 +20,19 @@ This document provides comprehensive documentation for integrating OpenRouter wi
 The OpenRouter integration follows AtlasChat's dual-engine architecture:
 
 1. **OpenAI Agent SDK Engine**
+
    - Implemented in `openrouter_sdk_agent.py`
    - Provides structured agent workflows with built-in planning
    - Supports tool usage and streaming responses
 
 2. **LangGraph Engine**
+
    - Implemented in `openrouter_langgraph_agent.py`
    - Enables custom graph-based agent workflows
    - Supports complex branching logic and state management
 
 3. **Pydantic AI Integration**
+
    - Implemented in `openrouter_models.py`
    - Provides structured data validation and parsing
    - Ensures type safety and consistent data schemas
@@ -50,6 +53,7 @@ The OpenRouter integration follows AtlasChat's dual-engine architecture:
 ### Steps
 
 1. Copy the OpenRouter integration files to your AtlasChat backend:
+
    - `app/core/services/openrouter_client.py`
    - `app/core/services/openrouter_sdk_agent.py`
    - `app/core/services/openrouter_langgraph_agent.py`
@@ -58,11 +62,13 @@ The OpenRouter integration follows AtlasChat's dual-engine architecture:
    - `app/api/openrouter_agent_definitions.json`
 
 2. Install required dependencies:
+
    ```bash
    pip install openrouter-py langchain langgraph
    ```
 
 3. Copy the environment configuration:
+
    ```bash
    cp .env.openrouter .env
    ```
@@ -115,11 +121,13 @@ Agent configuration is defined in `app/api/openrouter_agent_definitions.json`. Y
 The integration provides three pre-configured agents:
 
 1. **DeepSeek v3 (SDK)**
+
    - Uses the SDK engine with DeepSeek v3 model
    - Supports code execution, web search, and file management tools
    - Integrates with Graphiti for knowledge graph capabilities
 
 2. **DeepSeek v3 (LangGraph)**
+
    - Uses the LangGraph engine with DeepSeek v3 model
    - Provides custom workflow capabilities
    - Supports the same tools as the SDK agent
@@ -149,7 +157,7 @@ openrouter_langgraph_agent = OpenRouterLangGraphAgent()
 def execute_agent(self, agent_id: str, messages: list, stream: bool = False):
     # Get agent definition
     agent_def = self.get_agent_definition(agent_id)
-    
+
     # Check if this is an OpenRouter agent
     if agent_def.get("sdk_config", {}).get("provider") == "openrouter":
         # Use SDK agent
@@ -167,7 +175,7 @@ def execute_agent(self, agent_id: str, messages: list, stream: bool = False):
             tools=self.get_tools_for_agent(agent_id),
             stream=stream
         )
-    
+
     # Existing code for other providers...
 ```
 
@@ -179,13 +187,13 @@ Add the following code to load the OpenRouter agent definitions:
 def load_agent_definitions(self):
     # Load existing agent definitions
     # ...
-    
+
     # Load OpenRouter agent definitions
     openrouter_defs_path = os.path.join(
-        os.path.dirname(__file__), 
+        os.path.dirname(__file__),
         "../../api/openrouter_agent_definitions.json"
     )
-    
+
     if os.path.exists(openrouter_defs_path):
         with open(openrouter_defs_path, "r") as f:
             openrouter_defs = json.load(f)
@@ -205,7 +213,7 @@ graphiti_integration = OpenRouterGraphitiIntegration(graphiti_client)
 # Before executing the agent, enhance messages with context
 if agent_def.get("uses_graphiti", False):
     messages = await graphiti_integration.enhance_messages_with_graphiti_context(messages)
-    
+
 # After receiving a response, add the conversation to Graphiti
 if agent_def.get("uses_graphiti", False):
     await graphiti_integration.add_conversation_to_graphiti(
@@ -225,6 +233,7 @@ pytest tests/test_openrouter_integration.py -v
 ```
 
 The test suite includes:
+
 - Unit tests for all components
 - Integration tests for the full workflow
 - Mocked API responses for deterministic testing
@@ -234,14 +243,17 @@ The test suite includes:
 ### Common Issues
 
 1. **API Key Issues**
+
    - Ensure your OpenRouter API key is correctly set in the `.env` file
    - Verify the API key has access to the models you're trying to use
 
 2. **Model Availability**
+
    - Check that the requested model is available through OpenRouter
    - Some models may require specific permissions or credits
 
 3. **Rate Limiting**
+
    - OpenRouter has rate limits that may affect usage
    - Configure the rate limiting settings appropriately
 

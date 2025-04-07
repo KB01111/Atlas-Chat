@@ -5,13 +5,14 @@ This module implements the medium-term memory component that stores
 conversation history with progressive summarization.
 """
 
-from typing import List, Dict, Any, Optional, Union
-from datetime import datetime, timedelta
-import uuid
 import logging
+import uuid
+from datetime import datetime, timedelta
+from typing import Any, Dict, List, Optional
+
 from pydantic import BaseModel, Field
 
-from .context_summarizer import ConversationSegment, ContextSummarizer
+from .context_summarizer import ContextSummarizer, ConversationSegment
 
 logger = logging.getLogger(__name__)
 
@@ -53,9 +54,9 @@ class EpisodicMemory:
         self.context_summarizer = context_summarizer or ContextSummarizer()
         self.ttl_days = ttl_days
         self.episodes: Dict[str, EpisodeEntry] = {}
-        self.session_episodes: Dict[
-            str, List[str]
-        ] = {}  # session_id -> list of episode_ids
+        self.session_episodes: Dict[str, List[str]] = (
+            {}
+        )  # session_id -> list of episode_ids
 
     async def add_episode(
         self,
@@ -239,7 +240,7 @@ class EpisodicMemory:
 
     def _is_expired(self, episode: EpisodeEntry) -> bool:
         """
-        Check if an episode is expired.
+        Check if an episode is expired based on its TTL.
 
         Args:
             episode: Episode to check
@@ -247,14 +248,10 @@ class EpisodicMemory:
         Returns:
             True if expired, False otherwise
         """
-        if episode.expires_at and episode.expires_at < datetime.now():
-            return True
-
-        return False
+        return bool(episode.expires_at and episode.expires_at < datetime.now())
 
     def _remove_episode(self, episode_id: str) -> None:
-        """
-        Remove an episode.
+        """Remove an episode.
 
         Args:
             episode_id: ID of the episode to remove

@@ -10,11 +10,7 @@ import { useSetFilesToDelete } from "~/hooks";
 import { EditorProvider } from "~/Providers";
 import store from "~/store";
 
-export default function Presentation({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function Presentation({ children }: { children: React.ReactNode }) {
   const artifacts = useRecoilValue(store.artifactsState);
   const artifactsVisible = useRecoilValue(store.artifactsVisible);
 
@@ -31,20 +27,12 @@ export default function Presentation({
   });
 
   useEffect(() => {
-    const filesToDelete = localStorage.getItem(
-      LocalStorageKeys.FILES_TO_DELETE,
-    );
-    const map = JSON.parse(filesToDelete ?? "{}") as Record<
-      string,
-      ExtendedFile
-    >;
+    const filesToDelete = localStorage.getItem(LocalStorageKeys.FILES_TO_DELETE);
+    const map = JSON.parse(filesToDelete ?? "{}") as Record<string, ExtendedFile>;
     const files = Object.values(map)
       .filter(
         (file) =>
-          file.filepath != null &&
-          file.source &&
-          !(file.embedded ?? false) &&
-          file.temp_file_id,
+          file.filepath != null && file.source && !(file.embedded ?? false) && file.temp_file_id,
       )
       .map((file) => ({
         file_id: file.file_id,
@@ -60,25 +48,14 @@ export default function Presentation({
   }, [mutateAsync]);
 
   const defaultLayout = useMemo(() => {
-    const resizableLayout = localStorage.getItem(
-      "react-resizable-panels:layout",
-    );
-    return typeof resizableLayout === "string"
-      ? JSON.parse(resizableLayout)
-      : undefined;
+    const resizableLayout = localStorage.getItem("react-resizable-panels:layout");
+    return typeof resizableLayout === "string" ? JSON.parse(resizableLayout) : undefined;
   }, []);
   const defaultCollapsed = useMemo(() => {
-    const collapsedPanels = localStorage.getItem(
-      "react-resizable-panels:collapsed",
-    );
-    return typeof collapsedPanels === "string"
-      ? JSON.parse(collapsedPanels)
-      : true;
+    const collapsedPanels = localStorage.getItem("react-resizable-panels:collapsed");
+    return typeof collapsedPanels === "string" ? JSON.parse(collapsedPanels) : true;
   }, []);
-  const fullCollapse = useMemo(
-    () => localStorage.getItem("fullPanelCollapse") === "true",
-    [],
-  );
+  const fullCollapse = useMemo(() => localStorage.getItem("fullPanelCollapse") === "true", []);
 
   return (
     <DragDropWrapper className="relative flex w-full grow overflow-hidden bg-presentation">
@@ -87,8 +64,7 @@ export default function Presentation({
         fullPanelCollapse={fullCollapse}
         defaultCollapsed={defaultCollapsed}
         artifacts={
-          artifactsVisible === true &&
-          Object.keys(artifacts ?? {}).length > 0 ? (
+          artifactsVisible === true && Object.keys(artifacts ?? {}).length > 0 ? (
             <EditorProvider>
               <Artifacts />
             </EditorProvider>

@@ -27,11 +27,7 @@ export default function ActionIcon() {
             transform="matrix(1,0,0,1,0,0)"
             opacity="1"
           >
-            <g
-              style={{ display: "block" }}
-              transform="matrix(1,0,0,1,10006,10006)"
-              opacity="1"
-            >
+            <g style={{ display: "block" }} transform="matrix(1,0,0,1,10006,10006)" opacity="1">
               <g opacity="1" transform="matrix(1,0,0,1,0,0)">
                 <path
                   fill="rgb(255,255,255)"
@@ -63,11 +59,7 @@ export default function ActionIcon() {
             transform="matrix(1,0,0,1,0,0)"
             opacity="1"
           >
-            <g
-              style={{ display: "block" }}
-              transform="matrix(1,0,0,1,10006,10006)"
-              opacity="1"
-            >
+            <g style={{ display: "block" }} transform="matrix(1,0,0,1,10006,10006)" opacity="1">
               <g opacity="1" transform="matrix(1,0,0,1,0,0)">
                 <path
                   fill="rgb(255,255,255)"
@@ -98,16 +90,8 @@ export default function ActionIcon() {
           opacity="1"
         >
           <g style={{ display: "block" }} mask="url(#__lottie_element_272_1)">
-            <g
-              clipPath="url(#__lottie_element_283)"
-              transform="matrix(1,0,0,1,0,0)"
-              opacity="1"
-            >
-              <g
-                style={{ display: "block" }}
-                transform="matrix(1,0,0,1,10006,10006)"
-                opacity="1"
-              >
+            <g clipPath="url(#__lottie_element_283)" transform="matrix(1,0,0,1,0,0)" opacity="1">
+              <g style={{ display: "block" }} transform="matrix(1,0,0,1,10006,10006)" opacity="1">
                 <g opacity="1" transform="matrix(1,0,0,1,0,0)">
                   <path
                     fill="rgb(177,98,253)"
@@ -129,11 +113,7 @@ export default function ActionIcon() {
             </g>
           </g>
         </g>
-        <g
-          style={{ display: "block" }}
-          transform="matrix(-1,0,0,-1,5.75,10.25)"
-          opacity="1"
-        >
+        <g style={{ display: "block" }} transform="matrix(-1,0,0,-1,5.75,10.25)" opacity="1">
           <g opacity="1" transform="matrix(1,0,0,1,-2.25,-0.75)">
             <path
               fill="rgb(247,247,248)"
@@ -149,16 +129,8 @@ export default function ActionIcon() {
           opacity="1"
         >
           <g style={{ display: "block" }} mask="url(#__lottie_element_245_1)">
-            <g
-              clipPath="url(#__lottie_element_256)"
-              transform="matrix(1,0,0,1,0,0)"
-              opacity="1"
-            >
-              <g
-                style={{ display: "block" }}
-                transform="matrix(1,0,0,1,10006,10006)"
-                opacity="1"
-              >
+            <g clipPath="url(#__lottie_element_256)" transform="matrix(1,0,0,1,0,0)" opacity="1">
+              <g style={{ display: "block" }} transform="matrix(1,0,0,1,10006,10006)" opacity="1">
                 <g opacity="1" transform="matrix(1,0,0,1,0,0)">
                   <path
                     fill="rgb(177,98,253)"
@@ -180,11 +152,7 @@ export default function ActionIcon() {
             </g>
           </g>
         </g>
-        <g
-          style={{ display: "block" }}
-          transform="matrix(-1,0,0,-1,14.25,10.25)"
-          opacity="1"
-        >
+        <g style={{ display: "block" }} transform="matrix(-1,0,0,-1,14.25,10.25)" opacity="1">
           <g opacity="1" transform="matrix(1,0,0,1,-0.75,-0.75)">
             <path
               fill="rgb(247,247,248)"
@@ -193,11 +161,7 @@ export default function ActionIcon() {
             />
           </g>
         </g>
-        <g
-          style={{ display: "block" }}
-          transform="matrix(1,0,0,1,0,0)"
-          opacity="1"
-        >
+        <g style={{ display: "block" }} transform="matrix(1,0,0,1,0,0)" opacity="1">
           <g opacity="1" transform="matrix(1,0,0,1,10,10.25)">
             <path
               fill="rgb(177,98,253)"

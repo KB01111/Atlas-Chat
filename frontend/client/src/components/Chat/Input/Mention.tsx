@@ -72,38 +72,27 @@ export default function Mention({
       }
     };
 
-    if (
-      mention.type === "endpoint" &&
-      mention.value === EModelEndpoint.agents
-    ) {
+    if (mention.type === "endpoint" && mention.value === EModelEndpoint.agents) {
       setSearchValue("");
       setInputOptions(agentsList ?? []);
       setActiveIndex(0);
       inputRef.current?.focus();
-    } else if (
-      mention.type === "endpoint" &&
-      mention.value === EModelEndpoint.assistants
-    ) {
+    } else if (mention.type === "endpoint" && mention.value === EModelEndpoint.assistants) {
       setSearchValue("");
       setInputOptions(assistantListMap[EModelEndpoint.assistants] ?? []);
       setActiveIndex(0);
       inputRef.current?.focus();
-    } else if (
-      mention.type === "endpoint" &&
-      mention.value === EModelEndpoint.azureAssistants
-    ) {
+    } else if (mention.type === "endpoint" && mention.value === EModelEndpoint.azureAssistants) {
       setSearchValue("");
       setInputOptions(assistantListMap[EModelEndpoint.azureAssistants] ?? []);
       setActiveIndex(0);
       inputRef.current?.focus();
     } else if (mention.type === "endpoint") {
-      const models = (modelsConfig?.[mention.value || ""] ?? []).map(
-        (model) => ({
-          value: mention.value,
-          label: model,
-          type: "model",
-        }),
-      );
+      const models = (modelsConfig?.[mention.value || ""] ?? []).map((model) => ({
+        value: mention.value,
+        label: model,
+        type: "model",
+      }));
 
       setActiveIndex(0);
       setSearchValue("");
@@ -131,9 +120,7 @@ export default function Mention({
 
   const type = commandChar !== "@" ? "add-convo" : "mention";
   useEffect(() => {
-    const currentActiveItem = document.getElementById(
-      `${type}-item-${activeIndex}`,
-    );
+    const currentActiveItem = document.getElementById(`${type}-item-${activeIndex}`);
     currentActiveItem?.scrollIntoView({
       behavior: "instant",
       block: "nearest",
@@ -191,14 +178,9 @@ export default function Mention({
             if (e.key === "ArrowDown") {
               setActiveIndex((prevIndex) => (prevIndex + 1) % matches.length);
             } else if (e.key === "ArrowUp") {
-              setActiveIndex(
-                (prevIndex) =>
-                  (prevIndex - 1 + matches.length) % matches.length,
-              );
+              setActiveIndex((prevIndex) => (prevIndex - 1 + matches.length) % matches.length);
             } else if (e.key === "Enter" || e.key === "Tab") {
-              const mentionOption = matches[activeIndex] as
-                | MentionOption
-                | undefined;
+              const mentionOption = matches[activeIndex] as MentionOption | undefined;
               if (mentionOption?.type === "endpoint") {
                 e.preventDefault();
               } else if (e.key === "Enter") {

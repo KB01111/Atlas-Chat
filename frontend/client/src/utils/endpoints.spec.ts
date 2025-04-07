@@ -27,9 +27,7 @@ const mockEndpointsConfig: TEndpointsConfig = {
 
 describe("getEndpointField", () => {
   it("returns undefined if endpointsConfig is undefined", () => {
-    expect(
-      getEndpointField(undefined, EModelEndpoint.openAI, "type"),
-    ).toBeUndefined();
+    expect(getEndpointField(undefined, EModelEndpoint.openAI, "type")).toBeUndefined();
   });
 
   it("returns undefined if endpoint is null", () => {
@@ -37,18 +35,14 @@ describe("getEndpointField", () => {
   });
 
   it("returns undefined if endpoint is undefined", () => {
-    expect(
-      getEndpointField(mockEndpointsConfig, undefined, "type"),
-    ).toBeUndefined();
+    expect(getEndpointField(mockEndpointsConfig, undefined, "type")).toBeUndefined();
   });
 
   it("returns the correct value for a valid endpoint and property", () => {
-    expect(
-      getEndpointField(mockEndpointsConfig, EModelEndpoint.openAI, "order"),
-    ).toEqual(0);
-    expect(
-      getEndpointField(mockEndpointsConfig, EModelEndpoint.google, "iconURL"),
-    ).toEqual("google_icon.png");
+    expect(getEndpointField(mockEndpointsConfig, EModelEndpoint.openAI, "order")).toEqual(0);
+    expect(getEndpointField(mockEndpointsConfig, EModelEndpoint.google, "iconURL")).toEqual(
+      "google_icon.png",
+    );
   });
 
   it("returns undefined for a valid endpoint but an invalid property", () => {
@@ -63,18 +57,12 @@ describe("getEndpointField", () => {
   });
 
   it("returns the correct value for a non-enum endpoint and valid property", () => {
-    expect(getEndpointField(mockEndpointsConfig, "Mistral", "type")).toEqual(
-      EModelEndpoint.custom,
-    );
+    expect(getEndpointField(mockEndpointsConfig, "Mistral", "type")).toEqual(EModelEndpoint.custom);
   });
 
   it("returns undefined for a non-enum endpoint with an invalid property", () => {
     expect(
-      getEndpointField(
-        mockEndpointsConfig,
-        "Mistral",
-        "nonexistentProperty" as keyof TConfig,
-      ),
+      getEndpointField(mockEndpointsConfig, "Mistral", "nonexistentProperty" as keyof TConfig),
     ).toBeUndefined();
   });
 });
@@ -102,19 +90,13 @@ describe("getAvailableEndpoints", () => {
       Mistral: true,
     };
     const expectedEndpoints = [EModelEndpoint.openAI, "Mistral"];
-    expect(getAvailableEndpoints(filter, mockEndpointsConfig)).toEqual(
-      expectedEndpoints,
-    );
+    expect(getAvailableEndpoints(filter, mockEndpointsConfig)).toEqual(expectedEndpoints);
   });
 });
 
 describe("mapEndpoints", () => {
   it("returns sorted available endpoints", () => {
-    const expectedOrder = [
-      EModelEndpoint.openAI,
-      EModelEndpoint.google,
-      "Mistral",
-    ];
+    const expectedOrder = [EModelEndpoint.openAI, EModelEndpoint.google, "Mistral"];
     expect(mapEndpoints(mockEndpointsConfig)).toEqual(expectedOrder);
   });
 });

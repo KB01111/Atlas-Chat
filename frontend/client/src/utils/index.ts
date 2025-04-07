@@ -73,9 +73,7 @@ export function capitalizeFirstLetter(string: string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-export const handleDoubleClick: React.MouseEventHandler<HTMLElement> = (
-  event,
-) => {
+export const handleDoubleClick: React.MouseEventHandler<HTMLElement> = (event) => {
   const range = document.createRange();
   range.selectNodeContents(event.target as Node);
   const selection = window.getSelection();
@@ -93,9 +91,7 @@ export const extractContent = (
     return children;
   }
   if (React.isValidElement(children)) {
-    return extractContent(
-      (children.props as { children?: React.ReactNode }).children,
-    );
+    return extractContent((children.props as { children?: React.ReactNode }).children);
   }
   if (Array.isArray(children)) {
     return children.map(extractContent).join("");
@@ -110,17 +106,13 @@ export const normalizeLayout = (layout: number[]) => {
   }
 
   const factor = 100 / sum;
-  const normalizedLayout = layout.map((size) =>
-    Number((size * factor).toFixed(2)),
-  );
+  const normalizedLayout = layout.map((size) => Number((size * factor).toFixed(2)));
 
   const adjustedSum = normalizedLayout.reduce(
     (acc, size, index) => (index === layout.length - 1 ? acc : acc + size),
     0,
   );
-  normalizedLayout[normalizedLayout.length - 1] = Number(
-    (100 - adjustedSum).toFixed(2),
-  );
+  normalizedLayout[normalizedLayout.length - 1] = Number((100 - adjustedSum).toFixed(2));
 
   return normalizedLayout;
 };

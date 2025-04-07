@@ -1,0 +1,63 @@
+[tool.ruff]
+# Define the source directory relative to this config file
+src = ["backend"]
+line-length = 100 # Increased slightly from default 88
+# Removed fix setting - relying on --fix flag
+
+[tool.ruff.lint]
+# Select rule sets to enable:
+# E = pycodestyle errors
+# W = pycodestyle warnings
+# F = Pyflakes errors (unused imports/variables, etc.)
+# I = isort (import sorting)
+# UP = pyupgrade (modernize code syntax)
+# B = flake8-bugbear (potential logic errors)
+# C4 = flake8-comprehensions (simplify comprehensions)
+# SIM = flake8-simplify (simplify code)
+select = ["E", "W", "F", "I", "UP", "B", "C4", "SIM"]
+
+# Ignore specific rules if necessary (e.g., E501 line too long if unavoidable)
+# ignore = ["E501"]
+
+# Automatically fix all fixable violations
+# unfixable = [] (Removed - rely on default or --unfixable flag if needed)
+
+# Allow unused variables in __init__.py files (common pattern) - Deprecated warning noted
+# ignore-init-module-imports = true
+
+# Exclude common directories
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "venv",
+    "backend/app/models", # Often generated or complex Pydantic models can cause issues
+    "backend/tests", # Sometimes test patterns conflict with rules
+]
+
+# Removed duplicate lint section and moved settings up
+
+# Configure specific rules if needed
+[tool.ruff.lint.isort]
+known-first-party = ["app", "backend"] # Help isort distinguish local project imports
+
+[tool.ruff.format]
+# Optional: Configure Ruff's formatter if you want to use it instead of/alongside Black/Prettier
+# docstring-code-format = true
+# quote-style = "double"
+# indent-style = "space"

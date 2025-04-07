@@ -2,20 +2,18 @@
 Intelligent model router for selecting the most appropriate AI model.
 """
 
-from typing import Dict, Any, List, Optional, Tuple
 import logging
-import time
+from typing import Any, Dict, List, Optional, Tuple
 
-from .model_specs import ModelSpecs, ModelSpecification
+from .model_specs import ModelSpecs
 from .performance_metrics import PerformanceMetrics
 from .routing_strategies import (
-    RoutingStrategy,
-    TaskBasedStrategy,
     ComplexityBasedStrategy,
+    CompositeStrategy,
     CostAwareStrategy,
     PerformanceBasedStrategy,
+    TaskBasedStrategy,
     UserPreferenceStrategy,
-    CompositeStrategy,
 )
 
 
@@ -202,15 +200,17 @@ class ModelRouter:
                     "supports_vision": spec.supports_vision,
                     "context_window": spec.context_window,
                     "description": spec.description,
-                    "performance": {
-                        "avg_latency": metrics.avg_latency if metrics else None,
-                        "success_rate": metrics.success_rate if metrics else None,
-                        "avg_tokens_per_request": metrics.avg_tokens_per_request
+                    "performance": (
+                        {
+                            "avg_latency": metrics.avg_latency if metrics else None,
+                            "success_rate": metrics.success_rate if metrics else None,
+                            "avg_tokens_per_request": (
+                                metrics.avg_tokens_per_request if metrics else None
+                            ),
+                        }
                         if metrics
-                        else None,
-                    }
-                    if metrics
-                    else None,
+                        else None
+                    ),
                 }
             )
 

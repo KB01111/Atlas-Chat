@@ -44,10 +44,7 @@ export default function Footer({ className }: { className?: string }) {
   ).split("|");
 
   useEffect(() => {
-    if (
-      config?.analyticsGtmId != null &&
-      typeof window.google_tag_manager === "undefined"
-    ) {
+    if (config?.analyticsGtmId != null && typeof window.google_tag_manager === "undefined") {
       const tagManagerArgs = {
         gtmId: config.analyticsGtmId,
       };
@@ -81,11 +78,9 @@ export default function Footer({ className }: { className?: string }) {
     </React.Fragment>
   ));
 
-  const footerElements = [
-    ...mainContentRender,
-    privacyPolicyRender,
-    termsOfServiceRender,
-  ].filter(Boolean);
+  const footerElements = [...mainContentRender, privacyPolicyRender, termsOfServiceRender].filter(
+    Boolean,
+  );
 
   return (
     <div className="relative w-full">

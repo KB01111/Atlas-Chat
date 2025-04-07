@@ -1,8 +1,4 @@
-import {
-  getConfigDefaults,
-  Permissions,
-  PermissionTypes,
-} from "librechat-data-provider";
+import { getConfigDefaults, Permissions, PermissionTypes } from "librechat-data-provider";
 import { useMemo } from "react";
 import { useOutletContext } from "react-router-dom";
 import type { ContextType } from "~/common";
@@ -43,17 +39,13 @@ export default function Header() {
         <div className="mx-2 flex items-center gap-2">
           {!navVisible && <HeaderNewChat />}
           {<ModelSelector startupConfig={startupConfig} />}
-          {interfaceConfig.presets === true && interfaceConfig.modelSelect && (
-            <PresetsMenu />
-          )}
+          {interfaceConfig.presets === true && interfaceConfig.modelSelect && <PresetsMenu />}
           {hasAccessToBookmarks === true && <BookmarkMenu />}
           {hasAccessToMultiConvo === true && <AddMultiConvo />}
           {isSmallScreen && (
             <>
               <ExportAndShareMenu
-                isSharedButtonEnabled={
-                  startupConfig?.sharedLinksEnabled ?? false
-                }
+                isSharedButtonEnabled={startupConfig?.sharedLinksEnabled ?? false}
               />
               <TemporaryChat />
             </>

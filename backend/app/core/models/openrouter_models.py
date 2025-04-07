@@ -3,9 +3,10 @@ Pydantic AI Integration for OpenRouter in AtlasChat
 Provides Pydantic models for structured data handling with OpenRouter
 """
 
-from typing import List, Dict, Any, Optional, Union, Literal
-from pydantic import BaseModel, Field, field_validator, ConfigDict
 import json
+from typing import Any, Dict, List, Literal, Optional, Union
+
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class OpenRouterMessageContent(BaseModel):

@@ -13,17 +13,10 @@ interface SpecIconProps {
 
 type IconType = (props: IconMapProps) => React.JSX.Element;
 
-const SpecIcon: React.FC<SpecIconProps> = ({
-  currentSpec,
-  endpointsConfig,
-}) => {
+const SpecIcon: React.FC<SpecIconProps> = ({ currentSpec, endpointsConfig }) => {
   const iconURL = getModelSpecIconURL(currentSpec);
   const { endpoint } = currentSpec.preset;
-  const endpointIconURL = getEndpointField(
-    endpointsConfig,
-    endpoint,
-    "iconURL",
-  );
+  const endpointIconURL = getEndpointField(endpointsConfig, endpoint, "iconURL");
   const iconKey = getIconKey({ endpoint, endpointsConfig, endpointIconURL });
   let Icon: IconType;
 
@@ -40,9 +33,7 @@ const SpecIcon: React.FC<SpecIconProps> = ({
       />
     );
   } else {
-    Icon = (icons[endpoint ?? ""] ??
-      icons[iconKey] ??
-      icons.unknown) as IconType;
+    Icon = (icons[endpoint ?? ""] ?? icons[iconKey] ?? icons.unknown) as IconType;
   }
 
   return (

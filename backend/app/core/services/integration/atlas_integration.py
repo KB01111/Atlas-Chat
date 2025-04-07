@@ -6,15 +6,12 @@ the Tiered Context Management system and Agent Team Coordination framework
 with the existing Atlas-Chat components.
 """
 
-from typing import List, Dict, Any, Optional, Union
-from datetime import datetime
-import uuid
 import logging
-from pydantic import BaseModel, Field
+from typing import Any, Dict
 
-from ..tiered_context import TieredContextManager
 from ..agent_team import AgentTeamManager
 from ..model_routing import ModelRouter
+from ..tiered_context import TieredContextManager
 
 logger = logging.getLogger(__name__)
 

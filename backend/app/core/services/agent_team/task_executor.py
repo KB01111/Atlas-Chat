@@ -5,12 +5,11 @@ This module implements the task executor that runs tasks assigned by the coordin
 manages execution flow, and handles dependencies.
 """
 
-from typing import List, Dict, Any, Optional, Union
-from datetime import datetime
-import uuid
 import logging
+import uuid
+from datetime import datetime
 from enum import Enum
-from pydantic import BaseModel, Field
+from typing import Any, Dict, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -105,20 +104,20 @@ class TaskExecutor:
             task_description = step["task_description"]
 
             # Update step status
-            self.executions[execution_id]["steps"][step_id]["status"] = (
-                TaskStatus.IN_PROGRESS
-            )
+            self.executions[execution_id]["steps"][step_id][
+                "status"
+            ] = TaskStatus.IN_PROGRESS
 
             # Get agent
             agent = agents.get(agent_id)
             if not agent:
                 logger.warning(f"Agent not found: {agent_id}")
-                self.executions[execution_id]["steps"][step_id]["status"] = (
-                    TaskStatus.FAILED
-                )
-                self.executions[execution_id]["steps"][step_id]["error"] = (
-                    f"Agent not found: {agent_id}"
-                )
+                self.executions[execution_id]["steps"][step_id][
+                    "status"
+                ] = TaskStatus.FAILED
+                self.executions[execution_id]["steps"][step_id][
+                    "error"
+                ] = f"Agent not found: {agent_id}"
                 results[step_id] = {
                     "step_id": step_id,
                     "status": "failed",
@@ -134,9 +133,9 @@ class TaskExecutor:
                 )
 
                 # Update step status
-                self.executions[execution_id]["steps"][step_id]["status"] = (
-                    TaskStatus.COMPLETED
-                )
+                self.executions[execution_id]["steps"][step_id][
+                    "status"
+                ] = TaskStatus.COMPLETED
                 self.executions[execution_id]["steps"][step_id]["result"] = result
 
                 # Create task result
@@ -164,9 +163,9 @@ class TaskExecutor:
                 }
             except Exception as e:
                 logger.error(f"Task execution failed: {e}")
-                self.executions[execution_id]["steps"][step_id]["status"] = (
-                    TaskStatus.FAILED
-                )
+                self.executions[execution_id]["steps"][step_id][
+                    "status"
+                ] = TaskStatus.FAILED
                 self.executions[execution_id]["steps"][step_id]["error"] = str(e)
                 results[step_id] = {
                     "step_id": step_id,

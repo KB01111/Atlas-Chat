@@ -2,9 +2,10 @@
 Agent specialization module for specialized agent capabilities.
 """
 
-from typing import Dict, Any, List, Optional, Set
-from pydantic import BaseModel, Field
 import logging
+from typing import Any, Dict, List, Optional, Set
+
+from pydantic import BaseModel, Field
 
 logger = logging.getLogger(__name__)
 

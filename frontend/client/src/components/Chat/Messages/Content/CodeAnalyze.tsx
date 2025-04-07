@@ -64,9 +64,7 @@ export default function CodeAnalyze({
           <MarkdownLite content={code ? `\`\`\`python\n${code}\n\`\`\`` : ""} />
           {logs && (
             <div className="bg-gray-700 p-4 text-xs">
-              <div className="mb-1 text-gray-400">
-                {localize("com_ui_result")}
-              </div>
+              <div className="mb-1 text-gray-400">{localize("com_ui_result")}</div>
               <div
                 className="prose flex flex-col-reverse text-white"
                 style={{

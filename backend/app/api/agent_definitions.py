@@ -1,10 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from typing import List, Dict, Any, Optional
-from sqlalchemy.orm import Session
-from app.core.database import get_db
-from app.models.models import AgentDefinition
-from app.core.logging_config import setup_logging
 import uuid
+from typing import Any, Dict, List
+
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.orm import Session
+
+from app.core.database import get_db
+from app.core.logging_config import setup_logging
 
 logger = setup_logging()
 router = APIRouter()

@@ -1,11 +1,10 @@
-import os
-import re
+import hashlib
 import json
 import logging
-import hashlib
+import re
 import secrets
-from typing import Dict, List, Optional, Any, Union
 from datetime import datetime, timedelta
+from typing import Any, Dict, List, Optional
 
 import jwt
 from fastapi import Depends, HTTPException, Security, status

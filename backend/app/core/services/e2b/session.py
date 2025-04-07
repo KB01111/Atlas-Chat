@@ -1,11 +1,10 @@
-from typing import Dict, List, Optional, Any, Union
-import asyncio
-import time
-import base64
 import logging
 import os
-import json
-from e2b import Session, Filesystem, Process as E2BProcess
+import time
+from typing import Any, Dict, List
+
+from e2b import Process as E2BProcess
+from e2b import Session
 from e2b.api.process import ProcessOpts, ProcessOutput
 
 logger = logging.getLogger(__name__)

@@ -5,10 +5,11 @@ This module implements the team context manager that maintains shared context
 across multiple agents and integrates with the Tiered Context Management system.
 """
 
-from typing import List, Dict, Any, Optional, Union
-from datetime import datetime
-import uuid
 import logging
+import uuid
+from datetime import datetime
+from typing import Any, Dict, List, Optional
+
 from pydantic import BaseModel, Field
 
 logger = logging.getLogger(__name__)

@@ -3,9 +3,9 @@ OpenRouter SDK Agent Integration for AtlasChat
 Extends the agent_service.py to support OpenRouter models with the OpenAI Agent SDK
 """
 
-import os
 import logging
-from typing import Dict, Any, List, Optional
+from typing import Any, Dict, List
+
 from app.core.services.openrouter_client import OpenRouterClient
 
 logger = logging.getLogger(__name__)
@@ -43,7 +43,7 @@ class OpenRouterSDKAgent:
             # Extract configuration
             model = agent_config.get("model", "deepseek/deepseek-v3")
             temperature = agent_config.get("temperature", 0.7)
-            max_tokens = agent_config.get("max_tokens", None)
+            max_tokens = agent_config.get("max_tokens")
 
             # Format system message to include tools if provided
             if tools and len(tools) > 0:

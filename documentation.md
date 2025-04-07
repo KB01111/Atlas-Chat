@@ -227,12 +227,10 @@ The `docker-compose.yml` file defines all services and their configurations, inc
 
 1. Clone the repository:
 
-
    ```bash
    git clone https://github.com/KB01111/Atlas-Chat.git
    cd Atlas-Chat
    ```
-
 
 2. Create a `.env` file with required environment variables:
 
@@ -241,7 +239,6 @@ The `docker-compose.yml` file defines all services and their configurations, inc
    # Edit .env with your configuration
    ```
 
-
 3. Start the application:
 
    ```bash
@@ -249,7 +246,6 @@ The `docker-compose.yml` file defines all services and their configurations, inc
    ```
 
 4. Access the application at `http://localhost:3000`
-
 
 ### Local Development
 
@@ -269,7 +265,6 @@ The `docker-compose.yml` file defines all services and their configurations, inc
    ```
 
 3. Install frontend dependencies:
-
 
    ```bash
    cd frontend/client
@@ -300,7 +295,6 @@ The `docker-compose.yml` file defines all services and their configurations, inc
 2. Click "New Chat" to start a new conversation
 3. Type your message and press Enter
 4. The AI assistant will respond to your message
-
 
 ### Executing Code
 

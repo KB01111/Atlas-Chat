@@ -4,22 +4,13 @@ import { Button } from "../ui";
 import PromptCard from "./PromptCard";
 
 export default function Prompts() {
-  const {
-    prevPage,
-    nextPage,
-    hasNextPage,
-    promptGroups,
-    hasPreviousPage,
-    setPageSize,
-    pageSize,
-  } = usePromptGroupsNav();
+  const { prevPage, nextPage, hasNextPage, promptGroups, hasPreviousPage, setPageSize, pageSize } =
+    usePromptGroupsNav();
 
   const renderPromptCards = (start, count) => {
     return promptGroups
       .slice(start, count + start)
-      .map((promptGroup) => (
-        <PromptCard key={promptGroup._id} promptGroup={promptGroup} />
-      ));
+      .map((promptGroup) => <PromptCard key={promptGroup._id} promptGroup={promptGroup} />);
   };
 
   const getRows = () => {
@@ -88,9 +79,7 @@ export default function Prompts() {
             className="m-0 self-start p-0 hover:bg-transparent"
             aria-label="previous"
           >
-            <ChevronLeft
-              className={`${hasPreviousPage ? "" : "text-gray-500"}`}
-            />
+            <ChevronLeft className={`${hasPreviousPage ? "" : "text-gray-500"}`} />
           </Button>
           <Button
             variant={"ghost"}

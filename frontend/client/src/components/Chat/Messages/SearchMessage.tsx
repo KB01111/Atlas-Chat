@@ -23,12 +23,7 @@ export default function Message({ message }: Pick<TMessageProps, "message">) {
       iconURL: message?.iconURL ?? "",
       isCreatedByUser: message?.isCreatedByUser,
     }),
-    [
-      message?.model,
-      message?.iconURL,
-      message?.endpoint,
-      message?.isCreatedByUser,
-    ],
+    [message?.model, message?.iconURL, message?.endpoint, message?.isCreatedByUser],
   );
 
   if (!message) {
@@ -61,14 +56,9 @@ export default function Message({ message }: Pick<TMessageProps, "message">) {
               </div>
             </div>
             <div
-              className={cn(
-                "relative flex w-11/12 flex-col",
-                isCreatedByUser ? "" : "agent-turn",
-              )}
+              className={cn("relative flex w-11/12 flex-col", isCreatedByUser ? "" : "agent-turn")}
             >
-              <div className={cn("select-none font-semibold", fontSize)}>
-                {messageLabel}
-              </div>
+              <div className={cn("select-none font-semibold", fontSize)}>{messageLabel}</div>
               <div className="flex-col gap-1 md:gap-3">
                 <div className="flex max-w-full flex-grow flex-col gap-0">
                   <SearchContent message={message} />

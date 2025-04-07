@@ -7,12 +7,7 @@ import { useRecoilValue } from "recoil";
 import type { ChatFormValues } from "~/common";
 import { Spinner } from "~/components/svg";
 import { useAddedResponse, useChatHelpers, useSSE } from "~/hooks";
-import {
-  AddedChatContext,
-  ChatContext,
-  ChatFormProvider,
-  useFileMapContext,
-} from "~/Providers";
+import { AddedChatContext, ChatContext, ChatFormProvider, useFileMapContext } from "~/Providers";
 import store from "~/store";
 import { buildTree } from "~/utils";
 import Footer from "./Footer";
@@ -31,19 +26,16 @@ function ChatView({ index = 0 }: { index?: number }) {
 
   const fileMap = useFileMapContext();
 
-  const { data: messagesTree = null, isLoading } = useGetMessagesByConvoId(
-    conversationId ?? "",
-    {
-      select: useCallback(
-        (data: TMessage[]) => {
-          const dataTree = buildTree({ messages: data, fileMap });
-          return dataTree?.length === 0 ? null : (dataTree ?? null);
-        },
-        [fileMap],
-      ),
-      enabled: !!fileMap,
-    },
-  );
+  const { data: messagesTree = null, isLoading } = useGetMessagesByConvoId(conversationId ?? "", {
+    select: useCallback(
+      (data: TMessage[]) => {
+        const dataTree = buildTree({ messages: data, fileMap });
+        return dataTree?.length === 0 ? null : (dataTree ?? null);
+      },
+      [fileMap],
+    ),
+    enabled: !!fileMap,
+  });
 
   const chatHelpers = useChatHelpers(index, conversationId);
   const addedChatHelpers = useAddedResponse({ rootIndex: index });

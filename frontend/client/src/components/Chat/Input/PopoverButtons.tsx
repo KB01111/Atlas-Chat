@@ -1,12 +1,7 @@
 import { EModelEndpoint, SettingsViews } from "librechat-data-provider";
 import type { ReactNode } from "react";
 import { useRecoilState } from "recoil";
-import {
-  AssistantIcon,
-  DataIcon,
-  GPTIcon,
-  MessagesSquared,
-} from "~/components/svg";
+import { AssistantIcon, DataIcon, GPTIcon, MessagesSquared } from "~/components/svg";
 import { Button } from "~/components/ui";
 import { useLocalize } from "~/hooks";
 import { useChatContext } from "~/Providers";
@@ -42,24 +37,16 @@ export default function PopoverButtons({
     setShowAgentSettings,
   } = useChatContext();
   const localize = useLocalize();
-  const [settingsView, setSettingsView] = useRecoilState(
-    store.currentSettingsView,
-  );
+  const [settingsView, setSettingsView] = useRecoilState(store.currentSettingsView);
 
-  const {
-    model: _model,
-    endpoint: _endpoint,
-    endpointType,
-  } = conversation ?? {};
+  const { model: _model, endpoint: _endpoint, endpointType } = conversation ?? {};
   const overrideEndpoint = overrideEndpointType ?? _overrideEndpoint;
   const endpoint = overrideEndpoint ?? endpointType ?? _endpoint ?? "";
   const model = overrideModel ?? _model;
 
   const isGenerativeModel = model?.toLowerCase().includes("gemini") ?? false;
-  const isChatModel =
-    (!isGenerativeModel && model?.toLowerCase().includes("chat")) ?? false;
-  const isTextModel =
-    !isGenerativeModel && !isChatModel && /code|text/.test(model ?? "");
+  const isChatModel = (!isGenerativeModel && model?.toLowerCase().includes("chat")) ?? false;
+  const isTextModel = !isGenerativeModel && !isChatModel && /code|text/.test(model ?? "");
 
   const { showExamples } = optionSettings;
   const showExamplesButton = !isGenerativeModel && !isTextModel && isChatModel;
@@ -75,11 +62,8 @@ export default function PopoverButtons({
   const endpointSpecificbuttons: { [key: string]: TPopoverButton[] } = {
     [EModelEndpoint.google]: [
       {
-        label: localize(
-          showExamples === true ? "com_hide_examples" : "com_show_examples",
-        ),
-        buttonClass:
-          isGenerativeModel === true || isTextModel ? "disabled" : "",
+        label: localize(showExamples === true ? "com_hide_examples" : "com_show_examples"),
+        buttonClass: isGenerativeModel === true || isTextModel ? "disabled" : "",
         handler: triggerExamples,
         icon: <MessagesSquared className={cn("mr-1 w-[14px]", iconClass)} />,
       },
@@ -87,9 +71,7 @@ export default function PopoverButtons({
     [EModelEndpoint.gptPlugins]: [
       {
         label: localize(
-          showAgentSettings
-            ? "com_show_completion_settings"
-            : "com_show_agent_settings",
+          showAgentSettings ? "com_show_completion_settings" : "com_show_agent_settings",
         ),
         buttonClass: "",
         handler: () => {
@@ -130,8 +112,7 @@ export default function PopoverButtons({
     ],
   };
 
-  const endpointButtons =
-    (endpointSpecificbuttons[endpoint] as TPopoverButton[] | null) ?? [];
+  const endpointButtons = (endpointSpecificbuttons[endpoint] as TPopoverButton[] | null) ?? [];
 
   const disabled = true;
 

@@ -24,10 +24,7 @@ export default function HeaderNewChat() {
       className="rounded-xl border border-border-light bg-surface-secondary p-2 hover:bg-surface-hover"
       onClick={() => {
         queryClient.setQueryData<TMessage[]>(
-          [
-            QueryKeys.messages,
-            conversation?.conversationId ?? Constants.NEW_CONVO,
-          ],
+          [QueryKeys.messages, conversation?.conversationId ?? Constants.NEW_CONVO],
           [],
         );
         newConversation();

@@ -30,10 +30,8 @@ function AttachFileChat({ disableInputs }: { disableInputs: boolean }) {
     | EndpointFileConfig
     | undefined;
 
-  const endpointSupportsFiles: boolean =
-    supportsFiles[endpointType ?? _endpoint ?? ""] ?? false;
-  const isUploadDisabled =
-    (disableInputs || endpointFileConfig?.disabled) ?? false;
+  const endpointSupportsFiles: boolean = supportsFiles[endpointType ?? _endpoint ?? ""] ?? false;
+  const isUploadDisabled = (disableInputs || endpointFileConfig?.disabled) ?? false;
 
   if (isAgents) {
     return <AttachFileMenu disabled={disableInputs} />;

@@ -16,9 +16,7 @@ import type { DropdownValueSetter, ExtendedFile, TAgentOption } from "~/common";
  * Only necessary when the available values are objects with label/value fields
  * and the selected value is expected to be a string.
  **/
-export const createDropdownSetter = (
-  setValue: (value: string) => void,
-): DropdownValueSetter => {
+export const createDropdownSetter = (setValue: (value: string) => void): DropdownValueSetter => {
   return (value) => {
     if (!value) {
       setValue("");
@@ -54,9 +52,7 @@ export const processAgentOption = ({
   instanceProjectId?: string;
 }): TAgentOption => {
   const isGlobal =
-    (instanceProjectId != null &&
-      _agent?.projectIds?.includes(instanceProjectId)) ??
-    false;
+    (instanceProjectId != null && _agent?.projectIds?.includes(instanceProjectId)) ?? false;
   const agent: TAgentOption = {
     ...(_agent ?? ({} as Agent)),
     label: _agent?.name ?? "",

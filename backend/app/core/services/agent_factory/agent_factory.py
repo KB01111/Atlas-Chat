@@ -2,15 +2,12 @@
 Agent factory for creating and managing agents.
 """
 
-from typing import Dict, Any, List, Optional, Union, Type
-from pydantic import BaseModel
 import logging
-import importlib
 from abc import ABC, abstractmethod
+from typing import Any, Dict, Optional
 
-from .agent_definition import AgentDefinition, AgentRequest, AgentResponse, AgentMessage
 from ..model_routing.model_router import ModelRouter
-from ..model_routing.model_specs import ModelSpecification
+from .agent_definition import AgentDefinition, AgentRequest, AgentResponse
 
 logger = logging.getLogger(__name__)
 

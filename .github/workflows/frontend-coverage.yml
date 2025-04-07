@@ -2,13 +2,13 @@ name: Frontend Code Coverage
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [main, master]
     paths:
-      - 'frontend/**'
+      - "frontend/**"
   pull_request:
-    branches: [ main, master ]
+    branches: [main, master]
     paths:
-      - 'frontend/**'
+      - "frontend/**"
 
 jobs:
   coverage:
@@ -19,25 +19,39 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
-          cache: 'npm'
-          cache-dependency-path: './frontend/client/package.json'
-      
+          node-version: "18"
+          cache: "bun" # Use bun cache
+          cache-dependency-path: "./frontend/client/bun.lockb" # Cache based on bun lockfile
+
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v1 # Add step to install bun
+
       - name: Install dependencies
-        run: npm ci
-      
+        run: bun install --frozen-lockfile # Use bun install
+
       - name: Run tests with coverage
-        run: npm test -- --coverage
-        
+        run: bun run coverage # Use the coverage script from package.json
+
       - name: Display coverage summary
         run: cat ./coverage/lcov-report/index.html | grep -A 5 "<div class='fl pad1y space-right2'>"
-      
+
       - name: Upload coverage to Qlty
         uses: qltysh/qlty-action/coverage@main
         with:
           coverage-token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
           files: ./frontend/client/coverage/lcov.info
+
+      - name: Install DeepSource CLI
+        working-directory: ..
+        run: curl https://deepsource.io/cli | sh
+
+      - name: Report coverage to DeepSource
+        working-directory: ..
+        env:
+          DEEPSOURCE_DSN: https://d86b2295071a471eaef017fca4f33874@app.deepsource.com
+        run: |
+          ./bin/deepsource report --analyzer test-coverage --key javascript --value-file ./frontend/client/coverage/lcov.info

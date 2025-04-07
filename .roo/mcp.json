@@ -1,0 +1,42 @@
+{
+  "mcpServers": {
+    "mcp-duckdb-memory-server": {
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "@smithery/cli@latest",
+        "@IzumiSy/mcp-duckdb-memory-server",
+        "--key",
+        "20536ce6-72bd-4fd5-8411-5d93a3fe2440"
+      ]
+    },
+    "github": {
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "@smithery/cli@latest",
+        "run",
+        "@smithery-ai/github",
+        "--key",
+        "20536ce6-72bd-4fd5-8411-5d93a3fe2440"
+      ]
+    },
+    "think-mcp-server": {
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "@smithery/cli@latest",
+        "run",
+        "@PhillipRt/think-mcp-server",
+        "--key",
+        "20536ce6-72bd-4fd5-8411-5d93a3fe2440"
+      ]
+    }
+  }
+}

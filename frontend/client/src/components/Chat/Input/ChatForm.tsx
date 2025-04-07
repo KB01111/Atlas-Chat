@@ -53,15 +53,9 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
   const isTemporary = useRecoilValue(store.isTemporary);
 
   const [badges, setBadges] = useRecoilState(store.chatBadges);
-  const [isEditingBadges, setIsEditingBadges] = useRecoilState(
-    store.isEditingBadges,
-  );
-  const [showStopButton, setShowStopButton] = useRecoilState(
-    store.showStopButtonByIndex(index),
-  );
-  const [showPlusPopover, setShowPlusPopover] = useRecoilState(
-    store.showPlusPopoverFamily(index),
-  );
+  const [isEditingBadges, setIsEditingBadges] = useRecoilState(store.isEditingBadges);
+  const [showStopButton, setShowStopButton] = useRecoilState(store.showStopButtonByIndex(index));
+  const [showPlusPopover, setShowPlusPopover] = useRecoilState(store.showPlusPopoverFamily(index));
   const [showMentionPopover, setShowMentionPopover] = useRecoilState(
     store.showMentionPopoverFamily(index),
   );
@@ -129,12 +123,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
     setShowPlusPopover,
     setShowMentionPopover,
   });
-  const {
-    handlePaste,
-    handleKeyDown,
-    handleCompositionStart,
-    handleCompositionEnd,
-  } = useTextarea({
+  const { handlePaste, handleKeyDown, handleCompositionStart, handleCompositionEnd } = useTextarea({
     textAreaRef,
     submitButtonRef,
     setIsScrollable,
@@ -164,9 +153,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
     if (textAreaRef.current) {
       const style = window.getComputedStyle(textAreaRef.current);
       const lineHeight = Number.parseFloat(style.lineHeight);
-      setVisualRowCount(
-        Math.floor(textAreaRef.current.scrollHeight / lineHeight),
-      );
+      setVisualRowCount(Math.floor(textAreaRef.current.scrollHeight / lineHeight));
     }
   }, []);
 
@@ -208,20 +195,14 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
         "mx-auto flex flex-row gap-3 sm:px-2",
         maximizeChatSpace ? "w-full max-w-full" : "md:max-w-3xl xl:max-w-4xl",
         centerFormOnLanding &&
-          (!conversation?.conversationId ||
-            conversation?.conversationId === Constants.NEW_CONVO) &&
+          (!conversation?.conversationId || conversation?.conversationId === Constants.NEW_CONVO) &&
           !isSubmitting
           ? "transition-all duration-200 sm:mb-28"
           : "sm:mb-10",
       )}
     >
       <div className="relative flex h-full flex-1 items-stretch md:flex-col">
-        <div
-          className={cn(
-            "flex w-full items-center",
-            isRTL && "flex-row-reverse",
-          )}
-        >
+        <div className={cn("flex w-full items-center", isRTL && "flex-row-reverse")}>
           {showPlusPopover && !isAssistantsEndpoint(endpoint) && (
             <Mention
               setShowMentionPopover={setShowPlusPopover}
@@ -239,11 +220,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
               textAreaRef={textAreaRef}
             />
           )}
-          <PromptsCommand
-            index={index}
-            textAreaRef={textAreaRef}
-            submitPrompt={submitPrompt}
-          />
+          <PromptsCommand index={index} textAreaRef={textAreaRef} submitPrompt={submitPrompt} />
           <div
             onClick={handleContainerClick}
             className={cn(
@@ -254,10 +231,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                 : "border-border-light bg-surface-chat",
             )}
           >
-            <TextareaHeader
-              addedConvo={addedConvo}
-              setAddedConvo={setAddedConvo}
-            />
+            <TextareaHeader addedConvo={addedConvo} setAddedConvo={setAddedConvo} />
             <EditBadges
               isEditingChatBadges={isEditingBadges}
               handleCancelBadges={handleCancelBadges}
@@ -266,16 +240,12 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
             />
             <FileFormChat disableInputs={disableInputs} />
             {endpoint && (
-              <div
-                className={cn("flex", isRTL ? "flex-row-reverse" : "flex-row")}
-              >
+              <div className={cn("flex", isRTL ? "flex-row-reverse" : "flex-row")}>
                 <TextareaAutosize
                   {...registerProps}
                   ref={(e) => {
                     ref(e);
-                    (
-                      textAreaRef as React.MutableRefObject<HTMLTextAreaElement | null>
-                    ).current = e;
+                    (textAreaRef as React.MutableRefObject<HTMLTextAreaElement | null>).current = e;
                   }}
                   disabled={disableInputs}
                   onPaste={handlePaste}
@@ -321,8 +291,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
               <BadgeRow
                 onChange={(newBadges) => setBadges(newBadges)}
                 isInChat={
-                  Array.isArray(conversation?.messages) &&
-                  conversation.messages.length >= 1
+                  Array.isArray(conversation?.messages) && conversation.messages.length >= 1
                 }
               />
               <div className="mx-auto flex" />
@@ -336,12 +305,8 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                 />
               )}
               <div className={`${isRTL ? "ml-2" : "mr-2"}`}>
-                {(isSubmitting || isSubmittingAdded) &&
-                (showStopButton || showStopAdded) ? (
-                  <StopButton
-                    stop={handleStopGenerating}
-                    setShowStopButton={setShowStopButton}
-                  />
+                {(isSubmitting || isSubmittingAdded) && (showStopButton || showStopAdded) ? (
+                  <StopButton stop={handleStopGenerating} setShowStopButton={setShowStopButton} />
                 ) : (
                   endpoint && (
                     <SendButton

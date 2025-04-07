@@ -3,16 +3,14 @@ Graphiti Integration for OpenRouter in AtlasChat
 Ensures compatibility between OpenRouter and Graphiti knowledge graph system
 """
 
+import asyncio
+import json
 import logging
-from typing import Dict, Any, List, Optional
+from typing import Any, Dict, List, Optional
+
 from app.core.models.openrouter_models import (
-    GraphitiNode,
-    GraphitiRelationship,
     GraphitiEpisode,
 )
-from pydantic import BaseModel, Field
-import json
-import asyncio
 
 logger = logging.getLogger(__name__)
 

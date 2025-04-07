@@ -5,11 +5,11 @@ This module implements the coordinator agent that manages specialized worker age
 creates task plans, assigns tasks, and synthesizes results.
 """
 
-from typing import List, Dict, Any, Optional, Union
-from datetime import datetime
-import uuid
 import logging
-import json
+import uuid
+from datetime import datetime
+from typing import Any, Dict, List, Optional
+
 from pydantic import BaseModel, Field
 
 from .team_context_manager import TeamContextManager

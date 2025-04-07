@@ -5,18 +5,19 @@ This module provides integration with Roo-Code for autonomous agent capabilities
 within the Atlas desktop e2b code interpreter environment.
 """
 
-from typing import Dict, Any, List, Optional, Union, Callable
+import json
 import logging
 import os
-import json
+from typing import Any, Dict, List, Optional
+
 from pydantic import BaseModel, Field
 
 # Import agent factory components
 from ...services.agent_factory.agent_definition import (
     AgentDefinition,
+    AgentMessage,
     AgentRequest,
     AgentResponse,
-    AgentMessage,
 )
 from ...services.agent_factory.agent_factory import AgentProvider
 from ...services.model_routing.model_router import ModelRouter
@@ -364,9 +365,11 @@ class RooCodeAdapter(AgentProvider):
                     # Handle multimodal content
                     user_message = " ".join(
                         [
-                            part.get("text", "")
-                            if isinstance(part, dict) and "text" in part
-                            else str(part)
+                            (
+                                part.get("text", "")
+                                if isinstance(part, dict) and "text" in part
+                                else str(part)
+                            )
                             for part in user_message
                         ]
                     )

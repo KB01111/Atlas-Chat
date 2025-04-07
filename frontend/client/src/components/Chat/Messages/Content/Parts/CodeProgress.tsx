@@ -47,10 +47,7 @@ export const CodeInProgress = ({
               }}
               className="slide-from-left"
             >
-              <g
-                opacity="1"
-                transform="matrix(1,0,0,1,7.026679992675781,8.834091186523438)"
-              >
+              <g opacity="1" transform="matrix(1,0,0,1,7.026679992675781,8.834091186523438)">
                 <path
                   fill="rgb(177,98,253)"
                   fillOpacity="1"
@@ -75,10 +72,7 @@ export const CodeInProgress = ({
               }}
               className="slide-to-down"
             >
-              <g
-                opacity="1"
-                transform="matrix(1,0,0,1,11.79640007019043,13.512199401855469)"
-              >
+              <g opacity="1" transform="matrix(1,0,0,1,11.79640007019043,13.512199401855469)">
                 <path
                   fill="rgb(177,98,253)"
                   fillOpacity="1"
@@ -98,11 +92,7 @@ export const CodeInProgress = ({
           </g>
         </svg>
       </div>
-      <ProgressCircle
-        radius={radius}
-        circumference={circumference}
-        offset={offset}
-      />
+      <ProgressCircle radius={radius} circumference={circumference} offset={offset} />
     </div>
   );
 };

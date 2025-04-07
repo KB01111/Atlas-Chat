@@ -17,10 +17,7 @@ export default function SearchButtons({ message }: { message: TMessage }) {
   const clickHandler = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
 
-    const conversation = getConversationById(
-      searchQueryRes?.data,
-      conversationId,
-    );
+    const conversation = getConversationById(searchQueryRes?.data, conversationId);
     if (!conversation) {
       return;
     }

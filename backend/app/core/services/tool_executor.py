@@ -1,9 +1,11 @@
-from typing import Dict, Any, List, Optional
-import e2b
 import asyncio
-from app.models.models import RequestContext
-from app.core.logging_config import setup_logging
+from typing import Any, Dict, List
+
+import e2b
+
 from app.core.config import settings
+from app.core.logging_config import setup_logging
+from app.models.models import RequestContext
 
 logger = setup_logging()
 
@@ -407,36 +409,73 @@ class ToolExecutor:
                     "status": "in_progress",
                     "progress": status.get("progress", 0),
                     "message": f"Installing packages: {', '.join(packages)}. This may take a few minutes.",
-                }
+                } # Closing the dictionary returned on line 407
 
+        # Start the actual installation logic wit{y block
         try:
-            # Filter out already installed packages
-            language_key = "python" if language.lower() == "python" else "npm"
+            # Filter out already install}d and blocked packages
+            language_key = (
+                "python" if language.lower() == "python" else "npm"
+            )  # Assuming only python/npm for now
             packages_to_install = []
+            blocked_packages_str = settings.BLOCKED_PACKAGES  # Read from settings/env
+            blocked_packages_set = (
+                set(p.strip() for p in blocked_packages_str.split(",") if p.strip())
+                if blocked_packages_str
+                else set()
+            )
+            skipped_blocked = []
 
             for pkg in packages:
-                # Extract package name (without version)
+                # Extract base package name for checking
                 pkg_name = (
                     pkg.split("==")[0]
                     if "==" in pkg
-                    else pkg.split("@")[0]
-                    if "@" in pkg
-                    else pkg
-                )
+                    else pkg.split("@")[0] if "@" in pkg else pkg
+                ).strip()
 
-                if pkg_name in self.installed_packages[language_key]:
+                if not pkg_name:  # Skip empty package names
+                    continue
+
+                # Check if blocked
+                if pkg_name in blocked_packages_set:
+                    logger.warning(
+                        f"Attempt to install blocked package '{pkg_name}' skipped. "
+                        f"Requested: '{pkg}'"
+                    )
+                    skipped_blocked.append(pkg_name)
+                    continue  # Skip this package
+
+                # Check if already installed
+                if pkg_name in self.installed_packages.get(language_key, set()):
                     logger.info(f"Package {pkg_name} is already installed, skipping")
                 else:
+                    # Check for potentially problematic characters (basic sanitization)
+                    # More robust validation might be needed depending on requirements
+                    if not all(
+                        c.isalnum() or c in ["-", "_", ".", "@", "="] for c in pkg
+                    ):
+                        logger.warning(
+                            f"Skipping package with potentially unsafe characters: {pkg}"
+                        )
+                        continue
                     packages_to_install.append(pkg)
 
             # If all packages are already installed, return success immediately
             if not packages_to_install:
+                completion_message = "All requested packages were already installed."
+                if skipped_blocked:
+                    completion_message += (
+                        f" Skipped blocked packages: {', '.join(skipped_blocked)}."
+                    )
+
                 return {
                     "success": True,
                     "status": "completed",
-                    "message": "All packages are already installed",
+                    "message": completion_message,
                     "stdout": "",
                     "stderr": "",
+                    "skipped_blocked": skipped_blocked,
                 }
 
             # Initialize ongoing installation status
@@ -457,16 +496,21 @@ class ToolExecutor:
             return {
                 "success": True,
                 "status": "in_progress",
-                "message": f"Installing packages: {', '.join(packages_to_install)}. This may take a few minutes.",
+                "message": f"Starting installation for: {', '.join(packages_to_install)}. This may take a few minutes."
+                + (
+                    f" Skipped blocked: {', '.join(skipped_blocked)}."
+                    if skipped_blocked
+                    else ""
+                ),
+                "skipped_blocked": skipped_blocked,
             }
-
+        # This except block corresponds to the try starting on line 415
         except Exception as e:
-            error_msg = f"Error installing packages: {str(e)}"
-            logger.error(error_msg)
-
-            # Log audit event for error
+            error_msg = f"Error preparing package installation: {str(e)}"
+            logger.error(error_msg, exc_info=True)
+            # Log audit event for preparation error
             audit_details = {
-                "action": "install_packages",
+                "action": "install_packages_prepare", # Different action name for clarity
                 "language": language,
                 "packages": packages,
                 "thread_id": context.thread_id,
@@ -475,8 +519,11 @@ class ToolExecutor:
                 "error": str(e),
             }
             logger.info(f"AUDIT: {audit_details}")
-
+            # Clean up if installation was marked as ongoing
+            if installation_id in self.ongoing_installations:
+                 del self.ongoing_installations[installation_id]
             return {"success": False, "error": error_msg}
+    # End of install_packages method (Correctly indented)
 
     async def _install_packages_background(
         self,
@@ -913,3 +960,4 @@ class ToolExecutor:
                 logger.info("E2B sandbox closed successfully")
             except Exception as e:
                 logger.error(f"Error closing E2B sandbox: {str(e)}")
+        # End of class ToolExecutor

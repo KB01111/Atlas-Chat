@@ -54,9 +54,7 @@ export default function Message(props: TMessageProps) {
             <div
               className={cn(
                 "flex w-full flex-row flex-wrap justify-between gap-1 md:flex-nowrap md:gap-2",
-                maximizeChatSpace
-                  ? "w-full max-w-full"
-                  : "md:max-w-5xl xl:max-w-6xl",
+                maximizeChatSpace ? "w-full max-w-full" : "md:max-w-5xl xl:max-w-6xl",
               )}
             >
               <MessageRender

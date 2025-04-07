@@ -37,14 +37,10 @@ export default function Template() {
               </div>
             </td>
             <td className="border-b border-black/10 text-left text-gray-600 dark:border-white/10 dark:text-gray-300 [tr:last-child_&]:border-b-0">
-              <div className="px-4 py-2 [tr[data-disabled=true]_&]:opacity-50">
-                June 11, 2023
-              </div>
+              <div className="px-4 py-2 [tr[data-disabled=true]_&]:opacity-50">June 11, 2023</div>
             </td>
             <td className="border-b border-black/10 text-left text-gray-600 dark:border-white/10 dark:text-gray-300 [tr:last-child_&]:border-b-0">
-              <div className="px-4 py-2 [tr[data-disabled=true]_&]:opacity-50">
-                11 mb
-              </div>
+              <div className="px-4 py-2 [tr[data-disabled=true]_&]:opacity-50">11 mb</div>
             </td>
             <td className="border-b border-black/10 text-left text-gray-600 dark:border-white/10 dark:text-gray-300 [tr:last-child_&]:border-b-0">
               <div className="px-4 py-2 [tr[data-disabled=true]_&]:opacity-50">

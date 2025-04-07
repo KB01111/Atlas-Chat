@@ -29,9 +29,7 @@ const PopoverContainer = memo(
     variableGroup: TPromptGroup | null;
     setVariableDialogOpen: (isOpen: boolean) => void;
   }) => {
-    const showPromptsPopover = useRecoilValue(
-      store.showPromptsPopoverFamily(index),
-    );
+    const showPromptsPopover = useRecoilValue(store.showPromptsPopoverFamily(index));
     return (
       <>
         {showPromptsPopover ? children : null}
@@ -75,9 +73,7 @@ function PromptsCommand({
             ? group.oneliner
             : (group.productionPrompt?.prompt ?? "")
         }`,
-        icon: (
-          <CategoryIcon category={group.category ?? ""} className="h-5 w-5" />
-        ),
+        icon: <CategoryIcon category={group.category ?? ""} className="h-5 w-5" />,
       }));
 
       const promptsMap = mapPromptGroups(data);
@@ -94,9 +90,7 @@ function PromptsCommand({
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [isVariableDialogOpen, setVariableDialogOpen] = useState(false);
   const [variableGroup, setVariableGroup] = useState<TPromptGroup | null>(null);
-  const setShowPromptsPopover = useSetRecoilState(
-    store.showPromptsPopoverFamily(index),
-  );
+  const setShowPromptsPopover = useSetRecoilState(store.showPromptsPopoverFamily(index));
 
   const prompts = useMemo(() => data?.promptGroups, [data]);
   const promptsMap = useMemo(() => data?.promptsMap, [data]);
@@ -125,9 +119,7 @@ function PromptsCommand({
         return;
       }
 
-      const hasVariables = detectVariables(
-        group.productionPrompt?.prompt ?? "",
-      );
+      const hasVariables = detectVariables(group.productionPrompt?.prompt ?? "");
       if (hasVariables) {
         if (e && e.key === "Tab") {
           e.preventDefault();
@@ -138,14 +130,7 @@ function PromptsCommand({
       }
       submitPrompt(group.productionPrompt?.prompt ?? "");
     },
-    [
-      setSearchValue,
-      setOpen,
-      setShowPromptsPopover,
-      textAreaRef,
-      promptsMap,
-      submitPrompt,
-    ],
+    [setSearchValue, setOpen, setShowPromptsPopover, textAreaRef, promptsMap, submitPrompt],
   );
 
   useEffect(() => {
@@ -165,9 +150,7 @@ function PromptsCommand({
   }, []);
 
   useEffect(() => {
-    const currentActiveItem = document.getElementById(
-      `prompt-item-${activeIndex}`,
-    );
+    const currentActiveItem = document.getElementById(`prompt-item-${activeIndex}`);
     currentActiveItem?.scrollIntoView({
       behavior: "instant",
       block: "nearest",
@@ -233,18 +216,12 @@ function PromptsCommand({
               if (e.key === "ArrowDown") {
                 setActiveIndex((prevIndex) => (prevIndex + 1) % matches.length);
               } else if (e.key === "ArrowUp") {
-                setActiveIndex(
-                  (prevIndex) =>
-                    (prevIndex - 1 + matches.length) % matches.length,
-                );
+                setActiveIndex((prevIndex) => (prevIndex - 1 + matches.length) % matches.length);
               } else if (e.key === "Enter" || e.key === "Tab") {
                 if (e.key === "Enter") {
                   e.preventDefault();
                 }
-                handleSelect(
-                  matches[activeIndex] as PromptOption | undefined,
-                  e,
-                );
+                handleSelect(matches[activeIndex] as PromptOption | undefined, e);
               } else if (e.key === "Backspace" && searchValue === "") {
                 setOpen(false);
                 setShowPromptsPopover(false);

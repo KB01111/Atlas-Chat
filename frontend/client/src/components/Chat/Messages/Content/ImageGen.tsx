@@ -73,11 +73,7 @@ export default function ImageGen({
               </g>
             </svg>
           </div>
-          <ProgressCircle
-            radius={radius}
-            circumference={circumference}
-            offset={offset}
-          />
+          <ProgressCircle radius={radius} circumference={circumference} offset={offset} />
         </div>
       </div>
       <ProgressText

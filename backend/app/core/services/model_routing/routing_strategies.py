@@ -2,11 +2,11 @@
 Routing strategies for model selection.
 """
 
-from typing import Dict, Any, List, Optional, Protocol
-from abc import ABC, abstractmethod
 import re
+from abc import ABC, abstractmethod
+from typing import Any, Dict, List, Optional
 
-from .model_specs import ModelSpecs, ModelSpecification
+from .model_specs import ModelSpecs
 from .performance_metrics import PerformanceMetrics
 
 

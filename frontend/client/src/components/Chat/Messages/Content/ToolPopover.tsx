@@ -45,14 +45,10 @@ export default function ToolPopover({
       >
         <div tabIndex={-1}>
           <div className="bg-token-surface-primary max-w-sm rounded-md p-2 shadow-[0_0_24px_0_rgba(0,0,0,0.05),inset_0_0.5px_0_0_rgba(0,0,0,0.05),0_2px_8px_0_rgba(0,0,0,0.05)]">
-            <div className="mb-2 text-sm font-medium text-text-primary">
-              {title}
-            </div>
+            <div className="mb-2 text-sm font-medium text-text-primary">{title}</div>
             <div className="bg-token-surface-secondary text-token-text-primary dark rounded-md text-xs">
               <div className="max-h-32 overflow-y-auto rounded-md bg-surface-tertiary p-2">
-                <code className="!whitespace-pre-wrap ">
-                  {formatText(input)}
-                </code>
+                <code className="!whitespace-pre-wrap ">{formatText(input)}</code>
               </div>
             </div>
             {output != null && output && (
@@ -62,9 +58,7 @@ export default function ToolPopover({
                 </div>
                 <div className="bg-token-surface-secondary text-token-text-primary dark rounded-md text-xs">
                   <div className="max-h-32 overflow-y-auto rounded-md bg-surface-tertiary p-2">
-                    <code className="!whitespace-pre-wrap ">
-                      {formatText(output)}
-                    </code>
+                    <code className="!whitespace-pre-wrap ">{formatText(output)}</code>
                   </div>
                 </div>
               </>

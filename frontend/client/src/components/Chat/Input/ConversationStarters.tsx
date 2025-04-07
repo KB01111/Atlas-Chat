@@ -1,15 +1,8 @@
 import { Constants, EModelEndpoint } from "librechat-data-provider";
 import { useCallback, useMemo } from "react";
-import {
-  useGetAssistantDocsQuery,
-  useGetEndpointsQuery,
-} from "~/data-provider";
+import { useGetAssistantDocsQuery, useGetEndpointsQuery } from "~/data-provider";
 import { useSubmitMessage } from "~/hooks";
-import {
-  useAgentsMapContext,
-  useAssistantsMapContext,
-  useChatContext,
-} from "~/Providers";
+import { useAgentsMapContext, useAssistantsMapContext, useChatContext } from "~/Providers";
 import { getEntity, getIconEndpoint } from "~/utils";
 
 const ConversationStarters = () => {
@@ -36,12 +29,9 @@ const ConversationStarters = () => {
     });
   }, [conversation?.endpoint, conversation?.iconURL, endpointsConfig]);
 
-  const { data: documentsMap = new Map() } = useGetAssistantDocsQuery(
-    endpointType,
-    {
-      select: (data) => new Map(data.map((dbA) => [dbA.assistant_id, dbA])),
-    },
-  );
+  const { data: documentsMap = new Map() } = useGetAssistantDocsQuery(endpointType, {
+    select: (data) => new Map(data.map((dbA) => [dbA.assistant_id, dbA])),
+  });
 
   const { entity, isAgent } = getEntity({
     endpoint: endpointType,

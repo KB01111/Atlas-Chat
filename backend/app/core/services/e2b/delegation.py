@@ -1,13 +1,13 @@
-from typing import Dict, List, Optional, Any, Union, Callable, Awaitable
-import asyncio
+import json
 import logging
 import uuid
-from enum import Enum
+from collections.abc import Awaitable
 from datetime import datetime
-import json
+from enum import Enum
+from typing import Any, Callable, Dict, List, Optional
 
+from .artifacts import ArtifactManager
 from .session import E2BSession
-from .artifacts import Artifact, ArtifactManager
 
 logger = logging.getLogger(__name__)
 
@@ -538,9 +538,9 @@ class AgentDelegationService:
         self.e2b_session = e2b_session
         self.artifact_manager = ArtifactManager(e2b_session)
         self.teams: Dict[str, AgentTeam] = {}
-        self.task_callbacks: Dict[
-            str, List[Callable[[AgentTask], Awaitable[None]]]
-        ] = {}
+        self.task_callbacks: Dict[str, List[Callable[[AgentTask], Awaitable[None]]]] = (
+            {}
+        )
 
     async def initialize(self) -> None:
         """

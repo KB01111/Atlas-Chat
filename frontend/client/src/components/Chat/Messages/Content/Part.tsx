@@ -1,7 +1,4 @@
-import type {
-  TAttachment,
-  TMessageContentParts,
-} from "librechat-data-provider";
+import type { TAttachment, TMessageContentParts } from "librechat-data-provider";
 import {
   ContentTypes,
   imageGenTools,
@@ -33,14 +30,7 @@ type PartProps = {
 };
 
 const Part = memo(
-  ({
-    part,
-    isSubmitting,
-    attachments,
-    isLast,
-    showCursor,
-    isCreatedByUser,
-  }: PartProps) => {
+  ({ part, isSubmitting, attachments, isLast, showCursor, isCreatedByUser }: PartProps) => {
     if (!part) {
       return null;
     }
@@ -62,9 +52,7 @@ const Part = memo(
     if (part.type === ContentTypes.AGENT_UPDATE) {
       return (
         <>
-          <AgentUpdate
-            currentAgentId={part[ContentTypes.AGENT_UPDATE]?.agentId}
-          />
+          <AgentUpdate currentAgentId={part[ContentTypes.AGENT_UPDATE]?.agentId} />
           {isLast && showCursor && (
             <Container>
               <EmptyText />
@@ -84,17 +72,12 @@ const Part = memo(
       }
       return (
         <Container>
-          <Text
-            text={text}
-            isCreatedByUser={isCreatedByUser}
-            showCursor={showCursor}
-          />
+          <Text text={text} isCreatedByUser={isCreatedByUser} showCursor={showCursor} />
         </Container>
       );
     }
     if (part.type === ContentTypes.THINK) {
-      const reasoning =
-        typeof part.think === "string" ? part.think : part.think.value;
+      const reasoning = typeof part.think === "string" ? part.think : part.think.value;
       if (typeof reasoning !== "string") {
         return null;
       }
@@ -108,8 +91,7 @@ const Part = memo(
       }
 
       const isToolCall =
-        "args" in toolCall &&
-        (!toolCall.type || toolCall.type === ToolCallTypes.TOOL_CALL);
+        "args" in toolCall && (!toolCall.type || toolCall.type === ToolCallTypes.TOOL_CALL);
       if (isToolCall && toolCall.name === Tools.execute_code) {
         return (
           <ExecuteCode
@@ -151,10 +133,7 @@ const Part = memo(
         toolCall.type === ToolCallTypes.FILE_SEARCH
       ) {
         return (
-          <RetrievalCall
-            initialProgress={toolCall.progress ?? 0.1}
-            isSubmitting={isSubmitting}
-          />
+          <RetrievalCall initialProgress={toolCall.progress ?? 0.1} isSubmitting={isSubmitting} />
         );
       }
       if (
@@ -169,19 +148,12 @@ const Part = memo(
           />
         );
       }
-      if (
-        toolCall.type === ToolCallTypes.FUNCTION &&
-        ToolCallTypes.FUNCTION in toolCall
-      ) {
+      if (toolCall.type === ToolCallTypes.FUNCTION && ToolCallTypes.FUNCTION in toolCall) {
         if (isImageVisionTool(toolCall)) {
           if (isSubmitting && showCursor) {
             return (
               <Container>
-                <Text
-                  text={""}
-                  isCreatedByUser={isCreatedByUser}
-                  showCursor={showCursor}
-                />
+                <Text text={""} isCreatedByUser={isCreatedByUser} showCursor={showCursor} />
               </Container>
             );
           }

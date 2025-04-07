@@ -6,11 +6,7 @@ import { useParams } from "react-router-dom";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { globalAudioId } from "~/common";
 import { useAuthContext } from "~/hooks";
-import {
-  MediaSourceAppender,
-  useCustomAudioRef,
-  usePauseGlobalAudio,
-} from "~/hooks/Audio";
+import { MediaSourceAppender, useCustomAudioRef, usePauseGlobalAudio } from "~/hooks/Audio";
 import store from "~/store";
 import { getLatestText, logger } from "~/utils";
 
@@ -35,29 +31,19 @@ export default function StreamAudio({ index = 0 }) {
   const isSubmitting = useRecoilValue(store.isSubmittingFamily(index));
   const latestMessage = useRecoilValue(store.latestMessageFamily(index));
   const setIsPlaying = useSetRecoilState(store.globalAudioPlayingFamily(index));
-  const [audioRunId, setAudioRunId] = useRecoilState(
-    store.audioRunFamily(index),
-  );
-  const [isFetching, setIsFetching] = useRecoilState(
-    store.globalAudioFetchingFamily(index),
-  );
-  const [globalAudioURL, setGlobalAudioURL] = useRecoilState(
-    store.globalAudioURLFamily(index),
-  );
+  const [audioRunId, setAudioRunId] = useRecoilState(store.audioRunFamily(index));
+  const [isFetching, setIsFetching] = useRecoilState(store.globalAudioFetchingFamily(index));
+  const [globalAudioURL, setGlobalAudioURL] = useRecoilState(store.globalAudioURLFamily(index));
 
   const { audioRef } = useCustomAudioRef({ setIsPlaying });
   const { pauseGlobalAudio } = usePauseGlobalAudio();
 
   const { conversationId: paramId } = useParams();
-  const queryParam =
-    paramId === "new"
-      ? paramId
-      : (latestMessage?.conversationId ?? paramId ?? "");
+  const queryParam = paramId === "new" ? paramId : (latestMessage?.conversationId ?? paramId ?? "");
 
   const queryClient = useQueryClient();
   const getMessages = useCallback(
-    () =>
-      queryClient.getQueryData<TMessage[]>([QueryKeys.messages, queryParam]),
+    () => queryClient.getQueryData<TMessage[]>([QueryKeys.messages, queryParam]),
     [queryParam, queryClient],
   );
 
@@ -131,8 +117,7 @@ export default function StreamAudio({ index = 0 }) {
 
         const type = "audio/mpeg";
         const browserSupportsType =
-          typeof MediaSource !== "undefined" &&
-          MediaSource.isTypeSupported(type);
+          typeof MediaSource !== "undefined" && MediaSource.isTypeSupported(type);
         let mediaSource: MediaSourceAppender | undefined;
         if (browserSupportsType) {
           mediaSource = new MediaSourceAppender(type);
