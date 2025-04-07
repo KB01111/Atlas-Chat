@@ -278,7 +278,7 @@ import functools
 # User code
 """
 
-    # Add the use___namede
+    # Add the user code
     optimized_code += code
 
     return optimized_code
