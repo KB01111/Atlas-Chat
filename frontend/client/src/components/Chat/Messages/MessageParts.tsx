@@ -1,22 +1,27 @@
-import React, { useMemo } from 'react';
-import { useRecoilValue } from 'recoil';
-import type { TMessageContentParts } from 'librechat-data-provider';
-import type { TMessageProps, TMessageIcon } from '~/common';
-import MessageIcon from '~/components/Chat/Messages/MessageIcon';
-import { useMessageHelpers, useLocalize } from '~/hooks';
-import ContentParts from './Content/ContentParts';
-import SiblingSwitch from './SiblingSwitch';
-
-import MultiMessage from './MultiMessage';
-import HoverButtons from './HoverButtons';
-import SubRow from './SubRow';
-import { cn } from '~/utils';
-import store from '~/store';
+import type { TMessageContentParts } from "librechat-data-provider";
+import React, { useMemo } from "react";
+import { useRecoilValue } from "recoil";
+import type { TMessageIcon, TMessageProps } from "~/common";
+import MessageIcon from "~/components/Chat/Messages/MessageIcon";
+import { useLocalize, useMessageHelpers } from "~/hooks";
+import store from "~/store";
+import { cn } from "~/utils";
+import ContentParts from "./Content/ContentParts";
+import HoverButtons from "./HoverButtons";
+import MultiMessage from "./MultiMessage";
+import SiblingSwitch from "./SiblingSwitch";
+import SubRow from "./SubRow";
 
 export default function Message(props: TMessageProps) {
   const localize = useLocalize();
-  const { message, siblingIdx, siblingCount, setSiblingIdx, currentEditId, setCurrentEditId } =
-    props;
+  const {
+    message,
+    siblingIdx,
+    siblingCount,
+    setSiblingIdx,
+    currentEditId,
+    setCurrentEditId,
+  } = props;
 
   const {
     edit,
@@ -39,13 +44,13 @@ export default function Message(props: TMessageProps) {
   const { children, messageId = null, isCreatedByUser } = message ?? {};
 
   const name = useMemo(() => {
-    let result = '';
+    let result = "";
     if (isCreatedByUser === true) {
-      result = localize('com_user_message');
+      result = localize("com_user_message");
     } else if (assistant) {
-      result = assistant.name ?? localize('com_ui_assistant');
+      result = assistant.name ?? localize("com_ui_assistant");
     } else if (agent) {
-      result = agent.name ?? localize('com_ui_agent');
+      result = agent.name ?? localize("com_ui_agent");
     }
 
     return result;
@@ -76,10 +81,11 @@ export default function Message(props: TMessageProps) {
   }
 
   const baseClasses = {
-    common: 'group mx-auto flex flex-1 gap-3 transition-all duration-300 transform-gpu',
+    common:
+      "group mx-auto flex flex-1 gap-3 transition-all duration-300 transform-gpu",
     chat: maximizeChatSpace
-      ? 'w-full max-w-full md:px-5 lg:px-1 xl:px-5'
-      : 'md:max-w-[47rem] xl:max-w-[55rem]',
+      ? "w-full max-w-full md:px-5 lg:px-1 xl:px-5"
+      : "md:max-w-[47rem] xl:max-w-[55rem]",
   };
 
   return (
@@ -93,20 +99,33 @@ export default function Message(props: TMessageProps) {
           <div
             id={messageId}
             aria-label={`message-${message.depth}-${messageId}`}
-            className={cn(baseClasses.common, baseClasses.chat, 'message-render')}
+            className={cn(
+              baseClasses.common,
+              baseClasses.chat,
+              "message-render",
+            )}
           >
             <div className="relative flex flex-shrink-0 flex-col items-center">
               <div className="flex h-6 w-6 items-center justify-center overflow-hidden rounded-full pt-0.5">
-                <MessageIcon iconData={iconData} assistant={assistant} agent={agent} />
+                <MessageIcon
+                  iconData={iconData}
+                  assistant={assistant}
+                  agent={agent}
+                />
               </div>
             </div>
             <div
               className={cn(
-                'relative flex w-11/12 flex-col',
-                isCreatedByUser ? 'user-turn' : 'agent-turn',
+                "relative flex w-11/12 flex-col",
+                isCreatedByUser ? "user-turn" : "agent-turn",
               )}
             >
-              <h2 className={cn('select-none font-semibold text-text-primary', fontSize)}>
+              <h2
+                className={cn(
+                  "select-none font-semibold text-text-primary",
+                  fontSize,
+                )}
+              >
                 {name}
               </h2>
               <div className="flex flex-col gap-1">
@@ -122,7 +141,9 @@ export default function Message(props: TMessageProps) {
                     attachments={message.attachments}
                     isCreatedByUser={message.isCreatedByUser}
                     conversationId={conversation?.conversationId}
-                    content={message.content as Array<TMessageContentParts | undefined>}
+                    content={
+                      message.content as Array<TMessageContentParts | undefined>
+                    }
                   />
                 </div>
                 {isLast && isSubmitting ? (

@@ -1,15 +1,18 @@
-import React from 'react';
-import { Bot } from 'lucide-react';
-import { isAgentsEndpoint, isAssistantsEndpoint } from 'librechat-data-provider';
 import type {
-  TModelSpec,
   TAgentsMap,
   TAssistantsMap,
   TEndpointsConfig,
-} from 'librechat-data-provider';
-import type { useLocalize } from '~/hooks';
-import SpecIcon from '~/components/Chat/Menus/Endpoints/components/SpecIcon';
-import { Endpoint, SelectedValues } from '~/common';
+  TModelSpec,
+} from "librechat-data-provider";
+import {
+  isAgentsEndpoint,
+  isAssistantsEndpoint,
+} from "librechat-data-provider";
+import { Bot } from "lucide-react";
+import React from "react";
+import type { Endpoint, SelectedValues } from "~/common";
+import SpecIcon from "~/components/Chat/Menus/Endpoints/components/SpecIcon";
+import type { useLocalize } from "~/hooks";
 
 export function filterItems<
   T extends {
@@ -32,8 +35,8 @@ export function filterItems<
   return items.filter((item) => {
     const itemMatches =
       item.label.toLowerCase().includes(searchTermLower) ||
-      (item.name && item.name.toLowerCase().includes(searchTermLower)) ||
-      (item.value && item.value.toLowerCase().includes(searchTermLower));
+      item.name?.toLowerCase().includes(searchTermLower) ||
+      item.value?.toLowerCase().includes(searchTermLower);
 
     if (itemMatches) {
       return true;
@@ -45,15 +48,22 @@ export function filterItems<
           return true;
         }
 
-        if (isAgentsEndpoint(item.value) && agentsMap && modelId.name in agentsMap) {
+        if (
+          isAgentsEndpoint(item.value) &&
+          agentsMap &&
+          modelId.name in agentsMap
+        ) {
           const agentName = agentsMap[modelId.name]?.name;
-          return typeof agentName === 'string' && agentName.toLowerCase().includes(searchTermLower);
+          return (
+            typeof agentName === "string" &&
+            agentName.toLowerCase().includes(searchTermLower)
+          );
         }
 
         if (isAssistantsEndpoint(item.value) && assistantsMap) {
-          const endpoint = item.value ?? '';
+          const endpoint = item.value ?? "";
           const assistant = assistantsMap[endpoint][modelId.name];
-          if (assistant && typeof assistant.name === 'string') {
+          if (assistant && typeof assistant.name === "string") {
             return assistant.name.toLowerCase().includes(searchTermLower);
           }
           return false;
@@ -91,7 +101,9 @@ export function filterModels(
     ) {
       const assistant = assistantsMap[endpoint.value][modelId];
       modelName =
-        typeof assistant.name === 'string' && assistant.name ? (assistant.name as string) : modelId;
+        typeof assistant.name === "string" && assistant.name
+          ? (assistant.name as string)
+          : modelId;
     }
 
     return modelName.toLowerCase().includes(searchTermLower);
@@ -135,12 +147,12 @@ export function getSelectedIcon({
     if (selectedEndpoint.modelIcons?.[model]) {
       const iconUrl = selectedEndpoint.modelIcons[model];
       return React.createElement(
-        'div',
-        { className: 'h-5 w-5 overflow-hidden rounded-full' },
-        React.createElement('img', {
+        "div",
+        { className: "h-5 w-5 overflow-hidden rounded-full" },
+        React.createElement("img", {
           src: iconUrl,
           alt: model,
-          className: 'h-full w-full object-cover',
+          className: "h-full w-full object-cover",
         }),
       );
     }
@@ -149,7 +161,7 @@ export function getSelectedIcon({
       selectedEndpoint.icon ||
       React.createElement(Bot, {
         size: 20,
-        className: 'icon-md shrink-0 text-text-primary',
+        className: "icon-md shrink-0 text-text-primary",
       })
     );
   }
@@ -175,13 +187,15 @@ export const getDisplayValue = ({
 }) => {
   if (selectedValues.modelSpec) {
     const spec = modelSpecs.find((s) => s.name === selectedValues.modelSpec);
-    return spec?.label || spec?.name || localize('com_ui_select_model');
+    return spec?.label || spec?.name || localize("com_ui_select_model");
   }
 
   if (selectedValues.model && selectedValues.endpoint) {
-    const endpoint = mappedEndpoints.find((e) => e.value === selectedValues.endpoint);
+    const endpoint = mappedEndpoints.find(
+      (e) => e.value === selectedValues.endpoint,
+    );
     if (!endpoint) {
-      return localize('com_ui_select_model');
+      return localize("com_ui_select_model");
     }
 
     if (
@@ -204,9 +218,11 @@ export const getDisplayValue = ({
   }
 
   if (selectedValues.endpoint) {
-    const endpoint = mappedEndpoints.find((e) => e.value === selectedValues.endpoint);
-    return endpoint?.label || localize('com_ui_select_model');
+    const endpoint = mappedEndpoints.find(
+      (e) => e.value === selectedValues.endpoint,
+    );
+    return endpoint?.label || localize("com_ui_select_model");
   }
 
-  return localize('com_ui_select_model');
+  return localize("com_ui_select_model");
 };

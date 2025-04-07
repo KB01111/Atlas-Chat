@@ -1,9 +1,10 @@
-import React, { useMemo } from 'react';
-import { EModelEndpoint } from 'librechat-data-provider';
-import type { TMessage } from 'librechat-data-provider';
-import MessageIcon from '~/components/Share/MessageIcon';
-import { useAgentsMapContext } from '~/Providers';
-import { useLocalize } from '~/hooks';
+import type { TMessage } from "librechat-data-provider";
+import { EModelEndpoint } from "librechat-data-provider";
+import type React from "react";
+import { useMemo } from "react";
+import MessageIcon from "~/components/Share/MessageIcon";
+import { useLocalize } from "~/hooks";
+import { useAgentsMapContext } from "~/Providers";
 
 interface AgentUpdateProps {
   currentAgentId: string;
@@ -12,7 +13,10 @@ interface AgentUpdateProps {
 const AgentUpdate: React.FC<AgentUpdateProps> = ({ currentAgentId }) => {
   const localize = useLocalize();
   const agentsMap = useAgentsMapContext() || {};
-  const currentAgent = useMemo(() => agentsMap[currentAgentId], [agentsMap, currentAgentId]);
+  const currentAgent = useMemo(
+    () => agentsMap[currentAgentId],
+    [agentsMap, currentAgentId],
+  );
   if (!currentAgentId) {
     return null;
   }
@@ -20,8 +24,8 @@ const AgentUpdate: React.FC<AgentUpdateProps> = ({ currentAgentId }) => {
     <div className="relative">
       <div className="absolute -left-6 flex h-full w-4 items-center justify-center">
         <div className="relative h-full w-4">
-          <div className="absolute left-0 top-0 h-1/2 w-px border border-border-medium"></div>
-          <div className="absolute left-0 top-1/2 h-px w-3 border border-border-medium"></div>
+          <div className="absolute left-0 top-0 h-1/2 w-px border border-border-medium" />
+          <div className="absolute left-0 top-1/2 h-px w-3 border border-border-medium" />
         </div>
       </div>
       <div className="my-4 flex items-center gap-2">
@@ -37,7 +41,7 @@ const AgentUpdate: React.FC<AgentUpdateProps> = ({ currentAgentId }) => {
           />
         </div>
         <div className="text-base font-medium text-text-primary">
-          {currentAgent?.name || localize('com_ui_agent')}
+          {currentAgent?.name || localize("com_ui_agent")}
         </div>
       </div>
     </div>

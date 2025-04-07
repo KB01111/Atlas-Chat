@@ -1,29 +1,29 @@
-import { memo, Suspense, useMemo } from 'react';
-import { useRecoilValue } from 'recoil';
-import type { TMessage } from 'librechat-data-provider';
-import type { TMessageContentProps, TDisplayProps } from '~/common';
-import Error from '~/components/Messages/Content/Error';
-import Thinking from '~/components/Artifacts/Thinking';
-import { DelayedRender } from '~/components/ui';
-import { useChatContext } from '~/Providers';
-import MarkdownLite from './MarkdownLite';
-import EditMessage from './EditMessage';
-import { useLocalize } from '~/hooks';
-import Container from './Container';
-import Markdown from './Markdown';
-import { cn } from '~/utils';
-import store from '~/store';
+import type { TMessage } from "librechat-data-provider";
+import { memo, Suspense, useMemo } from "react";
+import { useRecoilValue } from "recoil";
+import type { TDisplayProps, TMessageContentProps } from "~/common";
+import Thinking from "~/components/Artifacts/Thinking";
+import Error from "~/components/Messages/Content/Error";
+import { DelayedRender } from "~/components/ui";
+import { useLocalize } from "~/hooks";
+import { useChatContext } from "~/Providers";
+import store from "~/store";
+import { cn } from "~/utils";
+import Container from "./Container";
+import EditMessage from "./EditMessage";
+import Markdown from "./Markdown";
+import MarkdownLite from "./MarkdownLite";
 
 export const ErrorMessage = ({
   text,
   message,
-  className = '',
-}: Pick<TDisplayProps, 'text' | 'className'> & {
+  className = "",
+}: Pick<TDisplayProps, "text" | "className"> & {
   message?: TMessage;
 }) => {
   const localize = useLocalize();
-  if (text === 'Error connecting to server, try refreshing the page.') {
-    console.log('error message', message);
+  if (text === "Error connecting to server, try refreshing the page.") {
+    console.log("error message", message);
     return (
       <Suspense
         fallback={
@@ -42,11 +42,11 @@ export const ErrorMessage = ({
           <Container message={message}>
             <div
               className={cn(
-                'rounded-md border border-red-500 bg-red-500/10 px-3 py-2 text-sm text-gray-600 dark:text-gray-200',
+                "rounded-md border border-red-500 bg-red-500/10 px-3 py-2 text-sm text-gray-600 dark:text-gray-200",
                 className,
               )}
             >
-              {localize('com_ui_error_connection')}
+              {localize("com_ui_error_connection")}
             </div>
           </Container>
         </DelayedRender>
@@ -59,7 +59,7 @@ export const ErrorMessage = ({
         role="alert"
         aria-live="assertive"
         className={cn(
-          'rounded-xl border border-red-500/20 bg-red-500/5 px-3 py-2 text-sm text-gray-600 dark:text-gray-200',
+          "rounded-xl border border-red-500/20 bg-red-500/5 px-3 py-2 text-sm text-gray-600 dark:text-gray-200",
           className,
         )}
       >
@@ -69,7 +69,12 @@ export const ErrorMessage = ({
   );
 };
 
-const DisplayMessage = ({ text, isCreatedByUser, message, showCursor }: TDisplayProps) => {
+const DisplayMessage = ({
+  text,
+  isCreatedByUser,
+  message,
+  showCursor,
+}: TDisplayProps) => {
   const { isSubmitting, latestMessage } = useChatContext();
   const enableUserMsgMarkdown = useRecoilValue(store.enableUserMsgMarkdown);
   const showCursorState = useMemo(
@@ -87,18 +92,18 @@ const DisplayMessage = ({ text, isCreatedByUser, message, showCursor }: TDisplay
   } else if (enableUserMsgMarkdown) {
     content = <MarkdownLite content={text} />;
   } else {
-    content = <>{text}</>;
+    content = text;
   }
 
   return (
     <Container message={message}>
       <div
         className={cn(
-          isSubmitting ? 'submitting' : '',
-          showCursorState && !!text.length ? 'result-streaming' : '',
-          'markdown prose message-content dark:prose-invert light w-full break-words',
-          isCreatedByUser && !enableUserMsgMarkdown && 'whitespace-pre-wrap',
-          isCreatedByUser ? 'dark:text-gray-20' : 'dark:text-gray-100',
+          isSubmitting ? "submitting" : "",
+          showCursorState && !!text.length ? "result-streaming" : "",
+          "markdown prose message-content dark:prose-invert light w-full break-words",
+          isCreatedByUser && !enableUserMsgMarkdown && "whitespace-pre-wrap",
+          isCreatedByUser ? "dark:text-gray-20" : "dark:text-gray-100",
         )}
       >
         {content}
@@ -130,12 +135,17 @@ const MessageContent = ({
   const { thinkingContent, regularContent } = useMemo(() => {
     const thinkingMatch = text.match(/:::thinking([\s\S]*?):::/);
     return {
-      thinkingContent: thinkingMatch ? thinkingMatch[1].trim() : '',
-      regularContent: thinkingMatch ? text.replace(/:::thinking[\s\S]*?:::/, '').trim() : text,
+      thinkingContent: thinkingMatch ? thinkingMatch[1].trim() : "",
+      regularContent: thinkingMatch
+        ? text.replace(/:::thinking[\s\S]*?:::/, "").trim()
+        : text,
     };
   }, [text]);
 
-  const showRegularCursor = useMemo(() => isLast && isSubmitting, [isLast, isSubmitting]);
+  const showRegularCursor = useMemo(
+    () => isLast && isSubmitting,
+    [isLast, isSubmitting],
+  );
 
   const unfinishedMessage = useMemo(
     () =>
@@ -151,7 +161,8 @@ const MessageContent = ({
 
   if (error) {
     return <ErrorMessage message={props.message} text={text} />;
-  } else if (edit) {
+  }
+  if (edit) {
     return <EditMessage text={text} isSubmitting={isSubmitting} {...props} />;
   }
 

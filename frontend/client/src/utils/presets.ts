@@ -1,5 +1,5 @@
-import type { TPreset, TPlugin } from 'librechat-data-provider';
-import { EModelEndpoint } from 'librechat-data-provider';
+import type { TPlugin, TPreset } from "librechat-data-provider";
+import { EModelEndpoint } from "librechat-data-provider";
 
 type TEndpoints = Array<string | EModelEndpoint>;
 
@@ -13,21 +13,28 @@ export const getPresetTitle = (preset: TPreset, mention?: boolean) => {
     chatGptLabel,
     modelLabel,
   } = preset;
-  const modelInfo = model ?? '';
-  let title = '';
-  let label = '';
+  const modelInfo = model ?? "";
+  let title = "";
+  let label = "";
 
   const usesChatGPTLabel: TEndpoints = [
     EModelEndpoint.azureOpenAI,
     EModelEndpoint.openAI,
     EModelEndpoint.custom,
   ];
-  const usesModelLabel: TEndpoints = [EModelEndpoint.google, EModelEndpoint.anthropic];
+  const usesModelLabel: TEndpoints = [
+    EModelEndpoint.google,
+    EModelEndpoint.anthropic,
+  ];
 
   if (endpoint != null && endpoint && usesChatGPTLabel.includes(endpoint)) {
-    label = chatGptLabel ?? '';
-  } else if (endpoint != null && endpoint && usesModelLabel.includes(endpoint)) {
-    label = modelLabel ?? '';
+    label = chatGptLabel ?? "";
+  } else if (
+    endpoint != null &&
+    endpoint &&
+    usesModelLabel.includes(endpoint)
+  ) {
+    label = modelLabel ?? "";
   }
   if (
     label &&
@@ -35,30 +42,34 @@ export const getPresetTitle = (preset: TPreset, mention?: boolean) => {
     presetTitle &&
     label.toLowerCase().includes(presetTitle.toLowerCase())
   ) {
-    title = label + ': ';
-    label = '';
-  } else if (presetTitle != null && presetTitle && presetTitle.trim() !== 'New Chat') {
-    title = presetTitle + ': ';
+    title = `${label}: `;
+    label = "";
+  } else if (
+    presetTitle != null &&
+    presetTitle &&
+    presetTitle.trim() !== "New Chat"
+  ) {
+    title = `${presetTitle}: `;
   }
 
   if (mention === true) {
-    return `${modelInfo}${label ? ` | ${label}` : ''}${
-      promptPrefix != null && promptPrefix ? ` | ${promptPrefix}` : ''
+    return `${modelInfo}${label ? ` | ${label}` : ""}${
+      promptPrefix != null && promptPrefix ? ` | ${promptPrefix}` : ""
     }${
       tools
         ? ` | ${tools
-          .map((tool: TPlugin | string) => {
-            if (typeof tool === 'string') {
-              return tool;
-            }
-            return tool.pluginKey;
-          })
-          .join(', ')}`
-        : ''
+            .map((tool: TPlugin | string) => {
+              if (typeof tool === "string") {
+                return tool;
+              }
+              return tool.pluginKey;
+            })
+            .join(", ")}`
+        : ""
     }`;
   }
 
-  return `${title}${modelInfo}${label ? ` (${label})` : ''}`.trim();
+  return `${title}${modelInfo}${label ? ` (${label})` : ""}`.trim();
 };
 
 /** Remove unavailable tools from the preset */
@@ -72,7 +83,7 @@ export const removeUnavailableTools = (
     newPreset.tools = newPreset.tools
       .filter((tool) => {
         let pluginKey: string;
-        if (typeof tool === 'string') {
+        if (typeof tool === "string") {
           pluginKey = tool;
         } else {
           ({ pluginKey } = tool);
@@ -81,7 +92,7 @@ export const removeUnavailableTools = (
         return !!availableTools[pluginKey];
       })
       .map((tool) => {
-        if (typeof tool === 'string') {
+        if (typeof tool === "string") {
           return tool;
         }
         return tool.pluginKey;

@@ -1,8 +1,8 @@
-import type { TFile } from 'librechat-data-provider';
-import type { ExtendedFile } from '~/common';
-import FilePreview from './FilePreview';
-import RemoveFile from './RemoveFile';
-import { getFileType } from '~/utils';
+import type { TFile } from "librechat-data-provider";
+import type { ExtendedFile } from "~/common";
+import { getFileType } from "~/utils";
+import FilePreview from "./FilePreview";
+import RemoveFile from "./RemoveFile";
 
 const FileContainer = ({
   file,
@@ -23,7 +23,10 @@ const FileContainer = ({
               <div className="truncate font-medium" title={file.filename}>
                 {file.filename}
               </div>
-              <div className="truncate text-text-secondary" title={fileType.title}>
+              <div
+                className="truncate text-text-secondary"
+                title={fileType.title}
+              >
                 {fileType.title}
               </div>
             </div>

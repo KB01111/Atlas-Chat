@@ -1,9 +1,9 @@
-import React from 'react';
-import type { TModelSpec } from 'librechat-data-provider';
-import { CustomMenuItem as MenuItem } from '../CustomMenu';
-import { useModelSelectorContext } from '../ModelSelectorContext';
-import SpecIcon from './SpecIcon';
-import { cn } from '~/utils';
+import type { TModelSpec } from "librechat-data-provider";
+import React from "react";
+import { cn } from "~/utils";
+import { CustomMenuItem as MenuItem } from "../CustomMenu";
+import { useModelSelectorContext } from "../ModelSelectorContext";
+import SpecIcon from "./SpecIcon";
 
 interface ModelSpecItemProps {
   spec: TModelSpec;
@@ -18,13 +18,13 @@ export function ModelSpecItem({ spec, isSelected }: ModelSpecItemProps) {
       key={spec.name}
       onClick={() => handleSelectSpec(spec)}
       className={cn(
-        'flex w-full cursor-pointer items-center justify-between rounded-lg px-2 text-sm',
+        "flex w-full cursor-pointer items-center justify-between rounded-lg px-2 text-sm",
       )}
     >
       <div
         className={cn(
-          'flex w-full min-w-0 gap-2 px-1 py-1',
-          spec.description ? 'items-start' : 'items-center',
+          "flex w-full min-w-0 gap-2 px-1 py-1",
+          spec.description ? "items-start" : "items-center",
         )}
       >
         {showIconInMenu && (
@@ -35,7 +35,9 @@ export function ModelSpecItem({ spec, isSelected }: ModelSpecItemProps) {
         <div className="flex min-w-0 flex-col gap-1">
           <span className="truncate text-left">{spec.label}</span>
           {spec.description && (
-            <span className="break-words text-xs font-normal">{spec.description}</span>
+            <span className="break-words text-xs font-normal">
+              {spec.description}
+            </span>
           )}
         </div>
       </div>
@@ -68,6 +70,10 @@ export function renderModelSpecs(specs: TModelSpec[], selectedSpec: string) {
   }
 
   return specs.map((spec) => (
-    <ModelSpecItem key={spec.name} spec={spec} isSelected={selectedSpec === spec.name} />
+    <ModelSpecItem
+      key={spec.name}
+      spec={spec}
+      isSelected={selectedSpec === spec.name}
+    />
   ));
 }

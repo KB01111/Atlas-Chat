@@ -1,13 +1,13 @@
-import { useState, useId, useRef } from 'react';
-import { useRecoilValue } from 'recoil';
-import * as Ariakit from '@ariakit/react';
-import { Upload, Share2 } from 'lucide-react';
-import type * as t from '~/common';
-import ExportModal from '~/components/Nav/ExportConversation/ExportModal';
-import { ShareButton } from '~/components/Conversations/ConvoOptions';
-import { DropdownPopup, TooltipAnchor } from '~/components/ui';
-import { useMediaQuery, useLocalize } from '~/hooks';
-import store from '~/store';
+import * as Ariakit from "@ariakit/react";
+import { Share2, Upload } from "lucide-react";
+import { useId, useRef, useState } from "react";
+import { useRecoilValue } from "recoil";
+import type * as t from "~/common";
+import { ShareButton } from "~/components/Conversations/ConvoOptions";
+import ExportModal from "~/components/Nav/ExportConversation/ExportModal";
+import { DropdownPopup, TooltipAnchor } from "~/components/ui";
+import { useLocalize, useMediaQuery } from "~/hooks";
+import store from "~/store";
 
 export default function ExportAndShareMenu({
   isSharedButtonEnabled,
@@ -22,14 +22,14 @@ export default function ExportAndShareMenu({
   const menuId = useId();
   const shareButtonRef = useRef<HTMLButtonElement>(null);
   const exportButtonRef = useRef<HTMLButtonElement>(null);
-  const isSmallScreen = useMediaQuery('(max-width: 768px)');
+  const isSmallScreen = useMediaQuery("(max-width: 768px)");
   const conversation = useRecoilValue(store.conversationByIndex(0));
 
   const exportable =
     conversation &&
     conversation.conversationId != null &&
-    conversation.conversationId !== 'new' &&
-    conversation.conversationId !== 'search';
+    conversation.conversationId !== "new" &&
+    conversation.conversationId !== "search";
 
   if (exportable === false) {
     return null;
@@ -45,7 +45,7 @@ export default function ExportAndShareMenu({
 
   const dropdownItems: t.MenuItemProps[] = [
     {
-      label: localize('com_endpoint_export'),
+      label: localize("com_endpoint_export"),
       onClick: exportHandler,
       icon: <Upload className="icon-md mr-2 text-text-secondary" />,
       /** NOTE: THE FOLLOWING PROPS ARE REQUIRED FOR MENU ITEMS THAT OPEN DIALOGS */
@@ -54,7 +54,7 @@ export default function ExportAndShareMenu({
       render: (props) => <button {...props} />,
     },
     {
-      label: localize('com_ui_share'),
+      label: localize("com_ui_share"),
       onClick: shareHandler,
       icon: <Share2 className="icon-md mr-2 text-text-secondary" />,
       show: isSharedButtonEnabled,
@@ -74,7 +74,7 @@ export default function ExportAndShareMenu({
         setIsOpen={setIsPopoverActive}
         trigger={
           <TooltipAnchor
-            description={localize('com_endpoint_export_share')}
+            description={localize("com_endpoint_export_share")}
             render={
               <Ariakit.MenuButton
                 id="export-menu-button"
@@ -91,18 +91,18 @@ export default function ExportAndShareMenu({
           />
         }
         items={dropdownItems}
-        className={isSmallScreen ? '' : 'absolute right-0 top-0 mt-2'}
+        className={isSmallScreen ? "" : "absolute right-0 top-0 mt-2"}
       />
       <ExportModal
         open={showExports}
         onOpenChange={setShowExports}
         conversation={conversation}
         triggerRef={exportButtonRef}
-        aria-label={localize('com_ui_export_convo_modal')}
+        aria-label={localize("com_ui_export_convo_modal")}
       />
       <ShareButton
         triggerRef={shareButtonRef}
-        conversationId={conversation.conversationId ?? ''}
+        conversationId={conversation.conversationId ?? ""}
         open={showShareDialog}
         onOpenChange={setShowShareDialog}
       />

@@ -1,8 +1,8 @@
-import React from 'react';
-import { ChevronDown, ChevronUp } from 'lucide-react';
-import { TooltipAnchor } from '~/components/ui';
-import { useLocalize } from '~/hooks';
-import { cn } from '~/utils';
+import { ChevronDown, ChevronUp } from "lucide-react";
+import type React from "react";
+import { TooltipAnchor } from "~/components/ui";
+import { useLocalize } from "~/hooks";
+import { cn } from "~/utils";
 
 const CollapseChat = ({
   isScrollable,
@@ -19,8 +19,8 @@ const CollapseChat = ({
   }
 
   const description = isCollapsed
-    ? localize('com_ui_expand_chat')
-    : localize('com_ui_collapse_chat');
+    ? localize("com_ui_expand_chat")
+    : localize("com_ui_collapse_chat");
 
   return (
     <div className="relative ml-auto items-end justify-end">
@@ -36,8 +36,8 @@ const CollapseChat = ({
             }}
             className={cn(
               // 'absolute right-1.5 top-1.5',
-              'z-10 size-5 rounded-full transition-colors',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-opacity-50',
+              "z-10 size-5 rounded-full transition-colors",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-opacity-50",
             )}
           >
             {isCollapsed ? (

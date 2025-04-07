@@ -1,10 +1,10 @@
-import React, { useMemo, memo } from 'react';
-import type { Assistant, Agent } from 'librechat-data-provider';
-import type { TMessageIcon } from '~/common';
-import { getEndpointField, getIconEndpoint, logger } from '~/utils';
-import ConvoIconURL from '~/components/Endpoints/ConvoIconURL';
-import { useGetEndpointsQuery } from '~/data-provider';
-import Icon from '~/components/Endpoints/Icon';
+import type { Agent, Assistant } from "librechat-data-provider";
+import React, { memo, useMemo } from "react";
+import type { TMessageIcon } from "~/common";
+import ConvoIconURL from "~/components/Endpoints/ConvoIconURL";
+import Icon from "~/components/Endpoints/Icon";
+import { useGetEndpointsQuery } from "~/data-provider";
+import { getEndpointField, getIconEndpoint, logger } from "~/utils";
 
 const MessageIcon = memo(
   ({
@@ -16,16 +16,19 @@ const MessageIcon = memo(
     assistant?: Assistant;
     agent?: Agent;
   }) => {
-    logger.log('icon_data', iconData, assistant, agent);
+    logger.log("icon_data", iconData, assistant, agent);
     const { data: endpointsConfig } = useGetEndpointsQuery();
 
-    const agentName = useMemo(() => agent?.name ?? '', [agent]);
-    const agentAvatar = useMemo(() => agent?.avatar?.filepath ?? '', [agent]);
-    const assistantName = useMemo(() => assistant?.name ?? '', [assistant]);
-    const assistantAvatar = useMemo(() => assistant?.metadata?.avatar ?? '', [assistant]);
+    const agentName = useMemo(() => agent?.name ?? "", [agent]);
+    const agentAvatar = useMemo(() => agent?.avatar?.filepath ?? "", [agent]);
+    const assistantName = useMemo(() => assistant?.name ?? "", [assistant]);
+    const assistantAvatar = useMemo(
+      () => assistant?.metadata?.avatar ?? "",
+      [assistant],
+    );
 
     const avatarURL = useMemo(() => {
-      let result = '';
+      let result = "";
       if (assistant) {
         result = assistantAvatar;
       } else if (agent) {
@@ -36,16 +39,25 @@ const MessageIcon = memo(
 
     const iconURL = iconData?.iconURL;
     const endpoint = useMemo(
-      () => getIconEndpoint({ endpointsConfig, iconURL, endpoint: iconData?.endpoint }),
+      () =>
+        getIconEndpoint({
+          endpointsConfig,
+          iconURL,
+          endpoint: iconData?.endpoint,
+        }),
       [endpointsConfig, iconURL, iconData?.endpoint],
     );
 
     const endpointIconURL = useMemo(
-      () => getEndpointField(endpointsConfig, endpoint, 'iconURL'),
+      () => getEndpointField(endpointsConfig, endpoint, "iconURL"),
       [endpointsConfig, endpoint],
     );
 
-    if (iconData?.isCreatedByUser !== true && iconURL != null && iconURL.includes('http')) {
+    if (
+      iconData?.isCreatedByUser !== true &&
+      iconURL != null &&
+      iconURL.includes("http")
+    ) {
       return (
         <ConvoIconURL
           iconURL={iconURL}
@@ -74,6 +86,6 @@ const MessageIcon = memo(
   },
 );
 
-MessageIcon.displayName = 'MessageIcon';
+MessageIcon.displayName = "MessageIcon";
 
 export default MessageIcon;

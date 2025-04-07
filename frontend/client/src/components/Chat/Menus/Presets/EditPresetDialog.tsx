@@ -1,23 +1,30 @@
-import { useRecoilState } from 'recoil';
-import { useCallback, useEffect, useMemo } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
-import { QueryKeys, isAgentsEndpoint } from 'librechat-data-provider';
-import type { TModelsConfig, TEndpointsConfig } from 'librechat-data-provider';
+import { useQueryClient } from "@tanstack/react-query";
+import type { TEndpointsConfig, TModelsConfig } from "librechat-data-provider";
+import { isAgentsEndpoint, QueryKeys } from "librechat-data-provider";
+import { useCallback, useEffect, useMemo } from "react";
+import { useRecoilState } from "recoil";
+import {
+  Dialog,
+  DialogButton,
+  DialogClose,
+  Input,
+  Label,
+  SelectDropDown,
+} from "~/components";
+import PopoverButtons from "~/components/Chat/Input/PopoverButtons";
+import { EndpointSettings } from "~/components/Endpoints";
+import DialogTemplate from "~/components/ui/DialogTemplate";
+import { useGetEndpointsQuery } from "~/data-provider";
+import { useDebouncedInput, useLocalize, useSetIndexOptions } from "~/hooks";
+import { useChatContext } from "~/Providers";
+import store from "~/store";
 import {
   cn,
   defaultTextProps,
-  removeFocusOutlines,
-  mapEndpoints,
   getConvoSwitchLogic,
-} from '~/utils';
-import { Input, Label, SelectDropDown, Dialog, DialogClose, DialogButton } from '~/components';
-import { useSetIndexOptions, useLocalize, useDebouncedInput } from '~/hooks';
-import PopoverButtons from '~/components/Chat/Input/PopoverButtons';
-import DialogTemplate from '~/components/ui/DialogTemplate';
-import { EndpointSettings } from '~/components/Endpoints';
-import { useGetEndpointsQuery } from '~/data-provider';
-import { useChatContext } from '~/Providers';
-import store from '~/store';
+  mapEndpoints,
+  removeFocusOutlines,
+} from "~/utils";
 
 const EditPresetDialog = ({
   exportPreset,
@@ -32,10 +39,12 @@ const EditPresetDialog = ({
   const { setOption, setOptions, setAgentOption } = useSetIndexOptions(preset);
   const [onTitleChange, title] = useDebouncedInput({
     setOption,
-    optionKey: 'title',
+    optionKey: "title",
     initialValue: preset?.title,
   });
-  const [presetModalVisible, setPresetModalVisible] = useRecoilState(store.presetModalVisible);
+  const [presetModalVisible, setPresetModalVisible] = useRecoilState(
+    store.presetModalVisible,
+  );
 
   const { data: _endpoints = [] } = useGetEndpointsQuery({
     select: mapEndpoints,
@@ -54,13 +63,15 @@ const EditPresetDialog = ({
       return;
     }
 
-    const presetEndpoint = preset.endpoint ?? '';
+    const presetEndpoint = preset.endpoint ?? "";
 
     if (!presetEndpoint) {
       return;
     }
 
-    const modelsConfig = queryClient.getQueryData<TModelsConfig>([QueryKeys.models]);
+    const modelsConfig = queryClient.getQueryData<TModelsConfig>([
+      QueryKeys.models,
+    ]);
     if (!modelsConfig) {
       return;
     }
@@ -77,9 +88,9 @@ const EditPresetDialog = ({
       return;
     }
 
-    if (!models.includes(preset.model ?? '')) {
-      console.log('setting model', models[0]);
-      setOption('model')(models[0]);
+    if (!models.includes(preset.model ?? "")) {
+      console.log("setting model", models[0]);
+      setOption("model")(models[0]);
     }
 
     if (preset.agentOptions?.model === models[0]) {
@@ -91,22 +102,24 @@ const EditPresetDialog = ({
       preset.agentOptions.model &&
       !models.includes(preset.agentOptions.model)
     ) {
-      console.log('setting agent model', models[0]);
-      setAgentOption('model')(models[0]);
+      console.log("setting agent model", models[0]);
+      setAgentOption("model")(models[0]);
     }
   }, [preset, queryClient, setOption, setAgentOption]);
 
   const switchEndpoint = useCallback(
     (newEndpoint: string) => {
       if (!setOptions) {
-        return console.warn('setOptions is not defined');
+        return console.warn("setOptions is not defined");
       }
 
       const { newEndpointType } = getConvoSwitchLogic({
         newEndpoint,
         modularChat: true,
         conversation: null,
-        endpointsConfig: queryClient.getQueryData<TEndpointsConfig>([QueryKeys.endpoints]) ?? {},
+        endpointsConfig:
+          queryClient.getQueryData<TEndpointsConfig>([QueryKeys.endpoints]) ??
+          {},
       });
 
       setOptions({
@@ -118,10 +131,11 @@ const EditPresetDialog = ({
   );
 
   const { endpoint: _endpoint, endpointType, model } = preset || {};
-  const endpoint = _endpoint ?? '';
+  const endpoint = _endpoint ?? "";
   if (!endpoint) {
     return null;
-  } else if (isAgentsEndpoint(endpoint)) {
+  }
+  if (isAgentsEndpoint(endpoint)) {
     return null;
   }
 
@@ -136,7 +150,7 @@ const EditPresetDialog = ({
       }}
     >
       <DialogTemplate
-        title={`${localize('com_ui_edit') + ' ' + localize('com_endpoint_preset')} - ${
+        title={`${`${localize("com_ui_edit")} ${localize("com_endpoint_preset")}`} - ${
           preset?.title
         }`}
         className="h-full max-w-full overflow-y-auto pb-4 sm:w-[680px] sm:pb-0 md:h-[720px] md:w-[750px] md:overflow-y-hidden lg:w-[950px] xl:h-[720px]"
@@ -145,31 +159,37 @@ const EditPresetDialog = ({
             <div className="grid w-full">
               <div className="col-span-4 flex flex-col items-start justify-start gap-6 pb-4 md:flex-row">
                 <div className="flex w-full flex-col">
-                  <Label htmlFor="preset-name" className="mb-1 text-left text-sm font-medium">
-                    {localize('com_endpoint_preset_name')}
+                  <Label
+                    htmlFor="preset-name"
+                    className="mb-1 text-left text-sm font-medium"
+                  >
+                    {localize("com_endpoint_preset_name")}
                   </Label>
                   <Input
                     id="preset-name"
-                    value={(title as string | undefined) ?? ''}
+                    value={(title as string | undefined) ?? ""}
                     onChange={onTitleChange}
-                    placeholder={localize('com_endpoint_set_custom_name')}
+                    placeholder={localize("com_endpoint_set_custom_name")}
                     className={cn(
                       defaultTextProps,
-                      'flex h-10 max-h-10 w-full resize-none px-3 py-2',
+                      "flex h-10 max-h-10 w-full resize-none px-3 py-2",
                       removeFocusOutlines,
                     )}
                   />
                 </div>
                 <div className="flex w-full flex-col">
-                  <Label htmlFor="endpoint" className="mb-1 text-left text-sm font-medium">
-                    {localize('com_endpoint')}
+                  <Label
+                    htmlFor="endpoint"
+                    className="mb-1 text-left text-sm font-medium"
+                  >
+                    {localize("com_endpoint")}
                   </Label>
                   <SelectDropDown
-                    value={endpoint || ''}
+                    value={endpoint || ""}
                     setValue={switchEndpoint}
                     showLabel={false}
                     emptyTitle={true}
-                    searchPlaceholder={localize('com_endpoint_search')}
+                    searchPlaceholder={localize("com_endpoint_search")}
                     availableValues={availableEndpoints}
                   />
                 </div>
@@ -180,7 +200,7 @@ const EditPresetDialog = ({
                     htmlFor="endpoint"
                     className="mb-1 hidden text-left text-sm font-medium sm:block"
                   >
-                    {'ㅤ'}
+                    {"ㅤ"}
                   </Label>
                   <PopoverButtons
                     buttonClass="ml-0 w-full border border-border-medium p-2 h-[40px] justify-center mt-0"
@@ -209,13 +229,13 @@ const EditPresetDialog = ({
               onClick={exportPreset}
               className="border-gray-100 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-600"
             >
-              {localize('com_endpoint_export')}
+              {localize("com_endpoint_export")}
             </DialogButton>
             <DialogClose
               onClick={submitPreset}
               className="ml-2 bg-green-500 text-white hover:bg-green-600 dark:hover:bg-green-600"
             >
-              {localize('com_ui_save')}
+              {localize("com_ui_save")}
             </DialogClose>
           </div>
         }

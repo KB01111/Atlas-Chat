@@ -1,10 +1,10 @@
-import type { FC } from 'react';
-import { BookCopy } from 'lucide-react';
-import { Content, Portal, Root, Trigger } from '@radix-ui/react-popover';
-import { EditPresetDialog, PresetItems } from './Presets';
-import { useLocalize, usePresets } from '~/hooks';
-import { useChatContext } from '~/Providers';
-import { TooltipAnchor } from '~/components';
+import { Content, Portal, Root, Trigger } from "@radix-ui/react-popover";
+import { BookCopy } from "lucide-react";
+import type { FC } from "react";
+import { TooltipAnchor } from "~/components";
+import { useLocalize, usePresets } from "~/hooks";
+import { useChatContext } from "~/Providers";
+import { EditPresetDialog, PresetItems } from "./Presets";
 
 const PresetsMenu: FC = () => {
   const localize = useLocalize();
@@ -25,8 +25,8 @@ const PresetsMenu: FC = () => {
       <Trigger asChild>
         <TooltipAnchor
           id="presets-button"
-          aria-label={localize('com_endpoint_examples')}
-          description={localize('com_endpoint_examples')}
+          aria-label={localize("com_endpoint_examples")}
+          description={localize("com_endpoint_examples")}
           tabIndex={0}
           role="button"
           data-testid="presets-button"
@@ -38,12 +38,12 @@ const PresetsMenu: FC = () => {
       <Portal>
         <div
           style={{
-            position: 'fixed',
-            left: '0px',
-            top: '0px',
-            transform: 'translate3d(268px, 50px, 0px)',
-            minWidth: 'max-content',
-            zIndex: 'auto',
+            position: "fixed",
+            left: "0px",
+            top: "0px",
+            transform: "translate3d(268px, 50px, 0px)",
+            minWidth: "max-content",
+            zIndex: "auto",
           }}
         >
           <Content
@@ -63,7 +63,12 @@ const PresetsMenu: FC = () => {
           </Content>
         </div>
       </Portal>
-      {preset && <EditPresetDialog submitPreset={submitPreset} exportPreset={exportPreset} />}
+      {preset && (
+        <EditPresetDialog
+          submitPreset={submitPreset}
+          exportPreset={exportPreset}
+        />
+      )}
     </Root>
   );
 };

@@ -1,16 +1,16 @@
-import { useMemo } from 'react';
-import { useRecoilValue } from 'recoil';
-import { useAuthContext, useLocalize } from '~/hooks';
-import type { TMessageProps, TMessageIcon } from '~/common';
-import MinimalHoverButtons from '~/components/Chat/Messages/MinimalHoverButtons';
-import Icon from '~/components/Chat/Messages/MessageIcon';
-import SearchContent from './Content/SearchContent';
-import SearchButtons from './SearchButtons';
-import SubRow from './SubRow';
-import { cn } from '~/utils';
-import store from '~/store';
+import { useMemo } from "react";
+import { useRecoilValue } from "recoil";
+import type { TMessageIcon, TMessageProps } from "~/common";
+import Icon from "~/components/Chat/Messages/MessageIcon";
+import MinimalHoverButtons from "~/components/Chat/Messages/MinimalHoverButtons";
+import { useAuthContext, useLocalize } from "~/hooks";
+import store from "~/store";
+import { cn } from "~/utils";
+import SearchContent from "./Content/SearchContent";
+import SearchButtons from "./SearchButtons";
+import SubRow from "./SubRow";
 
-export default function Message({ message }: Pick<TMessageProps, 'message'>) {
+export default function Message({ message }: Pick<TMessageProps, "message">) {
   const UsernameDisplay = useRecoilValue<boolean>(store.UsernameDisplay);
   const fontSize = useRecoilValue(store.fontSize);
   const { user } = useAuthContext();
@@ -20,10 +20,15 @@ export default function Message({ message }: Pick<TMessageProps, 'message'>) {
     () => ({
       endpoint: message?.endpoint,
       model: message?.model,
-      iconURL: message?.iconURL ?? '',
+      iconURL: message?.iconURL ?? "",
       isCreatedByUser: message?.isCreatedByUser,
     }),
-    [message?.model, message?.iconURL, message?.endpoint, message?.isCreatedByUser],
+    [
+      message?.model,
+      message?.iconURL,
+      message?.endpoint,
+      message?.isCreatedByUser,
+    ],
   );
 
   if (!message) {
@@ -32,13 +37,13 @@ export default function Message({ message }: Pick<TMessageProps, 'message'>) {
 
   const { isCreatedByUser } = message;
 
-  let messageLabel = '';
+  let messageLabel = "";
   if (isCreatedByUser) {
     messageLabel = UsernameDisplay
-      ? (user?.name ?? '') || (user?.username ?? '')
-      : localize('com_user_message');
+      ? (user?.name ?? "") || (user?.username ?? "")
+      : localize("com_user_message");
   } else {
-    messageLabel = message.sender ?? '';
+    messageLabel = message.sender ?? "";
   }
 
   return (
@@ -56,9 +61,14 @@ export default function Message({ message }: Pick<TMessageProps, 'message'>) {
               </div>
             </div>
             <div
-              className={cn('relative flex w-11/12 flex-col', isCreatedByUser ? '' : 'agent-turn')}
+              className={cn(
+                "relative flex w-11/12 flex-col",
+                isCreatedByUser ? "" : "agent-turn",
+              )}
             >
-              <div className={cn('select-none font-semibold', fontSize)}>{messageLabel}</div>
+              <div className={cn("select-none font-semibold", fontSize)}>
+                {messageLabel}
+              </div>
               <div className="flex-col gap-1 md:gap-3">
                 <div className="flex max-w-full flex-grow flex-col gap-0">
                   <SearchContent message={message} />

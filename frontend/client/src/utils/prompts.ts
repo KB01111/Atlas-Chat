@@ -1,12 +1,18 @@
-import { format } from 'date-fns';
-import type { TUser, TPromptGroup } from 'librechat-data-provider';
+import { format } from "date-fns";
+import type { TPromptGroup, TUser } from "librechat-data-provider";
 
-export function replaceSpecialVars({ text, user }: { text: string; user?: TUser }) {
+export function replaceSpecialVars({
+  text,
+  user,
+}: {
+  text: string;
+  user?: TUser;
+}) {
   if (!text) {
     return text;
   }
 
-  const currentDate = format(new Date(), 'yyyy-MM-dd');
+  const currentDate = format(new Date(), "yyyy-MM-dd");
   text = text.replace(/{{current_date}}/gi, currentDate);
 
   if (!user) {
@@ -80,10 +86,10 @@ export function formatDateTime(dateTimeString: string) {
   const minutes = date.getMinutes();
   const seconds = date.getSeconds();
 
-  const formattedMinutes = minutes.toString().padStart(2, '0');
-  const formattedSeconds = seconds.toString().padStart(2, '0');
+  const formattedMinutes = minutes.toString().padStart(2, "0");
+  const formattedSeconds = seconds.toString().padStart(2, "0");
 
-  const ampm = hours >= 12 ? 'PM' : 'AM';
+  const ampm = hours >= 12 ? "PM" : "AM";
 
   const formattedHours = hours % 12 || 12;
 
@@ -93,12 +99,17 @@ export function formatDateTime(dateTimeString: string) {
   return `${formattedDate}, ${formattedTime}`;
 }
 
-export const mapPromptGroups = (groups: TPromptGroup[]): Record<string, TPromptGroup> => {
-  return groups.reduce((acc, group) => {
-    if (!group._id) {
+export const mapPromptGroups = (
+  groups: TPromptGroup[],
+): Record<string, TPromptGroup> => {
+  return groups.reduce(
+    (acc, group) => {
+      if (!group._id) {
+        return acc;
+      }
+      acc[group._id] = group;
       return acc;
-    }
-    acc[group._id] = group;
-    return acc;
-  }, {} as Record<string, TPromptGroup>);
+    },
+    {} as Record<string, TPromptGroup>,
+  );
 };

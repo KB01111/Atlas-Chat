@@ -1,14 +1,14 @@
-import React, { useMemo, useState } from 'react';
-import { useRecoilValue } from 'recoil';
-import type { TAttachment } from 'librechat-data-provider';
-import ProgressText from '~/components/Chat/Messages/Content/ProgressText';
-import FinishedIcon from '~/components/Chat/Messages/Content/FinishedIcon';
-import MarkdownLite from '~/components/Chat/Messages/Content/MarkdownLite';
-import { useProgress, useLocalize } from '~/hooks';
-import { CodeInProgress } from './CodeProgress';
-import Attachment from './Attachment';
-import LogContent from './LogContent';
-import store from '~/store';
+import type { TAttachment } from "librechat-data-provider";
+import React, { useMemo, useState } from "react";
+import { useRecoilValue } from "recoil";
+import FinishedIcon from "~/components/Chat/Messages/Content/FinishedIcon";
+import MarkdownLite from "~/components/Chat/Messages/Content/MarkdownLite";
+import ProgressText from "~/components/Chat/Messages/Content/ProgressText";
+import { useLocalize, useProgress } from "~/hooks";
+import store from "~/store";
+import Attachment from "./Attachment";
+import { CodeInProgress } from "./CodeProgress";
+import LogContent from "./LogContent";
 
 interface ParsedArgs {
   lang: string;
@@ -20,17 +20,17 @@ export function useParseArgs(args: string): ParsedArgs {
     const langMatch = args.match(/"lang"\s*:\s*"(\w+)"/);
     const codeMatch = args.match(/"code"\s*:\s*"(.+?)(?="\s*,\s*"args"|$)/s);
 
-    let code = '';
+    let code = "";
     if (codeMatch) {
       code = codeMatch[1];
       if (code.endsWith('"}')) {
         code = code.slice(0, -2);
       }
-      code = code.replace(/\\n/g, '\n').replace(/\\/g, '');
+      code = code.replace(/\\n/g, "\n").replace(/\\/g, "");
     }
 
     return {
-      lang: langMatch ? langMatch[1] : '',
+      lang: langMatch ? langMatch[1] : "",
       code,
     };
   }, [args]);
@@ -42,7 +42,7 @@ const circumference = 2 * Math.PI * radius;
 export default function ExecuteCode({
   initialProgress = 0.1,
   args,
-  output = '',
+  output = "",
   isSubmitting,
   attachments,
 }: {
@@ -79,8 +79,8 @@ export default function ExecuteCode({
         <ProgressText
           progress={progress}
           onClick={() => setShowCode((prev) => !prev)}
-          inProgressText={localize('com_ui_analyzing')}
-          finishedText={localize('com_ui_analyzing_finished')}
+          inProgressText={localize("com_ui_analyzing")}
+          finishedText={localize("com_ui_analyzing_finished")}
           hasInput={!!code.length}
           isExpanded={showCode}
         />
@@ -88,7 +88,7 @@ export default function ExecuteCode({
       {showCode && (
         <div className="code-analyze-block mb-3 mt-0.5 overflow-hidden rounded-xl bg-black">
           <MarkdownLite
-            content={code ? `\`\`\`${lang}\n${code}\n\`\`\`` : ''}
+            content={code ? `\`\`\`${lang}\n${code}\n\`\`\`` : ""}
             codeExecution={false}
           />
           {output.length > 0 && (
@@ -96,7 +96,7 @@ export default function ExecuteCode({
               <div
                 className="prose flex flex-col-reverse text-white"
                 style={{
-                  color: 'white',
+                  color: "white",
                 }}
               >
                 <pre className="shrink-0">
@@ -107,7 +107,9 @@ export default function ExecuteCode({
           )}
         </div>
       )}
-      {attachments?.map((attachment, index) => <Attachment attachment={attachment} key={index} />)}
+      {attachments?.map((attachment, index) => (
+        <Attachment attachment={attachment} key={index} />
+      ))}
     </>
   );
 }

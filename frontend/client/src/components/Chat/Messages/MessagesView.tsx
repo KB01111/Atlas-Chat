@@ -1,12 +1,12 @@
-import { useState } from 'react';
-import { useRecoilValue } from 'recoil';
-import { CSSTransition } from 'react-transition-group';
-import type { TMessage } from 'librechat-data-provider';
-import { useScreenshot, useMessageScrolling, useLocalize } from '~/hooks';
-import ScrollToBottom from '~/components/Messages/ScrollToBottom';
-import MultiMessage from './MultiMessage';
-import { cn } from '~/utils';
-import store from '~/store';
+import type { TMessage } from "librechat-data-provider";
+import { useState } from "react";
+import { CSSTransition } from "react-transition-group";
+import { useRecoilValue } from "recoil";
+import ScrollToBottom from "~/components/Messages/ScrollToBottom";
+import { useLocalize, useMessageScrolling, useScreenshot } from "~/hooks";
+import store from "~/store";
+import { cn } from "~/utils";
+import MultiMessage from "./MultiMessage";
 
 export default function MessagesView({
   messagesTree: _messagesTree,
@@ -18,7 +18,9 @@ export default function MessagesView({
   const maximizeChatSpace = useRecoilValue(store.maximizeChatSpace);
   const fontSize = useRecoilValue(store.fontSize);
   const { screenshotTargetRef } = useScreenshot();
-  const [currentEditId, setCurrentEditId] = useState<number | string | null>(-1);
+  const [currentEditId, setCurrentEditId] = useState<number | string | null>(
+    -1,
+  );
 
   const {
     conversation,
@@ -40,33 +42,32 @@ export default function MessagesView({
             onScroll={debouncedHandleScroll}
             ref={scrollableRef}
             style={{
-              height: '100%',
-              overflowY: 'auto',
-              width: '100%',
+              height: "100%",
+              overflowY: "auto",
+              width: "100%",
             }}
           >
             <div className="flex flex-col pb-9 dark:bg-transparent">
-              {(_messagesTree && _messagesTree.length == 0) || _messagesTree === null ? (
+              {(_messagesTree && _messagesTree.length === 0) ||
+              _messagesTree === null ? (
                 <div
                   className={cn(
-                    'flex w-full items-center justify-center p-3 text-text-secondary',
+                    "flex w-full items-center justify-center p-3 text-text-secondary",
                     fontSize,
                   )}
                 >
-                  {localize('com_ui_nothing_found')}
+                  {localize("com_ui_nothing_found")}
                 </div>
               ) : (
-                <>
-                  <div ref={screenshotTargetRef}>
-                    <MultiMessage
-                      key={conversationId}
-                      messagesTree={_messagesTree}
-                      messageId={conversationId ?? null}
-                      setCurrentEditId={setCurrentEditId}
-                      currentEditId={currentEditId ?? null}
-                    />
-                  </div>
-                </>
+                <div ref={screenshotTargetRef}>
+                  <MultiMessage
+                    key={conversationId}
+                    messagesTree={_messagesTree}
+                    messageId={conversationId ?? null}
+                    setCurrentEditId={setCurrentEditId}
+                    currentEditId={currentEditId ?? null}
+                  />
+                </div>
               )}
               <div
                 id="messages-end"

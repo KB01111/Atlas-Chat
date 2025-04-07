@@ -1,9 +1,10 @@
-import React, { memo } from 'react';
-import type { TModelSpec, TEndpointsConfig } from 'librechat-data-provider';
-import type { IconMapProps } from '~/common';
-import { getModelSpecIconURL, getIconKey, getEndpointField } from '~/utils';
-import { URLIcon } from '~/components/Endpoints/URLIcon';
-import { icons } from '~/hooks/Endpoint/Icons';
+import type { TEndpointsConfig, TModelSpec } from "librechat-data-provider";
+import type React from "react";
+import { memo } from "react";
+import type { IconMapProps } from "~/common";
+import { URLIcon } from "~/components/Endpoints/URLIcon";
+import { icons } from "~/hooks/Endpoint/Icons";
+import { getEndpointField, getIconKey, getModelSpecIconURL } from "~/utils";
 
 interface SpecIconProps {
   currentSpec: TModelSpec;
@@ -12,14 +13,21 @@ interface SpecIconProps {
 
 type IconType = (props: IconMapProps) => React.JSX.Element;
 
-const SpecIcon: React.FC<SpecIconProps> = ({ currentSpec, endpointsConfig }) => {
+const SpecIcon: React.FC<SpecIconProps> = ({
+  currentSpec,
+  endpointsConfig,
+}) => {
   const iconURL = getModelSpecIconURL(currentSpec);
   const { endpoint } = currentSpec.preset;
-  const endpointIconURL = getEndpointField(endpointsConfig, endpoint, 'iconURL');
+  const endpointIconURL = getEndpointField(
+    endpointsConfig,
+    endpoint,
+    "iconURL",
+  );
   const iconKey = getIconKey({ endpoint, endpointsConfig, endpointIconURL });
   let Icon: IconType;
 
-  if (!iconURL.includes('http')) {
+  if (!iconURL.includes("http")) {
     Icon = (icons[iconURL] ?? icons[iconKey] ?? icons.unknown) as IconType;
   } else if (iconURL) {
     return (
@@ -32,7 +40,9 @@ const SpecIcon: React.FC<SpecIconProps> = ({ currentSpec, endpointsConfig }) => 
       />
     );
   } else {
-    Icon = (icons[endpoint ?? ''] ?? icons[iconKey] ?? icons.unknown) as IconType;
+    Icon = (icons[endpoint ?? ""] ??
+      icons[iconKey] ??
+      icons.unknown) as IconType;
   }
 
   return (

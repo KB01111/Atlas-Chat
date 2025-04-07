@@ -1,19 +1,27 @@
-import { useRecoilState } from 'recoil';
-import { Settings2 } from 'lucide-react';
-import { useState, useEffect, useMemo } from 'react';
-import { Root, Anchor } from '@radix-ui/react-popover';
-import { EModelEndpoint, isParamEndpoint, tConvoUpdateSchema } from 'librechat-data-provider';
-import { useUserKeyQuery } from 'librechat-data-provider/react-query';
-import type { TPreset, TInterfaceConfig } from 'librechat-data-provider';
-import { EndpointSettings, SaveAsPresetDialog, AlternativeSettings } from '~/components/Endpoints';
-import { useSetIndexOptions, useMediaQuery, useLocalize } from '~/hooks';
-import { PluginStoreDialog, TooltipAnchor } from '~/components';
-import { useGetEndpointsQuery } from '~/data-provider';
-import OptionsPopover from './OptionsPopover';
-import PopoverButtons from './PopoverButtons';
-import { useChatContext } from '~/Providers';
-import { getEndpointField } from '~/utils';
-import store from '~/store';
+import { Anchor, Root } from "@radix-ui/react-popover";
+import type { TInterfaceConfig, TPreset } from "librechat-data-provider";
+import {
+  EModelEndpoint,
+  isParamEndpoint,
+  tConvoUpdateSchema,
+} from "librechat-data-provider";
+import { useUserKeyQuery } from "librechat-data-provider/react-query";
+import { Settings2 } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { useRecoilState } from "recoil";
+import { PluginStoreDialog, TooltipAnchor } from "~/components";
+import {
+  AlternativeSettings,
+  EndpointSettings,
+  SaveAsPresetDialog,
+} from "~/components/Endpoints";
+import { useGetEndpointsQuery } from "~/data-provider";
+import { useLocalize, useMediaQuery, useSetIndexOptions } from "~/hooks";
+import { useChatContext } from "~/Providers";
+import store from "~/store";
+import { getEndpointField } from "~/utils";
+import OptionsPopover from "./OptionsPopover";
+import PopoverButtons from "./PopoverButtons";
 
 export default function HeaderOptions({
   interfaceConfig,
@@ -31,13 +39,15 @@ export default function HeaderOptions({
   const { showPopover, conversation, setShowPopover } = useChatContext();
   const { setOption } = useSetIndexOptions();
   const { endpoint, conversationId } = conversation ?? {};
-  const { data: keyExpiry = { expiresAt: undefined } } = useUserKeyQuery(endpoint ?? '');
+  const { data: keyExpiry = { expiresAt: undefined } } = useUserKeyQuery(
+    endpoint ?? "",
+  );
   const userProvidesKey = useMemo(
-    () => !!(endpointsConfig?.[endpoint ?? '']?.userProvide ?? false),
+    () => !!(endpointsConfig?.[endpoint ?? ""]?.userProvide ?? false),
     [endpointsConfig, endpoint],
   );
   const keyProvided = useMemo(
-    () => (userProvidesKey ? !!(keyExpiry.expiresAt ?? '') : true),
+    () => (userProvidesKey ? !!(keyExpiry.expiresAt ?? "") : true),
     [keyExpiry.expiresAt, userProvidesKey],
   );
 
@@ -45,14 +55,14 @@ export default function HeaderOptions({
     () => ({
       [EModelEndpoint.chatGPTBrowser]: true,
     }),
-    [conversationId],
+    [],
   );
 
   useEffect(() => {
     if (endpoint && noSettings[endpoint]) {
       setShowPopover(false);
     }
-  }, [endpoint, noSettings]);
+  }, [endpoint, noSettings, setShowPopover]);
 
   const saveAsPreset = () => {
     setSaveAsDialogShow(true);
@@ -64,7 +74,7 @@ export default function HeaderOptions({
 
   const triggerAdvancedMode = () => setShowPopover((prev) => !prev);
 
-  const endpointType = getEndpointField(endpointsConfig, endpoint, 'type');
+  const endpointType = getEndpointField(endpointsConfig, endpoint, "type");
   const paramEndpoint = isParamEndpoint(endpoint, endpointType);
 
   return (
@@ -79,38 +89,45 @@ export default function HeaderOptions({
               {!noSettings[endpoint] &&
                 interfaceConfig?.parameters === true &&
                 paramEndpoint === false && (
-                <TooltipAnchor
-                  id="parameters-button"
-                  aria-label={localize('com_ui_model_parameters')}
-                  description={localize('com_ui_model_parameters')}
-                  tabIndex={0}
-                  role="button"
-                  onClick={triggerAdvancedMode}
-                  data-testid="parameters-button"
-                  className="inline-flex size-10 items-center justify-center rounded-lg border border-border-light bg-transparent text-text-primary transition-all ease-in-out hover:bg-surface-tertiary disabled:pointer-events-none disabled:opacity-50 radix-state-open:bg-surface-tertiary"
-                >
-                  <Settings2 size={16} aria-label="Settings/Parameters Icon" />
-                </TooltipAnchor>
-              )}
+                  <TooltipAnchor
+                    id="parameters-button"
+                    aria-label={localize("com_ui_model_parameters")}
+                    description={localize("com_ui_model_parameters")}
+                    tabIndex={0}
+                    role="button"
+                    onClick={triggerAdvancedMode}
+                    data-testid="parameters-button"
+                    className="inline-flex size-10 items-center justify-center rounded-lg border border-border-light bg-transparent text-text-primary transition-all ease-in-out hover:bg-surface-tertiary disabled:pointer-events-none disabled:opacity-50 radix-state-open:bg-surface-tertiary"
+                  >
+                    <Settings2
+                      size={16}
+                      aria-label="Settings/Parameters Icon"
+                    />
+                  </TooltipAnchor>
+                )}
             </div>
-            {interfaceConfig?.parameters === true && paramEndpoint === false && (
-              <OptionsPopover
-                visible={showPopover}
-                saveAsPreset={saveAsPreset}
-                presetsDisabled={!(interfaceConfig.presets ?? false)}
-                PopoverButtons={<PopoverButtons />}
-                closePopover={() => setShowPopover(false)}
-              >
-                <div className="px-4 py-4">
-                  <EndpointSettings
-                    className="[&::-webkit-scrollbar]:w-2"
-                    conversation={conversation}
-                    setOption={setOption}
-                  />
-                  <AlternativeSettings conversation={conversation} setOption={setOption} />
-                </div>
-              </OptionsPopover>
-            )}
+            {interfaceConfig?.parameters === true &&
+              paramEndpoint === false && (
+                <OptionsPopover
+                  visible={showPopover}
+                  saveAsPreset={saveAsPreset}
+                  presetsDisabled={!(interfaceConfig.presets ?? false)}
+                  PopoverButtons={<PopoverButtons />}
+                  closePopover={() => setShowPopover(false)}
+                >
+                  <div className="px-4 py-4">
+                    <EndpointSettings
+                      className="[&::-webkit-scrollbar]:w-2"
+                      conversation={conversation}
+                      setOption={setOption}
+                    />
+                    <AlternativeSettings
+                      conversation={conversation}
+                      setOption={setOption}
+                    />
+                  </div>
+                </OptionsPopover>
+              )}
             {interfaceConfig?.presets === true && (
               <SaveAsPresetDialog
                 open={saveAsDialogShow}

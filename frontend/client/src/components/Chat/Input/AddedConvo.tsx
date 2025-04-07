@@ -1,10 +1,14 @@
-import { useMemo } from 'react';
-import type { TConversation, TEndpointOption, TPreset } from 'librechat-data-provider';
-import type { SetterOrUpdater } from 'recoil';
-import useGetSender from '~/hooks/Conversations/useGetSender';
-import { useGetEndpointsQuery } from '~/data-provider';
-import { EndpointIcon } from '~/components/Endpoints';
-import { getPresetTitle } from '~/utils';
+import type {
+  TConversation,
+  TEndpointOption,
+  TPreset,
+} from "librechat-data-provider";
+import { useMemo } from "react";
+import type { SetterOrUpdater } from "recoil";
+import { EndpointIcon } from "~/components/Endpoints";
+import { useGetEndpointsQuery } from "~/data-provider";
+import useGetSender from "~/hooks/Conversations/useGetSender";
+import { getPresetTitle } from "~/utils";
 
 export default function AddedConvo({
   addedConvo,
@@ -60,7 +64,7 @@ export default function AddedConvo({
             fillRule="evenodd"
             d="M7.293 7.293a1 1 0 0 1 1.414 0L12 10.586l3.293-3.293a1 1 0 1 1 1.414 1.414L13.414 12l3.293 3.293a1 1 0 0 1-1.414 1.414L12 13.414l-3.293 3.293a1 1 0 0 1-1.414-1.414L10.586 12 7.293 8.707a1 1 0 0 1 0-1.414"
             clipRule="evenodd"
-          ></path>
+          />
         </svg>
       </button>
     </div>

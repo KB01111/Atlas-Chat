@@ -3,12 +3,15 @@ const containsLatexRegex =
   /\\\(.*?\\\)|\\\[.*?\\\]|\$.*?\$|\\begin\{equation\}.*?\\end\{equation\}/;
 
 // Regex for inline and block LaTeX expressions
-const inlineLatex = new RegExp(/\\\((.+?)\\\)/, 'g');
-const blockLatex = new RegExp(/\\\[(.*?[^\\])\\\]/, 'gs');
+const inlineLatex = new RegExp(/\\\((.+?)\\\)/, "g");
+const blockLatex = new RegExp(/\\\[(.*?[^\\])\\\]/, "gs");
 
 // Function to restore code blocks
 const restoreCodeBlocks = (content: string, codeBlocks: string[]) => {
-  return content.replace(/<<CODE_BLOCK_(\d+)>>/g, (match, index) => codeBlocks[index]);
+  return content.replace(
+    /<<CODE_BLOCK_(\d+)>>/g,
+    (match, index) => codeBlocks[index],
+  );
 };
 
 // Regex to identify code blocks and inline code
@@ -25,7 +28,7 @@ export const processLaTeX = (_content: string) => {
   });
 
   // Escape dollar signs followed by a digit or space and digit
-  let processedContent = content.replace(/(\$)(?=\s?\d)/g, '\\$');
+  let processedContent = content.replace(/(\$)(?=\s?\d)/g, "\\$");
 
   // If no LaTeX patterns are found, restore code blocks and return the processed content
   if (!containsLatexRegex.test(processedContent)) {
@@ -35,7 +38,10 @@ export const processLaTeX = (_content: string) => {
   // Convert LaTeX expressions to a markdown compatible format
   processedContent = processedContent
     .replace(inlineLatex, (match: string, equation: string) => `$${equation}$`) // Convert inline LaTeX
-    .replace(blockLatex, (match: string, equation: string) => `$$${equation}$$`); // Convert block LaTeX
+    .replace(
+      blockLatex,
+      (match: string, equation: string) => `$$${equation}$$`,
+    ); // Convert block LaTeX
 
   // Restore code blocks
   return restoreCodeBlocks(processedContent, codeBlocks);
@@ -57,19 +63,28 @@ export function preprocessLaTeX(content: string): string {
 
   // Step 2: Protect existing LaTeX expressions
   const latexExpressions: string[] = [];
-  content = content.replace(/(\$\$[\s\S]*?\$\$|\\\[[\s\S]*?\\\]|\\\(.*?\\\))/g, (match) => {
-    latexExpressions.push(match);
-    return `<<LATEX_${latexExpressions.length - 1}>>`;
-  });
+  content = content.replace(
+    /(\$\$[\s\S]*?\$\$|\\\[[\s\S]*?\\\]|\\\(.*?\\\))/g,
+    (match) => {
+      latexExpressions.push(match);
+      return `<<LATEX_${latexExpressions.length - 1}>>`;
+    },
+  );
 
   // Step 3: Escape dollar signs that are likely currency indicators
-  content = content.replace(/\$(?=\d)/g, '\\$');
+  content = content.replace(/\$(?=\d)/g, "\\$");
 
   // Step 4: Restore LaTeX expressions
-  content = content.replace(/<<LATEX_(\d+)>>/g, (_, index) => latexExpressions[parseInt(index)]);
+  content = content.replace(
+    /<<LATEX_(\d+)>>/g,
+    (_, index) => latexExpressions[Number.parseInt(index)],
+  );
 
   // Step 5: Restore code blocks
-  content = content.replace(/<<CODE_BLOCK_(\d+)>>/g, (_, index) => codeBlocks[parseInt(index)]);
+  content = content.replace(
+    /<<CODE_BLOCK_(\d+)>>/g,
+    (_, index) => codeBlocks[Number.parseInt(index)],
+  );
 
   // Step 6: Apply additional escaping functions
   content = escapeBrackets(content);
@@ -79,7 +94,8 @@ export function preprocessLaTeX(content: string): string {
 }
 
 export function escapeBrackets(text: string): string {
-  const pattern = /(```[\S\s]*?```|`.*?`)|\\\[([\S\s]*?[^\\])\\]|\\\((.*?)\\\)/g;
+  const pattern =
+    /(```[\S\s]*?```|`.*?`)|\\\[([\S\s]*?[^\\])\\]|\\\((.*?)\\\)/g;
   return text.replace(
     pattern,
     (
@@ -90,9 +106,11 @@ export function escapeBrackets(text: string): string {
     ): string => {
       if (codeBlock != null) {
         return codeBlock;
-      } else if (squareBracket != null) {
+      }
+      if (squareBracket != null) {
         return `$$${squareBracket}$$`;
-      } else if (roundBracket != null) {
+      }
+      if (roundBracket != null) {
         return `$${roundBracket}$`;
       }
       return match;
@@ -101,5 +119,5 @@ export function escapeBrackets(text: string): string {
 }
 
 export function escapeMhchem(text: string) {
-  return text.replaceAll('$\\ce{', '$\\\\ce{').replaceAll('$\\pu{', '$\\\\pu{');
+  return text.replaceAll("$\\ce{", "$\\\\ce{").replaceAll("$\\pu{", "$\\\\pu{");
 }

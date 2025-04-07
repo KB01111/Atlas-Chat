@@ -1,12 +1,12 @@
-import { EarthIcon } from 'lucide-react';
+import type { Agent, TFile } from "librechat-data-provider";
 import {
-  FileSources,
   alternateName,
   EModelEndpoint,
   EToolResources,
-} from 'librechat-data-provider';
-import type { Agent, TFile } from 'librechat-data-provider';
-import type { DropdownValueSetter, TAgentOption, ExtendedFile } from '~/common';
+  FileSources,
+} from "librechat-data-provider";
+import { EarthIcon } from "lucide-react";
+import type { DropdownValueSetter, ExtendedFile, TAgentOption } from "~/common";
 
 /**
  * Creates a Dropdown value setter that always passes a string value,
@@ -16,20 +16,22 @@ import type { DropdownValueSetter, TAgentOption, ExtendedFile } from '~/common';
  * Only necessary when the available values are objects with label/value fields
  * and the selected value is expected to be a string.
  **/
-export const createDropdownSetter = (setValue: (value: string) => void): DropdownValueSetter => {
+export const createDropdownSetter = (
+  setValue: (value: string) => void,
+): DropdownValueSetter => {
   return (value) => {
     if (!value) {
-      setValue('');
+      setValue("");
       return;
     }
 
-    if (typeof value === 'string') {
+    if (typeof value === "string") {
       setValue(value);
       return;
     }
 
     if (value.value) {
-      setValue(value.value + '');
+      setValue(`${value.value}`);
     }
   };
 };
@@ -52,11 +54,13 @@ export const processAgentOption = ({
   instanceProjectId?: string;
 }): TAgentOption => {
   const isGlobal =
-    (instanceProjectId != null && _agent?.projectIds?.includes(instanceProjectId)) ?? false;
+    (instanceProjectId != null &&
+      _agent?.projectIds?.includes(instanceProjectId)) ??
+    false;
   const agent: TAgentOption = {
     ...(_agent ?? ({} as Agent)),
-    label: _agent?.name ?? '',
-    value: _agent?.id ?? '',
+    label: _agent?.name ?? "",
+    value: _agent?.id ?? "",
     icon: isGlobal ? <EarthIcon className="icon-md text-green-400" /> : null,
     context_files: _agent?.tool_resources?.ocr?.file_ids
       ? ([] as Array<[string, ExtendedFile]>)
@@ -110,8 +114,8 @@ export const processAgentOption = ({
         file_id,
         {
           file_id,
-          type: '',
-          filename: '',
+          type: "",
+          filename: "",
           size: 1,
           progress: 1,
           filepath: EModelEndpoint.agents,
@@ -143,7 +147,11 @@ export const processAgentOption = ({
 
   if (agent.code_files && _agent?.tool_resources?.execute_code?.file_ids) {
     _agent.tool_resources.execute_code.file_ids.forEach((file_id) =>
-      handleFile({ file_id, list: agent.code_files, tool_resource: EToolResources.execute_code }),
+      handleFile({
+        file_id,
+        list: agent.code_files,
+        tool_resource: EToolResources.execute_code,
+      }),
     );
   }
 

@@ -1,10 +1,10 @@
-import { useState, useEffect, useCallback } from 'react';
-import { Maximize2 } from 'lucide-react';
-import { OGDialog, OGDialogContent } from '~/components/ui';
-import { FileSources } from 'librechat-data-provider';
-import ProgressCircle from './ProgressCircle';
-import SourceIcon from './SourceIcon';
-import { cn } from '~/utils';
+import type { FileSources } from "librechat-data-provider";
+import { Maximize2 } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
+import { OGDialog, OGDialogContent } from "~/components/ui";
+import { cn } from "~/utils";
+import ProgressCircle from "./ProgressCircle";
+import SourceIcon from "./SourceIcon";
 
 type styleProps = {
   backgroundImage?: string;
@@ -22,9 +22,9 @@ const ImagePreview = ({
   imageBase64,
   url,
   progress = 1,
-  className = '',
+  className = "",
   source,
-  alt = 'Preview image',
+  alt = "Preview image",
 }: {
   imageBase64?: string;
   url?: string;
@@ -35,7 +35,8 @@ const ImagePreview = ({
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-  const [previousActiveElement, setPreviousActiveElement] = useState<Element | null>(null);
+  const [previousActiveElement, setPreviousActiveElement] =
+    useState<Element | null>(null);
 
   const openModal = useCallback(() => {
     setPreviousActiveElement(document.activeElement);
@@ -60,7 +61,7 @@ const ImagePreview = ({
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
+      if (e.key === "Escape") {
         closeModal(e);
       }
     },
@@ -69,36 +70,41 @@ const ImagePreview = ({
 
   useEffect(() => {
     if (isModalOpen) {
-      document.addEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = 'hidden';
-      const closeButton = document.querySelector('[aria-label="Close full view"]') as HTMLElement;
+      document.addEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "hidden";
+      const closeButton = document.querySelector(
+        '[aria-label="Close full view"]',
+      ) as HTMLElement;
       if (closeButton) {
         setTimeout(() => closeButton.focus(), 0);
       }
     }
 
     return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = 'unset';
+      document.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "unset";
     };
   }, [isModalOpen, handleKeyDown]);
 
   const baseStyle: styleProps = {
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
   };
 
-  const imageUrl = imageBase64 ?? url ?? '';
+  const imageUrl = imageBase64 ?? url ?? "";
 
   const style: styleProps = imageUrl
     ? {
-      ...baseStyle,
-      backgroundImage: `url(${imageUrl})`,
-    }
+        ...baseStyle,
+        backgroundImage: `url(${imageUrl})`,
+      }
     : baseStyle;
 
-  if (typeof style.backgroundImage !== 'string' || style.backgroundImage.length === 0) {
+  if (
+    typeof style.backgroundImage !== "string" ||
+    style.backgroundImage.length === 0
+  ) {
     return null;
   }
 
@@ -106,13 +112,13 @@ const ImagePreview = ({
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - progress * circumference;
   const circleCSSProperties = {
-    transition: 'stroke-dashoffset 0.3s linear',
+    transition: "stroke-dashoffset 0.3s linear",
   };
 
   return (
     <>
       <div
-        className={cn('relative size-14 rounded-xl', className)}
+        className={cn("relative size-14 rounded-xl", className)}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
@@ -138,8 +144,8 @@ const ImagePreview = ({
         ) : (
           <div
             className={cn(
-              'absolute inset-0 flex transform-gpu cursor-pointer items-center justify-center rounded-xl transition-opacity duration-200 ease-in-out',
-              isHovered ? 'bg-black/20 opacity-100' : 'opacity-0',
+              "absolute inset-0 flex transform-gpu cursor-pointer items-center justify-center rounded-xl transition-opacity duration-200 ease-in-out",
+              isHovered ? "bg-black/20 opacity-100" : "opacity-0",
             )}
             onClick={(e) => {
               e.stopPropagation();
@@ -149,19 +155,22 @@ const ImagePreview = ({
           >
             <Maximize2
               className={cn(
-                'size-5 transform-gpu text-white drop-shadow-lg transition-all duration-200',
-                isHovered ? 'scale-110' : '',
+                "size-5 transform-gpu text-white drop-shadow-lg transition-all duration-200",
+                isHovered ? "scale-110" : "",
               )}
             />
           </div>
         )}
-        <SourceIcon source={source} aria-label={source ? `Source: ${source}` : undefined} />
+        <SourceIcon
+          source={source}
+          aria-label={source ? `Source: ${source}` : undefined}
+        />
       </div>
 
       <OGDialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <OGDialogContent
           showCloseButton={false}
-          className={cn('w-11/12 overflow-x-auto bg-transparent p-0 sm:w-auto')}
+          className={cn("w-11/12 overflow-x-auto bg-transparent p-0 sm:w-auto")}
           disableScroll={false}
         >
           <img

@@ -1,5 +1,9 @@
-import { useState } from 'react';
-import { ListFilter } from 'lucide-react';
+import type {
+  ColumnDef,
+  ColumnFiltersState,
+  SortingState,
+  VisibilityState,
+} from "@tanstack/react-table";
 import {
   flexRender,
   getCoreRowModel,
@@ -7,18 +11,19 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from '@tanstack/react-table';
-import type {
-  ColumnDef,
-  SortingState,
-  VisibilityState,
-  ColumnFiltersState,
-} from '@tanstack/react-table';
-import { FileContext } from 'librechat-data-provider';
-import type { AugmentedColumnDef } from '~/common';
-import type { TFile } from 'librechat-data-provider';
+} from "@tanstack/react-table";
+import type { TFile } from "librechat-data-provider";
+import { FileContext } from "librechat-data-provider";
+import { ListFilter } from "lucide-react";
+import { useState } from "react";
+import type { AugmentedColumnDef } from "~/common";
+import { Spinner, TrashIcon } from "~/components/svg";
 import {
   Button,
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
   Input,
   Table,
   TableBody,
@@ -26,16 +31,11 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from '~/components/ui';
-import { useDeleteFilesFromTable } from '~/hooks/Files';
-import { TrashIcon, Spinner } from '~/components/svg';
-import useLocalize from '~/hooks/useLocalize';
-import { useMediaQuery } from '~/hooks';
-import { cn } from '~/utils';
+} from "~/components/ui";
+import { useMediaQuery } from "~/hooks";
+import { useDeleteFilesFromTable } from "~/hooks/Files";
+import useLocalize from "~/hooks/useLocalize";
+import { cn } from "~/utils";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -43,11 +43,11 @@ interface DataTableProps<TData, TValue> {
 }
 
 const contextMap = {
-  [FileContext.filename]: 'com_ui_name',
-  [FileContext.updatedAt]: 'com_ui_date',
-  [FileContext.filterSource]: 'com_ui_storage',
-  [FileContext.context]: 'com_ui_context',
-  [FileContext.bytes]: 'com_ui_size',
+  [FileContext.filename]: "com_ui_name",
+  [FileContext.updatedAt]: "com_ui_date",
+  [FileContext.filterSource]: "com_ui_storage",
+  [FileContext.context]: "com_ui_context",
+  [FileContext.bytes]: "com_ui_size",
 };
 
 type Style = {
@@ -57,12 +57,15 @@ type Style = {
   zIndex?: number;
 };
 
-export default function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
+export default function DataTable<TData, TValue>({
+  columns,
+  data,
+}: DataTableProps<TData, TValue>) {
   const localize = useLocalize();
   const [isDeleting, setIsDeleting] = useState(false);
   const [rowSelection, setRowSelection] = useState({});
   const [sorting, setSorting] = useState<SortingState>([]);
-  const isSmallScreen = useMediaQuery('(max-width: 768px)');
+  const isSmallScreen = useMediaQuery("(max-width: 768px)");
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const { deleteFiles } = useDeleteFilesFromTable(() => setIsDeleting(false));
@@ -99,25 +102,41 @@ export default function DataTable<TData, TValue>({ columns, data }: DataTablePro
             deleteFiles({ files: filesToDelete as TFile[] });
             setRowSelection({});
           }}
-          disabled={!table.getFilteredSelectedRowModel().rows.length || isDeleting}
-          className={cn('min-w-[40px] transition-all duration-200', isSmallScreen && 'px-2 py-1')}
+          disabled={
+            !table.getFilteredSelectedRowModel().rows.length || isDeleting
+          }
+          className={cn(
+            "min-w-[40px] transition-all duration-200",
+            isSmallScreen && "px-2 py-1",
+          )}
         >
           {isDeleting ? (
             <Spinner className="size-3.5 sm:size-4" />
           ) : (
             <TrashIcon className="size-3.5 text-red-400 sm:size-4" />
           )}
-          {!isSmallScreen && <span className="ml-2">{localize('com_ui_delete')}</span>}
+          {!isSmallScreen && (
+            <span className="ml-2">{localize("com_ui_delete")}</span>
+          )}
         </Button>
         <Input
-          placeholder={localize('com_files_filter')}
-          value={(table.getColumn('filename')?.getFilterValue() as string | undefined) ?? ''}
-          onChange={(event) => table.getColumn('filename')?.setFilterValue(event.target.value)}
+          placeholder={localize("com_files_filter")}
+          value={
+            (table.getColumn("filename")?.getFilterValue() as
+              | string
+              | undefined) ?? ""
+          }
+          onChange={(event) =>
+            table.getColumn("filename")?.setFilterValue(event.target.value)
+          }
           className="flex-1 text-sm"
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className={cn('min-w-[40px]', isSmallScreen && 'px-2 py-1')}>
+            <Button
+              variant="outline"
+              className={cn("min-w-[40px]", isSmallScreen && "px-2 py-1")}
+            >
               <ListFilter className="size-3.5 sm:size-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -133,7 +152,9 @@ export default function DataTable<TData, TValue>({ columns, data }: DataTablePro
                   key={column.id}
                   className="cursor-pointer text-sm capitalize dark:text-white dark:hover:bg-gray-800"
                   checked={column.getIsVisible()}
-                  onCheckedChange={(value) => column.toggleVisibility(Boolean(value))}
+                  onCheckedChange={(value) =>
+                    column.toggleVisibility(Boolean(value))
+                  }
                 >
                   {localize(contextMap[column.id])}
                 </DropdownMenuCheckboxItem>
@@ -145,16 +166,19 @@ export default function DataTable<TData, TValue>({ columns, data }: DataTablePro
         <Table className="w-full min-w-[300px] border-separate border-spacing-0">
           <TableHeader className="sticky top-0 z-50">
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="border-b border-border-light">
+              <TableRow
+                key={headerGroup.id}
+                className="border-b border-border-light"
+              >
                 {headerGroup.headers.map((header, index) => {
                   const style: Style = {};
-                  if (index === 0 && header.id === 'select') {
-                    style.width = '35px';
-                    style.minWidth = '35px';
-                  } else if (header.id === 'filename') {
-                    style.width = isSmallScreen ? '60%' : '40%';
+                  if (index === 0 && header.id === "select") {
+                    style.width = "35px";
+                    style.minWidth = "35px";
+                  } else if (header.id === "filename") {
+                    style.width = isSmallScreen ? "60%" : "40%";
                   } else {
-                    style.width = isSmallScreen ? '20%' : '15%';
+                    style.width = isSmallScreen ? "20%" : "15%";
                   }
 
                   return (
@@ -165,7 +189,10 @@ export default function DataTable<TData, TValue>({ columns, data }: DataTablePro
                     >
                       {header.isPlaceholder
                         ? null
-                        : flexRender(header.column.columnDef.header, header.getContext())}
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
                     </TableHead>
                   );
                 })}
@@ -177,19 +204,23 @@ export default function DataTable<TData, TValue>({ columns, data }: DataTablePro
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  data-state={row.getIsSelected() && 'selected'}
+                  data-state={row.getIsSelected() && "selected"}
                   className="border-b border-border-light transition-colors hover:bg-surface-secondary [tr:last-child_&]:border-b-0"
                 >
                   {row.getVisibleCells().map((cell, index) => {
                     const maxWidth =
-                      (cell.column.columnDef as AugmentedColumnDef<TData, TValue>).meta?.size ??
-                      'auto';
+                      (
+                        cell.column.columnDef as AugmentedColumnDef<
+                          TData,
+                          TValue
+                        >
+                      ).meta?.size ?? "auto";
 
                     const style: Style = {};
-                    if (cell.column.id === 'filename') {
+                    if (cell.column.id === "filename") {
                       style.maxWidth = maxWidth;
                     } else if (index === 0) {
-                      style.maxWidth = '20px';
+                      style.maxWidth = "20px";
                     }
 
                     return (
@@ -198,7 +229,10 @@ export default function DataTable<TData, TValue>({ columns, data }: DataTablePro
                         className="align-start overflow-x-auto px-2 py-1 text-xs sm:px-4 sm:py-2 sm:text-sm [tr[data-disabled=true]_&]:opacity-50"
                         style={style}
                       >
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext(),
+                        )}
                       </TableCell>
                     );
                   })}
@@ -206,8 +240,11 @@ export default function DataTable<TData, TValue>({ columns, data }: DataTablePro
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
-                  {localize('com_files_no_results')}
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  {localize("com_files_no_results")}
                 </TableCell>
               </TableRow>
             )}
@@ -218,13 +255,10 @@ export default function DataTable<TData, TValue>({ columns, data }: DataTablePro
       <div className="flex items-center justify-end gap-2 py-4">
         <div className="ml-2 flex-1 truncate text-xs text-muted-foreground sm:ml-4 sm:text-sm">
           <span className="hidden sm:inline">
-            {localize(
-              'com_files_number_selected',
-              {
-                0: `${table.getFilteredSelectedRowModel().rows.length}`,
-                1: `${table.getFilteredRowModel().rows.length}`,
-              },
-            )}
+            {localize("com_files_number_selected", {
+              0: `${table.getFilteredSelectedRowModel().rows.length}`,
+              1: `${table.getFilteredRowModel().rows.length}`,
+            })}
           </span>
           <span className="sm:hidden">
             {`${table.getFilteredSelectedRowModel().rows.length}/${
@@ -233,7 +267,7 @@ export default function DataTable<TData, TValue>({ columns, data }: DataTablePro
           </span>
         </div>
         <div className="flex items-center space-x-1 pr-2 text-xs font-bold text-text-primary sm:text-sm">
-          <span className="hidden sm:inline">{localize('com_ui_page')}</span>
+          <span className="hidden sm:inline">{localize("com_ui_page")}</span>
           <span>{table.getState().pagination.pageIndex + 1}</span>
           <span>/</span>
           <span>{table.getPageCount()}</span>
@@ -245,7 +279,7 @@ export default function DataTable<TData, TValue>({ columns, data }: DataTablePro
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
         >
-          {localize('com_ui_prev')}
+          {localize("com_ui_prev")}
         </Button>
         <Button
           className="select-none"
@@ -254,7 +288,7 @@ export default function DataTable<TData, TValue>({ columns, data }: DataTablePro
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
         >
-          {localize('com_ui_next')}
+          {localize("com_ui_next")}
         </Button>
       </div>
     </div>

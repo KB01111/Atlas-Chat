@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "target": "es5", // Target older JavaScript version for broader compatibility
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true, // Allow JavaScript files to be compiled
+    "skipLibCheck": true, // Skip type checking of declaration files
+    "esModuleInterop": true, // Enables emit interoperability between CommonJS and ES Modules
+    "allowSyntheticDefaultImports": true, // Allow default imports from modules with no default export
+    "strict": true, // Enable all strict type-checking options
+    "forceConsistentCasingInFileNames": true, // Disallow inconsistently-cased references to the same file.
+    "noFallthroughCasesInSwitch": true, // Report errors for fallthrough cases in switch statement
+    "module": "esnext", // Specify module code generation
+    "moduleResolution": "node", // Specify module resolution strategy
+    "resolveJsonModule": true, // Include modules imported with .json extension
+    "isolatedModules": true, // Transpile each file as a separate module
+    "noEmit": true, // Do not emit output (handled by Babel/webpack via react-scripts)
+    "jsx": "react-jsx", // Support JSX in .tsx files (React 17+ new transform)
+    "baseUrl": "src", // Base directory to resolve non-absolute module names
+    "paths": {
+      // Path mapping for aliases like '~/'
+      "~/*": ["*"]
+    }
+  },
+  "include": [
+    "src" // *** The files TypeScript should check ***
+  ],
+  "exclude": [
+    // *** The files to not check ***
+    "node_modules",
+    "build"
+  ]
+}

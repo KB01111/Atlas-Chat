@@ -1,8 +1,8 @@
-import { memo, useMemo } from 'react';
-import { ContentTypes } from 'librechat-data-provider';
-import { ThinkingContent } from '~/components/Artifacts/Thinking';
-import { useMessageContext } from '~/Providers';
-import { cn } from '~/utils';
+import { ContentTypes } from "librechat-data-provider";
+import { memo, useMemo } from "react";
+import { ThinkingContent } from "~/components/Artifacts/Thinking";
+import { useMessageContext } from "~/Providers";
+import { cn } from "~/utils";
 
 type ReasoningProps = {
   reasoning: string;
@@ -12,8 +12,8 @@ const Reasoning = memo(({ reasoning }: ReasoningProps) => {
   const { isExpanded, nextType } = useMessageContext();
   const reasoningText = useMemo(() => {
     return reasoning
-      .replace(/^<think>\s*/, '')
-      .replace(/\s*<\/think>$/, '')
+      .replace(/^<think>\s*/, "")
+      .replace(/\s*<\/think>$/, "")
       .trim();
   }, [reasoning]);
 
@@ -24,11 +24,11 @@ const Reasoning = memo(({ reasoning }: ReasoningProps) => {
   return (
     <div
       className={cn(
-        'grid transition-all duration-300 ease-out',
-        nextType !== ContentTypes.THINK && isExpanded && 'mb-8',
+        "grid transition-all duration-300 ease-out",
+        nextType !== ContentTypes.THINK && isExpanded && "mb-8",
       )}
       style={{
-        gridTemplateRows: isExpanded ? '1fr' : '0fr',
+        gridTemplateRows: isExpanded ? "1fr" : "0fr",
       }}
     >
       <div className="overflow-hidden">

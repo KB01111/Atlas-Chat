@@ -1,4 +1,4 @@
-import CancelledIcon from './CancelledIcon';
+import CancelledIcon from "./CancelledIcon";
 
 export default function InProgressCall({
   error,

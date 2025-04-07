@@ -1,9 +1,14 @@
-import { FileSources, FileContext } from 'librechat-data-provider';
-import type { TFile } from 'librechat-data-provider';
-import { OGDialog, OGDialogContent, OGDialogHeader, OGDialogTitle } from '~/components';
-import { useGetFiles } from '~/data-provider';
-import { DataTable, columns } from './Table';
-import { useLocalize } from '~/hooks';
+import type { TFile } from "librechat-data-provider";
+import { FileContext, FileSources } from "librechat-data-provider";
+import {
+  OGDialog,
+  OGDialogContent,
+  OGDialogHeader,
+  OGDialogTitle,
+} from "~/components";
+import { useGetFiles } from "~/data-provider";
+import { useLocalize } from "~/hooks";
+import { columns, DataTable } from "./Table";
 
 export default function Files({ open, onOpenChange }) {
   const localize = useLocalize();
@@ -12,7 +17,10 @@ export default function Files({ open, onOpenChange }) {
     select: (files) =>
       files.map((file) => {
         file.context = file.context ?? FileContext.unknown;
-        file.filterSource = file.source === FileSources.firebase ? FileSources.local : file.source;
+        file.filterSource =
+          file.source === FileSources.firebase
+            ? FileSources.local
+            : file.source;
         return file;
       }),
   });
@@ -20,11 +28,11 @@ export default function Files({ open, onOpenChange }) {
   return (
     <OGDialog open={open} onOpenChange={onOpenChange}>
       <OGDialogContent
-        title={localize('com_nav_my_files')}
+        title={localize("com_nav_my_files")}
         className="w-11/12 bg-background text-text-primary shadow-2xl"
       >
         <OGDialogHeader>
-          <OGDialogTitle>{localize('com_nav_my_files')}</OGDialogTitle>
+          <OGDialogTitle>{localize("com_nav_my_files")}</OGDialogTitle>
         </OGDialogHeader>
         <DataTable columns={columns} data={files} />
       </OGDialogContent>

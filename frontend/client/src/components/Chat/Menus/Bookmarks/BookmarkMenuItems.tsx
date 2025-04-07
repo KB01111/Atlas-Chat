@@ -1,9 +1,14 @@
-import React, { useState } from 'react';
-import { BookmarkPlusIcon } from 'lucide-react';
-import type { FC } from 'react';
-import { BookmarkEditDialog, BookmarkItems, BookmarkItem } from '~/components/Bookmarks';
-import { OGDialogTrigger } from '~/components/ui';
-import { useLocalize } from '~/hooks';
+import { BookmarkPlusIcon } from "lucide-react";
+import type React from "react";
+import type { FC } from "react";
+import { useState } from "react";
+import {
+  BookmarkEditDialog,
+  BookmarkItem,
+  BookmarkItems,
+} from "~/components/Bookmarks";
+import { OGDialogTrigger } from "~/components/ui";
+import { useLocalize } from "~/hooks";
 
 export const BookmarkMenuItems: FC<{
   tags: string[];
@@ -30,11 +35,16 @@ export const BookmarkMenuItems: FC<{
         >
           <OGDialogTrigger asChild>
             <BookmarkItem
-              tag={localize('com_ui_bookmarks_new')}
+              tag={localize("com_ui_bookmarks_new")}
               data-testid="bookmark-item-new"
               handleSubmit={handleToggleOpen}
               selected={false}
-              icon={<BookmarkPlusIcon className="size-4" aria-label="Add Bookmark" />}
+              icon={
+                <BookmarkPlusIcon
+                  className="size-4"
+                  aria-label="Add Bookmark"
+                />
+              }
             />
           </OGDialogTrigger>
         </BookmarkEditDialog>

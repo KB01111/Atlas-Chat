@@ -1,17 +1,25 @@
-import { useMemo, useCallback, useState, useEffect, useRef } from 'react';
-import { easings } from '@react-spring/web';
-import { EModelEndpoint } from 'librechat-data-provider';
-import { useChatContext, useAgentsMapContext, useAssistantsMapContext } from '~/Providers';
-import { useGetEndpointsQuery, useGetStartupConfig } from '~/data-provider';
-import { BirthdayIcon, TooltipAnchor, SplitText } from '~/components';
-import ConvoIcon from '~/components/Endpoints/ConvoIcon';
-import { useLocalize, useAuthContext } from '~/hooks';
-import { getIconEndpoint, getEntity } from '~/utils';
+import { easings } from "@react-spring/web";
+import { EModelEndpoint } from "librechat-data-provider";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { BirthdayIcon, SplitText, TooltipAnchor } from "~/components";
+import ConvoIcon from "~/components/Endpoints/ConvoIcon";
+import { useGetEndpointsQuery, useGetStartupConfig } from "~/data-provider";
+import { useAuthContext, useLocalize } from "~/hooks";
+import {
+  useAgentsMapContext,
+  useAssistantsMapContext,
+  useChatContext,
+} from "~/Providers";
+import { getEntity, getIconEndpoint } from "~/utils";
 
 const containerClassName =
-  'shadow-stroke relative flex h-full items-center justify-center rounded-full bg-white text-black';
+  "shadow-stroke relative flex h-full items-center justify-center rounded-full bg-white text-black";
 
-export default function Landing({ centerFormOnLanding }: { centerFormOnLanding: boolean }) {
+export default function Landing({
+  centerFormOnLanding,
+}: {
+  centerFormOnLanding: boolean;
+}) {
   const { conversation } = useChatContext();
   const agentsMap = useAgentsMapContext();
   const assistantMap = useAssistantsMapContext();
@@ -26,7 +34,7 @@ export default function Landing({ centerFormOnLanding }: { centerFormOnLanding: 
   const contentRef = useRef<HTMLDivElement>(null);
 
   const endpointType = useMemo(() => {
-    let ep = conversation?.endpoint ?? '';
+    let ep = conversation?.endpoint ?? "";
     if (
       [
         EModelEndpoint.chatGPTBrowser,
@@ -51,14 +59,14 @@ export default function Landing({ centerFormOnLanding }: { centerFormOnLanding: 
     assistant_id: conversation?.assistant_id,
   });
 
-  const name = entity?.name ?? '';
-  const description = entity?.description ?? '';
+  const name = entity?.name ?? "";
+  const description = entity?.description ?? "";
 
   const getGreeting = useCallback(() => {
-    if (typeof startupConfig?.interface?.customWelcome === 'string') {
+    if (typeof startupConfig?.interface?.customWelcome === "string") {
       const customWelcome = startupConfig.interface.customWelcome;
       // Replace {{user.name}} with actual user name if available
-      if (user?.name && customWelcome.includes('{{user.name}}')) {
+      if (user?.name && customWelcome.includes("{{user.name}}")) {
         return customWelcome.replace(/{{user.name}}/g, user.name);
       }
       return customWelcome;
@@ -72,23 +80,22 @@ export default function Landing({ centerFormOnLanding }: { centerFormOnLanding: 
 
     // Early morning (midnight to 4:59 AM)
     if (hours >= 0 && hours < 5) {
-      return localize('com_ui_late_night');
+      return localize("com_ui_late_night");
     }
     // Morning (6 AM to 11:59 AM)
-    else if (hours < 12) {
+    if (hours < 12) {
       if (isWeekend) {
-        return localize('com_ui_weekend_morning');
+        return localize("com_ui_weekend_morning");
       }
-      return localize('com_ui_good_morning');
+      return localize("com_ui_good_morning");
     }
     // Afternoon (12 PM to 4:59 PM)
-    else if (hours < 17) {
-      return localize('com_ui_good_afternoon');
+    if (hours < 17) {
+      return localize("com_ui_good_afternoon");
     }
     // Evening (5 PM to 8:59 PM)
-    else {
-      return localize('com_ui_good_evening');
-    }
+
+    return localize("com_ui_good_evening");
   }, [localize, startupConfig?.interface?.customWelcome, user?.name]);
 
   const handleLineCountChange = useCallback((count: number) => {
@@ -100,23 +107,23 @@ export default function Landing({ centerFormOnLanding }: { centerFormOnLanding: 
     if (contentRef.current) {
       setContentHeight(contentRef.current.offsetHeight);
     }
-  }, [lineCount, description]);
+  }, []);
 
   const getDynamicMargin = useMemo(() => {
-    let margin = 'mb-0';
+    let margin = "mb-0";
 
     if (lineCount > 2 || (description && description.length > 100)) {
-      margin = 'mb-10';
+      margin = "mb-10";
     } else if (lineCount > 1 || (description && description.length > 0)) {
-      margin = 'mb-6';
+      margin = "mb-6";
     } else if (textHasMultipleLines) {
-      margin = 'mb-4';
+      margin = "mb-4";
     }
 
     if (contentHeight > 200) {
-      margin = 'mb-16';
+      margin = "mb-16";
     } else if (contentHeight > 150) {
-      margin = 'mb-12';
+      margin = "mb-12";
     }
 
     return margin;
@@ -124,13 +131,15 @@ export default function Landing({ centerFormOnLanding }: { centerFormOnLanding: 
 
   return (
     <div
-      className={`flex h-full transform-gpu flex-col items-center justify-center pb-16 transition-all duration-200 ${centerFormOnLanding ? 'max-h-full sm:max-h-0' : 'max-h-full'} ${getDynamicMargin}`}
+      className={`flex h-full transform-gpu flex-col items-center justify-center pb-16 transition-all duration-200 ${centerFormOnLanding ? "max-h-full sm:max-h-0" : "max-h-full"} ${getDynamicMargin}`}
     >
       <div ref={contentRef} className="flex flex-col items-center gap-0 p-2">
         <div
-          className={`flex ${textHasMultipleLines ? 'flex-col' : 'flex-col md:flex-row'} items-center justify-center gap-4`}
+          className={`flex ${textHasMultipleLines ? "flex-col" : "flex-col md:flex-row"} items-center justify-center gap-4`}
         >
-          <div className={`relative size-10 justify-center ${textHasMultipleLines ? 'mb-2' : ''}`}>
+          <div
+            className={`relative size-10 justify-center ${textHasMultipleLines ? "mb-2" : ""}`}
+          >
             <ConvoIcon
               agentsMap={agentsMap}
               assistantMap={assistantMap}
@@ -144,7 +153,7 @@ export default function Landing({ centerFormOnLanding }: { centerFormOnLanding: 
             {startupConfig?.showBirthdayIcon && (
               <TooltipAnchor
                 className="absolute bottom-[27px] right-2"
-                description={localize('com_ui_happy_birthday')}
+                description={localize("com_ui_happy_birthday")}
               >
                 <BirthdayIcon />
               </TooltipAnchor>
@@ -158,8 +167,11 @@ export default function Landing({ centerFormOnLanding }: { centerFormOnLanding: 
                 className="text-4xl font-medium text-text-primary"
                 delay={50}
                 textAlign="center"
-                animationFrom={{ opacity: 0, transform: 'translate3d(0,50px,0)' }}
-                animationTo={{ opacity: 1, transform: 'translate3d(0,0,0)' }}
+                animationFrom={{
+                  opacity: 0,
+                  transform: "translate3d(0,50px,0)",
+                }}
+                animationTo={{ opacity: 1, transform: "translate3d(0,0,0)" }}
                 easing={easings.easeOutCubic}
                 threshold={0}
                 rootMargin="0px"
@@ -168,17 +180,17 @@ export default function Landing({ centerFormOnLanding }: { centerFormOnLanding: 
             </div>
           ) : (
             <SplitText
-              key={`split-text-${getGreeting()}${user?.name ? '-user' : ''}`}
+              key={`split-text-${getGreeting()}${user?.name ? "-user" : ""}`}
               text={
-                typeof startupConfig?.interface?.customWelcome === 'string'
+                typeof startupConfig?.interface?.customWelcome === "string"
                   ? getGreeting()
-                  : getGreeting() + (user?.name ? ', ' + user.name : '')
+                  : getGreeting() + (user?.name ? `, ${user.name}` : "")
               }
               className="text-2xl font-medium text-text-primary sm:text-4xl"
               delay={50}
               textAlign="center"
-              animationFrom={{ opacity: 0, transform: 'translate3d(0,50px,0)' }}
-              animationTo={{ opacity: 1, transform: 'translate3d(0,0,0)' }}
+              animationFrom={{ opacity: 0, transform: "translate3d(0,50px,0)" }}
+              animationTo={{ opacity: 1, transform: "translate3d(0,0,0)" }}
               easing={easings.easeOutCubic}
               threshold={0}
               rootMargin="0px"

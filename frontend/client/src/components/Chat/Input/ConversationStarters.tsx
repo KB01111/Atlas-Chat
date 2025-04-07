@@ -1,9 +1,16 @@
-import { useMemo, useCallback } from 'react';
-import { EModelEndpoint, Constants } from 'librechat-data-provider';
-import { useChatContext, useAgentsMapContext, useAssistantsMapContext } from '~/Providers';
-import { useGetAssistantDocsQuery, useGetEndpointsQuery } from '~/data-provider';
-import { getIconEndpoint, getEntity } from '~/utils';
-import { useSubmitMessage } from '~/hooks';
+import { Constants, EModelEndpoint } from "librechat-data-provider";
+import { useCallback, useMemo } from "react";
+import {
+  useGetAssistantDocsQuery,
+  useGetEndpointsQuery,
+} from "~/data-provider";
+import { useSubmitMessage } from "~/hooks";
+import {
+  useAgentsMapContext,
+  useAssistantsMapContext,
+  useChatContext,
+} from "~/Providers";
+import { getEntity, getIconEndpoint } from "~/utils";
 
 const ConversationStarters = () => {
   const { conversation } = useChatContext();
@@ -12,7 +19,7 @@ const ConversationStarters = () => {
   const { data: endpointsConfig } = useGetEndpointsQuery();
 
   const endpointType = useMemo(() => {
-    let ep = conversation?.endpoint ?? '';
+    let ep = conversation?.endpoint ?? "";
     if (
       [
         EModelEndpoint.chatGPTBrowser,
@@ -29,9 +36,12 @@ const ConversationStarters = () => {
     });
   }, [conversation?.endpoint, conversation?.iconURL, endpointsConfig]);
 
-  const { data: documentsMap = new Map() } = useGetAssistantDocsQuery(endpointType, {
-    select: (data) => new Map(data.map((dbA) => [dbA.assistant_id, dbA])),
-  });
+  const { data: documentsMap = new Map() } = useGetAssistantDocsQuery(
+    endpointType,
+    {
+      select: (data) => new Map(data.map((dbA) => [dbA.assistant_id, dbA])),
+    },
+  );
 
   const { entity, isAgent } = getEntity({
     endpoint: endpointType,
@@ -50,7 +60,7 @@ const ConversationStarters = () => {
       return [];
     }
 
-    return documentsMap.get(entity?.id ?? '')?.conversation_starters ?? [];
+    return documentsMap.get(entity?.id ?? "")?.conversation_starters ?? [];
   }, [documentsMap, isAgent, entity]);
 
   const { submitMessage } = useSubmitMessage();

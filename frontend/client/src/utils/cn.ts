@@ -1,5 +1,5 @@
-import { twMerge } from 'tailwind-merge';
-import { type ClassValue, clsx } from 'clsx';
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 /**
  * Merges the tailwind clases (using twMerge). Conditionally removes false values

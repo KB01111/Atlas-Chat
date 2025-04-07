@@ -1,6 +1,6 @@
-import React from 'react';
-import { useCodeOutputDownload } from '~/data-provider';
-import { useToastContext } from '~/Providers';
+import type React from "react";
+import { useCodeOutputDownload } from "~/data-provider";
+import { useToastContext } from "~/Providers";
 
 interface LogLinkProps {
   href: string;
@@ -16,23 +16,23 @@ const LogLink: React.FC<LogLinkProps> = ({ href, filename, children }) => {
     event.preventDefault();
     try {
       const stream = await downloadFile();
-      if (stream.data == null || stream.data === '') {
-        console.error('Error downloading file: No data found');
+      if (stream.data == null || stream.data === "") {
+        console.error("Error downloading file: No data found");
         showToast({
-          status: 'error',
-          message: 'Error downloading file',
+          status: "error",
+          message: "Error downloading file",
         });
         return;
       }
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = stream.data;
-      link.setAttribute('download', filename);
+      link.setAttribute("download", filename);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
       window.URL.revokeObjectURL(stream.data);
     } catch (error) {
-      console.error('Error downloading file:', error);
+      console.error("Error downloading file:", error);
     }
   };
 

@@ -1,11 +1,11 @@
-import { useState } from 'react';
-import { useRecoilValue } from 'recoil';
-import { CodeInProgress } from './Parts/CodeProgress';
-import { useProgress, useLocalize } from '~/hooks';
-import ProgressText from './ProgressText';
-import FinishedIcon from './FinishedIcon';
-import MarkdownLite from './MarkdownLite';
-import store from '~/store';
+import { useState } from "react";
+import { useRecoilValue } from "recoil";
+import { useLocalize, useProgress } from "~/hooks";
+import store from "~/store";
+import FinishedIcon from "./FinishedIcon";
+import MarkdownLite from "./MarkdownLite";
+import { CodeInProgress } from "./Parts/CodeProgress";
+import ProgressText from "./ProgressText";
 
 const radius = 56.08695652173913;
 const circumference = 2 * Math.PI * radius;
@@ -28,11 +28,11 @@ export default function CodeAnalyze({
   const offset = circumference - progress * circumference;
 
   const logs = outputs.reduce((acc, output) => {
-    if (output['logs']) {
-      return acc + output['logs'] + '\n';
+    if (output.logs) {
+      return `${acc + output.logs}\n`;
     }
     return acc;
-  }, '');
+  }, "");
 
   return (
     <>
@@ -53,22 +53,24 @@ export default function CodeAnalyze({
         <ProgressText
           progress={progress}
           onClick={() => setShowCode((prev) => !prev)}
-          inProgressText={localize('com_ui_analyzing')}
-          finishedText={localize('com_ui_analyzing_finished')}
+          inProgressText={localize("com_ui_analyzing")}
+          finishedText={localize("com_ui_analyzing_finished")}
           hasInput={!!code.length}
           isExpanded={showCode}
         />
       </div>
       {showCode && (
         <div className="code-analyze-block mb-3 mt-0.5 overflow-hidden rounded-xl bg-black">
-          <MarkdownLite content={code ? `\`\`\`python\n${code}\n\`\`\`` : ''} />
+          <MarkdownLite content={code ? `\`\`\`python\n${code}\n\`\`\`` : ""} />
           {logs && (
             <div className="bg-gray-700 p-4 text-xs">
-              <div className="mb-1 text-gray-400">{localize('com_ui_result')}</div>
+              <div className="mb-1 text-gray-400">
+                {localize("com_ui_result")}
+              </div>
               <div
                 className="prose flex flex-col-reverse text-white"
                 style={{
-                  color: 'white',
+                  color: "white",
                 }}
               >
                 <pre className="shrink-0">{logs}</pre>

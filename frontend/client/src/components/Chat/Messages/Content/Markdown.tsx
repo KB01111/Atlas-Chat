@@ -1,27 +1,28 @@
-import React, { memo, useMemo, useRef, useEffect } from 'react';
-import remarkGfm from 'remark-gfm';
-import remarkMath from 'remark-math';
-import supersub from 'remark-supersub';
-import rehypeKatex from 'rehype-katex';
-import { useRecoilValue } from 'recoil';
-import ReactMarkdown from 'react-markdown';
-import rehypeHighlight from 'rehype-highlight';
-import remarkDirective from 'remark-directive';
-import { PermissionTypes, Permissions } from 'librechat-data-provider';
-import type { Pluggable } from 'unified';
+import { Permissions, PermissionTypes } from "librechat-data-provider";
+import type React from "react";
+import { memo, useEffect, useMemo, useRef } from "react";
+import ReactMarkdown from "react-markdown";
+import { useRecoilValue } from "recoil";
+import rehypeHighlight from "rehype-highlight";
+import rehypeKatex from "rehype-katex";
+import remarkDirective from "remark-directive";
+import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
+import supersub from "remark-supersub";
+import type { Pluggable } from "unified";
+import { Artifact, artifactPlugin } from "~/components/Artifacts/Artifact";
+import CodeBlock from "~/components/Messages/Content/CodeBlock";
+import { useFileDownload } from "~/data-provider";
+import useHasAccess from "~/hooks/Roles/useHasAccess";
+import useLocalize from "~/hooks/useLocalize";
 import {
-  useToastContext,
   ArtifactProvider,
   CodeBlockProvider,
   useCodeBlockContext,
-} from '~/Providers';
-import { Artifact, artifactPlugin } from '~/components/Artifacts/Artifact';
-import { langSubset, preprocessLaTeX, handleDoubleClick } from '~/utils';
-import CodeBlock from '~/components/Messages/Content/CodeBlock';
-import useHasAccess from '~/hooks/Roles/useHasAccess';
-import { useFileDownload } from '~/data-provider';
-import useLocalize from '~/hooks/useLocalize';
-import store from '~/store';
+  useToastContext,
+} from "~/Providers";
+import store from "~/store";
+import { handleDoubleClick, langSubset, preprocessLaTeX } from "~/utils";
 
 type TCodeProps = {
   inline?: boolean;
@@ -29,59 +30,70 @@ type TCodeProps = {
   children: React.ReactNode;
 };
 
-export const code: React.ElementType = memo(({ className, children }: TCodeProps) => {
-  const canRunCode = useHasAccess({
-    permissionType: PermissionTypes.RUN_CODE,
-    permission: Permissions.USE,
-  });
-  const match = /language-(\w+)/.exec(className ?? '');
-  const lang = match && match[1];
-  const isMath = lang === 'math';
-  const isSingleLine = typeof children === 'string' && children.split('\n').length === 1;
+export const code: React.ElementType = memo(
+  ({ className, children }: TCodeProps) => {
+    const canRunCode = useHasAccess({
+      permissionType: PermissionTypes.RUN_CODE,
+      permission: Permissions.USE,
+    });
+    const match = /language-(\w+)/.exec(className ?? "");
+    const lang = match?.[1];
+    const isMath = lang === "math";
+    const isSingleLine =
+      typeof children === "string" && children.split("\n").length === 1;
 
-  const { getNextIndex, resetCounter } = useCodeBlockContext();
-  const blockIndex = useRef(getNextIndex(isMath || isSingleLine)).current;
+    const { getNextIndex, resetCounter } = useCodeBlockContext();
+    const blockIndex = useRef(getNextIndex(isMath || isSingleLine)).current;
 
-  useEffect(() => {
-    resetCounter();
-  }, [children, resetCounter]);
+    useEffect(() => {
+      resetCounter();
+    }, [resetCounter]);
 
-  if (isMath) {
-    return <>{children}</>;
-  } else if (isSingleLine) {
-    return (
-      <code onDoubleClick={handleDoubleClick} className={className}>
-        {children}
-      </code>
-    );
-  } else {
+    if (isMath) {
+      return <>{children}</>;
+    }
+    if (isSingleLine) {
+      return (
+        <code onDoubleClick={handleDoubleClick} className={className}>
+          {children}
+        </code>
+      );
+    }
     return (
       <CodeBlock
-        lang={lang ?? 'text'}
+        lang={lang ?? "text"}
         codeChildren={children}
         blockIndex={blockIndex}
         allowExecution={canRunCode}
       />
     );
-  }
-});
+  },
+);
 
-export const codeNoExecution: React.ElementType = memo(({ className, children }: TCodeProps) => {
-  const match = /language-(\w+)/.exec(className ?? '');
-  const lang = match && match[1];
+export const codeNoExecution: React.ElementType = memo(
+  ({ className, children }: TCodeProps) => {
+    const match = /language-(\w+)/.exec(className ?? "");
+    const lang = match?.[1];
 
-  if (lang === 'math') {
-    return children;
-  } else if (typeof children === 'string' && children.split('\n').length === 1) {
+    if (lang === "math") {
+      return children;
+    }
+    if (typeof children === "string" && children.split("\n").length === 1) {
+      return (
+        <code onDoubleClick={handleDoubleClick} className={className}>
+          {children}
+        </code>
+      );
+    }
     return (
-      <code onDoubleClick={handleDoubleClick} className={className}>
-        {children}
-      </code>
+      <CodeBlock
+        lang={lang ?? "text"}
+        codeChildren={children}
+        allowExecution={false}
+      />
     );
-  } else {
-    return <CodeBlock lang={lang ?? 'text'} codeChildren={children} allowExecution={false} />;
-  }
-});
+  },
+);
 
 type TAnchorProps = {
   href: string;
@@ -94,24 +106,26 @@ export const a: React.ElementType = memo(({ href, children }: TAnchorProps) => {
   const localize = useLocalize();
 
   const {
-    file_id = '',
-    filename = '',
+    file_id = "",
+    filename = "",
     filepath,
   } = useMemo(() => {
     const pattern = new RegExp(`(?:files|outputs)/${user?.id}/([^\\s]+)`);
     const match = href.match(pattern);
-    if (match && match[0]) {
+    if (match?.[0]) {
       const path = match[0];
-      const parts = path.split('/');
+      const parts = path.split("/");
       const name = parts.pop();
       const file_id = parts.pop();
       return { file_id, filename: name, filepath: path };
     }
-    return { file_id: '', filename: '', filepath: '' };
+    return { file_id: "", filename: "", filepath: "" };
   }, [user?.id, href]);
 
-  const { refetch: downloadFile } = useFileDownload(user?.id ?? '', file_id);
-  const props: { target?: string; onClick?: React.MouseEventHandler } = { target: '_new' };
+  const { refetch: downloadFile } = useFileDownload(user?.id ?? "", file_id);
+  const props: { target?: string; onClick?: React.MouseEventHandler } = {
+    target: "_new",
+  };
 
   if (!file_id || !filename) {
     return (
@@ -125,32 +139,36 @@ export const a: React.ElementType = memo(({ href, children }: TAnchorProps) => {
     event.preventDefault();
     try {
       const stream = await downloadFile();
-      if (stream.data == null || stream.data === '') {
-        console.error('Error downloading file: No data found');
+      if (stream.data == null || stream.data === "") {
+        console.error("Error downloading file: No data found");
         showToast({
-          status: 'error',
-          message: localize('com_ui_download_error'),
+          status: "error",
+          message: localize("com_ui_download_error"),
         });
         return;
       }
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = stream.data;
-      link.setAttribute('download', filename);
+      link.setAttribute("download", filename);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
       window.URL.revokeObjectURL(stream.data);
     } catch (error) {
-      console.error('Error downloading file:', error);
+      console.error("Error downloading file:", error);
     }
   };
 
   props.onClick = handleDownload;
-  props.target = '_blank';
+  props.target = "_blank";
 
   return (
     <a
-      href={filepath.startsWith('files/') ? `/api/${filepath}` : `/api/files/${filepath}`}
+      href={
+        filepath.startsWith("files/")
+          ? `/api/${filepath}`
+          : `/api/files/${filepath}`
+      }
       {...props}
     >
       {children}
@@ -171,20 +189,20 @@ type TContentProps = {
   isLatestMessage: boolean;
 };
 
-const Markdown = memo(({ content = '', isLatestMessage }: TContentProps) => {
+const Markdown = memo(({ content = "", isLatestMessage }: TContentProps) => {
   const LaTeXParsing = useRecoilValue<boolean>(store.LaTeXParsing);
-  const isInitializing = content === '';
+  const isInitializing = content === "";
 
   const currentContent = useMemo(() => {
     if (isInitializing) {
-      return '';
+      return "";
     }
     return LaTeXParsing ? preprocessLaTeX(content) : content;
   }, [content, LaTeXParsing, isInitializing]);
 
   const rehypePlugins = useMemo(
     () => [
-      [rehypeKatex, { output: 'mathml' }],
+      [rehypeKatex, { output: "mathml" }],
       [
         rehypeHighlight,
         {
@@ -212,7 +230,7 @@ const Markdown = memo(({ content = '', isLatestMessage }: TContentProps) => {
     return (
       <div className="absolute">
         <p className="relative">
-          <span className={isLatestMessage ? 'result-thinking' : ''} />
+          <span className={isLatestMessage ? "result-thinking" : ""} />
         </p>
       </div>
     );

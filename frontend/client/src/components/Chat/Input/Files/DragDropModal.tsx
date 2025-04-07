@@ -1,10 +1,16 @@
-import React, { useMemo } from 'react';
-import { EModelEndpoint, EToolResources } from 'librechat-data-provider';
-import { FileSearch, ImageUpIcon, FileType2Icon, TerminalSquareIcon } from 'lucide-react';
-import OGDialogTemplate from '~/components/ui/OGDialogTemplate';
-import { useGetEndpointsQuery } from '~/data-provider';
-import useLocalize from '~/hooks/useLocalize';
-import { OGDialog } from '~/components/ui';
+import { EModelEndpoint, EToolResources } from "librechat-data-provider";
+import {
+  FileSearch,
+  FileType2Icon,
+  ImageUpIcon,
+  TerminalSquareIcon,
+} from "lucide-react";
+import type React from "react";
+import { useMemo } from "react";
+import { OGDialog } from "~/components/ui";
+import OGDialogTemplate from "~/components/ui/OGDialogTemplate";
+import { useGetEndpointsQuery } from "~/data-provider";
+import useLocalize from "~/hooks/useLocalize";
 
 interface DragDropModalProps {
   onOptionSelect: (option: string | undefined) => void;
@@ -20,7 +26,12 @@ interface FileOption {
   condition?: boolean;
 }
 
-const DragDropModal = ({ onOptionSelect, setShowModal, files, isVisible }: DragDropModalProps) => {
+const DragDropModal = ({
+  onOptionSelect,
+  setShowModal,
+  files,
+  isVisible,
+}: DragDropModalProps) => {
   const localize = useLocalize();
   const { data: endpointsConfig } = useGetEndpointsQuery();
   const capabilities = useMemo(
@@ -31,28 +42,28 @@ const DragDropModal = ({ onOptionSelect, setShowModal, files, isVisible }: DragD
   const options = useMemo(() => {
     const _options: FileOption[] = [
       {
-        label: localize('com_ui_upload_image_input'),
+        label: localize("com_ui_upload_image_input"),
         value: undefined,
         icon: <ImageUpIcon className="icon-md" />,
-        condition: files.every((file) => file.type.startsWith('image/')),
+        condition: files.every((file) => file.type.startsWith("image/")),
       },
     ];
     for (const capability of capabilities) {
       if (capability === EToolResources.file_search) {
         _options.push({
-          label: localize('com_ui_upload_file_search'),
+          label: localize("com_ui_upload_file_search"),
           value: EToolResources.file_search,
           icon: <FileSearch className="icon-md" />,
         });
       } else if (capability === EToolResources.execute_code) {
         _options.push({
-          label: localize('com_ui_upload_code_files'),
+          label: localize("com_ui_upload_code_files"),
           value: EToolResources.execute_code,
           icon: <TerminalSquareIcon className="icon-md" />,
         });
       } else if (capability === EToolResources.ocr) {
         _options.push({
-          label: localize('com_ui_upload_ocr_text'),
+          label: localize("com_ui_upload_ocr_text"),
           value: EToolResources.ocr,
           icon: <FileType2Icon className="icon-md" />,
         });
@@ -69,7 +80,7 @@ const DragDropModal = ({ onOptionSelect, setShowModal, files, isVisible }: DragD
   return (
     <OGDialog open={isVisible} onOpenChange={setShowModal}>
       <OGDialogTemplate
-        title={localize('com_ui_upload_type')}
+        title={localize("com_ui_upload_type")}
         className="w-11/12 sm:w-[440px] md:w-[400px] lg:w-[360px]"
         main={
           <div className="flex flex-col gap-2">
