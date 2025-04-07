@@ -174,6 +174,5 @@ async def get_agents_by_type(agent_type: str, current_user: Dict = Depends(get_c
     except Exception as e:
         logging.error(f"Error retrieving agents by type '{agent_type}': {e}", exc_info=True)
         raise HTTPException(
-            status_code=500,
-            detail="An internal error occurred while retrieving agents by type."
+            status_code=500, detail="An internal error occurred while retrieving agents by type."
         ) from e
