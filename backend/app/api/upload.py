@@ -535,7 +535,7 @@ def cleanup_chunks(session_dir: str):
             shutil.rmtree(session_dir)
             logging.info(f"Cleaned up chunk directory: {session_dir}")
         else:
-            logging.warning(f"Chunk directory not found for cleanun_dir}")
+            logging.warning(f"Chunk directory not found for {session_dir}")
     except Exception as e:
         logging.error(f"Error cleaning up chunks in {session_dir}: {str(e)}")
 
