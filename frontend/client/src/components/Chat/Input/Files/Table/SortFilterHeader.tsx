@@ -1,18 +1,23 @@
-import { Column } from '@tanstack/react-table';
-import { ListFilter, FilterX } from 'lucide-react';
-import { ArrowDownIcon, ArrowUpIcon, CaretSortIcon } from '@radix-ui/react-icons';
+import {
+  ArrowDownIcon,
+  ArrowUpIcon,
+  CaretSortIcon,
+} from "@radix-ui/react-icons";
+import type { Column } from "@tanstack/react-table";
+import { FilterX, ListFilter } from "lucide-react";
+import { Button } from "~/components/ui/Button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '~/components/ui/DropdownMenu';
-import { Button } from '~/components/ui/Button';
-import { useLocalize, TranslationKeys } from '~/hooks';
-import { cn } from '~/utils';
+} from "~/components/ui/DropdownMenu";
+import { type TranslationKeys, useLocalize } from "~/hooks";
+import { cn } from "~/utils";
 
-interface SortFilterHeaderProps<TData, TValue> extends React.HTMLAttributes<HTMLDivElement> {
+interface SortFilterHeaderProps<TData, TValue>
+  extends React.HTMLAttributes<HTMLDivElement> {
   title: string;
   column: Column<TData, TValue>;
   filters?: Record<string, string[] | number[]>;
@@ -22,7 +27,7 @@ interface SortFilterHeaderProps<TData, TValue> extends React.HTMLAttributes<HTML
 export function SortFilterHeader<TData, TValue>({
   column,
   title,
-  className = '',
+  className = "",
   filters,
   valueMap,
 }: SortFilterHeaderProps<TData, TValue>) {
@@ -32,7 +37,7 @@ export function SortFilterHeader<TData, TValue>({
   }
 
   return (
-    <div className={cn('flex items-center space-x-2', className)}>
+    <div className={cn("flex items-center space-x-2", className)}>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
@@ -47,10 +52,10 @@ export function SortFilterHeader<TData, TValue>({
             )}
             {(() => {
               const sortState = column.getIsSorted();
-              if (sortState === 'desc') {
+              if (sortState === "desc") {
                 return <ArrowDownIcon className="icon-sm ml-2" />;
               }
-              if (sortState === 'asc') {
+              if (sortState === "asc") {
                 return <ArrowUpIcon className="icon-sm ml-2" />;
               }
               return <CaretSortIcon className="icon-sm ml-2" />;
@@ -66,24 +71,23 @@ export function SortFilterHeader<TData, TValue>({
             className="cursor-pointer text-text-primary"
           >
             <ArrowUpIcon className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
-            {localize('com_ui_ascending')}
+            {localize("com_ui_ascending")}
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => column.toggleSorting(true)}
             className="cursor-pointer text-text-primary"
           >
             <ArrowDownIcon className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
-            {localize('com_ui_descending')}
+            {localize("com_ui_descending")}
           </DropdownMenuItem>
           <DropdownMenuSeparator className="dark:bg-gray-500" />
           {filters &&
             Object.entries(filters).map(([key, values]) =>
               values.map((value?: string | number) => {
-                const translationKey = valueMap?.[value ?? ''];
-                const filterValue =
-                  translationKey != null && translationKey.length
-                    ? localize(translationKey)
-                    : String(value);
+                const translationKey = valueMap?.[value ?? ""];
+                const filterValue = translationKey?.length
+                  ? localize(translationKey)
+                  : String(value);
                 if (!filterValue) {
                   return null;
                 }
@@ -105,15 +109,15 @@ export function SortFilterHeader<TData, TValue>({
             <DropdownMenuItem
               className={
                 column.getIsFiltered()
-                  ? 'cursor-pointer dark:text-white dark:hover:bg-gray-800'
-                  : 'pointer-events-none opacity-30'
+                  ? "cursor-pointer dark:text-white dark:hover:bg-gray-800"
+                  : "pointer-events-none opacity-30"
               }
               onClick={() => {
                 column.setFilterValue(undefined);
               }}
             >
               <FilterX className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
-              {localize('com_ui_show_all')}
+              {localize("com_ui_show_all")}
             </DropdownMenuItem>
           )}
         </DropdownMenuContent>

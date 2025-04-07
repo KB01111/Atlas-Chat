@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 /**
  * ImageWithPlaceholder component for smooth image loading
  * Addresses the minor issue where image rendering occasionally flickers when first loaded
- * 
+ *
  * @param {Object} props Component props
  * @param {string} props.src Image source URL
  * @param {string} props.alt Alternative text for the image
@@ -16,7 +16,7 @@ const ImageWithPlaceholder = ({
   src,
   alt,
   style = {},
-  className = '',
+  className = "",
   onLoad,
   onError,
   ...rest
@@ -38,52 +38,52 @@ const ImageWithPlaceholder = ({
 
   // Determine placeholder color based on image source
   const getPlaceholderColor = () => {
-    if (!src) return '#f0f0f0';
-    
+    if (!src) return "#f0f0f0";
+
     // Generate a consistent color based on the image URL
     let hash = 0;
     for (let i = 0; i < src.length; i++) {
       hash = src.charCodeAt(i) + ((hash << 5) - hash);
     }
-    
+
     // Use a light pastel color
     const hue = hash % 360;
     return `hsl(${hue}, 25%, 90%)`;
   };
 
   return (
-    <div 
+    <div
       className={`image-container ${className}`}
       style={{
-        position: 'relative',
-        overflow: 'hidden',
+        position: "relative",
+        overflow: "hidden",
         backgroundColor: getPlaceholderColor(),
-        ...style
+        ...style,
       }}
     >
       {/* Placeholder */}
       {!isLoaded && !hasError && (
-        <div 
+        <div
           className="image-placeholder"
           style={{
-            position: 'absolute',
+            position: "absolute",
             top: 0,
             left: 0,
-            width: '100%',
-            height: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
-          <div 
+          <div
             className="loading-pulse"
             style={{
-              width: '30%',
-              height: '30%',
-              borderRadius: '50%',
-              background: 'rgba(255, 255, 255, 0.7)',
-              animation: 'pulse 1.5s infinite ease-in-out'
+              width: "30%",
+              height: "30%",
+              borderRadius: "50%",
+              background: "rgba(255, 255, 255, 0.7)",
+              animation: "pulse 1.5s infinite ease-in-out",
             }}
           />
         </div>
@@ -91,21 +91,21 @@ const ImageWithPlaceholder = ({
 
       {/* Error state */}
       {hasError && (
-        <div 
+        <div
           className="image-error"
           style={{
-            position: 'absolute',
+            position: "absolute",
             top: 0,
             left: 0,
-            width: '100%',
-            height: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: '#666',
-            fontSize: '0.8rem',
-            padding: '1rem',
-            textAlign: 'center',
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "#666",
+            fontSize: "0.8rem",
+            padding: "1rem",
+            textAlign: "center",
           }}
         >
           <span>Failed to load image</span>
@@ -119,11 +119,11 @@ const ImageWithPlaceholder = ({
         onLoad={handleImageLoad}
         onError={handleImageError}
         style={{
-          display: isLoaded ? 'block' : 'none',
-          width: '100%',
-          height: '100%',
-          objectFit: 'contain',
-          transition: 'opacity 0.3s ease-in-out',
+          display: isLoaded ? "block" : "none",
+          width: "100%",
+          height: "100%",
+          objectFit: "contain",
+          transition: "opacity 0.3s ease-in-out",
           opacity: isLoaded ? 1 : 0,
         }}
         {...rest}

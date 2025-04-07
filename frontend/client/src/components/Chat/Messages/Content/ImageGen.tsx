@@ -1,11 +1,11 @@
-import { useState } from 'react';
-import ProgressCircle from './ProgressCircle';
-import ProgressText from './ProgressText';
-import { useProgress } from '~/hooks';
+import { useState } from "react";
+import { useProgress } from "~/hooks";
+import ProgressCircle from "./ProgressCircle";
+import ProgressText from "./ProgressText";
 
 export default function ImageGen({
   initialProgress = 0.1,
-  args = '',
+  args = "",
 }: {
   initialProgress: number;
   args: string;
@@ -33,7 +33,7 @@ export default function ImageGen({
       <div className="relative h-5 w-5 shrink-0">
         <div
           className="absolute left-0 top-0 flex h-full w-full items-center justify-center rounded-full bg-transparent text-white"
-          style={{ opacity: 1, transform: 'none' }}
+          style={{ opacity: 1, transform: "none" }}
           data-projection-id="106"
         >
           <div>
@@ -43,7 +43,11 @@ export default function ImageGen({
               viewBox="0 0 20 20"
               width="20"
               height="20"
-              style={{ width: '100%', height: '100%', transform: 'translate3d(0px, 0px, 0px)' }}
+              style={{
+                width: "100%",
+                height: "100%",
+                transform: "translate3d(0px, 0px, 0px)",
+              }}
               preserveAspectRatio="xMidYMid meet"
             >
               <g className="move-up">
@@ -54,7 +58,7 @@ export default function ImageGen({
                 />
               </g>
               <g
-                style={{ display: 'block' }}
+                style={{ display: "block" }}
                 transform="matrix(-1,0,0,-1,10,10)"
                 opacity="1"
                 className="moon-rise"
@@ -69,7 +73,11 @@ export default function ImageGen({
               </g>
             </svg>
           </div>
-          <ProgressCircle radius={radius} circumference={circumference} offset={offset} />
+          <ProgressCircle
+            radius={radius}
+            circumference={circumference}
+            offset={offset}
+          />
         </div>
       </div>
       <ProgressText

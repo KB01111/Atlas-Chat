@@ -1,8 +1,9 @@
-import React, { useState, useRef, useMemo } from 'react';
-import { LazyLoadImage } from 'react-lazy-load-image-component';
-import * as Dialog from '@radix-ui/react-dialog';
-import DialogImage from './DialogImage';
-import { cn } from '~/utils';
+import * as Dialog from "@radix-ui/react-dialog";
+import type React from "react";
+import { useMemo, useRef, useState } from "react";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import { cn } from "~/utils";
+import DialogImage from "./DialogImage";
 
 const scaleImage = ({
   originalWidth,
@@ -15,7 +16,7 @@ const scaleImage = ({
 }) => {
   const containerWidth = containerRef.current?.offsetWidth ?? 0;
   if (containerWidth === 0 || originalWidth == null || originalHeight == null) {
-    return { width: 'auto', height: 'auto' };
+    return { width: "auto", height: "auto" };
   }
   const aspectRatio = originalWidth / originalHeight;
   const scaledWidth = Math.min(containerWidth, originalWidth);
@@ -49,8 +50,12 @@ const Image = ({
   const { width: scaledWidth, height: scaledHeight } = useMemo(
     () =>
       scaleImage({
-        originalWidth: Number(placeholderDimensions?.width?.split('px')[0] ?? width),
-        originalHeight: Number(placeholderDimensions?.height?.split('px')[0] ?? height),
+        originalWidth: Number(
+          placeholderDimensions?.width?.split("px")[0] ?? width,
+        ),
+        originalHeight: Number(
+          placeholderDimensions?.height?.split("px")[0] ?? height,
+        ),
         containerRef,
       }),
     [placeholderDimensions, height, width],
@@ -61,7 +66,7 @@ const Image = ({
       <div ref={containerRef}>
         <div
           className={cn(
-            'relative mt-1 flex h-auto w-full max-w-lg items-center justify-center overflow-hidden bg-surface-active-alt text-text-secondary-alt',
+            "relative mt-1 flex h-auto w-full max-w-lg items-center justify-center overflow-hidden bg-surface-active-alt text-text-secondary-alt",
             className,
           )}
         >
@@ -72,22 +77,26 @@ const Image = ({
                 onLoad={handleImageLoad}
                 visibleByDefault={true}
                 className={cn(
-                  'opacity-100 transition-opacity duration-100',
-                  isLoaded ? 'opacity-100' : 'opacity-0',
+                  "opacity-100 transition-opacity duration-100",
+                  isLoaded ? "opacity-100" : "opacity-0",
                 )}
                 src={imagePath}
                 style={{
                   width: scaledWidth,
-                  height: 'auto',
-                  color: 'transparent',
+                  height: "auto",
+                  color: "transparent",
                 }}
-                placeholder={<div style={{ width: scaledWidth, height: scaledHeight }} />}
+                placeholder={
+                  <div style={{ width: scaledWidth, height: scaledHeight }} />
+                }
               />
             </button>
           </Dialog.Trigger>
         </div>
       </div>
-      {isLoaded && <DialogImage src={imagePath} height={height} width={width} />}
+      {isLoaded && (
+        <DialogImage src={imagePath} height={height} width={width} />
+      )}
     </Dialog.Root>
   );
 };

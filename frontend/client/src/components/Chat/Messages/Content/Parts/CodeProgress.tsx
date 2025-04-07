@@ -1,5 +1,5 @@
-import ProgressCircle from '~/components/Chat/Messages/Content/ProgressCircle';
-import CancelledIcon from '~/components/Chat/Messages/Content/CancelledIcon';
+import CancelledIcon from "~/components/Chat/Messages/Content/CancelledIcon";
+import ProgressCircle from "~/components/Chat/Messages/Content/ProgressCircle";
 
 export const CodeInProgress = ({
   offset,
@@ -20,7 +20,7 @@ export const CodeInProgress = ({
   return (
     <div
       className="absolute left-0 top-0 flex h-full w-full items-center justify-center rounded-full bg-transparent text-white"
-      style={{ opacity: 1, transform: 'none' }}
+      style={{ opacity: 1, transform: "none" }}
       data-projection-id="77"
     >
       <div className="absolute bottom-[1.5px] right-[1.5px]">
@@ -30,7 +30,7 @@ export const CodeInProgress = ({
           viewBox="0 0 20 20"
           width="20"
           height="20"
-          style={{ transform: 'translate3d(0px, 0px, 0px)' }}
+          style={{ transform: "translate3d(0px, 0px, 0px)" }}
           preserveAspectRatio="xMidYMid meet"
         >
           <defs>
@@ -40,10 +40,17 @@ export const CodeInProgress = ({
           </defs>
           <g clipPath="url(#__lottie_element_11)">
             <g
-              style={{ display: 'block', transform: 'matrix(1,0,0,1,-2,-2)', opacity: 1 }}
+              style={{
+                display: "block",
+                transform: "matrix(1,0,0,1,-2,-2)",
+                opacity: 1,
+              }}
               className="slide-from-left"
             >
-              <g opacity="1" transform="matrix(1,0,0,1,7.026679992675781,8.834091186523438)">
+              <g
+                opacity="1"
+                transform="matrix(1,0,0,1,7.026679992675781,8.834091186523438)"
+              >
                 <path
                   fill="rgb(177,98,253)"
                   fillOpacity="1"
@@ -61,10 +68,17 @@ export const CodeInProgress = ({
               </g>
             </g>
             <g
-              style={{ display: 'block', transform: 'matrix(1,0,0,1,-2,-2)', opacity: 1 }}
+              style={{
+                display: "block",
+                transform: "matrix(1,0,0,1,-2,-2)",
+                opacity: 1,
+              }}
               className="slide-to-down"
             >
-              <g opacity="1" transform="matrix(1,0,0,1,11.79640007019043,13.512199401855469)">
+              <g
+                opacity="1"
+                transform="matrix(1,0,0,1,11.79640007019043,13.512199401855469)"
+              >
                 <path
                   fill="rgb(177,98,253)"
                   fillOpacity="1"
@@ -84,7 +98,11 @@ export const CodeInProgress = ({
           </g>
         </svg>
       </div>
-      <ProgressCircle radius={radius} circumference={circumference} offset={offset} />
+      <ProgressCircle
+        radius={radius}
+        circumference={circumference}
+        offset={offset}
+      />
     </div>
   );
 };

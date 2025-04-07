@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
-import ReactMarkdown from 'react-markdown';
-import TagManager from 'react-gtm-module';
-import { Constants } from 'librechat-data-provider';
-import { useGetStartupConfig } from '~/data-provider';
-import { useLocalize } from '~/hooks';
+import { Constants } from "librechat-data-provider";
+import React, { useEffect } from "react";
+import TagManager from "react-gtm-module";
+import ReactMarkdown from "react-markdown";
+import { useGetStartupConfig } from "~/data-provider";
+import { useLocalize } from "~/hooks";
 
 export default function Footer({ className }: { className?: string }) {
   const { data: config } = useGetStartupConfig();
@@ -16,10 +16,10 @@ export default function Footer({ className }: { className?: string }) {
     <a
       className="text-text-secondary underline"
       href={privacyPolicy.externalUrl}
-      target={privacyPolicy.openNewTab === true ? '_blank' : undefined}
+      target={privacyPolicy.openNewTab === true ? "_blank" : undefined}
       rel="noreferrer"
     >
-      {localize('com_ui_privacy_policy')}
+      {localize("com_ui_privacy_policy")}
     </a>
   );
 
@@ -27,24 +27,27 @@ export default function Footer({ className }: { className?: string }) {
     <a
       className="text-text-secondary underline"
       href={termsOfService.externalUrl}
-      target={termsOfService.openNewTab === true ? '_blank' : undefined}
+      target={termsOfService.openNewTab === true ? "_blank" : undefined}
       rel="noreferrer"
     >
-      {localize('com_ui_terms_of_service')}
+      {localize("com_ui_terms_of_service")}
     </a>
   );
 
   const mainContentParts = (
-    typeof config?.customFooter === 'string'
+    typeof config?.customFooter === "string"
       ? config.customFooter
-      : '[LibreChat ' +
+      : "[LibreChat " +
         Constants.VERSION +
-        '](https://librechat.ai) - ' +
-        localize('com_ui_latest_footer')
-  ).split('|');
+        "](https://librechat.ai) - " +
+        localize("com_ui_latest_footer")
+  ).split("|");
 
   useEffect(() => {
-    if (config?.analyticsGtmId != null && typeof window.google_tag_manager === 'undefined') {
+    if (
+      config?.analyticsGtmId != null &&
+      typeof window.google_tag_manager === "undefined"
+    ) {
       const tagManagerArgs = {
         gtmId: config.analyticsGtmId,
       };
@@ -78,16 +81,18 @@ export default function Footer({ className }: { className?: string }) {
     </React.Fragment>
   ));
 
-  const footerElements = [...mainContentRender, privacyPolicyRender, termsOfServiceRender].filter(
-    Boolean,
-  );
+  const footerElements = [
+    ...mainContentRender,
+    privacyPolicyRender,
+    termsOfServiceRender,
+  ].filter(Boolean);
 
   return (
     <div className="relative w-full">
       <div
         className={
           className ??
-          'absolute bottom-0 left-0 right-0 hidden items-center justify-center gap-2 px-2 py-2 text-center text-xs text-text-primary sm:flex md:px-[60px]'
+          "absolute bottom-0 left-0 right-0 hidden items-center justify-center gap-2 px-2 py-2 text-center text-xs text-text-primary sm:flex md:px-[60px]"
         }
         role="contentinfo"
       >

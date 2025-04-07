@@ -1,14 +1,18 @@
-import { LocalStorageKeys, TConversation } from 'librechat-data-provider';
+import { LocalStorageKeys, type TConversation } from "librechat-data-provider";
 
 export function getLocalStorageItems() {
   const items = {
-    lastSelectedModel: localStorage.getItem(LocalStorageKeys.LAST_MODEL) ?? '',
-    lastSelectedTools: localStorage.getItem(LocalStorageKeys.LAST_TOOLS) ?? '',
-    lastConversationSetup: localStorage.getItem(LocalStorageKeys.LAST_CONVO_SETUP + '_0') ?? '',
+    lastSelectedModel: localStorage.getItem(LocalStorageKeys.LAST_MODEL) ?? "",
+    lastSelectedTools: localStorage.getItem(LocalStorageKeys.LAST_TOOLS) ?? "",
+    lastConversationSetup:
+      localStorage.getItem(`${LocalStorageKeys.LAST_CONVO_SETUP}_0`) ?? "",
   };
 
   const lastSelectedModel = items.lastSelectedModel
-    ? (JSON.parse(items.lastSelectedModel) as Record<string, string | undefined> | null)
+    ? (JSON.parse(items.lastSelectedModel) as Record<
+        string,
+        string | undefined
+      > | null)
     : {};
   const lastSelectedTools = items.lastSelectedTools
     ? (JSON.parse(items.lastSelectedTools) as string[] | null)
@@ -27,7 +31,7 @@ export function getLocalStorageItems() {
 export function clearLocalStorage(skipFirst?: boolean) {
   const keys = Object.keys(localStorage);
   keys.forEach((key) => {
-    if (skipFirst === true && key.endsWith('0')) {
+    if (skipFirst === true && key.endsWith("0")) {
       return;
     }
     if (

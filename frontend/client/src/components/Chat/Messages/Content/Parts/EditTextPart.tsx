@@ -1,15 +1,15 @@
-import { useForm } from 'react-hook-form';
-import { ContentTypes } from 'librechat-data-provider';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { useRef, useEffect, useCallback, useMemo } from 'react';
-import { useUpdateMessageContentMutation } from 'librechat-data-provider/react-query';
-import type { TEditProps } from '~/common';
-import Container from '~/components/Chat/Messages/Content/Container';
-import { useChatContext, useAddedChatContext } from '~/Providers';
-import { TextareaAutosize } from '~/components/ui';
-import { cn, removeFocusRings } from '~/utils';
-import { useLocalize } from '~/hooks';
-import store from '~/store';
+import { ContentTypes } from "librechat-data-provider";
+import { useUpdateMessageContentMutation } from "librechat-data-provider/react-query";
+import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useForm } from "react-hook-form";
+import { useRecoilState, useRecoilValue } from "recoil";
+import type { TEditProps } from "~/common";
+import Container from "~/components/Chat/Messages/Content/Container";
+import { TextareaAutosize } from "~/components/ui";
+import { useLocalize } from "~/hooks";
+import { useAddedChatContext, useChatContext } from "~/Providers";
+import store from "~/store";
+import { cn, removeFocusRings } from "~/utils";
 
 const EditTextPart = ({
   text,
@@ -17,7 +17,7 @@ const EditTextPart = ({
   messageId,
   isSubmitting,
   enterEdit,
-}: Omit<TEditProps, 'message' | 'ask'> & {
+}: Omit<TEditProps, "message" | "ask"> & {
   index: number;
   messageId: string;
 }) => {
@@ -28,21 +28,23 @@ const EditTextPart = ({
     store.latestMessageFamily(addedIndex),
   );
 
-  const { conversationId = '' } = conversation ?? {};
+  const { conversationId = "" } = conversation ?? {};
   const message = useMemo(
     () => getMessages()?.find((msg) => msg.messageId === messageId),
     [getMessages, messageId],
   );
 
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
-  const updateMessageContentMutation = useUpdateMessageContentMutation(conversationId ?? '');
+  const updateMessageContentMutation = useUpdateMessageContentMutation(
+    conversationId ?? "",
+  );
 
   const chatDirection = useRecoilValue(store.chatDirection).toLowerCase();
-  const isRTL = chatDirection === 'rtl';
+  const isRTL = chatDirection === "rtl";
 
   const { register, handleSubmit, setValue } = useForm({
     defaultValues: {
-      text: text ?? '',
+      text: text ?? "",
     },
   });
 
@@ -92,7 +94,7 @@ const EditTextPart = ({
     }
     updateMessageContentMutation.mutate({
       index,
-      conversationId: conversationId ?? '',
+      conversationId: conversationId ?? "",
       text: data.text,
       messageId,
     });
@@ -117,9 +119,9 @@ const EditTextPart = ({
       messages.map((msg) =>
         msg.messageId === messageId
           ? {
-            ...msg,
-            content: updatedContent,
-          }
+              ...msg,
+              content: updatedContent,
+            }
           : msg,
       ),
     );
@@ -129,7 +131,7 @@ const EditTextPart = ({
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-      if (e.key === 'Escape') {
+      if (e.key === "Escape") {
         e.preventDefault();
         enterEdit(true);
       }
@@ -137,10 +139,10 @@ const EditTextPart = ({
     [enterEdit],
   );
 
-  const { ref, ...registerProps } = register('text', {
+  const { ref, ...registerProps } = register("text", {
     required: true,
     onChange: (e) => {
-      setValue('text', e.target.value, { shouldValidate: true });
+      setValue("text", e.target.value, { shouldValidate: true });
     },
   });
 
@@ -156,14 +158,14 @@ const EditTextPart = ({
           onKeyDown={handleKeyDown}
           data-testid="message-text-editor"
           className={cn(
-            'markdown prose dark:prose-invert light whitespace-pre-wrap break-words pl-3 md:pl-4',
-            'm-0 w-full resize-none border-0 bg-transparent py-[10px]',
-            'placeholder-text-secondary focus:ring-0 focus-visible:ring-0 md:py-3.5',
-            isRTL ? 'text-right' : 'text-left',
-            'max-h-[65vh] pr-3 md:max-h-[75vh] md:pr-4',
+            "markdown prose dark:prose-invert light whitespace-pre-wrap break-words pl-3 md:pl-4",
+            "m-0 w-full resize-none border-0 bg-transparent py-[10px]",
+            "placeholder-text-secondary focus:ring-0 focus-visible:ring-0 md:py-3.5",
+            isRTL ? "text-right" : "text-left",
+            "max-h-[65vh] pr-3 md:max-h-[75vh] md:pr-4",
             removeFocusRings,
           )}
-          dir={isRTL ? 'rtl' : 'ltr'}
+          dir={isRTL ? "rtl" : "ltr"}
         />
       </div>
       <div className="mt-2 flex w-full justify-center text-center">
@@ -179,10 +181,13 @@ const EditTextPart = ({
           disabled={isSubmitting}
           onClick={handleSubmit(updateMessage)}
         >
-          {localize('com_ui_save')}
+          {localize("com_ui_save")}
         </button>
-        <button className="btn btn-neutral relative" onClick={() => enterEdit(true)}>
-          {localize('com_ui_cancel')}
+        <button
+          className="btn btn-neutral relative"
+          onClick={() => enterEdit(true)}
+        >
+          {localize("com_ui_cancel")}
         </button>
       </div>
     </Container>

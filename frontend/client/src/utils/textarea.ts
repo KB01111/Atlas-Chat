@@ -1,21 +1,25 @@
 /**
  * Insert text at the cursor position in a textarea.
  */
-export function insertTextAtCursor(element: HTMLTextAreaElement, textToInsert: string) {
+export function insertTextAtCursor(
+  element: HTMLTextAreaElement,
+  textToInsert: string,
+) {
   element.focus();
 
   // Use the browser's built-in undoable actions if possible
-  if (window.getSelection() && document.queryCommandSupported('insertText')) {
-    document.execCommand('insertText', false, textToInsert);
+  if (window.getSelection() && document.queryCommandSupported("insertText")) {
+    document.execCommand("insertText", false, textToInsert);
   } else {
-    console.warn('insertTextAtCursor: document.execCommand is not supported');
+    console.warn("insertTextAtCursor: document.execCommand is not supported");
     const startPos = element.selectionStart;
     const endPos = element.selectionEnd;
     const beforeText = element.value.substring(0, startPos);
     const afterText = element.value.substring(endPos);
     element.value = beforeText + textToInsert + afterText;
-    element.selectionStart = element.selectionEnd = startPos + textToInsert.length;
-    const event = new Event('input', { bubbles: true });
+    element.selectionStart = element.selectionEnd =
+      startPos + textToInsert.length;
+    const event = new Event("input", { bubbles: true });
     element.dispatchEvent(event);
   }
 }
@@ -35,14 +39,16 @@ export const forceResize = (element: HTMLTextAreaElement | null) => {
   if (!element) {
     return;
   }
-  element.style.height = 'auto';
+  element.style.height = "auto";
   element.style.height = `${element.scrollHeight}px`;
 };
 
 /**
  * Necessary undo event helper for edge cases where undoing pasted content leaves newlines filling the previous container height.
  */
-export const trimUndoneRange = (textAreaRef: React.RefObject<HTMLTextAreaElement>) => {
+export const trimUndoneRange = (
+  textAreaRef: React.RefObject<HTMLTextAreaElement>,
+) => {
   if (!textAreaRef.current) {
     return;
   }
@@ -64,11 +70,14 @@ export const trimUndoneRange = (textAreaRef: React.RefObject<HTMLTextAreaElement
  * @param {HTMLTextAreaElement} textarea - The textarea element where text manipulation will occur.
  * @param {string} charToRemove - The character to remove if it's the last character in the textarea's value.
  */
-export function removeCharIfLast(textarea: HTMLTextAreaElement, charToRemove: string) {
+export function removeCharIfLast(
+  textarea: HTMLTextAreaElement,
+  charToRemove: string,
+) {
   if (textarea.value.endsWith(charToRemove)) {
     textarea.value = textarea.value.slice(0, -1);
     textarea.setSelectionRange(textarea.value.length, textarea.value.length);
-    textarea.dispatchEvent(new Event('input', { bubbles: true }));
+    textarea.dispatchEvent(new Event("input", { bubbles: true }));
   }
 
   textarea.focus();

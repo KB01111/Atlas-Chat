@@ -1,6 +1,7 @@
-import dedent from 'dedent';
+import dedent from "dedent";
 
-const mermaid = dedent(`import React, { useEffect, useRef, useState } from "react";
+const mermaid =
+  dedent(`import React, { useEffect, useRef, useState } from "react";
 import {
   TransformWrapper,
   TransformComponent,
@@ -219,8 +220,8 @@ export default App = () => (
 
 export const getMermaidFiles = (content: string) => {
   return {
-    'App.tsx': wrapMermaidDiagram(content),
-    'index.tsx': dedent(`import React, { StrictMode } from "react";
+    "App.tsx": wrapMermaidDiagram(content),
+    "index.tsx": dedent(`import React, { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./styles.css";
 
@@ -229,6 +230,6 @@ import App from "./App";
 const root = createRoot(document.getElementById("root"));
 root.render(<App />);
 ;`),
-    '/components/ui/MermaidDiagram.tsx': mermaid,
+    "/components/ui/MermaidDiagram.tsx": mermaid,
   };
 };

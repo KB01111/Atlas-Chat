@@ -1,14 +1,14 @@
-import { useRef, useEffect, useCallback } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { useForm } from 'react-hook-form';
-import { useUpdateMessageMutation } from 'librechat-data-provider/react-query';
-import type { TEditProps } from '~/common';
-import { useChatContext, useAddedChatContext } from '~/Providers';
-import { TextareaAutosize, TooltipAnchor } from '~/components/ui';
-import { cn, removeFocusRings } from '~/utils';
-import { useLocalize } from '~/hooks';
-import Container from './Container';
-import store from '~/store';
+import { useUpdateMessageMutation } from "librechat-data-provider/react-query";
+import { useCallback, useEffect, useRef } from "react";
+import { useForm } from "react-hook-form";
+import { useRecoilState, useRecoilValue } from "recoil";
+import type { TEditProps } from "~/common";
+import { TextareaAutosize, TooltipAnchor } from "~/components/ui";
+import { useLocalize } from "~/hooks";
+import { useAddedChatContext, useChatContext } from "~/Providers";
+import store from "~/store";
+import { cn, removeFocusRings } from "~/utils";
+import Container from "./Container";
 
 const EditMessage = ({
   text,
@@ -30,15 +30,15 @@ const EditMessage = ({
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
 
   const { conversationId, parentMessageId, messageId } = message;
-  const updateMessageMutation = useUpdateMessageMutation(conversationId ?? '');
+  const updateMessageMutation = useUpdateMessageMutation(conversationId ?? "");
   const localize = useLocalize();
 
   const chatDirection = useRecoilValue(store.chatDirection).toLowerCase();
-  const isRTL = chatDirection === 'rtl';
+  const isRTL = chatDirection === "rtl";
 
   const { register, handleSubmit, setValue } = useForm({
     defaultValues: {
-      text: text ?? '',
+      text: text ?? "",
     },
   });
 
@@ -67,7 +67,9 @@ const EditMessage = ({
       setSiblingIdx((siblingIdx ?? 0) - 1);
     } else {
       const messages = getMessages();
-      const parentMessage = messages?.find((msg) => msg.messageId === parentMessageId);
+      const parentMessage = messages?.find(
+        (msg) => msg.messageId === parentMessageId,
+      );
 
       if (!parentMessage) {
         return;
@@ -94,8 +96,8 @@ const EditMessage = ({
       return;
     }
     updateMessageMutation.mutate({
-      conversationId: conversationId ?? '',
-      model: conversation?.model ?? 'gpt-3.5-turbo',
+      conversationId: conversationId ?? "",
+      model: conversation?.model ?? "gpt-3.5-turbo",
       text: data.text,
       messageId,
     });
@@ -104,7 +106,9 @@ const EditMessage = ({
       setLatestMultiMessage({ ...latestMultiMessage, text: data.text });
     }
 
-    const isInMessages = messages.some((message) => message.messageId === messageId);
+    const isInMessages = messages.some(
+      (message) => message.messageId === messageId,
+    );
     if (!isInMessages) {
       message.text = data.text;
     } else {
@@ -112,9 +116,9 @@ const EditMessage = ({
         messages.map((msg) =>
           msg.messageId === messageId
             ? {
-              ...msg,
-              text: data.text,
-            }
+                ...msg,
+                text: data.text,
+              }
             : msg,
         ),
       );
@@ -125,15 +129,15 @@ const EditMessage = ({
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+      if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
         e.preventDefault();
         submitButtonRef.current?.click();
       }
-      if (e.key === 's' && (e.ctrlKey || e.metaKey)) {
+      if (e.key === "s" && (e.ctrlKey || e.metaKey)) {
         e.preventDefault();
         saveButtonRef.current?.click();
       }
-      if (e.key === 'Escape') {
+      if (e.key === "Escape") {
         e.preventDefault();
         enterEdit(true);
       }
@@ -141,10 +145,10 @@ const EditMessage = ({
     [enterEdit],
   );
 
-  const { ref, ...registerProps } = register('text', {
+  const { ref, ...registerProps } = register("text", {
     required: true,
     onChange: (e) => {
-      setValue('text', e.target.value, { shouldValidate: true });
+      setValue("text", e.target.value, { shouldValidate: true });
     },
   });
 
@@ -160,14 +164,14 @@ const EditMessage = ({
           onKeyDown={handleKeyDown}
           data-testid="message-text-editor"
           className={cn(
-            'markdown prose dark:prose-invert light whitespace-pre-wrap break-words pl-3 md:pl-4',
-            'm-0 w-full resize-none border-0 bg-transparent py-[10px]',
-            'placeholder-text-secondary focus:ring-0 focus-visible:ring-0 md:py-3.5',
-            isRTL ? 'text-right' : 'text-left',
-            'max-h-[65vh] pr-3 md:max-h-[75vh] md:pr-4',
+            "markdown prose dark:prose-invert light whitespace-pre-wrap break-words pl-3 md:pl-4",
+            "m-0 w-full resize-none border-0 bg-transparent py-[10px]",
+            "placeholder-text-secondary focus:ring-0 focus-visible:ring-0 md:py-3.5",
+            isRTL ? "text-right" : "text-left",
+            "max-h-[65vh] pr-3 md:max-h-[75vh] md:pr-4",
             removeFocusRings,
           )}
-          dir={isRTL ? 'rtl' : 'ltr'}
+          dir={isRTL ? "rtl" : "ltr"}
         />
       </div>
       <div className="mt-2 flex w-full justify-center text-center">
@@ -180,7 +184,7 @@ const EditMessage = ({
               disabled={isSubmitting}
               onClick={handleSubmit(resubmitMessage)}
             >
-              {localize('com_ui_save_submit')}
+              {localize("com_ui_save_submit")}
             </button>
           }
         />
@@ -193,15 +197,18 @@ const EditMessage = ({
               disabled={isSubmitting}
               onClick={handleSubmit(updateMessage)}
             >
-              {localize('com_ui_save')}
+              {localize("com_ui_save")}
             </button>
           }
         />
         <TooltipAnchor
           description="Esc"
           render={
-            <button className="btn btn-neutral relative" onClick={() => enterEdit(true)}>
-              {localize('com_ui_cancel')}
+            <button
+              className="btn btn-neutral relative"
+              onClick={() => enterEdit(true)}
+            >
+              {localize("com_ui_cancel")}
             </button>
           }
         />

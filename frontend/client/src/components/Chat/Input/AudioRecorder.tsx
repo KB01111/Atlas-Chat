@@ -1,10 +1,10 @@
-import { useCallback } from 'react';
-import { useChatFormContext, useToastContext } from '~/Providers';
-import { ListeningIcon, Spinner } from '~/components/svg';
-import { useLocalize, useSpeechToText } from '~/hooks';
-import { TooltipAnchor } from '~/components/ui';
-import { globalAudioId } from '~/common';
-import { cn } from '~/utils';
+import { useCallback } from "react";
+import { globalAudioId } from "~/common";
+import { ListeningIcon, Spinner } from "~/components/svg";
+import { TooltipAnchor } from "~/components/ui";
+import { useLocalize, useSpeechToText } from "~/hooks";
+import { type useChatFormContext, useToastContext } from "~/Providers";
+import { cn } from "~/utils";
 
 export default function AudioRecorder({
   disabled,
@@ -27,19 +27,21 @@ export default function AudioRecorder({
     (text: string) => {
       if (isSubmitting) {
         showToast({
-          message: localize('com_ui_speech_while_submitting'),
-          status: 'error',
+          message: localize("com_ui_speech_while_submitting"),
+          status: "error",
         });
         return;
       }
       if (text) {
-        const globalAudio = document.getElementById(globalAudioId) as HTMLAudioElement | null;
+        const globalAudio = document.getElementById(
+          globalAudioId,
+        ) as HTMLAudioElement | null;
         if (globalAudio) {
-          console.log('Unmuting global audio');
+          console.log("Unmuting global audio");
           globalAudio.muted = false;
         }
         ask({ text });
-        reset({ text: '' });
+        reset({ text: "" });
       }
     },
     [ask, reset, showToast, localize, isSubmitting],
@@ -47,17 +49,15 @@ export default function AudioRecorder({
 
   const setText = useCallback(
     (text: string) => {
-      setValue('text', text, {
+      setValue("text", text, {
         shouldValidate: true,
       });
     },
     [setValue],
   );
 
-  const { isListening, isLoading, startRecording, stopRecording } = useSpeechToText(
-    setText,
-    onTranscriptionComplete,
-  );
+  const { isListening, isLoading, startRecording, stopRecording } =
+    useSpeechToText(setText, onTranscriptionComplete);
 
   if (!textAreaRef.current) {
     return null;
@@ -79,18 +79,20 @@ export default function AudioRecorder({
 
   return (
     <TooltipAnchor
-      description={localize('com_ui_use_micrphone')}
+      description={localize("com_ui_use_micrphone")}
       render={
         <button
           id="audio-recorder"
           type="button"
-          aria-label={localize('com_ui_use_micrphone')}
-          onClick={isListening === true ? handleStopRecording : handleStartRecording}
+          aria-label={localize("com_ui_use_micrphone")}
+          onClick={
+            isListening === true ? handleStopRecording : handleStartRecording
+          }
           disabled={disabled}
           className={cn(
-            'flex size-9 items-center justify-center rounded-full p-1 transition-colors hover:bg-surface-hover',
+            "flex size-9 items-center justify-center rounded-full p-1 transition-colors hover:bg-surface-hover",
           )}
-          title={localize('com_ui_use_micrphone')}
+          title={localize("com_ui_use_micrphone")}
           aria-pressed={isListening}
         >
           {renderIcon()}

@@ -1,27 +1,35 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
-import { FiCode, FiPlay, FiSave, FiDownload, FiUpload, FiCopy, FiTrash2 } from 'react-icons/fi';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import ArtifactDisplay from '../Artifacts/ArtifactDisplay';
-import { copyToClipboard } from '../../utils/clipboard';
+import React, { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import {
+  FiCode,
+  FiCopy,
+  FiDownload,
+  FiPlay,
+  FiSave,
+  FiTrash2,
+  FiUpload,
+} from "react-icons/fi";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { copyToClipboard } from "../../utils/clipboard";
+import ArtifactDisplay from "../Artifacts/ArtifactDisplay";
 
-const CodeExecutionComponent = ({ 
-  onExecute, 
-  onSave, 
-  initialCode = '', 
-  language = 'python',
+const CodeExecutionComponent = ({
+  onExecute,
+  onSave,
+  initialCode = "",
+  language = "python",
   readOnly = false,
   showControls = true,
   artifacts = [],
   onArtifactDownload,
-  onArtifactDelete
+  onArtifactDelete,
 }) => {
   const { t } = useTranslation();
   const [code, setCode] = useState(initialCode);
   const [executing, setExecuting] = useState(false);
-  const [output, setOutput] = useState('');
-  const [error, setError] = useState('');
+  const [output, setOutput] = useState("");
+  const [error, setError] = useState("");
   const [selectedLanguage, setSelectedLanguage] = useState(language);
   const [selectedArtifact, setSelectedArtifact] = useState(null);
   const editorRef = useRef(null);
@@ -40,21 +48,21 @@ const CodeExecutionComponent = ({
 
   const handleExecute = async () => {
     if (!code.trim()) return;
-    
+
     setExecuting(true);
-    setOutput('');
-    setError('');
-    
+    setOutput("");
+    setError("");
+
     try {
       const result = await onExecute(code, selectedLanguage);
-      
+
       if (result.success) {
-        setOutput(result.stdout || 'Execution completed successfully.');
+        setOutput(result.stdout || "Execution completed successfully.");
       } else {
-        setError(result.stderr || result.error || 'Execution failed.');
+        setError(result.stderr || result.error || "Execution failed.");
       }
     } catch (err) {
-      setError(`Error: ${err.message || 'Unknown error occurred'}`);
+      setError(`Error: ${err.message || "Unknown error occurred"}`);
     } finally {
       setExecuting(false);
     }
@@ -96,20 +104,20 @@ const CodeExecutionComponent = ({
 
   const getLanguageOptions = () => {
     return [
-      { value: 'python', label: 'Python' },
-      { value: 'javascript', label: 'JavaScript' },
-      { value: 'typescript', label: 'TypeScript' },
-      { value: 'java', label: 'Java' },
-      { value: 'cpp', label: 'C++' },
-      { value: 'csharp', label: 'C#' },
-      { value: 'go', label: 'Go' },
-      { value: 'rust', label: 'Rust' },
-      { value: 'ruby', label: 'Ruby' },
-      { value: 'php', label: 'PHP' },
-      { value: 'swift', label: 'Swift' },
-      { value: 'kotlin', label: 'Kotlin' },
-      { value: 'bash', label: 'Bash' },
-      { value: 'sql', label: 'SQL' }
+      { value: "python", label: "Python" },
+      { value: "javascript", label: "JavaScript" },
+      { value: "typescript", label: "TypeScript" },
+      { value: "java", label: "Java" },
+      { value: "cpp", label: "C++" },
+      { value: "csharp", label: "C#" },
+      { value: "go", label: "Go" },
+      { value: "rust", label: "Rust" },
+      { value: "ruby", label: "Ruby" },
+      { value: "php", label: "PHP" },
+      { value: "swift", label: "Swift" },
+      { value: "kotlin", label: "Kotlin" },
+      { value: "bash", label: "Bash" },
+      { value: "sql", label: "SQL" },
     ];
   };
 
@@ -119,45 +127,45 @@ const CodeExecutionComponent = ({
         <div className="code-editor-header">
           <div className="code-editor-title">
             <FiCode className="icon" />
-            <span>{t('Code Editor')}</span>
+            <span>{t("Code Editor")}</span>
           </div>
           {showControls && (
             <div className="code-editor-controls">
-              <select 
-                value={selectedLanguage} 
+              <select
+                value={selectedLanguage}
                 onChange={handleLanguageChange}
                 className="language-selector"
                 disabled={readOnly || executing}
               >
-                {getLanguageOptions().map(option => (
+                {getLanguageOptions().map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
                   </option>
                 ))}
               </select>
-              <button 
-                className="icon-button" 
-                onClick={handleCopy} 
-                title={t('Copy code')}
+              <button
+                className="icon-button"
+                onClick={handleCopy}
+                title={t("Copy code")}
                 disabled={!code.trim()}
               >
                 <FiCopy />
               </button>
-              <button 
-                className="icon-button" 
-                onClick={handleSave} 
-                title={t('Save code')}
+              <button
+                className="icon-button"
+                onClick={handleSave}
+                title={t("Save code")}
                 disabled={readOnly || !code.trim()}
               >
                 <FiSave />
               </button>
-              <button 
-                className="primary-button execute-button" 
+              <button
+                className="primary-button execute-button"
                 onClick={handleExecute}
                 disabled={readOnly || executing || !code.trim()}
               >
                 <FiPlay className="icon" />
-                {executing ? t('Executing...') : t('Execute')}
+                {executing ? t("Executing...") : t("Execute")}
               </button>
             </div>
           )}
@@ -179,19 +187,19 @@ const CodeExecutionComponent = ({
               className="code-textarea"
               value={code}
               onChange={handleCodeChange}
-              placeholder={t('Enter your code here...')}
+              placeholder={t("Enter your code here...")}
               disabled={readOnly || executing}
               spellCheck={false}
             />
           )}
         </div>
       </div>
-      
+
       {(output || error) && (
         <div className="code-output-container">
           <div className="code-output-header">
             <div className="code-output-title">
-              <span>{t('Output')}</span>
+              <span>{t("Output")}</span>
             </div>
           </div>
           <div className="code-output-content">
@@ -208,35 +216,35 @@ const CodeExecutionComponent = ({
           </div>
         </div>
       )}
-      
+
       {artifacts && artifacts.length > 0 && (
         <div className="artifacts-container">
           <div className="artifacts-header">
             <div className="artifacts-title">
-              <span>{t('Artifacts')}</span>
+              <span>{t("Artifacts")}</span>
             </div>
           </div>
           <div className="artifacts-list">
-            {artifacts.map(artifact => (
+            {artifacts.map((artifact) => (
               <div key={artifact.id} className="artifact-item">
-                <div 
+                <div
                   className="artifact-name"
                   onClick={() => handleArtifactClick(artifact)}
                 >
                   {artifact.name}
                 </div>
                 <div className="artifact-actions">
-                  <button 
-                    className="icon-button" 
-                    onClick={() => handleArtifactDownload(artifact)} 
-                    title={t('Download')}
+                  <button
+                    className="icon-button"
+                    onClick={() => handleArtifactDownload(artifact)}
+                    title={t("Download")}
                   >
                     <FiDownload />
                   </button>
-                  <button 
-                    className="icon-button" 
-                    onClick={() => handleArtifactDelete(artifact.id)} 
-                    title={t('Delete')}
+                  <button
+                    className="icon-button"
+                    onClick={() => handleArtifactDelete(artifact.id)}
+                    title={t("Delete")}
                   >
                     <FiTrash2 />
                   </button>
@@ -246,12 +254,12 @@ const CodeExecutionComponent = ({
           </div>
         </div>
       )}
-      
+
       {selectedArtifact && (
         <div className="artifact-modal">
           <div className="artifact-modal-content">
-            <ArtifactDisplay 
-              artifact={selectedArtifact} 
+            <ArtifactDisplay
+              artifact={selectedArtifact}
               onClose={handleArtifactClose}
               onDownload={handleArtifactDownload}
             />

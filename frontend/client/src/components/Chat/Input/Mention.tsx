@@ -1,14 +1,14 @@
-import { useState, useRef, useEffect } from 'react';
-import { AutoSizer, List } from 'react-virtualized';
-import { EModelEndpoint } from 'librechat-data-provider';
-import type { SetterOrUpdater } from 'recoil';
-import type { MentionOption, ConvoGenerator } from '~/common';
-import useSelectMention from '~/hooks/Input/useSelectMention';
-import { useAssistantsMapContext } from '~/Providers';
-import useMentions from '~/hooks/Input/useMentions';
-import { useLocalize, useCombobox, TranslationKeys } from '~/hooks';
-import { removeCharIfLast } from '~/utils';
-import MentionItem from './MentionItem';
+import { EModelEndpoint } from "librechat-data-provider";
+import { useEffect, useRef, useState } from "react";
+import { AutoSizer, List } from "react-virtualized";
+import type { SetterOrUpdater } from "recoil";
+import type { ConvoGenerator, MentionOption } from "~/common";
+import { type TranslationKeys, useCombobox, useLocalize } from "~/hooks";
+import useMentions from "~/hooks/Input/useMentions";
+import useSelectMention from "~/hooks/Input/useSelectMention";
+import { useAssistantsMapContext } from "~/Providers";
+import { removeCharIfLast } from "~/utils";
+import MentionItem from "./MentionItem";
 
 const ROW_HEIGHT = 40;
 
@@ -16,8 +16,8 @@ export default function Mention({
   setShowMentionPopover,
   newConversation,
   textAreaRef,
-  commandChar = '@',
-  placeholder = 'com_ui_mention',
+  commandChar = "@",
+  placeholder = "com_ui_mention",
   includeAssistants = true,
 }: {
   setShowMentionPopover: SetterOrUpdater<boolean>;
@@ -52,7 +52,7 @@ export default function Mention({
   const [inputOptions, setInputOptions] = useState<MentionOption[]>(options);
 
   const { open, setOpen, searchValue, setSearchValue, matches } = useCombobox({
-    value: '',
+    value: "",
     options: inputOptions,
   });
 
@@ -62,7 +62,7 @@ export default function Mention({
     }
 
     const defaultSelect = () => {
-      setSearchValue('');
+      setSearchValue("");
       setOpen(false);
       setShowMentionPopover(false);
       onSelectMention?.(mention);
@@ -72,30 +72,41 @@ export default function Mention({
       }
     };
 
-    if (mention.type === 'endpoint' && mention.value === EModelEndpoint.agents) {
-      setSearchValue('');
+    if (
+      mention.type === "endpoint" &&
+      mention.value === EModelEndpoint.agents
+    ) {
+      setSearchValue("");
       setInputOptions(agentsList ?? []);
       setActiveIndex(0);
       inputRef.current?.focus();
-    } else if (mention.type === 'endpoint' && mention.value === EModelEndpoint.assistants) {
-      setSearchValue('');
+    } else if (
+      mention.type === "endpoint" &&
+      mention.value === EModelEndpoint.assistants
+    ) {
+      setSearchValue("");
       setInputOptions(assistantListMap[EModelEndpoint.assistants] ?? []);
       setActiveIndex(0);
       inputRef.current?.focus();
-    } else if (mention.type === 'endpoint' && mention.value === EModelEndpoint.azureAssistants) {
-      setSearchValue('');
+    } else if (
+      mention.type === "endpoint" &&
+      mention.value === EModelEndpoint.azureAssistants
+    ) {
+      setSearchValue("");
       setInputOptions(assistantListMap[EModelEndpoint.azureAssistants] ?? []);
       setActiveIndex(0);
       inputRef.current?.focus();
-    } else if (mention.type === 'endpoint') {
-      const models = (modelsConfig?.[mention.value || ''] ?? []).map((model) => ({
-        value: mention.value,
-        label: model,
-        type: 'model',
-      }));
+    } else if (mention.type === "endpoint") {
+      const models = (modelsConfig?.[mention.value || ""] ?? []).map(
+        (model) => ({
+          value: mention.value,
+          label: model,
+          type: "model",
+        }),
+      );
 
       setActiveIndex(0);
-      setSearchValue('');
+      setSearchValue("");
       setInputOptions(models);
       inputRef.current?.focus();
     } else {
@@ -118,10 +129,15 @@ export default function Mention({
     };
   }, []);
 
-  const type = commandChar !== '@' ? 'add-convo' : 'mention';
+  const type = commandChar !== "@" ? "add-convo" : "mention";
   useEffect(() => {
-    const currentActiveItem = document.getElementById(`${type}-item-${activeIndex}`);
-    currentActiveItem?.scrollIntoView({ behavior: 'instant', block: 'nearest' });
+    const currentActiveItem = document.getElementById(
+      `${type}-item-${activeIndex}`,
+    );
+    currentActiveItem?.scrollIntoView({
+      behavior: "instant",
+      block: "nearest",
+    });
   }, [type, activeIndex]);
 
   const rowRenderer = ({
@@ -149,7 +165,7 @@ export default function Mention({
           timeoutRef.current = null;
           handleSelect(mention);
         }}
-        name={mention.label ?? ''}
+        name={mention.label ?? ""}
         icon={mention.icon}
         description={mention.description}
         isActive={index === activeIndex}
@@ -161,33 +177,35 @@ export default function Mention({
     <div className="absolute bottom-28 z-10 w-full space-y-2">
       <div className="popover border-token-border-light rounded-2xl border bg-white p-2 shadow-lg dark:bg-gray-700">
         <input
-          // The user expects focus to transition to the input field when the popover is opened
-          // eslint-disable-next-line jsx-a11y/no-autofocus
-          autoFocus
           ref={inputRef}
           placeholder={localize(placeholder)}
           className="mb-1 w-full border-0 bg-white p-2 text-sm focus:outline-none dark:bg-gray-700 dark:text-gray-200"
           autoComplete="off"
           value={searchValue}
           onKeyDown={(e) => {
-            if (e.key === 'Escape') {
+            if (e.key === "Escape") {
               setOpen(false);
               setShowMentionPopover(false);
               textAreaRef.current?.focus();
             }
-            if (e.key === 'ArrowDown') {
+            if (e.key === "ArrowDown") {
               setActiveIndex((prevIndex) => (prevIndex + 1) % matches.length);
-            } else if (e.key === 'ArrowUp') {
-              setActiveIndex((prevIndex) => (prevIndex - 1 + matches.length) % matches.length);
-            } else if (e.key === 'Enter' || e.key === 'Tab') {
-              const mentionOption = matches[activeIndex] as MentionOption | undefined;
-              if (mentionOption?.type === 'endpoint') {
+            } else if (e.key === "ArrowUp") {
+              setActiveIndex(
+                (prevIndex) =>
+                  (prevIndex - 1 + matches.length) % matches.length,
+              );
+            } else if (e.key === "Enter" || e.key === "Tab") {
+              const mentionOption = matches[activeIndex] as
+                | MentionOption
+                | undefined;
+              if (mentionOption?.type === "endpoint") {
                 e.preventDefault();
-              } else if (e.key === 'Enter') {
+              } else if (e.key === "Enter") {
                 e.preventDefault();
               }
               handleSelect(matches[activeIndex] as MentionOption);
-            } else if (e.key === 'Backspace' && searchValue === '') {
+            } else if (e.key === "Backspace" && searchValue === "") {
               setOpen(false);
               setShowMentionPopover(false);
               textAreaRef.current?.focus();

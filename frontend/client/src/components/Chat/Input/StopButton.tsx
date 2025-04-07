@@ -1,20 +1,20 @@
-import { TooltipAnchor } from '~/components/ui';
-import { useLocalize } from '~/hooks';
-import { cn } from '~/utils';
+import { TooltipAnchor } from "~/components/ui";
+import { useLocalize } from "~/hooks";
+import { cn } from "~/utils";
 
 export default function StopButton({ stop, setShowStopButton }) {
   const localize = useLocalize();
 
   return (
     <TooltipAnchor
-      description={localize('com_nav_stop_generating')}
+      description={localize("com_nav_stop_generating")}
       render={
         <button
           type="button"
           className={cn(
-            'rounded-full bg-text-primary p-1.5 text-text-primary outline-offset-4 transition-all duration-200 disabled:cursor-not-allowed disabled:text-text-secondary disabled:opacity-10',
+            "rounded-full bg-text-primary p-1.5 text-text-primary outline-offset-4 transition-all duration-200 disabled:cursor-not-allowed disabled:text-text-secondary disabled:opacity-10",
           )}
-          aria-label={localize('com_nav_stop_generating')}
+          aria-label={localize("com_nav_stop_generating")}
           onClick={(e) => {
             setShowStopButton(false);
             stop(e);
@@ -28,10 +28,17 @@ export default function StopButton({ stop, setShowStopButton }) {
             xmlns="http://www.w3.org/2000/svg"
             className="icon-lg text-surface-primary"
           >
-            <rect x="7" y="7" width="10" height="10" rx="1.25" fill="currentColor"></rect>
+            <rect
+              x="7"
+              y="7"
+              width="10"
+              height="10"
+              rx="1.25"
+              fill="currentColor"
+            />
           </svg>
         </button>
       }
-    ></TooltipAnchor>
+    />
   );
 }

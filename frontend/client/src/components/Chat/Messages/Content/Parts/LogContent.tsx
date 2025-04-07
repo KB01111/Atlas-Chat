@@ -1,10 +1,14 @@
-import { isAfter } from 'date-fns';
-import React, { useMemo } from 'react';
-import { imageExtRegex } from 'librechat-data-provider';
-import type { TFile, TAttachment, TAttachmentMetadata } from 'librechat-data-provider';
-import Image from '~/components/Chat/Messages/Content/Image';
-import { useLocalize } from '~/hooks';
-import LogLink from './LogLink';
+import { isAfter } from "date-fns";
+import type {
+  TAttachment,
+  TAttachmentMetadata,
+  TFile,
+} from "librechat-data-provider";
+import { imageExtRegex } from "librechat-data-provider";
+import React, { useMemo } from "react";
+import Image from "~/components/Chat/Messages/Content/Image";
+import { useLocalize } from "~/hooks";
+import LogLink from "./LogLink";
 
 interface LogContentProps {
   output?: string;
@@ -18,15 +22,19 @@ type ImageAttachment = TFile &
     width: number;
   };
 
-const LogContent: React.FC<LogContentProps> = ({ output = '', renderImages, attachments }) => {
+const LogContent: React.FC<LogContentProps> = ({
+  output = "",
+  renderImages,
+  attachments,
+}) => {
   const localize = useLocalize();
 
   const processedContent = useMemo(() => {
     if (!output) {
-      return '';
+      return "";
     }
 
-    const parts = output.split('Generated files:');
+    const parts = output.split("Generated files:");
     return parts[0].trim();
   }, [output]);
 
@@ -35,7 +43,11 @@ const LogContent: React.FC<LogContentProps> = ({ output = '', renderImages, atta
     const nonImageAtts: TAttachment[] = [];
 
     attachments?.forEach((attachment) => {
-      const { width, height, filepath = null } = attachment as TFile & TAttachmentMetadata;
+      const {
+        width,
+        height,
+        filepath = null,
+      } = attachment as TFile & TAttachmentMetadata;
       const isImage =
         imageExtRegex.test(attachment.filename) &&
         width != null &&
@@ -56,11 +68,12 @@ const LogContent: React.FC<LogContentProps> = ({ output = '', renderImages, atta
 
   const renderAttachment = (file: TAttachment) => {
     const now = new Date();
-    const expiresAt = typeof file.expiresAt === 'number' ? new Date(file.expiresAt) : null;
+    const expiresAt =
+      typeof file.expiresAt === "number" ? new Date(file.expiresAt) : null;
     const isExpired = expiresAt ? isAfter(now, expiresAt) : false;
 
     if (isExpired) {
-      return `${file.filename} ${localize('com_download_expired')}`;
+      return `${file.filename} ${localize("com_download_expired")}`;
     }
 
     // const expirationText = expiresAt
@@ -69,8 +82,8 @@ const LogContent: React.FC<LogContentProps> = ({ output = '', renderImages, atta
 
     return (
       <LogLink href={file.filepath} filename={file.filename}>
-        {'- '}
-        {file.filename} {localize('com_click_to_download')}
+        {"- "}
+        {file.filename} {localize("com_click_to_download")}
       </LogLink>
     );
   };
@@ -80,11 +93,11 @@ const LogContent: React.FC<LogContentProps> = ({ output = '', renderImages, atta
       {processedContent && <div>{processedContent}</div>}
       {nonImageAttachments.length > 0 && (
         <div>
-          <p>{localize('com_generated_files')}</p>
+          <p>{localize("com_generated_files")}</p>
           {nonImageAttachments.map((file, index) => (
             <React.Fragment key={file.filepath}>
               {renderAttachment(file)}
-              {index < nonImageAttachments.length - 1 && ', '}
+              {index < nonImageAttachments.length - 1 && ", "}
             </React.Fragment>
           ))}
         </div>

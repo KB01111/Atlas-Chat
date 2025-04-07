@@ -1,12 +1,12 @@
-import { Suspense } from 'react';
-import { useRecoilValue } from 'recoil';
-import type { TMessage, TMessageContentParts } from 'librechat-data-provider';
-import { UnfinishedMessage } from './MessageContent';
-import { DelayedRender } from '~/components/ui';
-import MarkdownLite from './MarkdownLite';
-import { cn } from '~/utils';
-import store from '~/store';
-import Part from './Part';
+import type { TMessage, TMessageContentParts } from "librechat-data-provider";
+import { Suspense } from "react";
+import { useRecoilValue } from "recoil";
+import { DelayedRender } from "~/components/ui";
+import store from "~/store";
+import { cn } from "~/utils";
+import MarkdownLite from "./MarkdownLite";
+import { UnfinishedMessage } from "./MessageContent";
+import Part from "./Part";
 
 const SearchContent = ({ message }: { message: TMessage }) => {
   const enableUserMsgMarkdown = useRecoilValue(store.enableUserMsgMarkdown);
@@ -34,7 +34,10 @@ const SearchContent = ({ message }: { message: TMessage }) => {
         {message.unfinished === true && (
           <Suspense>
             <DelayedRender delay={250}>
-              <UnfinishedMessage message={message} key={`unfinished-${messageId}`} />
+              <UnfinishedMessage
+                message={message}
+                key={`unfinished-${messageId}`}
+              />
             </DelayedRender>
           </Suspense>
         )}
@@ -45,13 +48,15 @@ const SearchContent = ({ message }: { message: TMessage }) => {
   return (
     <div
       className={cn(
-        'markdown prose dark:prose-invert light w-full break-words',
-        message.isCreatedByUser && !enableUserMsgMarkdown && 'whitespace-pre-wrap',
-        message.isCreatedByUser ? 'dark:text-gray-20' : 'dark:text-gray-70',
+        "markdown prose dark:prose-invert light w-full break-words",
+        message.isCreatedByUser &&
+          !enableUserMsgMarkdown &&
+          "whitespace-pre-wrap",
+        message.isCreatedByUser ? "dark:text-gray-20" : "dark:text-gray-70",
       )}
       dir="auto"
     >
-      <MarkdownLite content={message.text || ''} />
+      <MarkdownLite content={message.text || ""} />
     </div>
   );
 };

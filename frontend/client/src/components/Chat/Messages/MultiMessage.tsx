@@ -1,15 +1,13 @@
-import { useRecoilState } from 'recoil';
-import { useEffect, useCallback } from 'react';
-import { isAssistantsEndpoint } from 'librechat-data-provider';
-import type { TMessage } from 'librechat-data-provider';
-import type { TMessageProps } from '~/common';
+import type { TMessage } from "librechat-data-provider";
+import { isAssistantsEndpoint } from "librechat-data-provider";
+import { useCallback, useEffect } from "react";
+import { useRecoilState } from "recoil";
+import type { TMessageProps } from "~/common";
 
-import MessageContent from '~/components/Messages/MessageContent';
-
-import MessageParts from './MessageParts';
-
-import Message from './Message';
-import store from '~/store';
+import MessageContent from "~/components/Messages/MessageContent";
+import store from "~/store";
+import Message from "./Message";
+import MessageParts from "./MessageParts";
 
 export default function MultiMessage({
   // messageId is used recursively here
@@ -18,7 +16,9 @@ export default function MultiMessage({
   currentEditId,
   setCurrentEditId,
 }: TMessageProps) {
-  const [siblingIdx, setSiblingIdx] = useRecoilState(store.messagesSiblingIdxFamily(messageId));
+  const [siblingIdx, setSiblingIdx] = useRecoilState(
+    store.messagesSiblingIdxFamily(messageId),
+  );
 
   const setSiblingIdxRev = useCallback(
     (value: number) => {
@@ -30,7 +30,10 @@ export default function MultiMessage({
   useEffect(() => {
     // reset siblingIdx when the tree changes, mostly when a new message is submitting.
     setSiblingIdx(0);
-  }, [messagesTree?.length]);
+  }, [
+    // reset siblingIdx when the tree changes, mostly when a new message is submitting.
+    setSiblingIdx,
+  ]);
 
   useEffect(() => {
     if (messagesTree?.length && siblingIdx >= messagesTree.length) {
@@ -38,11 +41,13 @@ export default function MultiMessage({
     }
   }, [siblingIdx, messagesTree?.length, setSiblingIdx]);
 
-  if (!(messagesTree && messagesTree.length)) {
+  if (!messagesTree?.length) {
     return null;
   }
 
-  const message = messagesTree[messagesTree.length - siblingIdx - 1] as TMessage | undefined;
+  const message = messagesTree[messagesTree.length - siblingIdx - 1] as
+    | TMessage
+    | undefined;
 
   if (!message) {
     return null;
@@ -60,7 +65,8 @@ export default function MultiMessage({
         setSiblingIdx={setSiblingIdxRev}
       />
     );
-  } else if (message.content) {
+  }
+  if (message.content) {
     return (
       <MessageContent
         key={message.messageId}

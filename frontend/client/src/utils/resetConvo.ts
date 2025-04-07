@@ -1,4 +1,4 @@
-import type { TMessage } from 'librechat-data-provider';
+import type { TMessage } from "librechat-data-provider";
 
 export default function resetConvo(messages: TMessage[], sender: string) {
   if (messages.length === 0) {
@@ -8,13 +8,13 @@ export default function resetConvo(messages: TMessage[], sender: string) {
   const lastModel = modelMessages[modelMessages.length - 1].sender;
   if (lastModel !== sender) {
     console.log(
-      'Model change! Resetting convo. Original messages: ',
+      "Model change! Resetting convo. Original messages: ",
       messages,
-      'filtered messages: ',
+      "filtered messages: ",
       modelMessages,
-      'last model: ',
+      "last model: ",
       lastModel,
-      'sender: ',
+      "sender: ",
       sender,
     );
     return true;

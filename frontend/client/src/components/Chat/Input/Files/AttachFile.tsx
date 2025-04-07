@@ -1,7 +1,7 @@
-import React, { useRef } from 'react';
-import { FileUpload, TooltipAnchor, AttachmentIcon } from '~/components';
-import { useLocalize, useFileHandling } from '~/hooks';
-import { cn } from '~/utils';
+import React, { useRef } from "react";
+import { AttachmentIcon, FileUpload, TooltipAnchor } from "~/components";
+import { useFileHandling, useLocalize } from "~/hooks";
+import { cn } from "~/utils";
 
 const AttachFile = ({ disabled }: { disabled?: boolean | null }) => {
   const localize = useLocalize();
@@ -13,23 +13,23 @@ const AttachFile = ({ disabled }: { disabled?: boolean | null }) => {
   return (
     <FileUpload ref={inputRef} handleFileChange={handleFileChange}>
       <TooltipAnchor
-        description={localize('com_sidepanel_attach_files')}
+        description={localize("com_sidepanel_attach_files")}
         id="attach-file"
         disabled={isUploadDisabled}
         render={
           <button
             type="button"
-            aria-label={localize('com_sidepanel_attach_files')}
+            aria-label={localize("com_sidepanel_attach_files")}
             disabled={isUploadDisabled}
             className={cn(
-              'flex size-9 items-center justify-center rounded-full p-1 transition-colors hover:bg-surface-hover focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50',
+              "flex size-9 items-center justify-center rounded-full p-1 transition-colors hover:bg-surface-hover focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50",
             )}
             onKeyDownCapture={(e) => {
               if (!inputRef.current) {
                 return;
               }
-              if (e.key === 'Enter' || e.key === ' ') {
-                inputRef.current.value = '';
+              if (e.key === "Enter" || e.key === " ") {
+                inputRef.current.value = "";
                 inputRef.current.click();
               }
             }}
@@ -37,7 +37,7 @@ const AttachFile = ({ disabled }: { disabled?: boolean | null }) => {
               if (!inputRef.current) {
                 return;
               }
-              inputRef.current.value = '';
+              inputRef.current.value = "";
               inputRef.current.click();
             }}
           >

@@ -1,13 +1,21 @@
-import debounce from 'lodash/debounce';
-import React, { createContext, useContext, useState, useMemo } from 'react';
-import { isAgentsEndpoint, isAssistantsEndpoint } from 'librechat-data-provider';
-import type * as t from 'librechat-data-provider';
-import type { Endpoint, SelectedValues } from '~/common';
-import { useAgentsMapContext, useAssistantsMapContext, useChatContext } from '~/Providers';
-import { useEndpoints, useSelectorEffects, useKeyDialog } from '~/hooks';
-import useSelectMention from '~/hooks/Input/useSelectMention';
-import { useGetEndpointsQuery } from '~/data-provider';
-import { filterItems } from './utils';
+import type * as t from "librechat-data-provider";
+import {
+  isAgentsEndpoint,
+  isAssistantsEndpoint,
+} from "librechat-data-provider";
+import debounce from "lodash/debounce";
+import type React from "react";
+import { createContext, useContext, useMemo, useState } from "react";
+import type { Endpoint, SelectedValues } from "~/common";
+import { useGetEndpointsQuery } from "~/data-provider";
+import { useEndpoints, useKeyDialog, useSelectorEffects } from "~/hooks";
+import useSelectMention from "~/hooks/Input/useSelectMention";
+import {
+  useAgentsMapContext,
+  useAssistantsMapContext,
+  useChatContext,
+} from "~/Providers";
+import { filterItems } from "./utils";
 
 type ModelSelectorContextType = {
   // State
@@ -32,12 +40,16 @@ type ModelSelectorContextType = {
   handleSelectModel: (endpoint: Endpoint, model: string) => void;
 } & ReturnType<typeof useKeyDialog>;
 
-const ModelSelectorContext = createContext<ModelSelectorContextType | undefined>(undefined);
+const ModelSelectorContext = createContext<
+  ModelSelectorContextType | undefined
+>(undefined);
 
 export function useModelSelectorContext() {
   const context = useContext(ModelSelectorContext);
   if (context === undefined) {
-    throw new Error('useModelSelectorContext must be used within a ModelSelectorProvider');
+    throw new Error(
+      "useModelSelectorContext must be used within a ModelSelectorProvider",
+    );
   }
   return context;
 }
@@ -47,12 +59,18 @@ interface ModelSelectorProviderProps {
   startupConfig: t.TStartupConfig | undefined;
 }
 
-export function ModelSelectorProvider({ children, startupConfig }: ModelSelectorProviderProps) {
+export function ModelSelectorProvider({
+  children,
+  startupConfig,
+}: ModelSelectorProviderProps) {
   const agentsMap = useAgentsMapContext();
   const assistantsMap = useAssistantsMapContext();
   const { data: endpointsConfig } = useGetEndpointsQuery();
   const { conversation, newConversation } = useChatContext();
-  const modelSpecs = useMemo(() => startupConfig?.modelSpecs?.list ?? [], [startupConfig]);
+  const modelSpecs = useMemo(
+    () => startupConfig?.modelSpecs?.list ?? [],
+    [startupConfig],
+  );
   const { mappedEndpoints, endpointRequiresUserKey } = useEndpoints({
     agentsMap,
     assistantsMap,
@@ -70,9 +88,9 @@ export function ModelSelectorProvider({ children, startupConfig }: ModelSelector
 
   // State
   const [selectedValues, setSelectedValues] = useState<SelectedValues>({
-    endpoint: conversation?.endpoint || '',
-    model: conversation?.model || '',
-    modelSpec: conversation?.spec || '',
+    endpoint: conversation?.endpoint || "",
+    model: conversation?.model || "",
+    modelSpec: conversation?.spec || "",
   });
   useSelectorEffects({
     agentsMap,
@@ -81,8 +99,10 @@ export function ModelSelectorProvider({ children, startupConfig }: ModelSelector
     setSelectedValues,
   });
 
-  const [searchValue, setSearchValueState] = useState('');
-  const [endpointSearchValues, setEndpointSearchValues] = useState<Record<string, string>>({});
+  const [searchValue, setSearchValueState] = useState("");
+  const [endpointSearchValues, setEndpointSearchValues] = useState<
+    Record<string, string>
+  >({});
 
   const keyProps = useKeyDialog();
 
@@ -114,9 +134,9 @@ export function ModelSelectorProvider({ children, startupConfig }: ModelSelector
     let model = spec.preset.model ?? null;
     onSelectSpec?.(spec);
     if (isAgentsEndpoint(spec.preset.endpoint)) {
-      model = spec.preset.agent_id ?? '';
+      model = spec.preset.agent_id ?? "";
     } else if (isAssistantsEndpoint(spec.preset.endpoint)) {
-      model = spec.preset.assistant_id ?? '';
+      model = spec.preset.assistant_id ?? "";
     }
     setSelectedValues({
       endpoint: spec.preset.endpoint,
@@ -132,8 +152,8 @@ export function ModelSelectorProvider({ children, startupConfig }: ModelSelector
       }
       setSelectedValues({
         endpoint: endpoint.value,
-        model: '',
-        modelSpec: '',
+        model: "",
+        modelSpec: "",
       });
     }
   };
@@ -142,12 +162,12 @@ export function ModelSelectorProvider({ children, startupConfig }: ModelSelector
     if (isAgentsEndpoint(endpoint.value)) {
       onSelectEndpoint?.(endpoint.value, {
         agent_id: model,
-        model: agentsMap?.[model]?.model ?? '',
+        model: agentsMap?.[model]?.model ?? "",
       });
     } else if (isAssistantsEndpoint(endpoint.value)) {
       onSelectEndpoint?.(endpoint.value, {
         assistant_id: model,
-        model: assistantsMap?.[endpoint.value]?.[model]?.model ?? '',
+        model: assistantsMap?.[endpoint.value]?.[model]?.model ?? "",
       });
     } else if (endpoint.value) {
       onSelectEndpoint?.(endpoint.value, { model });
@@ -155,7 +175,7 @@ export function ModelSelectorProvider({ children, startupConfig }: ModelSelector
     setSelectedValues({
       endpoint: endpoint.value,
       model,
-      modelSpec: '',
+      modelSpec: "",
     });
   };
 
@@ -184,5 +204,9 @@ export function ModelSelectorProvider({ children, startupConfig }: ModelSelector
     ...keyProps,
   };
 
-  return <ModelSelectorContext.Provider value={value}>{children}</ModelSelectorContext.Provider>;
+  return (
+    <ModelSelectorContext.Provider value={value}>
+      {children}
+    </ModelSelectorContext.Provider>
+  );
 }

@@ -1,4 +1,4 @@
-import { DotsIcon, TrashIcon } from '~/components/svg';
+import { DotsIcon, TrashIcon } from "~/components/svg";
 
 export default function Template() {
   return (
@@ -37,10 +37,14 @@ export default function Template() {
               </div>
             </td>
             <td className="border-b border-black/10 text-left text-gray-600 dark:border-white/10 dark:text-gray-300 [tr:last-child_&]:border-b-0">
-              <div className="px-4 py-2 [tr[data-disabled=true]_&]:opacity-50">June 11, 2023</div>
+              <div className="px-4 py-2 [tr[data-disabled=true]_&]:opacity-50">
+                June 11, 2023
+              </div>
             </td>
             <td className="border-b border-black/10 text-left text-gray-600 dark:border-white/10 dark:text-gray-300 [tr:last-child_&]:border-b-0">
-              <div className="px-4 py-2 [tr[data-disabled=true]_&]:opacity-50">11 mb</div>
+              <div className="px-4 py-2 [tr[data-disabled=true]_&]:opacity-50">
+                11 mb
+              </div>
             </td>
             <td className="border-b border-black/10 text-left text-gray-600 dark:border-white/10 dark:text-gray-300 [tr:last-child_&]:border-b-0">
               <div className="px-4 py-2 [tr[data-disabled=true]_&]:opacity-50">
@@ -65,7 +69,7 @@ export default function Template() {
                         width="1em"
                         xmlns="http://www.w3.org/2000/svg"
                       >
-                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                       </svg>
                     </a>
                   </span>

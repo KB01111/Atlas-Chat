@@ -1,7 +1,10 @@
-import type { TMessageProps } from '~/common';
-import { cn } from '~/utils';
+import type { TMessageProps } from "~/common";
+import { cn } from "~/utils";
 
-type TSiblingSwitchProps = Pick<TMessageProps, 'siblingIdx' | 'siblingCount' | 'setSiblingIdx'>;
+type TSiblingSwitchProps = Pick<
+  TMessageProps,
+  "siblingIdx" | "siblingCount" | "setSiblingIdx"
+>;
 
 export default function SiblingSwitch({
   siblingIdx,
@@ -10,27 +13,28 @@ export default function SiblingSwitch({
 }: TSiblingSwitchProps) {
   if (siblingIdx === undefined) {
     return null;
-  } else if (siblingCount === undefined) {
+  }
+  if (siblingCount === undefined) {
     return null;
   }
 
   const previous = () => {
-    setSiblingIdx && setSiblingIdx(siblingIdx - 1);
+    setSiblingIdx?.(siblingIdx - 1);
   };
 
   const next = () => {
-    setSiblingIdx && setSiblingIdx(siblingIdx + 1);
+    setSiblingIdx?.(siblingIdx + 1);
   };
 
   return siblingCount > 1 ? (
     <div className="visible flex items-center justify-center gap-1 self-center pt-0 text-xs">
       <button
         className={cn(
-          'hover-button rounded-md p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-500 dark:text-gray-400/70 dark:hover:bg-gray-700 dark:hover:text-gray-200 disabled:dark:hover:text-gray-400 md:group-hover:visible md:group-[.final-completion]:visible',
+          "hover-button rounded-md p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-500 dark:text-gray-400/70 dark:hover:bg-gray-700 dark:hover:text-gray-200 disabled:dark:hover:text-gray-400 md:group-hover:visible md:group-[.final-completion]:visible",
         )}
         type="button"
         onClick={previous}
-        disabled={siblingIdx == 0}
+        disabled={siblingIdx === 0}
       >
         <svg
           stroke="currentColor"
@@ -52,11 +56,11 @@ export default function SiblingSwitch({
       </span>
       <button
         className={cn(
-          'hover-button rounded-md p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-500 dark:text-gray-400/70 dark:hover:bg-gray-700 dark:hover:text-gray-200 disabled:dark:hover:text-gray-400 md:group-hover:visible md:group-[.final-completion]:visible',
+          "hover-button rounded-md p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-500 dark:text-gray-400/70 dark:hover:bg-gray-700 dark:hover:text-gray-200 disabled:dark:hover:text-gray-400 md:group-hover:visible md:group-[.final-completion]:visible",
         )}
         type="button"
         onClick={next}
-        disabled={siblingIdx == siblingCount - 1}
+        disabled={siblingIdx === siblingCount - 1}
       >
         <svg
           stroke="currentColor"

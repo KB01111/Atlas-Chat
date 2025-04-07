@@ -1,9 +1,9 @@
-import { ContentTypes, Constants } from 'librechat-data-provider';
-import type { TMessage, TMessageContentParts } from 'librechat-data-provider';
+import type { TMessage, TMessageContentParts } from "librechat-data-provider";
+import { Constants, ContentTypes } from "librechat-data-provider";
 
 export const getLengthAndLastTenChars = (str?: string): string => {
-  if (typeof str !== 'string' || str.length === 0) {
-    return '0';
+  if (typeof str !== "string" || str.length === 0) {
+    return "0";
   }
 
   const length = str.length;
@@ -11,9 +11,12 @@ export const getLengthAndLastTenChars = (str?: string): string => {
   return `${length}${lastTenChars}`;
 };
 
-export const getLatestText = (message?: TMessage | null, includeIndex?: boolean): string => {
+export const getLatestText = (
+  message?: TMessage | null,
+  includeIndex?: boolean,
+): string => {
   if (!message) {
-    return '';
+    return "";
   }
   if (message.text) {
     return message.text;
@@ -25,24 +28,22 @@ export const getLatestText = (message?: TMessage | null, includeIndex?: boolean)
         continue;
       }
 
-      const text = (typeof part?.text === 'string' ? part.text : part?.text.value) ?? '';
+      const text =
+        (typeof part?.text === "string" ? part.text : part?.text.value) ?? "";
       if (text.length > 0) {
         if (includeIndex === true) {
           return `${text}-${i}`;
-        } else {
-          return text;
         }
-      } else {
-        continue;
+        return text;
       }
     }
   }
-  return '';
+  return "";
 };
 
 export const getAllContentText = (message?: TMessage | null): string => {
   if (!message) {
-    return '';
+    return "";
   }
 
   if (message.text) {
@@ -52,20 +53,26 @@ export const getAllContentText = (message?: TMessage | null): string => {
   if (message.content && message.content.length > 0) {
     return message.content
       .filter((part) => part.type === ContentTypes.TEXT)
-      .map((part) => (typeof part.text === 'string' ? part.text : part.text.value) || '')
+      .map(
+        (part) =>
+          (typeof part.text === "string" ? part.text : part.text.value) || "",
+      )
       .filter((text) => text.length > 0)
-      .join('\n');
+      .join("\n");
   }
 
-  return '';
+  return "";
 };
 
-export const getTextKey = (message?: TMessage | null, convoId?: string | null) => {
+export const getTextKey = (
+  message?: TMessage | null,
+  convoId?: string | null,
+) => {
   if (!message) {
-    return '';
+    return "";
   }
   const text = getLatestText(message, true);
-  return `${(message.messageId as string | null) ?? ''}${
+  return `${(message.messageId as string | null) ?? ""}${
     Constants.COMMON_DIVIDER
   }${getLengthAndLastTenChars(text)}${Constants.COMMON_DIVIDER}${
     message.conversationId ?? convoId
@@ -73,9 +80,9 @@ export const getTextKey = (message?: TMessage | null, convoId?: string | null) =
 };
 
 export const scrollToEnd = (callback?: () => void) => {
-  const messagesEndElement = document.getElementById('messages-end');
+  const messagesEndElement = document.getElementById("messages-end");
   if (messagesEndElement) {
-    messagesEndElement.scrollIntoView({ behavior: 'instant' });
+    messagesEndElement.scrollIntoView({ behavior: "instant" });
     if (callback) {
       callback();
     }

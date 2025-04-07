@@ -1,11 +1,11 @@
-import { useEffect } from 'react';
-import { EToolResources } from 'librechat-data-provider';
-import type { ExtendedFile } from '~/common';
-import { useDeleteFilesMutation } from '~/data-provider';
-import { useFileDeletion } from '~/hooks/Files';
-import FileContainer from './FileContainer';
-import { logger } from '~/utils';
-import Image from './Image';
+import type { EToolResources } from "librechat-data-provider";
+import { useEffect } from "react";
+import type { ExtendedFile } from "~/common";
+import { useDeleteFilesMutation } from "~/data-provider";
+import { useFileDeletion } from "~/hooks/Files";
+import { logger } from "~/utils";
+import FileContainer from "./FileContainer";
+import Image from "./Image";
 
 export default function FileRow({
   files: _files,
@@ -37,21 +37,26 @@ export default function FileRow({
   const { mutateAsync } = useDeleteFilesMutation({
     onMutate: async () =>
       logger.log(
-        'agents',
-        'Deleting files: agent_id, assistant_id, tool_resource',
+        "agents",
+        "Deleting files: agent_id, assistant_id, tool_resource",
         agent_id,
         assistant_id,
         tool_resource,
       ),
     onSuccess: () => {
-      console.log('Files deleted');
+      console.log("Files deleted");
     },
     onError: (error) => {
-      console.log('Error deleting files:', error);
+      console.log("Error deleting files:", error);
     },
   });
 
-  const { deleteFile } = useFileDeletion({ mutateAsync, agent_id, assistant_id, tool_resource });
+  const { deleteFile } = useFileDeletion({
+    mutateAsync,
+    agent_id,
+    assistant_id,
+    tool_resource,
+  });
 
   useEffect(() => {
     if (files.length === 0) {
@@ -66,7 +71,7 @@ export default function FileRow({
       setFilesLoading(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [files]);
+  }, [files, setFilesLoading]);
 
   if (files.length === 0) {
     return null;
@@ -75,20 +80,20 @@ export default function FileRow({
   const renderFiles = () => {
     const rowStyle = isRTL
       ? {
-        display: 'flex',
-        flexDirection: 'row-reverse',
-        flexWrap: 'wrap',
-        gap: '4px',
-        width: '100%',
-        maxWidth: '100%',
-      }
+          display: "flex",
+          flexDirection: "row-reverse",
+          flexWrap: "wrap",
+          gap: "4px",
+          width: "100%",
+          maxWidth: "100%",
+        }
       : {
-        display: 'flex',
-        flexWrap: 'wrap',
-        gap: '4px',
-        width: '100%',
-        maxWidth: '100%',
-      };
+          display: "flex",
+          flexWrap: "wrap",
+          gap: "4px",
+          width: "100%",
+          maxWidth: "100%",
+        };
 
     return (
       <div style={rowStyle as React.CSSProperties}>
@@ -110,13 +115,13 @@ export default function FileRow({
               }
               deleteFile({ file, setFiles });
             };
-            const isImage = file.type?.startsWith('image') ?? false;
+            const isImage = file.type?.startsWith("image") ?? false;
 
             return (
               <div
                 key={index}
                 style={{
-                  flexBasis: '70px',
+                  flexBasis: "70px",
                   flexGrow: 0,
                   flexShrink: 0,
                 }}

@@ -1,15 +1,15 @@
-import React, { useCallback } from 'react';
-import { Edit3, Check, X } from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
-import type { BadgeItem } from '~/common';
-import { useChatBadges, useLocalize } from '~/hooks';
-import { Button, Badge } from '~/components/ui';
+import type { LucideIcon } from "lucide-react";
+import { Check, Edit3, X } from "lucide-react";
+import React, { useCallback } from "react";
+import type { BadgeItem } from "~/common";
+import { Badge, Button } from "~/components/ui";
+import { useChatBadges, useLocalize } from "~/hooks";
 
 interface EditBadgesProps {
   isEditingChatBadges: boolean;
   handleCancelBadges: () => void;
   handleSaveBadges: () => void;
-  setBadges: React.Dispatch<React.SetStateAction<Pick<BadgeItem, 'id'>[]>>;
+  setBadges: React.Dispatch<React.SetStateAction<Pick<BadgeItem, "id">[]>>;
 }
 
 const EditBadgesComponent = ({
@@ -24,7 +24,7 @@ const EditBadgesComponent = ({
 
   const handleRestoreBadge = useCallback(
     (badgeId: string) => {
-      setBadges((prev: Pick<BadgeItem, 'id'>[]) => [...prev, { id: badgeId }]);
+      setBadges((prev: Pick<BadgeItem, "id">[]) => [...prev, { id: badgeId }]);
     },
     [setBadges],
   );
@@ -42,7 +42,7 @@ const EditBadgesComponent = ({
           </div>
         </span>
         <span className="text-token-text-secondary line-clamp-3 flex-1 py-0.5 font-semibold">
-          {localize('com_ui_save_badge_changes')}
+          {localize("com_ui_save_badge_changes")}
         </span>
         <div className="flex h-8 gap-2">
           <Button

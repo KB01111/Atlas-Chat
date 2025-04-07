@@ -1,14 +1,29 @@
-import { imageExtRegex } from 'librechat-data-provider';
-import type { TAttachment, TFile, TAttachmentMetadata } from 'librechat-data-provider';
-import Image from '~/components/Chat/Messages/Content/Image';
+import type {
+  TAttachment,
+  TAttachmentMetadata,
+  TFile,
+} from "librechat-data-provider";
+import { imageExtRegex } from "librechat-data-provider";
+import Image from "~/components/Chat/Messages/Content/Image";
 
-export default function Attachment({ attachment }: { attachment?: TAttachment }) {
+export default function Attachment({
+  attachment,
+}: {
+  attachment?: TAttachment;
+}) {
   if (!attachment) {
     return null;
   }
-  const { width, height, filepath = null } = attachment as TFile & TAttachmentMetadata;
+  const {
+    width,
+    height,
+    filepath = null,
+  } = attachment as TFile & TAttachmentMetadata;
   const isImage =
-    imageExtRegex.test(attachment.filename) && width != null && height != null && filepath != null;
+    imageExtRegex.test(attachment.filename) &&
+    width != null &&
+    height != null &&
+    filepath != null;
 
   if (isImage) {
     return (

@@ -1,14 +1,18 @@
-import { memo, useMemo, useState } from 'react';
-import { useRecoilValue, useRecoilState } from 'recoil';
-import { ContentTypes } from 'librechat-data-provider';
-import type { TMessageContentParts, TAttachment, Agents } from 'librechat-data-provider';
-import { ThinkingButton } from '~/components/Artifacts/Thinking';
-import EditTextPart from './Parts/EditTextPart';
-import useLocalize from '~/hooks/useLocalize';
-import { mapAttachments } from '~/utils/map';
-import { MessageContext } from '~/Providers';
-import store from '~/store';
-import Part from './Part';
+import type {
+  Agents,
+  TAttachment,
+  TMessageContentParts,
+} from "librechat-data-provider";
+import { ContentTypes } from "librechat-data-provider";
+import { memo, useMemo, useState } from "react";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { ThinkingButton } from "~/components/Artifacts/Thinking";
+import useLocalize from "~/hooks/useLocalize";
+import { MessageContext } from "~/Providers";
+import store from "~/store";
+import { mapAttachments } from "~/utils/map";
+import Part from "./Part";
+import EditTextPart from "./Parts/EditTextPart";
 
 type ContentPartsProps = {
   content: Array<TMessageContentParts | undefined> | undefined;
@@ -19,10 +23,12 @@ type ContentPartsProps = {
   isLast: boolean;
   isSubmitting: boolean;
   edit?: boolean;
-  enterEdit?: (cancel?: boolean) => void | null | undefined;
+  enterEdit?: (cancel?: boolean) => undefined | null | undefined;
   siblingIdx?: number;
   setSiblingIdx?:
-    | ((value: number) => void | React.Dispatch<React.SetStateAction<number>>)
+    | ((
+        value: number,
+      ) => undefined | React.Dispatch<React.SetStateAction<number>>)
     | null
     | undefined;
 };
@@ -42,24 +48,28 @@ const ContentParts = memo(
     setSiblingIdx,
   }: ContentPartsProps) => {
     const localize = useLocalize();
-    const [showThinking, setShowThinking] = useRecoilState<boolean>(store.showThinking);
+    const [showThinking, setShowThinking] = useRecoilState<boolean>(
+      store.showThinking,
+    );
     const [isExpanded, setIsExpanded] = useState(showThinking);
     const messageAttachmentsMap = useRecoilValue(store.messageAttachmentsMap);
     const attachmentMap = useMemo(
-      () => mapAttachments(attachments ?? messageAttachmentsMap[messageId] ?? []),
+      () =>
+        mapAttachments(attachments ?? messageAttachmentsMap[messageId] ?? []),
       [attachments, messageAttachmentsMap, messageId],
     );
 
     const hasReasoningParts = useMemo(() => {
-      const hasThinkPart = content?.some((part) => part?.type === ContentTypes.THINK) ?? false;
+      const hasThinkPart =
+        content?.some((part) => part?.type === ContentTypes.THINK) ?? false;
       const allThinkPartsHaveContent =
         content?.every((part) => {
           if (part?.type !== ContentTypes.THINK) {
             return true;
           }
 
-          if (typeof part.think === 'string') {
-            const cleanedContent = part.think.replace(/<\/?think>/g, '').trim();
+          if (typeof part.think === "string") {
+            const cleanedContent = part.think.replace(/<\/?think>/g, "").trim();
             return cleanedContent.length > 0;
           }
 
@@ -75,7 +85,10 @@ const ContentParts = memo(
       return (
         <>
           {content.map((part, idx) => {
-            if (part?.type !== ContentTypes.TEXT || typeof part.text !== 'string') {
+            if (
+              part?.type !== ContentTypes.TEXT ||
+              typeof part.text !== "string"
+            ) {
               return null;
             }
 
@@ -110,7 +123,9 @@ const ContentParts = memo(
                 })
               }
               label={
-                isSubmitting && isLast ? localize('com_ui_thinking') : localize('com_ui_thoughts')
+                isSubmitting && isLast
+                  ? localize("com_ui_thinking")
+                  : localize("com_ui_thoughts")
               }
             />
           </div>
@@ -119,7 +134,8 @@ const ContentParts = memo(
           .filter((part) => part)
           .map((part, idx) => {
             const toolCallId =
-              (part?.[ContentTypes.TOOL_CALL] as Agents.ToolCall | undefined)?.id ?? '';
+              (part?.[ContentTypes.TOOL_CALL] as Agents.ToolCall | undefined)
+                ?.id ?? "";
             const attachments = attachmentMap[toolCallId];
 
             return (

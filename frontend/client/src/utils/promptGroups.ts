@@ -1,20 +1,20 @@
-import { InfiniteCollections, QueryKeys } from 'librechat-data-provider';
-import type { InfiniteData, QueryClient } from '@tanstack/react-query';
+import type { InfiniteData, QueryClient } from "@tanstack/react-query";
 import type {
-  PromptGroupListResponse,
   PromptGroupListData,
+  PromptGroupListResponse,
   TPromptGroup,
-} from 'librechat-data-provider';
+} from "librechat-data-provider";
+import { InfiniteCollections, QueryKeys } from "librechat-data-provider";
 import {
   addData,
+  addToCacheList,
   deleteData,
+  getRecordByProperty,
+  removeFromCacheList,
+  updateCacheList,
   updateData,
   updateFields,
-  addToCacheList,
-  updateCacheList,
-  removeFromCacheList,
-  getRecordByProperty,
-} from './collection';
+} from "./collection";
 
 export const addPromptGroup = (
   data: InfiniteData<PromptGroupListResponse>,
@@ -24,7 +24,8 @@ export const addPromptGroup = (
     data,
     InfiniteCollections.PROMPT_GROUPS,
     newPromptGroup,
-    (page) => page.promptGroups.findIndex((group) => group._id === newPromptGroup._id),
+    (page) =>
+      page.promptGroups.findIndex((group) => group._id === newPromptGroup._id),
   );
 };
 
@@ -36,7 +37,10 @@ export const updatePromptGroup = (
     data,
     InfiniteCollections.PROMPT_GROUPS,
     updatedPromptGroup,
-    (page) => page.promptGroups.findIndex((group) => group._id === updatedPromptGroup._id),
+    (page) =>
+      page.promptGroups.findIndex(
+        (group) => group._id === updatedPromptGroup._id,
+      ),
   );
 };
 
@@ -60,13 +64,15 @@ export const updateGroupFields = (
     data,
     updatedGroup,
     InfiniteCollections.PROMPT_GROUPS,
-    '_id',
+    "_id",
     callback,
   );
 };
 
 export const getSnippet = (promptText: string, length = 56) => {
-  return promptText.length > length ? `${promptText.slice(0, length - 3)}...` : promptText;
+  return promptText.length > length
+    ? `${promptText.slice(0, length - 3)}...`
+    : promptText;
 };
 
 export const findPromptGroup = (
@@ -80,8 +86,15 @@ export const findPromptGroup = (
   );
 };
 
-export const addGroupToAll = (queryClient: QueryClient, newGroup: TPromptGroup) => {
-  addToCacheList<TPromptGroup>(queryClient, [QueryKeys.allPromptGroups], newGroup);
+export const addGroupToAll = (
+  queryClient: QueryClient,
+  newGroup: TPromptGroup,
+) => {
+  addToCacheList<TPromptGroup>(
+    queryClient,
+    [QueryKeys.allPromptGroups],
+    newGroup,
+  );
 };
 
 export const updateGroupInAll = (
@@ -91,12 +104,20 @@ export const updateGroupInAll = (
   updateCacheList<TPromptGroup>({
     queryClient,
     queryKey: [QueryKeys.allPromptGroups],
-    searchProperty: '_id',
+    searchProperty: "_id",
     updateData: updatedGroup,
     searchValue: updatedGroup._id,
   });
 };
 
-export const removeGroupFromAll = (queryClient: QueryClient, groupId: string) => {
-  removeFromCacheList<TPromptGroup>(queryClient, [QueryKeys.allPromptGroups], '_id', groupId);
+export const removeGroupFromAll = (
+  queryClient: QueryClient,
+  groupId: string,
+) => {
+  removeFromCacheList<TPromptGroup>(
+    queryClient,
+    [QueryKeys.allPromptGroups],
+    "_id",
+    groupId,
+  );
 };

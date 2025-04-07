@@ -1,4 +1,4 @@
-import { TFile, TMessage } from 'librechat-data-provider';
+import type { TFile, TMessage } from "librechat-data-provider";
 
 type ParentMessage = TMessage & { children: TMessage[]; depth: number };
 export default function buildTree({
@@ -17,7 +17,7 @@ export default function buildTree({
   const childrenCount: Record<string, number> = {};
 
   messages.forEach((message) => {
-    const parentId = message.parentMessageId ?? '';
+    const parentId = message.parentMessageId ?? "";
     childrenCount[parentId] = (childrenCount[parentId] || 0) + 1;
 
     const extendedMessage: ParentMessage = {
@@ -28,7 +28,9 @@ export default function buildTree({
     };
 
     if (message.files && fileMap) {
-      extendedMessage.files = message.files.map((file) => fileMap[file.file_id ?? ''] ?? file);
+      extendedMessage.files = message.files.map(
+        (file) => fileMap[file.file_id ?? ""] ?? file,
+      );
     }
 
     messageMap[message.messageId] = extendedMessage;
@@ -46,9 +48,9 @@ export default function buildTree({
 }
 
 const even =
-  'w-full border-b border-black/10 dark:border-gray-800/50 text-gray-800 bg-white dark:text-gray-200 group dark:bg-gray-800 hover:bg-gray-200/25 hover:text-gray-700  dark:hover:bg-gray-800 dark:hover:text-gray-200';
+  "w-full border-b border-black/10 dark:border-gray-800/50 text-gray-800 bg-white dark:text-gray-200 group dark:bg-gray-800 hover:bg-gray-200/25 hover:text-gray-700  dark:hover:bg-gray-800 dark:hover:text-gray-200";
 const odd =
-  'w-full border-b border-black/10 bg-gray-50 dark:border-gray-800/50 text-gray-800 dark:text-gray-200 group bg-gray-200 dark:bg-gray-700 hover:bg-gray-200/40 hover:text-gray-700 dark:hover:bg-gray-800 dark:hover:text-gray-200';
+  "w-full border-b border-black/10 bg-gray-50 dark:border-gray-800/50 text-gray-800 dark:text-gray-200 group bg-gray-200 dark:bg-gray-700 hover:bg-gray-200/40 hover:text-gray-700 dark:hover:bg-gray-800 dark:hover:text-gray-200";
 
 export function groupIntoList({
   messages,

@@ -1,9 +1,12 @@
-import React from 'react';
-import { EarthIcon } from 'lucide-react';
-import { isAgentsEndpoint, isAssistantsEndpoint } from 'librechat-data-provider';
-import type { Endpoint } from '~/common';
-import { useModelSelectorContext } from '../ModelSelectorContext';
-import { CustomMenuItem as MenuItem } from '../CustomMenu';
+import {
+  isAgentsEndpoint,
+  isAssistantsEndpoint,
+} from "librechat-data-provider";
+import { EarthIcon } from "lucide-react";
+import React from "react";
+import type { Endpoint } from "~/common";
+import { CustomMenuItem as MenuItem } from "../CustomMenu";
+import { useModelSelectorContext } from "../ModelSelectorContext";
 
 interface EndpointModelItemProps {
   modelId: string | null;
@@ -11,14 +14,23 @@ interface EndpointModelItemProps {
   isSelected: boolean;
 }
 
-export function EndpointModelItem({ modelId, endpoint, isSelected }: EndpointModelItemProps) {
+export function EndpointModelItem({
+  modelId,
+  endpoint,
+  isSelected,
+}: EndpointModelItemProps) {
   const { handleSelectModel } = useModelSelectorContext();
   let isGlobal = false;
   let modelName = modelId;
-  const avatarUrl = endpoint?.modelIcons?.[modelId ?? ''] || null;
+  const avatarUrl = endpoint?.modelIcons?.[modelId ?? ""] || null;
 
   // Use custom names if available
-  if (endpoint && modelId && isAgentsEndpoint(endpoint.value) && endpoint.agentNames?.[modelId]) {
+  if (
+    endpoint &&
+    modelId &&
+    isAgentsEndpoint(endpoint.value) &&
+    endpoint.agentNames?.[modelId]
+  ) {
     modelName = endpoint.agentNames[modelId];
 
     const modelInfo = endpoint?.models?.find((m) => m.name === modelId);
@@ -35,20 +47,25 @@ export function EndpointModelItem({ modelId, endpoint, isSelected }: EndpointMod
   return (
     <MenuItem
       key={modelId}
-      onClick={() => handleSelectModel(endpoint, modelId ?? '')}
+      onClick={() => handleSelectModel(endpoint, modelId ?? "")}
       className="flex h-8 w-full cursor-pointer items-center justify-start rounded-lg px-3 py-2 text-sm"
     >
       <div className="flex items-center gap-2">
         {avatarUrl ? (
           <div className="flex h-5 w-5 items-center justify-center overflow-hidden rounded-full">
-            <img src={avatarUrl} alt={modelName ?? ''} className="h-full w-full object-cover" />
+            <img
+              src={avatarUrl}
+              alt={modelName ?? ""}
+              className="h-full w-full object-cover"
+            />
           </div>
-        ) : (isAgentsEndpoint(endpoint.value) || isAssistantsEndpoint(endpoint.value)) &&
+        ) : (isAgentsEndpoint(endpoint.value) ||
+            isAssistantsEndpoint(endpoint.value)) &&
           endpoint.icon ? (
-            <div className="flex h-5 w-5 items-center justify-center overflow-hidden rounded-full">
-              {endpoint.icon}
-            </div>
-          ) : null}
+          <div className="flex h-5 w-5 items-center justify-center overflow-hidden rounded-full">
+            {endpoint.icon}
+          </div>
+        ) : null}
         <span>{modelName}</span>
       </div>
       {isGlobal && <EarthIcon className="ml-auto size-4 text-green-400" />}

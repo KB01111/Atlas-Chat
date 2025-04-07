@@ -1,18 +1,18 @@
-import { useRecoilValue } from 'recoil';
-import { useCallback, useMemo, memo } from 'react';
-import type { TMessage } from 'librechat-data-provider';
-import type { TMessageProps, TMessageIcon } from '~/common';
-import MessageContent from '~/components/Chat/Messages/Content/MessageContent';
-import PlaceholderRow from '~/components/Chat/Messages/ui/PlaceholderRow';
-import SiblingSwitch from '~/components/Chat/Messages/SiblingSwitch';
-import HoverButtons from '~/components/Chat/Messages/HoverButtons';
-import MessageIcon from '~/components/Chat/Messages/MessageIcon';
-import { Plugin } from '~/components/Messages/Content';
-import SubRow from '~/components/Chat/Messages/SubRow';
-import { MessageContext } from '~/Providers';
-import { useMessageActions } from '~/hooks';
-import { cn, logger } from '~/utils';
-import store from '~/store';
+import type { TMessage } from "librechat-data-provider";
+import { memo, useCallback, useMemo } from "react";
+import { useRecoilValue } from "recoil";
+import type { TMessageIcon, TMessageProps } from "~/common";
+import MessageContent from "~/components/Chat/Messages/Content/MessageContent";
+import HoverButtons from "~/components/Chat/Messages/HoverButtons";
+import MessageIcon from "~/components/Chat/Messages/MessageIcon";
+import SiblingSwitch from "~/components/Chat/Messages/SiblingSwitch";
+import SubRow from "~/components/Chat/Messages/SubRow";
+import PlaceholderRow from "~/components/Chat/Messages/ui/PlaceholderRow";
+import { Plugin } from "~/components/Messages/Content";
+import { useMessageActions } from "~/hooks";
+import { MessageContext } from "~/Providers";
+import store from "~/store";
+import { cn, logger } from "~/utils";
 
 type MessageRenderProps = {
   message?: TMessage;
@@ -21,7 +21,11 @@ type MessageRenderProps = {
   isSubmittingFamily?: boolean;
 } & Pick<
   TMessageProps,
-  'currentEditId' | 'setCurrentEditId' | 'siblingIdx' | 'setSiblingIdx' | 'siblingCount'
+  | "currentEditId"
+  | "setCurrentEditId"
+  | "siblingIdx"
+  | "setSiblingIdx"
+  | "siblingCount"
 >;
 
 const MessageRender = memo(
@@ -61,10 +65,15 @@ const MessageRender = memo(
     const maximizeChatSpace = useRecoilValue(store.maximizeChatSpace);
     const fontSize = useRecoilValue(store.fontSize);
 
-    const handleRegenerateMessage = useCallback(() => regenerateMessage(), [regenerateMessage]);
+    const handleRegenerateMessage = useCallback(
+      () => regenerateMessage(),
+      [regenerateMessage],
+    );
     const hasNoChildren = !(msg?.children?.length ?? 0);
     const isLast = useMemo(
-      () => hasNoChildren && (msg?.depth === latestMessage?.depth || msg?.depth === -1),
+      () =>
+        hasNoChildren &&
+        (msg?.depth === latestMessage?.depth || msg?.depth === -1),
       [hasNoChildren, msg?.depth, latestMessage?.depth],
     );
     const isLatestMessage = msg?.messageId === latestMessage?.messageId;
@@ -94,10 +103,12 @@ const MessageRender = memo(
       () =>
         showCardRender && !isLatestMessage
           ? () => {
-            logger.log(`Message Card click: Setting ${msg?.messageId} as latest message`);
-            logger.dir(msg);
-            setLatestMessage(msg!);
-          }
+              logger.log(
+                `Message Card click: Setting ${msg?.messageId} as latest message`,
+              );
+              logger.dir(msg);
+              setLatestMessage(msg!);
+            }
           : undefined,
       [showCardRender, isLatestMessage, msg, setLatestMessage],
     );
@@ -107,17 +118,20 @@ const MessageRender = memo(
     }
 
     const baseClasses = {
-      common: 'group mx-auto flex flex-1 gap-3 transition-all duration-300 transform-gpu ',
-      card: 'relative w-full gap-1 rounded-lg border border-border-medium bg-surface-primary-alt p-2 md:w-1/2 md:gap-3 md:p-4',
+      common:
+        "group mx-auto flex flex-1 gap-3 transition-all duration-300 transform-gpu ",
+      card: "relative w-full gap-1 rounded-lg border border-border-medium bg-surface-primary-alt p-2 md:w-1/2 md:gap-3 md:p-4",
       chat: maximizeChatSpace
-        ? 'w-full max-w-full md:px-5 lg:px-1 xl:px-5'
-        : 'md:max-w-[47rem] xl:max-w-[55rem]',
+        ? "w-full max-w-full md:px-5 lg:px-1 xl:px-5"
+        : "md:max-w-[47rem] xl:max-w-[55rem]",
     };
 
     const conditionalClasses = {
-      latestCard: isLatestCard ? 'bg-surface-secondary' : '',
-      cardRender: showCardRender ? 'cursor-pointer transition-colors duration-300' : '',
-      focus: 'focus:outline-none focus:ring-2 focus:ring-border-xheavy',
+      latestCard: isLatestCard ? "bg-surface-secondary" : "",
+      cardRender: showCardRender
+        ? "cursor-pointer transition-colors duration-300"
+        : "",
+      focus: "focus:outline-none focus:ring-2 focus:ring-border-xheavy",
     };
 
     return (
@@ -130,15 +144,15 @@ const MessageRender = memo(
           conditionalClasses.latestCard,
           conditionalClasses.cardRender,
           conditionalClasses.focus,
-          'message-render',
+          "message-render",
         )}
         onClick={clickHandler}
         onKeyDown={(e) => {
-          if ((e.key === 'Enter' || e.key === ' ') && clickHandler) {
+          if ((e.key === "Enter" || e.key === " ") && clickHandler) {
             clickHandler();
           }
         }}
-        role={showCardRender ? 'button' : undefined}
+        role={showCardRender ? "button" : undefined}
         tabIndex={showCardRender ? 0 : undefined}
       >
         {isLatestCard && (
@@ -147,17 +161,23 @@ const MessageRender = memo(
 
         <div className="relative flex flex-shrink-0 flex-col items-center">
           <div className="flex h-6 w-6 items-center justify-center overflow-hidden rounded-full">
-            <MessageIcon iconData={iconData} assistant={assistant} agent={agent} />
+            <MessageIcon
+              iconData={iconData}
+              assistant={assistant}
+              agent={agent}
+            />
           </div>
         </div>
 
         <div
           className={cn(
-            'relative flex w-11/12 flex-col',
-            msg.isCreatedByUser ? 'user-turn' : 'agent-turn',
+            "relative flex w-11/12 flex-col",
+            msg.isCreatedByUser ? "user-turn" : "agent-turn",
           )}
         >
-          <h2 className={cn('select-none font-semibold', fontSize)}>{messageLabel}</h2>
+          <h2 className={cn("select-none font-semibold", fontSize)}>
+            {messageLabel}
+          </h2>
 
           <div className="flex flex-col gap-1">
             <div className="flex max-w-full flex-grow flex-col gap-0">
@@ -173,7 +193,7 @@ const MessageRender = memo(
                   ask={ask}
                   edit={edit}
                   isLast={isLast}
-                  text={msg.text || ''}
+                  text={msg.text || ""}
                   message={msg}
                   enterEdit={enterEdit}
                   error={!!(msg.error ?? false)}

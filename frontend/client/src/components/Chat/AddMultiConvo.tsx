@@ -1,10 +1,10 @@
-import { PlusCircle } from 'lucide-react';
-import { isAssistantsEndpoint } from 'librechat-data-provider';
-import type { TConversation } from 'librechat-data-provider';
-import { useChatContext, useAddedChatContext } from '~/Providers';
-import { TooltipAnchor } from '~/components';
-import { mainTextareaId } from '~/common';
-import { useLocalize } from '~/hooks';
+import type { TConversation } from "librechat-data-provider";
+import { isAssistantsEndpoint } from "librechat-data-provider";
+import { PlusCircle } from "lucide-react";
+import { mainTextareaId } from "~/common";
+import { TooltipAnchor } from "~/components";
+import { useLocalize } from "~/hooks";
+import { useAddedChatContext, useChatContext } from "~/Providers";
 
 function AddMultiConvo() {
   const { conversation } = useChatContext();
@@ -12,11 +12,10 @@ function AddMultiConvo() {
   const localize = useLocalize();
 
   const clickHandler = () => {
-
     const { title: _t, ...convo } = conversation ?? ({} as TConversation);
     setAddedConvo({
       ...convo,
-      title: '',
+      title: "",
     });
 
     const textarea = document.getElementById(mainTextareaId);
@@ -36,8 +35,8 @@ function AddMultiConvo() {
   return (
     <TooltipAnchor
       id="add-multi-conversation-button"
-      aria-label={localize('com_ui_add_multi_conversation')}
-      description={localize('com_ui_add_multi_conversation')}
+      aria-label={localize("com_ui_add_multi_conversation")}
+      description={localize("com_ui_add_multi_conversation")}
       tabIndex={0}
       role="button"
       onClick={clickHandler}
