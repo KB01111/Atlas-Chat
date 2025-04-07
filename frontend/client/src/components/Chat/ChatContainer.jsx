@@ -61,7 +61,7 @@ const ChatContainer = () => {
         {
           before_id: oldestMessageId,
           limit: 50,
-        }
+        },
       );
 
       if (olderMessages.messages && olderMessages.messages.length > 0) {
@@ -98,8 +98,8 @@ const ChatContainer = () => {
         prev.map((msg) =>
           msg.id === newMessage.id
             ? { ...response.message, status: "sent" }
-            : msg
-        )
+            : msg,
+        ),
       );
 
       // Add agent response
@@ -113,8 +113,8 @@ const ChatContainer = () => {
       // Mark message as failed
       setMessages((prev) =>
         prev.map((msg) =>
-          msg.id === `temp-${Date.now()}` ? { ...msg, status: "failed" } : msg
-        )
+          msg.id === `temp-${Date.now()}` ? { ...msg, status: "failed" } : msg,
+        ),
       );
 
       setError("Failed to send message");
