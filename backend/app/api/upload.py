@@ -41,10 +41,7 @@ SESSION_TTL_SECONDS = int(timedelta(hours=24).total_seconds())
 async def get_redis(request: Request) -> aioredis.Redis:
     """FastAPI dependency to get Redis connection pool."""
     # Store pool on app state to reuse connection
-    if (
-        not hasattr(request.app.state, "redis_pool")
-        or request.app.state.redis_pool is None
-    ):
+    if not hasattr(request.app.state, "redis_pool") or request.app.state.redis_pool is None:
         try:
             request.app.state.redis_pool = aioredis.from_url(
                 f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}",
@@ -58,9 +55,7 @@ async def get_redis(request: Request) -> aioredis.Redis:
         except Exception as e:
             logging.error(f"Failed to connect to Redis: {e}")
             request.app.state.redis_pool = None  # Ensure it's None if connection fails
-            raise HTTPException(
-                status_code=503, detail="Could not connect to Redis service."
-            )
+            raise HTTPException(status_code=503, detail="Could not connect to Redis service.")
     # Check if pool was successfully created on retry
     if request.app.state.redis_pool is None:
         raise HTTPException(status_code=503, detail="Redis service unavailable.")
@@ -102,9 +97,7 @@ class UploadSessionData(BaseModel):
     file_type: str
     total_chunks: int
     uploaded_chunks: int
-    chunk_files: List[
-        str
-    ]  # Store paths relative to CHUNK_DIR? No, store full path for now.
+    chunk_files: List[str]  # Store paths relative to CHUNK_DIR? No, store full path for now.
     session_dir: str
     metadata: Dict
     status: str  # initialized, uploading, completed, aborted, failed
@@ -172,9 +165,7 @@ async def initialize_upload(
         )
     except Exception as e:
         logging.error(f"Error initializing upload: {str(e)}")
-        raise HTTPException(
-            status_code=500, detail=f"Failed to initialize upload: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=f"Failed to initialize upload: {str(e)}")
 
 
 @router.post("/chunk")
@@ -188,9 +179,7 @@ async def upload_chunk(
     try:
         session_data_dict = await get_session_data(redis, uploadId)
         if not session_data_dict:
-            raise HTTPException(
-                status_code=404, detail="Upload session not found or expired"
-            )
+            raise HTTPException(status_code=404, detail="Upload session not found or expired")
 
         session = UploadSessionData(**session_data_dict)
 
@@ -205,12 +194,8 @@ async def upload_chunk(
 
         # Check if chunk already uploaded (simple check based on count)
         # More robust check could involve checking redis list/set of uploaded indices
-        if chunkIndex in [
-            int(os.path.basename(p).split(".")[0]) for p in session.chunk_files
-        ]:
-            logging.warning(
-                f"Chunk {chunkIndex} for upload {uploadId} already uploaded. Skipping."
-            )
+        if chunkIndex in [int(os.path.basename(p).split(".")[0]) for p in session.chunk_files]:
+            logging.warning(f"Chunk {chunkIndex} for upload {uploadId} already uploaded. Skipping.")
             # Return current progress instead of error?
             return {
                 "uploadId": uploadId,
@@ -235,9 +220,7 @@ async def upload_chunk(
             with open(chunk_path, "wb") as f:
                 shutil.copyfileobj(chunk.file, f)
         except Exception as e:
-            logging.error(
-                f"Failed to save chunk {chunkIndex} for upload {uploadId}: {e}"
-            )
+            logging.error(f"Failed to save chunk {chunkIndex} for upload {uploadId}: {e}")
             raise HTTPException(status_code=500, detail="Failed to save file chunk")
         finally:
             await chunk.close()  # Ensure file handle is closed
@@ -281,17 +264,13 @@ async def complete_upload(
     """Complete a chunked file upload by combining chunks"""
     session_data_dict = await get_session_data(redis, uploadId)
     if not session_data_dict:
-        raise HTTPException(
-            status_code=404, detail="Upload session not found or expired"
-        )
+        raise HTTPException(status_code=404, detail="Upload session not found or expired")
 
     session = UploadSessionData(**session_data_dict)
 
     try:
         if session.user_id != current_user["user_id"]:
-            raise HTTPException(
-                status_code=403, detail="Not authorized to complete this upload"
-            )
+            raise HTTPException(status_code=403, detail="Not authorized to complete this upload")
 
         if session.status == "completed":
             logging.warning(f"Upload {uploadId} already completed.")
@@ -334,9 +313,7 @@ async def complete_upload(
                     with open(chunk_path, "rb") as chunk_file:
                         shutil.copyfileobj(chunk_file, output_file)
                 except FileNotFoundError:
-                    logging.error(
-                        f"Chunk file not found during completion: {chunk_path}"
-                    )
+                    logging.error(f"Chunk file not found during completion: {chunk_path}")
                     session.status = "failed"
                     await save_session_data(
                         redis, uploadId, session.dict(), expire=SESSION_TTL_SECONDS
@@ -351,9 +328,7 @@ async def complete_upload(
                     await save_session_data(
                         redis, uploadId, session.dict(), expire=SESSION_TTL_SECONDS
                     )
-                    raise HTTPException(
-                        status_code=500, detail="Failed to combine chunks."
-                    )
+                    raise HTTPException(status_code=500, detail="Failed to combine chunks.")
 
         session.status = "completed"
         session.output_path = output_path
@@ -368,9 +343,7 @@ async def complete_upload(
             "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         ]:
             session.processing_status = "pending"
-            background_tasks.add_task(
-                process_file_with_unstructured, output_path, uploadId, redis
-            )
+            background_tasks.add_task(process_file_with_unstructured, output_path, uploadId, redis)
 
         # Save final completed state (keep TTL for now)
         await save_session_data(redis, uploadId, session.dict())
@@ -394,17 +367,13 @@ async def complete_upload(
         # Update status to failed in Redis if possible
         try:
             session.status = "failed"
-            await save_session_data(
-                redis, uploadId, session.dict(), expire=SESSION_TTL_SECONDS
-            )
+            await save_session_data(redis, uploadId, session.dict(), expire=SESSION_TTL_SECONDS)
         except Exception as redis_e:
             logging.error(
                 f"Failed to update upload {uploadId} status to failed in Redis: {redis_e}"
             )
 
-        raise HTTPException(
-            status_code=500, detail=f"Failed to complete upload: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=f"Failed to complete upload: {str(e)}")
 
 
 @router.post("/abort")
@@ -418,18 +387,14 @@ async def abort_upload(
     session_data_dict = await get_session_data(redis, uploadId)
     if not session_data_dict:
         # If session doesn't exist, maybe it expired or was already cleaned up. Return success.
-        logging.warning(
-            f"Attempted to abort non-existent or expired upload session: {uploadId}"
-        )
+        logging.warning(f"Attempted to abort non-existent or expired upload session: {uploadId}")
         return {"uploadId": uploadId, "status": "aborted (or expired)"}
 
     session = UploadSessionData(**session_data_dict)
 
     try:
         if session.user_id != current_user["user_id"]:
-            raise HTTPException(
-                status_code=403, detail="Not authorized to abort this upload"
-            )
+            raise HTTPException(status_code=403, detail="Not authorized to abort this upload")
 
         # Clean up chunks regardless of current status if abort is requested
         background_tasks.add_task(cleanup_chunks, session.session_dir)
@@ -442,9 +407,7 @@ async def abort_upload(
     except HTTPException:  # Re-raise HTTPExceptions directly
         raise
     except aioredis.RedisError as e:
-        logging.error(
-            f"Redis error during upload abort for {uploadId}: {e}", exc_info=True
-        )
+        logging.error(f"Redis error during upload abort for {uploadId}: {e}", exc_info=True)
         # Still try to return success-like response if session is gone, but log the Redis error
         # If Redis fails during delete, the key might remain until TTL expires.
         raise HTTPException(
@@ -452,9 +415,7 @@ async def abort_upload(
             detail="Upload service dependency unavailable (Redis). Could not guarantee session removal.",
         )
     except Exception as e:
-        logging.error(
-            f"Error aborting upload {uploadId}: {e}", exc_info=True
-        )  # Log full traceback
+        logging.error(f"Error aborting upload {uploadId}: {e}", exc_info=True)  # Log full traceback
         # Return generic 500 error
         raise HTTPException(
             status_code=500,
@@ -472,16 +433,12 @@ async def get_upload_status(
     try:
         session_data_dict = await get_session_data(redis, uploadId)
         if not session_data_dict:
-            raise HTTPException(
-                status_code=404, detail="Upload session not found or expired"
-            )
+            raise HTTPException(status_code=404, detail="Upload session not found or expired")
 
         session = UploadSessionData(**session_data_dict)
 
         if session.user_id != current_user["user_id"]:
-            raise HTTPException(
-                status_code=403, detail="Not authorized to view this upload"
-            )
+            raise HTTPException(status_code=403, detail="Not authorized to view this upload")
 
         return {
             "uploadId": uploadId,
@@ -508,9 +465,7 @@ async def get_upload_status(
     except HTTPException:  # Re-raise HTTPExceptions directly
         raise
     except aioredis.RedisError as e:
-        logging.error(
-            f"Redis error getting upload status for {uploadId}: {e}", exc_info=True
-        )
+        logging.error(f"Redis error getting upload status for {uploadId}: {e}", exc_info=True)
         raise HTTPException(
             status_code=503, detail="Upload service dependency unavailable (Redis)."
         )
@@ -540,15 +495,11 @@ def cleanup_chunks(session_dir: str):
         logging.error(f"Error cleaning up chunks in {session_dir}: {str(e)}")
 
 
-async def process_file_with_unstructured(
-    file_path: str, upload_id: str, redis: aioredis.Redis
-):
+async def process_file_with_unstructured(file_path: str, upload_id: str, redis: aioredis.Redis):
     """Process uploaded file with Unstructured library (run in background)."""
     session_data_dict = await get_session_data(redis, upload_id)
     if not session_data_dict:
-        logging.error(
-            f"Upload session {upload_id} not found for Unstructured processing."
-        )
+        logging.error(f"Upload session {upload_id} not found for Unstructured processing.")
         return
 
     session = UploadSessionData(**session_data_dict)
