@@ -84,7 +84,7 @@ class AtlasIntegration:
             formatted_context = self.context_manager.format_context_for_prompt(context_bundle)
 
             # Select model
-            model = self.model_router.select_model(query=message, context=formatted_context)
+            model = self.model_router.select_model(message=message, context=formatted_context)
 
             # In a real implementation, this would use the selected model
             # to generate a response
