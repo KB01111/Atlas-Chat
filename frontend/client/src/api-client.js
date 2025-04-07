@@ -102,7 +102,9 @@ export const chatAPI = {
 
   getConversation: async (conversationId) => {
     try {
-      const response = await apiClient.get(`/api/chat/conversations/${conversationId}`);
+      const response = await apiClient.get(
+        `/api/chat/conversations/${conversationId}`,
+      );
       return response.data;
     } catch (error) {
       throw error.response?.data || { detail: "Failed to get conversation" };

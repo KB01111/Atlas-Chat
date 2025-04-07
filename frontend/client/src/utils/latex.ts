@@ -8,7 +8,10 @@ const blockLatex = new RegExp(/\\\[(.*?[^\\])\\\]/, "gs");
 
 // Function to restore code blocks
 const restoreCodeBlocks = (content: string, codeBlocks: string[]) => {
-  return content.replace(/<<CODE_BLOCK_(\d+)>>/g, (match, index) => codeBlocks[index]);
+  return content.replace(
+    /<<CODE_BLOCK_(\d+)>>/g,
+    (match, index) => codeBlocks[index],
+  );
 };
 
 // Regex to identify code blocks and inline code
@@ -35,7 +38,10 @@ export const processLaTeX = (_content: string) => {
   // Convert LaTeX expressions to a markdown compatible format
   processedContent = processedContent
     .replace(inlineLatex, (match: string, equation: string) => `$${equation}$`) // Convert inline LaTeX
-    .replace(blockLatex, (match: string, equation: string) => `$$${equation}$$`); // Convert block LaTeX
+    .replace(
+      blockLatex,
+      (match: string, equation: string) => `$$${equation}$$`,
+    ); // Convert block LaTeX
 
   // Restore code blocks
   return restoreCodeBlocks(processedContent, codeBlocks);
@@ -57,10 +63,13 @@ export function preprocessLaTeX(content: string): string {
 
   // Step 2: Protect existing LaTeX expressions
   const latexExpressions: string[] = [];
-  content = content.replace(/(\$\$[\s\S]*?\$\$|\\\[[\s\S]*?\\\]|\\\(.*?\\\))/g, (match) => {
-    latexExpressions.push(match);
-    return `<<LATEX_${latexExpressions.length - 1}>>`;
-  });
+  content = content.replace(
+    /(\$\$[\s\S]*?\$\$|\\\[[\s\S]*?\\\]|\\\(.*?\\\))/g,
+    (match) => {
+      latexExpressions.push(match);
+      return `<<LATEX_${latexExpressions.length - 1}>>`;
+    },
+  );
 
   // Step 3: Escape dollar signs that are likely currency indicators
   content = content.replace(/\$(?=\d)/g, "\\$");
@@ -85,7 +94,8 @@ export function preprocessLaTeX(content: string): string {
 }
 
 export function escapeBrackets(text: string): string {
-  const pattern = /(```[\S\s]*?```|`.*?`)|\\\[([\S\s]*?[^\\])\\]|\\\((.*?)\\\)/g;
+  const pattern =
+    /(```[\S\s]*?```|`.*?`)|\\\[([\S\s]*?[^\\])\\]|\\\((.*?)\\\)/g;
   return text.replace(
     pattern,
     (

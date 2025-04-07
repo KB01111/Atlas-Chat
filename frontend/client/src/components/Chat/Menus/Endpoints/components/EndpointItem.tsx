@@ -127,19 +127,29 @@ export function EndpointItem({ endpoint }: EndpointItemProps) {
           >
             {renderIconLabel()}
             {isUserProvided && (
-              <SettingsButton endpoint={endpoint} handleOpenKeyDialog={handleOpenKeyDialog} />
+              <SettingsButton
+                endpoint={endpoint}
+                handleOpenKeyDialog={handleOpenKeyDialog}
+              />
             )}
           </div>
         }
       >
-        {isAssistantsEndpoint(endpoint.value) && endpoint.models === undefined ? (
+        {isAssistantsEndpoint(endpoint.value) &&
+        endpoint.models === undefined ? (
           <div className="flex items-center justify-center p-2">
             <Spinner />
           </div>
         ) : filteredModels ? (
-          renderEndpointModels(endpoint, endpoint.models || [], selectedModel, filteredModels)
+          renderEndpointModels(
+            endpoint,
+            endpoint.models || [],
+            selectedModel,
+            filteredModels,
+          )
         ) : (
-          endpoint.models && renderEndpointModels(endpoint, endpoint.models, selectedModel)
+          endpoint.models &&
+          renderEndpointModels(endpoint, endpoint.models, selectedModel)
         )}
       </Menu>
     );
@@ -155,7 +165,10 @@ export function EndpointItem({ endpoint }: EndpointItemProps) {
         {renderIconLabel()}
         <div className="flex items-center gap-2">
           {endpointRequiresUserKey(endpoint.value) && (
-            <SettingsButton endpoint={endpoint} handleOpenKeyDialog={handleOpenKeyDialog} />
+            <SettingsButton
+              endpoint={endpoint}
+              handleOpenKeyDialog={handleOpenKeyDialog}
+            />
           )}
           {selectedEndpoint === endpoint.value && (
             <svg

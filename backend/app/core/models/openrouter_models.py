@@ -45,8 +45,8 @@ class OpenRouterMessage(BaseModel):
     role: Literal["system", "user", "assistant", "tool"] = Field(
         ..., description="Role of the message sender"
     )
-    content: Union[str, OpenRouterMessageContent, List[OpenRouterMessageContent]] = (
-        Field(..., description="Content of the message")
+    content: Union[str, OpenRouterMessageContent, List[OpenRouterMessageContent]] = Field(
+        ..., description="Content of the message"
     )
 
     def to_dict(self) -> Dict[str, Any]:
@@ -65,9 +65,7 @@ class ToolDefinition(BaseModel):
 
     name: str = Field(..., description="Name of the tool")
     description: str = Field(..., description="Description of what the tool does")
-    parameters: Optional[Dict[str, Any]] = Field(
-        None, description="Parameters for the tool"
-    )
+    parameters: Optional[Dict[str, Any]] = Field(None, description="Parameters for the tool")
     required: Optional[List[str]] = Field(None, description="Required parameters")
 
 
@@ -76,18 +74,12 @@ class OpenRouterAgentConfig(BaseModel):
 
     model_config = ConfigDict(extra="allow")
 
-    model: str = Field(
-        ..., description="Model identifier (e.g., 'deepseek/deepseek-v3')"
-    )
+    model: str = Field(..., description="Model identifier (e.g., 'deepseek/deepseek-v3')")
     temperature: float = Field(0.7, description="Sampling temperature")
     max_tokens: Optional[int] = Field(None, description="Maximum tokens to generate")
     top_p: Optional[float] = Field(None, description="Top-p sampling parameter")
-    presence_penalty: Optional[float] = Field(
-        None, description="Presence penalty parameter"
-    )
-    frequency_penalty: Optional[float] = Field(
-        None, description="Frequency penalty parameter"
-    )
+    presence_penalty: Optional[float] = Field(None, description="Presence penalty parameter")
+    frequency_penalty: Optional[float] = Field(None, description="Frequency penalty parameter")
 
 
 class OpenRouterCompletionRequest(BaseModel):
@@ -96,15 +88,11 @@ class OpenRouterCompletionRequest(BaseModel):
     model_config = ConfigDict(extra="allow")
 
     model: str = Field(..., description="Model identifier")
-    messages: List[OpenRouterMessage] = Field(
-        ..., description="Messages for the conversation"
-    )
+    messages: List[OpenRouterMessage] = Field(..., description="Messages for the conversation")
     temperature: float = Field(0.7, description="Sampling temperature")
     max_tokens: Optional[int] = Field(None, description="Maximum tokens to generate")
     stream: bool = Field(False, description="Whether to stream the response")
-    tools: Optional[List[ToolDefinition]] = Field(
-        None, description="Tools available to the model"
-    )
+    tools: Optional[List[ToolDefinition]] = Field(None, description="Tools available to the model")
 
     def to_api_format(self) -> Dict[str, Any]:
         """Convert to format expected by OpenRouter API"""
@@ -150,9 +138,7 @@ class OpenRouterUsage(BaseModel):
     model_config = ConfigDict(extra="allow")
 
     prompt_tokens: int = Field(..., description="Number of tokens in the prompt")
-    completion_tokens: int = Field(
-        ..., description="Number of tokens in the completion"
-    )
+    completion_tokens: int = Field(..., description="Number of tokens in the completion")
     total_tokens: int = Field(..., description="Total number of tokens used")
 
 
@@ -165,9 +151,7 @@ class OpenRouterCompletionResponse(BaseModel):
     object: str = Field(..., description="Object type")
     created: int = Field(..., description="Creation timestamp")
     model: str = Field(..., description="Model used")
-    choices: List[OpenRouterResponseChoice] = Field(
-        ..., description="Completion choices"
-    )
+    choices: List[OpenRouterResponseChoice] = Field(..., description="Completion choices")
     usage: OpenRouterUsage = Field(..., description="Token usage information")
 
     def get_content(self) -> str:
@@ -207,9 +191,7 @@ class GraphitiNode(BaseModel):
 
     id: str = Field(..., description="ID of the node")
     label: str = Field(..., description="Label of the node")
-    properties: Dict[str, Any] = Field(
-        default_factory=dict, description="Properties of the node"
-    )
+    properties: Dict[str, Any] = Field(default_factory=dict, description="Properties of the node")
 
 
 class GraphitiRelationship(BaseModel):
@@ -233,9 +215,7 @@ class GraphitiEpisode(BaseModel):
     id: str = Field(..., description="ID of the episode")
     timestamp: int = Field(..., description="Timestamp of the episode")
     content: str = Field(..., description="Content of the episode")
-    metadata: Dict[str, Any] = Field(
-        default_factory=dict, description="Metadata for the episode"
-    )
+    metadata: Dict[str, Any] = Field(default_factory=dict, description="Metadata for the episode")
 
     def to_nodes_and_relationships(self) -> Dict[str, Any]:
         """Convert episode to nodes and relationships for the knowledge graph"""

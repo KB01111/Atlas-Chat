@@ -1,4 +1,8 @@
-import { ArrowDownIcon, ArrowUpIcon, CaretSortIcon } from "@radix-ui/react-icons";
+import {
+  ArrowDownIcon,
+  ArrowUpIcon,
+  CaretSortIcon,
+} from "@radix-ui/react-icons";
 import type { Column } from "@tanstack/react-table";
 import { FilterX, ListFilter } from "lucide-react";
 import { Button } from "~/components/ui/Button";
@@ -12,7 +16,8 @@ import {
 import { type TranslationKeys, useLocalize } from "~/hooks";
 import { cn } from "~/utils";
 
-interface SortFilterHeaderProps<TData, TValue> extends React.HTMLAttributes<HTMLDivElement> {
+interface SortFilterHeaderProps<TData, TValue>
+  extends React.HTMLAttributes<HTMLDivElement> {
   title: string;
   column: Column<TData, TValue>;
   filters?: Record<string, string[] | number[]>;

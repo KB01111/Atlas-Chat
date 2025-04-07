@@ -29,9 +29,7 @@ try:
 
     GENAI_AVAILABLE = True
 except ImportError:
-    logger.warning(
-        "google-genai library not available. Install with 'pip install google-genai'"
-    )
+    logger.warning("google-genai library not available. Install with 'pip install google-genai'")
     GENAI_AVAILABLE = False
 
 
@@ -106,9 +104,7 @@ class GoogleProvider(AgentProvider):
         """
         return self.agents.get(agent_id)
 
-    def update_agent(
-        self, agent_id: str, updates: Dict[str, Any]
-    ) -> Optional[AgentDefinition]:
+    def update_agent(self, agent_id: str, updates: Dict[str, Any]) -> Optional[AgentDefinition]:
         """
         Update agent definition.
 
@@ -272,9 +268,7 @@ class GoogleProvider(AgentProvider):
             # Usage info not available for streaming
             usage = {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0}
         else:
-            response = model.generate_content(
-                google_messages, generation_config=generation_config
-            )
+            response = model.generate_content(google_messages, generation_config=generation_config)
 
             response_text = response.text
 
@@ -286,9 +280,7 @@ class GoogleProvider(AgentProvider):
                 "completion_tokens": getattr(response, "usage_metadata", {}).get(
                     "candidates_token_count", 0
                 ),
-                "total_tokens": getattr(response, "usage_metadata", {}).get(
-                    "total_token_count", 0
-                ),
+                "total_tokens": getattr(response, "usage_metadata", {}).get("total_token_count", 0),
             }
 
         return response_text, usage

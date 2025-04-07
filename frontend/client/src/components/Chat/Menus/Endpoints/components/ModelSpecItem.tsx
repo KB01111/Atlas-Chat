@@ -35,7 +35,9 @@ export function ModelSpecItem({ spec, isSelected }: ModelSpecItemProps) {
         <div className="flex min-w-0 flex-col gap-1">
           <span className="truncate text-left">{spec.label}</span>
           {spec.description && (
-            <span className="break-words text-xs font-normal">{spec.description}</span>
+            <span className="break-words text-xs font-normal">
+              {spec.description}
+            </span>
           )}
         </div>
       </div>
@@ -68,6 +70,10 @@ export function renderModelSpecs(specs: TModelSpec[], selectedSpec: string) {
   }
 
   return specs.map((spec) => (
-    <ModelSpecItem key={spec.name} spec={spec} isSelected={selectedSpec === spec.name} />
+    <ModelSpecItem
+      key={spec.name}
+      spec={spec}
+      isSelected={selectedSpec === spec.name}
+    />
   ));
 }

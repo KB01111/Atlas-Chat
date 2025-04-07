@@ -5,17 +5,25 @@ import Image from "./Image";
 
 const Files = ({ message }: { message?: TMessage }) => {
   const imageFiles = useMemo(() => {
-    return message?.files?.filter((file) => file.type?.startsWith("image/")) || [];
+    return (
+      message?.files?.filter((file) => file.type?.startsWith("image/")) || []
+    );
   }, [message?.files]);
 
   const otherFiles = useMemo(() => {
-    return message?.files?.filter((file) => !(file.type?.startsWith("image/") === true)) || [];
+    return (
+      message?.files?.filter(
+        (file) => !(file.type?.startsWith("image/") === true),
+      ) || []
+    );
   }, [message?.files]);
 
   return (
     <>
       {otherFiles.length > 0 &&
-        otherFiles.map((file) => <FileContainer key={file.file_id} file={file as TFile} />)}
+        otherFiles.map((file) => (
+          <FileContainer key={file.file_id} file={file as TFile} />
+        ))}
       {imageFiles.length > 0 &&
         imageFiles.map((file) => (
           <Image

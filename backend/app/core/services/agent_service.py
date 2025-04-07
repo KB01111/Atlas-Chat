@@ -69,9 +69,7 @@ class AgentService:
                 return
 
             # Call the executor's execute method
-            async for chunk in executor.execute(
-                agent_definition, context, message, history
-            ):
+            async for chunk in executor.execute(agent_definition, context, message, history):
                 yield chunk
 
             # Handle conversation history persistence

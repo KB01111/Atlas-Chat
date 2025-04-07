@@ -30,59 +30,70 @@ type TCodeProps = {
   children: React.ReactNode;
 };
 
-export const code: React.ElementType = memo(({ className, children }: TCodeProps) => {
-  const canRunCode = useHasAccess({
-    permissionType: PermissionTypes.RUN_CODE,
-    permission: Permissions.USE,
-  });
-  const match = /language-(\w+)/.exec(className ?? "");
-  const lang = match?.[1];
-  const isMath = lang === "math";
-  const isSingleLine = typeof children === "string" && children.split("\n").length === 1;
+export const code: React.ElementType = memo(
+  ({ className, children }: TCodeProps) => {
+    const canRunCode = useHasAccess({
+      permissionType: PermissionTypes.RUN_CODE,
+      permission: Permissions.USE,
+    });
+    const match = /language-(\w+)/.exec(className ?? "");
+    const lang = match?.[1];
+    const isMath = lang === "math";
+    const isSingleLine =
+      typeof children === "string" && children.split("\n").length === 1;
 
-  const { getNextIndex, resetCounter } = useCodeBlockContext();
-  const blockIndex = useRef(getNextIndex(isMath || isSingleLine)).current;
+    const { getNextIndex, resetCounter } = useCodeBlockContext();
+    const blockIndex = useRef(getNextIndex(isMath || isSingleLine)).current;
 
-  useEffect(() => {
-    resetCounter();
-  }, [resetCounter]);
+    useEffect(() => {
+      resetCounter();
+    }, [resetCounter]);
 
-  if (isMath) {
-    return <>{children}</>;
-  }
-  if (isSingleLine) {
+    if (isMath) {
+      return <>{children}</>;
+    }
+    if (isSingleLine) {
+      return (
+        <code onDoubleClick={handleDoubleClick} className={className}>
+          {children}
+        </code>
+      );
+    }
     return (
-      <code onDoubleClick={handleDoubleClick} className={className}>
-        {children}
-      </code>
+      <CodeBlock
+        lang={lang ?? "text"}
+        codeChildren={children}
+        blockIndex={blockIndex}
+        allowExecution={canRunCode}
+      />
     );
-  }
-  return (
-    <CodeBlock
-      lang={lang ?? "text"}
-      codeChildren={children}
-      blockIndex={blockIndex}
-      allowExecution={canRunCode}
-    />
-  );
-});
+  },
+);
 
-export const codeNoExecution: React.ElementType = memo(({ className, children }: TCodeProps) => {
-  const match = /language-(\w+)/.exec(className ?? "");
-  const lang = match?.[1];
+export const codeNoExecution: React.ElementType = memo(
+  ({ className, children }: TCodeProps) => {
+    const match = /language-(\w+)/.exec(className ?? "");
+    const lang = match?.[1];
 
-  if (lang === "math") {
-    return children;
-  }
-  if (typeof children === "string" && children.split("\n").length === 1) {
+    if (lang === "math") {
+      return children;
+    }
+    if (typeof children === "string" && children.split("\n").length === 1) {
+      return (
+        <code onDoubleClick={handleDoubleClick} className={className}>
+          {children}
+        </code>
+      );
+    }
     return (
-      <code onDoubleClick={handleDoubleClick} className={className}>
-        {children}
-      </code>
+      <CodeBlock
+        lang={lang ?? "text"}
+        codeChildren={children}
+        allowExecution={false}
+      />
     );
-  }
-  return <CodeBlock lang={lang ?? "text"} codeChildren={children} allowExecution={false} />;
-});
+  },
+);
 
 type TAnchorProps = {
   href: string;
@@ -153,7 +164,11 @@ export const a: React.ElementType = memo(({ href, children }: TAnchorProps) => {
 
   return (
     <a
-      href={filepath.startsWith("files/") ? `/api/${filepath}` : `/api/files/${filepath}`}
+      href={
+        filepath.startsWith("files/")
+          ? `/api/${filepath}`
+          : `/api/files/${filepath}`
+      }
       {...props}
     >
       {children}

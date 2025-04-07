@@ -57,7 +57,10 @@ type Style = {
   zIndex?: number;
 };
 
-export default function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
+export default function DataTable<TData, TValue>({
+  columns,
+  data,
+}: DataTableProps<TData, TValue>) {
   const localize = useLocalize();
   const [isDeleting, setIsDeleting] = useState(false);
   const [rowSelection, setRowSelection] = useState({});
@@ -99,25 +102,41 @@ export default function DataTable<TData, TValue>({ columns, data }: DataTablePro
             deleteFiles({ files: filesToDelete as TFile[] });
             setRowSelection({});
           }}
-          disabled={!table.getFilteredSelectedRowModel().rows.length || isDeleting}
-          className={cn("min-w-[40px] transition-all duration-200", isSmallScreen && "px-2 py-1")}
+          disabled={
+            !table.getFilteredSelectedRowModel().rows.length || isDeleting
+          }
+          className={cn(
+            "min-w-[40px] transition-all duration-200",
+            isSmallScreen && "px-2 py-1",
+          )}
         >
           {isDeleting ? (
             <Spinner className="size-3.5 sm:size-4" />
           ) : (
             <TrashIcon className="size-3.5 text-red-400 sm:size-4" />
           )}
-          {!isSmallScreen && <span className="ml-2">{localize("com_ui_delete")}</span>}
+          {!isSmallScreen && (
+            <span className="ml-2">{localize("com_ui_delete")}</span>
+          )}
         </Button>
         <Input
           placeholder={localize("com_files_filter")}
-          value={(table.getColumn("filename")?.getFilterValue() as string | undefined) ?? ""}
-          onChange={(event) => table.getColumn("filename")?.setFilterValue(event.target.value)}
+          value={
+            (table.getColumn("filename")?.getFilterValue() as
+              | string
+              | undefined) ?? ""
+          }
+          onChange={(event) =>
+            table.getColumn("filename")?.setFilterValue(event.target.value)
+          }
           className="flex-1 text-sm"
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className={cn("min-w-[40px]", isSmallScreen && "px-2 py-1")}>
+            <Button
+              variant="outline"
+              className={cn("min-w-[40px]", isSmallScreen && "px-2 py-1")}
+            >
               <ListFilter className="size-3.5 sm:size-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -133,7 +152,9 @@ export default function DataTable<TData, TValue>({ columns, data }: DataTablePro
                   key={column.id}
                   className="cursor-pointer text-sm capitalize dark:text-white dark:hover:bg-gray-800"
                   checked={column.getIsVisible()}
-                  onCheckedChange={(value) => column.toggleVisibility(Boolean(value))}
+                  onCheckedChange={(value) =>
+                    column.toggleVisibility(Boolean(value))
+                  }
                 >
                   {localize(contextMap[column.id])}
                 </DropdownMenuCheckboxItem>
@@ -145,7 +166,10 @@ export default function DataTable<TData, TValue>({ columns, data }: DataTablePro
         <Table className="w-full min-w-[300px] border-separate border-spacing-0">
           <TableHeader className="sticky top-0 z-50">
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="border-b border-border-light">
+              <TableRow
+                key={headerGroup.id}
+                className="border-b border-border-light"
+              >
                 {headerGroup.headers.map((header, index) => {
                   const style: Style = {};
                   if (index === 0 && header.id === "select") {
@@ -165,7 +189,10 @@ export default function DataTable<TData, TValue>({ columns, data }: DataTablePro
                     >
                       {header.isPlaceholder
                         ? null
-                        : flexRender(header.column.columnDef.header, header.getContext())}
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
                     </TableHead>
                   );
                 })}
@@ -182,8 +209,12 @@ export default function DataTable<TData, TValue>({ columns, data }: DataTablePro
                 >
                   {row.getVisibleCells().map((cell, index) => {
                     const maxWidth =
-                      (cell.column.columnDef as AugmentedColumnDef<TData, TValue>).meta?.size ??
-                      "auto";
+                      (
+                        cell.column.columnDef as AugmentedColumnDef<
+                          TData,
+                          TValue
+                        >
+                      ).meta?.size ?? "auto";
 
                     const style: Style = {};
                     if (cell.column.id === "filename") {
@@ -198,7 +229,10 @@ export default function DataTable<TData, TValue>({ columns, data }: DataTablePro
                         className="align-start overflow-x-auto px-2 py-1 text-xs sm:px-4 sm:py-2 sm:text-sm [tr[data-disabled=true]_&]:opacity-50"
                         style={style}
                       >
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext(),
+                        )}
                       </TableCell>
                     );
                   })}
@@ -206,7 +240,10 @@ export default function DataTable<TData, TValue>({ columns, data }: DataTablePro
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
                   {localize("com_files_no_results")}
                 </TableCell>
               </TableRow>

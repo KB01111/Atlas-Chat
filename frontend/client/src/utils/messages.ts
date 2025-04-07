@@ -11,7 +11,10 @@ export const getLengthAndLastTenChars = (str?: string): string => {
   return `${length}${lastTenChars}`;
 };
 
-export const getLatestText = (message?: TMessage | null, includeIndex?: boolean): string => {
+export const getLatestText = (
+  message?: TMessage | null,
+  includeIndex?: boolean,
+): string => {
   if (!message) {
     return "";
   }
@@ -25,7 +28,8 @@ export const getLatestText = (message?: TMessage | null, includeIndex?: boolean)
         continue;
       }
 
-      const text = (typeof part?.text === "string" ? part.text : part?.text.value) ?? "";
+      const text =
+        (typeof part?.text === "string" ? part.text : part?.text.value) ?? "";
       if (text.length > 0) {
         if (includeIndex === true) {
           return `${text}-${i}`;
@@ -49,7 +53,10 @@ export const getAllContentText = (message?: TMessage | null): string => {
   if (message.content && message.content.length > 0) {
     return message.content
       .filter((part) => part.type === ContentTypes.TEXT)
-      .map((part) => (typeof part.text === "string" ? part.text : part.text.value) || "")
+      .map(
+        (part) =>
+          (typeof part.text === "string" ? part.text : part.text.value) || "",
+      )
       .filter((text) => text.length > 0)
       .join("\n");
   }
@@ -57,7 +64,10 @@ export const getAllContentText = (message?: TMessage | null): string => {
   return "";
 };
 
-export const getTextKey = (message?: TMessage | null, convoId?: string | null) => {
+export const getTextKey = (
+  message?: TMessage | null,
+  convoId?: string | null,
+) => {
   if (!message) {
     return "";
   }

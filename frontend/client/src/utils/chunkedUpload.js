@@ -69,7 +69,9 @@ export const uploadFileInChunks = async (
     });
 
     if (!initResponse.ok) {
-      throw new Error(`Failed to initialize upload: ${initResponse.statusText}`);
+      throw new Error(
+        `Failed to initialize upload: ${initResponse.statusText}`,
+      );
     }
 
     const { uploadId } = await initResponse.json();
@@ -94,7 +96,9 @@ export const uploadFileInChunks = async (
       });
 
       if (!chunkResponse.ok) {
-        throw new Error(`Failed to upload chunk ${i}: ${chunkResponse.statusText}`);
+        throw new Error(
+          `Failed to upload chunk ${i}: ${chunkResponse.statusText}`,
+        );
       }
 
       uploadedChunks++;
@@ -119,7 +123,9 @@ export const uploadFileInChunks = async (
     });
 
     if (!completeResponse.ok) {
-      throw new Error(`Failed to complete upload: ${completeResponse.statusText}`);
+      throw new Error(
+        `Failed to complete upload: ${completeResponse.statusText}`,
+      );
     }
 
     const result = await completeResponse.json();

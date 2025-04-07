@@ -41,9 +41,7 @@ class EpisodicMemory:
     - Providing access to conversation history at different levels of detail
     """
 
-    def __init__(
-        self, context_summarizer: Optional[ContextSummarizer] = None, ttl_days: int = 30
-    ):
+    def __init__(self, context_summarizer: Optional[ContextSummarizer] = None, ttl_days: int = 30):
         """
         Initialize the episodic memory.
 
@@ -54,9 +52,7 @@ class EpisodicMemory:
         self.context_summarizer = context_summarizer or ContextSummarizer()
         self.ttl_days = ttl_days
         self.episodes: Dict[str, EpisodeEntry] = {}
-        self.session_episodes: Dict[str, List[str]] = (
-            {}
-        )  # session_id -> list of episode_ids
+        self.session_episodes: Dict[str, List[str]] = {}  # session_id -> list of episode_ids
 
     async def add_episode(
         self,
@@ -153,9 +149,7 @@ class EpisodicMemory:
                     content = episode.detailed_summary or episode.raw_content
                 elif summary_level == "condensed":
                     content = (
-                        episode.condensed_summary
-                        or episode.detailed_summary
-                        or episode.raw_content
+                        episode.condensed_summary or episode.detailed_summary or episode.raw_content
                     )
                 elif summary_level == "topic":
                     content = (
@@ -214,9 +208,7 @@ class EpisodicMemory:
 
         # Map back to episodes
         segment_map = {s.id: e for s, e in segments}
-        relevant_episodes = [
-            segment_map[s.id] for s in relevant_segments if s.id in segment_map
-        ]
+        relevant_episodes = [segment_map[s.id] for s in relevant_segments if s.id in segment_map]
 
         return relevant_episodes
 

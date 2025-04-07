@@ -19,7 +19,8 @@ const buildDefaultConvo = ({
   lastConversationSetup: TConversation | null;
 }): TConversation => {
   const { lastSelectedModel, lastSelectedTools } = getLocalStorageItems();
-  const endpointType = lastConversationSetup?.endpointType ?? conversation.endpointType;
+  const endpointType =
+    lastConversationSetup?.endpointType ?? conversation.endpointType;
 
   if (!endpoint) {
     return {
@@ -30,10 +31,13 @@ const buildDefaultConvo = ({
   }
 
   const availableModels = models;
-  const model = lastConversationSetup?.model ?? lastSelectedModel?.[endpoint] ?? "";
+  const model =
+    lastConversationSetup?.model ?? lastSelectedModel?.[endpoint] ?? "";
   const secondaryModel: string | null =
     endpoint === EModelEndpoint.gptPlugins
-      ? (lastConversationSetup?.agentOptions?.model ?? lastSelectedModel?.secondaryModel ?? null)
+      ? lastConversationSetup?.agentOptions?.model ??
+        lastSelectedModel?.secondaryModel ??
+        null
       : null;
 
   let possibleModels: string[];
@@ -45,7 +49,11 @@ const buildDefaultConvo = ({
     possibleModels = [...availableModels];
   }
 
-  if (secondaryModel != null && secondaryModel !== "" && availableModels.includes(secondaryModel)) {
+  if (
+    secondaryModel != null &&
+    secondaryModel !== "" &&
+    availableModels.includes(secondaryModel)
+  ) {
     secondaryModels = [secondaryModel, ...availableModels];
   } else {
     secondaryModels = [...availableModels];
@@ -82,7 +90,8 @@ const buildDefaultConvo = ({
     defaultConvo.agent_id = agentId;
   }
 
-  defaultConvo.tools = lastConversationSetup?.tools ?? lastSelectedTools ?? defaultConvo.tools;
+  defaultConvo.tools =
+    lastConversationSetup?.tools ?? lastSelectedTools ?? defaultConvo.tools;
 
   return defaultConvo;
 };

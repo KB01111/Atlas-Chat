@@ -67,7 +67,9 @@ const EditMessage = ({
       setSiblingIdx((siblingIdx ?? 0) - 1);
     } else {
       const messages = getMessages();
-      const parentMessage = messages?.find((msg) => msg.messageId === parentMessageId);
+      const parentMessage = messages?.find(
+        (msg) => msg.messageId === parentMessageId,
+      );
 
       if (!parentMessage) {
         return;
@@ -104,7 +106,9 @@ const EditMessage = ({
       setLatestMultiMessage({ ...latestMultiMessage, text: data.text });
     }
 
-    const isInMessages = messages.some((message) => message.messageId === messageId);
+    const isInMessages = messages.some(
+      (message) => message.messageId === messageId,
+    );
     if (!isInMessages) {
       message.text = data.text;
     } else {
@@ -200,7 +204,10 @@ const EditMessage = ({
         <TooltipAnchor
           description="Esc"
           render={
-            <button className="btn btn-neutral relative" onClick={() => enterEdit(true)}>
+            <button
+              className="btn btn-neutral relative"
+              onClick={() => enterEdit(true)}
+            >
               {localize("com_ui_cancel")}
             </button>
           }

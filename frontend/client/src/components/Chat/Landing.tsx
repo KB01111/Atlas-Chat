@@ -5,13 +5,21 @@ import { BirthdayIcon, SplitText, TooltipAnchor } from "~/components";
 import ConvoIcon from "~/components/Endpoints/ConvoIcon";
 import { useGetEndpointsQuery, useGetStartupConfig } from "~/data-provider";
 import { useAuthContext, useLocalize } from "~/hooks";
-import { useAgentsMapContext, useAssistantsMapContext, useChatContext } from "~/Providers";
+import {
+  useAgentsMapContext,
+  useAssistantsMapContext,
+  useChatContext,
+} from "~/Providers";
 import { getEntity, getIconEndpoint } from "~/utils";
 
 const containerClassName =
   "shadow-stroke relative flex h-full items-center justify-center rounded-full bg-white text-black";
 
-export default function Landing({ centerFormOnLanding }: { centerFormOnLanding: boolean }) {
+export default function Landing({
+  centerFormOnLanding,
+}: {
+  centerFormOnLanding: boolean;
+}) {
   const { conversation } = useChatContext();
   const agentsMap = useAgentsMapContext();
   const assistantMap = useAssistantsMapContext();
@@ -129,7 +137,9 @@ export default function Landing({ centerFormOnLanding }: { centerFormOnLanding: 
         <div
           className={`flex ${textHasMultipleLines ? "flex-col" : "flex-col md:flex-row"} items-center justify-center gap-4`}
         >
-          <div className={`relative size-10 justify-center ${textHasMultipleLines ? "mb-2" : ""}`}>
+          <div
+            className={`relative size-10 justify-center ${textHasMultipleLines ? "mb-2" : ""}`}
+          >
             <ConvoIcon
               agentsMap={agentsMap}
               assistantMap={assistantMap}

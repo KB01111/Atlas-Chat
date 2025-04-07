@@ -63,7 +63,12 @@ const PresetsMenu: FC = () => {
           </Content>
         </div>
       </Portal>
-      {preset && <EditPresetDialog submitPreset={submitPreset} exportPreset={exportPreset} />}
+      {preset && (
+        <EditPresetDialog
+          submitPreset={submitPreset}
+          exportPreset={exportPreset}
+        />
+      )}
     </Root>
   );
 };

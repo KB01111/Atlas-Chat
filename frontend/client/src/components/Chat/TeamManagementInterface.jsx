@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { FiSettings, FiUserCheck, FiUserPlus, FiUsers, FiUserX } from "react-icons/fi";
+import {
+  FiSettings,
+  FiUserCheck,
+  FiUserPlus,
+  FiUsers,
+  FiUserX,
+} from "react-icons/fi";
 import TeamChatInterface from "./TeamChatInterface";
 
 const TeamManagementInterface = ({
@@ -167,7 +173,10 @@ const TeamManagementInterface = ({
           <div className="no-team-selected">
             <FiUsers className="icon" />
             <h2>{t("Select a team or create a new one")}</h2>
-            <button className="primary-button" onClick={() => setShowCreateTeamModal(true)}>
+            <button
+              className="primary-button"
+              onClick={() => setShowCreateTeamModal(true)}
+            >
               {t("Create Team")}
             </button>
           </div>
@@ -179,7 +188,10 @@ const TeamManagementInterface = ({
           <div className="modal-content">
             <div className="modal-header">
               <h2>{t("Create New Team")}</h2>
-              <button className="close-button" onClick={() => setShowCreateTeamModal(false)}>
+              <button
+                className="close-button"
+                onClick={() => setShowCreateTeamModal(false)}
+              >
                 &times;
               </button>
             </div>
@@ -232,7 +244,10 @@ const TeamManagementInterface = ({
           <div className="modal-content">
             <div className="modal-header">
               <h2>{t("Add Agent to Team")}</h2>
-              <button className="close-button" onClick={() => setShowAddAgentModal(false)}>
+              <button
+                className="close-button"
+                onClick={() => setShowAddAgentModal(false)}
+              >
                 &times;
               </button>
             </div>
@@ -274,7 +289,9 @@ const TeamManagementInterface = ({
                           checked={agentLanguages.includes(lang.value)}
                           onChange={() => toggleLanguage(lang.value)}
                         />
-                        <label htmlFor={`lang-${lang.value}`}>{lang.label}</label>
+                        <label htmlFor={`lang-${lang.value}`}>
+                          {lang.label}
+                        </label>
                       </div>
                     ))}
                   </div>
@@ -292,7 +309,8 @@ const TeamManagementInterface = ({
                   type="submit"
                   className="primary-button"
                   disabled={
-                    !agentName.trim() || (agentRole === "coder" && agentLanguages.length === 0)
+                    !agentName.trim() ||
+                    (agentRole === "coder" && agentLanguages.length === 0)
                   }
                 >
                   {t("Add")}

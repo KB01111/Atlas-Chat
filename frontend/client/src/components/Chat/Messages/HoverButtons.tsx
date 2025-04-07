@@ -3,7 +3,13 @@ import type React from "react";
 import { useState } from "react";
 import { useRecoilState } from "recoil";
 import { Fork } from "~/components/Conversations";
-import { CheckMark, Clipboard, ContinueIcon, EditIcon, RegenerateIcon } from "~/components/svg";
+import {
+  CheckMark,
+  Clipboard,
+  ContinueIcon,
+  EditIcon,
+  RegenerateIcon,
+} from "~/components/svg";
 import { useGenerationsByLatest, useLocalize } from "~/hooks";
 import store from "~/store";
 import { cn } from "~/utils";
@@ -12,7 +18,9 @@ import MessageAudio from "./MessageAudio";
 type THoverButtons = {
   isEditing: boolean;
   enterEdit: (cancel?: boolean) => void;
-  copyToClipboard: (setIsCopied: React.Dispatch<React.SetStateAction<boolean>>) => void;
+  copyToClipboard: (
+    setIsCopied: React.Dispatch<React.SetStateAction<boolean>>,
+  ) => void;
   conversation: TConversation | null;
   isSubmitting: boolean;
   message: TMessage;
@@ -136,16 +144,24 @@ export default function HoverButtons({
       <button
         className={cn(
           "ml-0 flex items-center gap-1.5 rounded-md p-1 text-xs hover:bg-gray-100 hover:text-gray-500 focus:opacity-100 dark:text-gray-400/70 dark:hover:bg-gray-700 dark:hover:text-gray-200 disabled:dark:hover:text-gray-400 md:group-hover:visible md:group-[.final-completion]:visible",
-          isSubmitting && isCreatedByUser ? "md:opacity-0 md:group-hover:opacity-100" : "",
+          isSubmitting && isCreatedByUser
+            ? "md:opacity-0 md:group-hover:opacity-100"
+            : "",
           !isLast ? "md:opacity-0 md:group-hover:opacity-100" : "",
         )}
         onClick={() => copyToClipboard(setIsCopied)}
         type="button"
         title={
-          isCopied ? localize("com_ui_copied_to_clipboard") : localize("com_ui_copy_to_clipboard")
+          isCopied
+            ? localize("com_ui_copied_to_clipboard")
+            : localize("com_ui_copy_to_clipboard")
         }
       >
-        {isCopied ? <CheckMark className="h-[18px] w-[18px]" /> : <Clipboard size="19" />}
+        {isCopied ? (
+          <CheckMark className="h-[18px] w-[18px]" />
+        ) : (
+          <Clipboard size="19" />
+        )}
       </button>
       {renderRegenerate()}
       <Fork

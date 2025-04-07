@@ -11,14 +11,10 @@ from pydantic import BaseModel, Field
 class AgentDefinition(BaseModel):
     """Definition for an agent."""
 
-    agent_id: Optional[str] = Field(
-        default_factory=lambda: f"agent_{str(uuid.uuid4())}"
-    )
+    agent_id: Optional[str] = Field(default_factory=lambda: f"agent_{str(uuid.uuid4())}")
     name: str
     description: str
-    agent_type: str = Field(
-        ..., description="Type of agent: 'sdk', 'langgraph', or 'hybrid'"
-    )
+    agent_type: str = Field(..., description="Type of agent: 'sdk', 'langgraph', or 'hybrid'")
     model_id: str
     system_prompt: str
     tools: List[str] = []

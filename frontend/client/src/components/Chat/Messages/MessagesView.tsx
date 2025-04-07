@@ -18,7 +18,9 @@ export default function MessagesView({
   const maximizeChatSpace = useRecoilValue(store.maximizeChatSpace);
   const fontSize = useRecoilValue(store.fontSize);
   const { screenshotTargetRef } = useScreenshot();
-  const [currentEditId, setCurrentEditId] = useState<number | string | null>(-1);
+  const [currentEditId, setCurrentEditId] = useState<number | string | null>(
+    -1,
+  );
 
   const {
     conversation,
@@ -46,7 +48,8 @@ export default function MessagesView({
             }}
           >
             <div className="flex flex-col pb-9 dark:bg-transparent">
-              {(_messagesTree && _messagesTree.length === 0) || _messagesTree === null ? (
+              {(_messagesTree && _messagesTree.length === 0) ||
+              _messagesTree === null ? (
                 <div
                   className={cn(
                     "flex w-full items-center justify-center p-3 text-text-secondary",

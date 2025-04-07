@@ -166,14 +166,20 @@ export function addFileToCache(queryClient: QueryClient, newfile: TFile) {
   const currentFiles = queryClient.getQueryData<TFile[]>([QueryKeys.files]);
 
   if (!currentFiles) {
-    console.warn("No current files found in cache, skipped updating file query cache");
+    console.warn(
+      "No current files found in cache, skipped updating file query cache",
+    );
     return;
   }
 
-  const fileIndex = currentFiles.findIndex((file) => file.file_id === newfile.file_id);
+  const fileIndex = currentFiles.findIndex(
+    (file) => file.file_id === newfile.file_id,
+  );
 
   if (fileIndex > -1) {
-    console.warn("File already exists in cache, skipped updating file query cache");
+    console.warn(
+      "File already exists in cache, skipped updating file query cache",
+    );
     return;
   }
 
@@ -211,14 +217,21 @@ export const validateFiles = ({
   setError: (error: string) => void;
   endpointFileConfig: EndpointFileConfig;
 }) => {
-  const { fileLimit, fileSizeLimit, totalSizeLimit, supportedMimeTypes } = endpointFileConfig;
+  const { fileLimit, fileSizeLimit, totalSizeLimit, supportedMimeTypes } =
+    endpointFileConfig;
   const existingFiles = Array.from(files.values());
-  const incomingTotalSize = fileList.reduce((total, file) => total + file.size, 0);
+  const incomingTotalSize = fileList.reduce(
+    (total, file) => total + file.size,
+    0,
+  );
   if (incomingTotalSize === 0) {
     setError("com_error_files_empty");
     return false;
   }
-  const currentTotalSize = existingFiles.reduce((total, file) => total + file.size, 0);
+  const currentTotalSize = existingFiles.reduce(
+    (total, file) => total + file.size,
+    0,
+  );
 
   if (fileLimit && fileList.length + files.size > fileLimit) {
     setError(`You can only upload up to ${fileLimit} files at a time.`);
@@ -264,7 +277,9 @@ export const validateFiles = ({
   }
 
   if (totalSizeLimit && currentTotalSize + incomingTotalSize > totalSizeLimit) {
-    setError(`The total size of the files cannot exceed ${totalSizeLimit / megabyte} MB.`);
+    setError(
+      `The total size of the files cannot exceed ${totalSizeLimit / megabyte} MB.`,
+    );
     return false;
   }
 

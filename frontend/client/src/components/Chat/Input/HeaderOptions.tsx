@@ -1,12 +1,20 @@
 import { Anchor, Root } from "@radix-ui/react-popover";
 import type { TInterfaceConfig, TPreset } from "librechat-data-provider";
-import { EModelEndpoint, isParamEndpoint, tConvoUpdateSchema } from "librechat-data-provider";
+import {
+  EModelEndpoint,
+  isParamEndpoint,
+  tConvoUpdateSchema,
+} from "librechat-data-provider";
 import { useUserKeyQuery } from "librechat-data-provider/react-query";
 import { Settings2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useRecoilState } from "recoil";
 import { PluginStoreDialog, TooltipAnchor } from "~/components";
-import { AlternativeSettings, EndpointSettings, SaveAsPresetDialog } from "~/components/Endpoints";
+import {
+  AlternativeSettings,
+  EndpointSettings,
+  SaveAsPresetDialog,
+} from "~/components/Endpoints";
 import { useGetEndpointsQuery } from "~/data-provider";
 import { useLocalize, useMediaQuery, useSetIndexOptions } from "~/hooks";
 import { useChatContext } from "~/Providers";
@@ -31,7 +39,9 @@ export default function HeaderOptions({
   const { showPopover, conversation, setShowPopover } = useChatContext();
   const { setOption } = useSetIndexOptions();
   const { endpoint, conversationId } = conversation ?? {};
-  const { data: keyExpiry = { expiresAt: undefined } } = useUserKeyQuery(endpoint ?? "");
+  const { data: keyExpiry = { expiresAt: undefined } } = useUserKeyQuery(
+    endpoint ?? "",
+  );
   const userProvidesKey = useMemo(
     () => !!(endpointsConfig?.[endpoint ?? ""]?.userProvide ?? false),
     [endpointsConfig, endpoint],
@@ -89,28 +99,35 @@ export default function HeaderOptions({
                     data-testid="parameters-button"
                     className="inline-flex size-10 items-center justify-center rounded-lg border border-border-light bg-transparent text-text-primary transition-all ease-in-out hover:bg-surface-tertiary disabled:pointer-events-none disabled:opacity-50 radix-state-open:bg-surface-tertiary"
                   >
-                    <Settings2 size={16} aria-label="Settings/Parameters Icon" />
+                    <Settings2
+                      size={16}
+                      aria-label="Settings/Parameters Icon"
+                    />
                   </TooltipAnchor>
                 )}
             </div>
-            {interfaceConfig?.parameters === true && paramEndpoint === false && (
-              <OptionsPopover
-                visible={showPopover}
-                saveAsPreset={saveAsPreset}
-                presetsDisabled={!(interfaceConfig.presets ?? false)}
-                PopoverButtons={<PopoverButtons />}
-                closePopover={() => setShowPopover(false)}
-              >
-                <div className="px-4 py-4">
-                  <EndpointSettings
-                    className="[&::-webkit-scrollbar]:w-2"
-                    conversation={conversation}
-                    setOption={setOption}
-                  />
-                  <AlternativeSettings conversation={conversation} setOption={setOption} />
-                </div>
-              </OptionsPopover>
-            )}
+            {interfaceConfig?.parameters === true &&
+              paramEndpoint === false && (
+                <OptionsPopover
+                  visible={showPopover}
+                  saveAsPreset={saveAsPreset}
+                  presetsDisabled={!(interfaceConfig.presets ?? false)}
+                  PopoverButtons={<PopoverButtons />}
+                  closePopover={() => setShowPopover(false)}
+                >
+                  <div className="px-4 py-4">
+                    <EndpointSettings
+                      className="[&::-webkit-scrollbar]:w-2"
+                      conversation={conversation}
+                      setOption={setOption}
+                    />
+                    <AlternativeSettings
+                      conversation={conversation}
+                      setOption={setOption}
+                    />
+                  </div>
+                </OptionsPopover>
+              )}
             {interfaceConfig?.presets === true && (
               <SaveAsPresetDialog
                 open={saveAsDialogShow}

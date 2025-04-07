@@ -12,7 +12,10 @@ import { NotificationSeverity } from "~/common";
 import { Spinner } from "~/components";
 import { BookmarkEditDialog } from "~/components/Bookmarks";
 import { DropdownPopup, TooltipAnchor } from "~/components/ui";
-import { useConversationTagsQuery, useTagConversationMutation } from "~/data-provider";
+import {
+  useConversationTagsQuery,
+  useTagConversationMutation,
+} from "~/data-provider";
 import { useBookmarkSuccess, useLocalize } from "~/hooks";
 import { useToastContext } from "~/Providers";
 import { BookmarkContext } from "~/Providers/BookmarkContext";
@@ -24,7 +27,8 @@ const BookmarkMenu: FC = () => {
   const queryClient = useQueryClient();
   const { showToast } = useToastContext();
 
-  const conversation = useRecoilValue(store.conversationByIndex(0)) || undefined;
+  const conversation =
+    useRecoilValue(store.conversationByIndex(0)) || undefined;
   const conversationId = conversation?.conversationId ?? "";
   const updateConvoTags = useBookmarkSuccess(conversationId);
   const tags = conversation?.tags;
@@ -77,20 +81,34 @@ const BookmarkMenu: FC = () => {
         return;
       }
 
-      logger.log("tag_mutation", "BookmarkMenu - handleSubmit: tags before setting", tags);
+      logger.log(
+        "tag_mutation",
+        "BookmarkMenu - handleSubmit: tags before setting",
+        tags,
+      );
 
       const allTags =
-        queryClient.getQueryData<TConversationTag[]>([QueryKeys.conversationTags]) ?? [];
+        queryClient.getQueryData<TConversationTag[]>([
+          QueryKeys.conversationTags,
+        ]) ?? [];
       const existingTags = allTags.map((t) => t.tag);
       const filteredTags = tags?.filter((t) => existingTags.includes(t));
 
-      logger.log("tag_mutation", "BookmarkMenu - handleSubmit: tags after filtering", filteredTags);
+      logger.log(
+        "tag_mutation",
+        "BookmarkMenu - handleSubmit: tags after filtering",
+        filteredTags,
+      );
       const newTags =
         filteredTags?.includes(tag) === true
           ? filteredTags.filter((t) => t !== tag)
           : [...(filteredTags ?? []), tag];
 
-      logger.log("tag_mutation", "BookmarkMenu - handleSubmit: tags after", newTags);
+      logger.log(
+        "tag_mutation",
+        "BookmarkMenu - handleSubmit: tags after",
+        newTags,
+      );
       mutation.mutate({
         tags: newTags,
         tag,
@@ -149,7 +167,9 @@ const BookmarkMenu: FC = () => {
       return <Spinner aria-label="Spinner" />;
     }
     if ((tags?.length ?? 0) > 0) {
-      return <BookmarkFilledIcon className="icon-sm" aria-label="Filled Bookmark" />;
+      return (
+        <BookmarkFilledIcon className="icon-sm" aria-label="Filled Bookmark" />
+      );
     }
     return <BookmarkIcon className="icon-sm" aria-label="Bookmark" />;
   };

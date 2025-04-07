@@ -22,7 +22,9 @@ export default function MinimalHoverButtons({ message }: THoverButtons) {
         onClick={() => copyToClipboard(setIsCopied)}
         type="button"
         title={
-          isCopied ? localize("com_ui_copied_to_clipboard") : localize("com_ui_copy_to_clipboard")
+          isCopied
+            ? localize("com_ui_copied_to_clipboard")
+            : localize("com_ui_copy_to_clipboard")
         }
       >
         {isCopied ? <CheckMark className="h-[18px] w-[18px]" /> : <Clipboard />}

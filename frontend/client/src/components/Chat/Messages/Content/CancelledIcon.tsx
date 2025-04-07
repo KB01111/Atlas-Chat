@@ -4,7 +4,13 @@ export default function CancelledIcon() {
       className="absolute left-0 top-0 flex h-full w-full items-center justify-center rounded-full bg-gray-300 text-white"
       style={{ opacity: 1, transform: "none" }}
     >
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 9" fill="none" width="8" height="9">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 8 9"
+        fill="none"
+        width="8"
+        height="9"
+      >
         <path
           fillRule="evenodd"
           clipRule="evenodd"

@@ -37,7 +37,11 @@ export default function DialogImage({ src = "", width = 1920, height = 1080 }) {
             aspectRatio: height > width ? 1 / 1.75 : 1.75 / 1,
           }}
         >
-          <img src={src} alt="Uploaded image" className="h-full w-full object-contain" />
+          <img
+            src={src}
+            alt="Uploaded image"
+            className="h-full w-full object-contain"
+          />
         </Dialog.Content>
       </Dialog.Overlay>
     </Dialog.Portal>

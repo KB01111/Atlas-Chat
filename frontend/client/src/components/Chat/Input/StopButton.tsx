@@ -28,7 +28,14 @@ export default function StopButton({ stop, setShowStopButton }) {
             xmlns="http://www.w3.org/2000/svg"
             className="icon-lg text-surface-primary"
           >
-            <rect x="7" y="7" width="10" height="10" rx="1.25" fill="currentColor" />
+            <rect
+              x="7"
+              y="7"
+              width="10"
+              height="10"
+              rx="1.25"
+              fill="currentColor"
+            />
           </svg>
         </button>
       }

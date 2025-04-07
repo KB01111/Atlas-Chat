@@ -22,11 +22,18 @@ export const getPresetTitle = (preset: TPreset, mention?: boolean) => {
     EModelEndpoint.openAI,
     EModelEndpoint.custom,
   ];
-  const usesModelLabel: TEndpoints = [EModelEndpoint.google, EModelEndpoint.anthropic];
+  const usesModelLabel: TEndpoints = [
+    EModelEndpoint.google,
+    EModelEndpoint.anthropic,
+  ];
 
   if (endpoint != null && endpoint && usesChatGPTLabel.includes(endpoint)) {
     label = chatGptLabel ?? "";
-  } else if (endpoint != null && endpoint && usesModelLabel.includes(endpoint)) {
+  } else if (
+    endpoint != null &&
+    endpoint &&
+    usesModelLabel.includes(endpoint)
+  ) {
     label = modelLabel ?? "";
   }
   if (
@@ -37,7 +44,11 @@ export const getPresetTitle = (preset: TPreset, mention?: boolean) => {
   ) {
     title = `${label}: `;
     label = "";
-  } else if (presetTitle != null && presetTitle && presetTitle.trim() !== "New Chat") {
+  } else if (
+    presetTitle != null &&
+    presetTitle &&
+    presetTitle.trim() !== "New Chat"
+  ) {
     title = `${presetTitle}: `;
   }
 

@@ -1,6 +1,7 @@
 import dedent from "dedent";
 
-const mermaid = dedent(`import React, { useEffect, useRef, useState } from "react";
+const mermaid =
+  dedent(`import React, { useEffect, useRef, useState } from "react";
 import {
   TransformWrapper,
   TransformComponent,

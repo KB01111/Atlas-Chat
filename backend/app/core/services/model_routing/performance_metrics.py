@@ -91,9 +91,7 @@ class PerformanceMetrics:
 
         if tokens > 0:
             metrics.total_tokens += tokens
-            metrics.avg_tokens_per_request = (
-                metrics.total_tokens / metrics.total_requests
-            )
+            metrics.avg_tokens_per_request = metrics.total_tokens / metrics.total_requests
 
         metrics.last_updated = time.time()
 
@@ -146,10 +144,7 @@ class PerformanceMetrics:
         """Save metrics to file."""
         try:
             with open(self.metrics_file, "w") as f:
-                data = {
-                    model_id: metrics.dict()
-                    for model_id, metrics in self.metrics.items()
-                }
+                data = {model_id: metrics.dict() for model_id, metrics in self.metrics.items()}
                 json.dump(data, f, indent=2)
         except Exception as e:
             print(f"Error saving metrics: {e}")

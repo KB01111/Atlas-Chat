@@ -1,5 +1,8 @@
 import type * as t from "librechat-data-provider";
-import { isAgentsEndpoint, isAssistantsEndpoint } from "librechat-data-provider";
+import {
+  isAgentsEndpoint,
+  isAssistantsEndpoint,
+} from "librechat-data-provider";
 import debounce from "lodash/debounce";
 import type React from "react";
 import { createContext, useContext, useMemo, useState } from "react";
@@ -7,7 +10,11 @@ import type { Endpoint, SelectedValues } from "~/common";
 import { useGetEndpointsQuery } from "~/data-provider";
 import { useEndpoints, useKeyDialog, useSelectorEffects } from "~/hooks";
 import useSelectMention from "~/hooks/Input/useSelectMention";
-import { useAgentsMapContext, useAssistantsMapContext, useChatContext } from "~/Providers";
+import {
+  useAgentsMapContext,
+  useAssistantsMapContext,
+  useChatContext,
+} from "~/Providers";
 import { filterItems } from "./utils";
 
 type ModelSelectorContextType = {
@@ -33,12 +40,16 @@ type ModelSelectorContextType = {
   handleSelectModel: (endpoint: Endpoint, model: string) => void;
 } & ReturnType<typeof useKeyDialog>;
 
-const ModelSelectorContext = createContext<ModelSelectorContextType | undefined>(undefined);
+const ModelSelectorContext = createContext<
+  ModelSelectorContextType | undefined
+>(undefined);
 
 export function useModelSelectorContext() {
   const context = useContext(ModelSelectorContext);
   if (context === undefined) {
-    throw new Error("useModelSelectorContext must be used within a ModelSelectorProvider");
+    throw new Error(
+      "useModelSelectorContext must be used within a ModelSelectorProvider",
+    );
   }
   return context;
 }
@@ -48,12 +59,18 @@ interface ModelSelectorProviderProps {
   startupConfig: t.TStartupConfig | undefined;
 }
 
-export function ModelSelectorProvider({ children, startupConfig }: ModelSelectorProviderProps) {
+export function ModelSelectorProvider({
+  children,
+  startupConfig,
+}: ModelSelectorProviderProps) {
   const agentsMap = useAgentsMapContext();
   const assistantsMap = useAssistantsMapContext();
   const { data: endpointsConfig } = useGetEndpointsQuery();
   const { conversation, newConversation } = useChatContext();
-  const modelSpecs = useMemo(() => startupConfig?.modelSpecs?.list ?? [], [startupConfig]);
+  const modelSpecs = useMemo(
+    () => startupConfig?.modelSpecs?.list ?? [],
+    [startupConfig],
+  );
   const { mappedEndpoints, endpointRequiresUserKey } = useEndpoints({
     agentsMap,
     assistantsMap,
@@ -83,7 +100,9 @@ export function ModelSelectorProvider({ children, startupConfig }: ModelSelector
   });
 
   const [searchValue, setSearchValueState] = useState("");
-  const [endpointSearchValues, setEndpointSearchValues] = useState<Record<string, string>>({});
+  const [endpointSearchValues, setEndpointSearchValues] = useState<
+    Record<string, string>
+  >({});
 
   const keyProps = useKeyDialog();
 
@@ -185,5 +204,9 @@ export function ModelSelectorProvider({ children, startupConfig }: ModelSelector
     ...keyProps,
   };
 
-  return <ModelSelectorContext.Provider value={value}>{children}</ModelSelectorContext.Provider>;
+  return (
+    <ModelSelectorContext.Provider value={value}>
+      {children}
+    </ModelSelectorContext.Provider>
+  );
 }

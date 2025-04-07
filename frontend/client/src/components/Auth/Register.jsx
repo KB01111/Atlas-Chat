@@ -64,7 +64,10 @@ const Register = () => {
           {error && <div className="text-red-500 text-sm">{error}</div>}
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium leading-6 text-gray-900"
+            >
               Email address
             </label>
             <div className="mt-2">
@@ -82,7 +85,10 @@ const Register = () => {
           </div>
 
           <div>
-            <label htmlFor="username" className="block text-sm font-medium leading-6 text-gray-900">
+            <label
+              htmlFor="username"
+              className="block text-sm font-medium leading-6 text-gray-900"
+            >
               Username
             </label>
             <div className="mt-2">
@@ -100,7 +106,10 @@ const Register = () => {
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium leading-6 text-gray-900"
+            >
               Password
             </label>
             <div className="mt-2">

@@ -127,7 +127,8 @@
   overflow-y: auto;
   background-color: #1a202c;
   color: #f7fafc;
-  font-family: "JetBrains Mono", Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-family: "JetBrains Mono", Menlo, Monaco, Consolas, "Courier New",
+    monospace;
   font-size: 0.875rem;
   white-space: pre-wrap;
 }

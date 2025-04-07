@@ -1,5 +1,10 @@
 import { EModelEndpoint, EToolResources } from "librechat-data-provider";
-import { FileSearch, FileType2Icon, ImageUpIcon, TerminalSquareIcon } from "lucide-react";
+import {
+  FileSearch,
+  FileType2Icon,
+  ImageUpIcon,
+  TerminalSquareIcon,
+} from "lucide-react";
 import type React from "react";
 import { useMemo } from "react";
 import { OGDialog } from "~/components/ui";
@@ -21,7 +26,12 @@ interface FileOption {
   condition?: boolean;
 }
 
-const DragDropModal = ({ onOptionSelect, setShowModal, files, isVisible }: DragDropModalProps) => {
+const DragDropModal = ({
+  onOptionSelect,
+  setShowModal,
+  files,
+  isVisible,
+}: DragDropModalProps) => {
   const localize = useLocalize();
   const { data: endpointsConfig } = useGetEndpointsQuery();
   const capabilities = useMemo(

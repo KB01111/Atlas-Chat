@@ -33,8 +33,10 @@ describe("preprocessCodeArtifacts", () => {
   });
 
   test("should handle multiple artifact headers correctly", () => {
-    const input = ':::artifact{id="1"}\n```\n```\n:::artifact{id="2"}\n```\ncode\n```\nContent';
-    const expected = ':::artifact{id="1"}\n```\n```\n:::artifact{id="2"}\n```\ncode\n```\nContent';
+    const input =
+      ':::artifact{id="1"}\n```\n```\n:::artifact{id="2"}\n```\ncode\n```\nContent';
+    const expected =
+      ':::artifact{id="1"}\n```\n```\n:::artifact{id="2"}\n```\ncode\n```\nContent';
     expect(preprocessCodeArtifacts(input)).toBe(expected);
   });
 
@@ -69,7 +71,8 @@ describe("preprocessCodeArtifacts", () => {
   });
 
   test("should remove artifact headers without code blocks", () => {
-    const input = ':::artifact{identifier="test"}\nSome content without code block';
+    const input =
+      ':::artifact{identifier="test"}\nSome content without code block';
     const expected = "";
     expect(preprocessCodeArtifacts(input)).toBe(expected);
   });

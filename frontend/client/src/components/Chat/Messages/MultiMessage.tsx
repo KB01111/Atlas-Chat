@@ -16,7 +16,9 @@ export default function MultiMessage({
   currentEditId,
   setCurrentEditId,
 }: TMessageProps) {
-  const [siblingIdx, setSiblingIdx] = useRecoilState(store.messagesSiblingIdxFamily(messageId));
+  const [siblingIdx, setSiblingIdx] = useRecoilState(
+    store.messagesSiblingIdxFamily(messageId),
+  );
 
   const setSiblingIdxRev = useCallback(
     (value: number) => {
@@ -43,7 +45,9 @@ export default function MultiMessage({
     return null;
   }
 
-  const message = messagesTree[messagesTree.length - siblingIdx - 1] as TMessage | undefined;
+  const message = messagesTree[messagesTree.length - siblingIdx - 1] as
+    | TMessage
+    | undefined;
 
   if (!message) {
     return null;

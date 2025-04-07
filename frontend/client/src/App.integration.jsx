@@ -2,7 +2,12 @@
 // It serves as the main integration point between the frontend and backend
 
 import React, { useEffect, useState } from "react";
-import { Navigate, Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import {
+  Navigate,
+  Route,
+  BrowserRouter as Router,
+  Routes,
+} from "react-router-dom";
 import AgentSelector from "./components/AgentSelector";
 // Import components
 import Login from "./components/Auth/Login";
@@ -44,7 +49,9 @@ const AuthProvider = ({ children }) => {
 const PrivateRoute = ({ element }) => {
   return (
     <AuthProvider>
-      {({ isAuthenticated }) => (isAuthenticated ? element : <Navigate to="/login" />)}
+      {({ isAuthenticated }) =>
+        isAuthenticated ? element : <Navigate to="/login" />
+      }
     </AuthProvider>
   );
 };

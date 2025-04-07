@@ -47,9 +47,7 @@ async def chat(
         raise HTTPException(status_code=400, detail="agent_id and message are required")
 
     async def generate():
-        async for chunk in agent_service.handle_chat_request(
-            agent_id, message, history, user_id
-        ):
+        async for chunk in agent_service.handle_chat_request(agent_id, message, history, user_id):
             yield f"data: {chunk}\n\n"
         yield "data: [DONE]\n\n"
 

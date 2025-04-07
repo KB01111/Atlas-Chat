@@ -34,7 +34,8 @@ export default function OptionsPopover({
       const target = _target as Element;
       if (
         target.id === "presets-button" ||
-        (target.parentNode instanceof Element && target.parentNode.id === "presets-button")
+        (target.parentNode instanceof Element &&
+          target.parentNode.id === "presets-button")
       ) {
         return false;
       }

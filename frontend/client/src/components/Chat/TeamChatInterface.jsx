@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { FiAlertCircle, FiCheckCircle, FiCode, FiList, FiUserPlus, FiUsers } from "react-icons/fi";
+import {
+  FiAlertCircle,
+  FiCheckCircle,
+  FiCode,
+  FiList,
+  FiUserPlus,
+  FiUsers,
+} from "react-icons/fi";
 import CodeExecutionComponent from "../CodeExecution/CodeExecutionComponent";
 
 const TeamChatInterface = ({
@@ -124,7 +131,9 @@ const TeamChatInterface = ({
           <div className="team-members-list">
             {agents.map((agent) => (
               <div key={agent.id} className="team-member-item">
-                <div className="member-avatar">{agent.role === "supervisor" ? "S" : "C"}</div>
+                <div className="member-avatar">
+                  {agent.role === "supervisor" ? "S" : "C"}
+                </div>
                 <div className="member-info">
                   <div className="member-name">{agent.name}</div>
                   <div className="member-role">{agent.role}</div>
@@ -153,7 +162,9 @@ const TeamChatInterface = ({
                 <div className="task-status">{getStatusIcon(task.status)}</div>
                 <div className="task-info">
                   <div className="task-title">{task.title}</div>
-                  <div className="task-assignee">{getAgentName(task.assigned_to)}</div>
+                  <div className="task-assignee">
+                    {getAgentName(task.assigned_to)}
+                  </div>
                 </div>
               </div>
             ))}
@@ -169,7 +180,9 @@ const TeamChatInterface = ({
               className={`chat-message ${message.sender === "user" ? "user-message" : "agent-message"}`}
             >
               <div className="message-sender">
-                {message.sender === "user" ? "You" : getAgentName(message.sender)}
+                {message.sender === "user"
+                  ? "You"
+                  : getAgentName(message.sender)}
               </div>
               <div className="message-content">{message.content}</div>
               <div className="message-timestamp">
@@ -198,7 +211,11 @@ const TeamChatInterface = ({
                 >
                   <FiCode />
                 </button>
-                <button type="submit" className="send-button" disabled={!messageInput.trim()}>
+                <button
+                  type="submit"
+                  className="send-button"
+                  disabled={!messageInput.trim()}
+                >
                   {t("Send")}
                 </button>
               </div>
@@ -246,21 +263,29 @@ const TeamChatInterface = ({
                 <div className="task-details-info">
                   <div className="task-detail-item">
                     <span className="detail-label">{t("Status")}:</span>
-                    <span className={`detail-value status-${selectedTask.status}`}>
+                    <span
+                      className={`detail-value status-${selectedTask.status}`}
+                    >
                       {selectedTask.status}
                     </span>
                   </div>
                   <div className="task-detail-item">
                     <span className="detail-label">{t("Assigned To")}:</span>
-                    <span className="detail-value">{getAgentName(selectedTask.assigned_to)}</span>
+                    <span className="detail-value">
+                      {getAgentName(selectedTask.assigned_to)}
+                    </span>
                   </div>
                   <div className="task-detail-item">
                     <span className="detail-label">{t("Assigned By")}:</span>
-                    <span className="detail-value">{getAgentName(selectedTask.assigned_by)}</span>
+                    <span className="detail-value">
+                      {getAgentName(selectedTask.assigned_by)}
+                    </span>
                   </div>
                   <div className="task-detail-item">
                     <span className="detail-label">{t("Priority")}:</span>
-                    <span className={`detail-value priority-${selectedTask.priority}`}>
+                    <span
+                      className={`detail-value priority-${selectedTask.priority}`}
+                    >
                       {selectedTask.priority}
                     </span>
                   </div>

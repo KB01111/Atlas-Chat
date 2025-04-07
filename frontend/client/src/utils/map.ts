@@ -2,7 +2,9 @@ import type * as t from "librechat-data-provider";
 import type { TPluginMap } from "~/common";
 
 /** Maps Attachments by `toolCallId` for quick lookup */
-export function mapAttachments(attachments: Array<t.TAttachment | null | undefined>) {
+export function mapAttachments(
+  attachments: Array<t.TAttachment | null | undefined>,
+) {
   const attachmentMap: Record<string, t.TAttachment[] | undefined> = {};
 
   for (const attachment of attachments) {
@@ -97,7 +99,9 @@ export function processPlugins(
       }
       return tool;
     })
-    .filter((tool: t.TPlugin | undefined): tool is t.TPlugin => tool !== undefined);
+    .filter(
+      (tool: t.TPlugin | undefined): tool is t.TPlugin => tool !== undefined,
+    );
 }
 
 export function mapToolCalls(toolCalls: t.ToolCallResults = []): {

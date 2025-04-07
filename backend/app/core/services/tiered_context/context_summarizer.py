@@ -185,12 +185,8 @@ class ContextSummarizer:
         )
 
         # Create summaries
-        detailed_segment = await self.create_detailed_summary(
-            content, speakers, metadata
-        )
-        condensed_segment = await self.create_condensed_summary(
-            content, speakers, metadata
-        )
+        detailed_segment = await self.create_detailed_summary(content, speakers, metadata)
+        condensed_segment = await self.create_condensed_summary(content, speakers, metadata)
         topic_segment = await self.create_topic_summary(content, speakers, metadata)
 
         return {

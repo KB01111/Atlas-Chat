@@ -1,6 +1,10 @@
 import * as Popover from "@radix-ui/react-popover";
 import type { TAttachment } from "librechat-data-provider";
-import { actionDelimiter, actionDomainSeparator, Constants } from "librechat-data-provider";
+import {
+  actionDelimiter,
+  actionDomainSeparator,
+  Constants,
+} from "librechat-data-provider";
 import { ShieldCheck, TriangleAlert } from "lucide-react";
 import { useMemo } from "react";
 import { useProgress } from "~/hooks";
@@ -46,7 +50,8 @@ export default function ToolCall({
       const [func, server] = name.split(Constants.mcp_delimiter);
       return {
         function_name: func || "",
-        domain: server && (server.replaceAll(actionDomainSeparator, ".") || null),
+        domain:
+          server && (server.replaceAll(actionDomainSeparator, ".") || null),
         isMCPToolCall: true,
       };
     }
@@ -56,13 +61,15 @@ export default function ToolCall({
       : [name, ""];
     return {
       function_name: func || "",
-      domain: _domain && (_domain.replaceAll(actionDomainSeparator, ".") || null),
+      domain:
+        _domain && (_domain.replaceAll(actionDomainSeparator, ".") || null),
       isMCPToolCall: false,
     };
   }, [name]);
 
   const error =
-    typeof output === "string" && output.toLowerCase().includes("error processing tool");
+    typeof output === "string" &&
+    output.toLowerCase().includes("error processing tool");
 
   const args = useMemo(() => {
     if (typeof _args === "string") {
@@ -118,7 +125,11 @@ export default function ToolCall({
     }
     if (progress < 1) {
       return (
-        <InProgressCall progress={progress} isSubmitting={isSubmitting} error={error}>
+        <InProgressCall
+          progress={progress}
+          isSubmitting={isSubmitting}
+          error={error}
+        >
           <div
             className="absolute left-0 top-0 flex h-full w-full items-center justify-center rounded-full bg-transparent text-white"
             style={{ opacity: 1, transform: "none" }}
@@ -127,7 +138,11 @@ export default function ToolCall({
             <div>
               <WrenchIcon />
             </div>
-            <ProgressCircle radius={radius} circumference={circumference} offset={offset} />
+            <ProgressCircle
+              radius={radius}
+              circumference={circumference}
+              offset={offset}
+            />
           </div>
         </InProgressCall>
       );
@@ -145,7 +160,11 @@ export default function ToolCall({
         0: function_name,
       });
     }
-    if (domain != null && domain && domain.length !== Constants.ENCODED_DOMAIN_LENGTH) {
+    if (
+      domain != null &&
+      domain &&
+      domain.length !== Constants.ENCODED_DOMAIN_LENGTH
+    ) {
       return localize("com_assistants_completed_action", { 0: domain });
     }
     return localize("com_assistants_completed_function", { 0: function_name });
@@ -160,7 +179,9 @@ export default function ToolCall({
             progress={cancelled ? 1 : progress}
             inProgressText={localize("com_assistants_running_action")}
             authText={
-              !cancelled && authDomain.length > 0 ? localize("com_ui_requires_auth") : undefined
+              !cancelled && authDomain.length > 0
+                ? localize("com_ui_requires_auth")
+                : undefined
             }
             finishedText={getFinishedText()}
             hasInput={hasInfo}

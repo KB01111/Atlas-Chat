@@ -352,20 +352,18 @@ class WritingAgent(SpecializedAgent):
 
         # Add writing-specific information
         result["content"] += "\n\n## Writing Sample\n\n"
-        result[
-            "content"
-        ] += "The sun cast long shadows across the valley as the day drew to a close. "
-        result[
-            "content"
-        ] += "Birds returned to their nests, singing their evening songs, while the gentle "
-        result[
-            "content"
-        ] += (
+        result["content"] += (
+            "The sun cast long shadows across the valley as the day drew to a close. "
+        )
+        result["content"] += (
+            "Birds returned to their nests, singing their evening songs, while the gentle "
+        )
+        result["content"] += (
             "breeze carried the scent of wildflowers through the air. It was a perfect "
         )
-        result[
-            "content"
-        ] += "moment of tranquility, a brief pause before the world transitioned from day to night.\n\n"
+        result["content"] += (
+            "moment of tranquility, a brief pause before the world transitioned from day to night.\n\n"
+        )
 
         return result
 

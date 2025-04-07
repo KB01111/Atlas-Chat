@@ -1,5 +1,8 @@
 import type { TModelSpec } from "librechat-data-provider";
-import { isAgentsEndpoint, isAssistantsEndpoint } from "librechat-data-provider";
+import {
+  isAgentsEndpoint,
+  isAssistantsEndpoint,
+} from "librechat-data-provider";
 import { EarthIcon } from "lucide-react";
 import React, { Fragment } from "react";
 import type { Endpoint } from "~/common";
@@ -14,7 +17,11 @@ interface SearchResultsProps {
   searchValue: string;
 }
 
-export function SearchResults({ results, localize, searchValue }: SearchResultsProps) {
+export function SearchResults({
+  results,
+  localize,
+  searchValue,
+}: SearchResultsProps) {
   const {
     selectedValues,
     handleSelectSpec,
@@ -63,18 +70,28 @@ export function SearchResults({ results, localize, searchValue }: SearchResultsP
               >
                 {(spec.showIconInMenu ?? true) && (
                   <div className="flex-shrink-0">
-                    <SpecIcon currentSpec={spec} endpointsConfig={endpointsConfig} />
+                    <SpecIcon
+                      currentSpec={spec}
+                      endpointsConfig={endpointsConfig}
+                    />
                   </div>
                 )}
                 <div className="flex min-w-0 flex-col gap-1">
                   <span className="truncate text-left">{spec.label}</span>
                   {spec.description && (
-                    <span className="break-words text-xs font-normal">{spec.description}</span>
+                    <span className="break-words text-xs font-normal">
+                      {spec.description}
+                    </span>
                   )}
                 </div>
               </div>
               {selectedSpec === spec.name && (
-                <div className={cn("flex-shrink-0", spec.description ? "pt-1" : "")}>
+                <div
+                  className={cn(
+                    "flex-shrink-0",
+                    spec.description ? "pt-1" : "",
+                  )}
+                >
                   <svg
                     width="16"
                     height="16"
@@ -97,9 +114,15 @@ export function SearchResults({ results, localize, searchValue }: SearchResultsP
         }
         // For an endpoint item
         const endpoint = item as Endpoint;
-        if (endpoint.hasModels && endpoint.models && endpoint.models.length > 0) {
+        if (
+          endpoint.hasModels &&
+          endpoint.models &&
+          endpoint.models.length > 0
+        ) {
           const lowerQuery = searchValue.toLowerCase();
-          const filteredModels = endpoint.label.toLowerCase().includes(lowerQuery)
+          const filteredModels = endpoint.label
+            .toLowerCase()
+            .includes(lowerQuery)
             ? endpoint.models
             : endpoint.models.filter((model) => {
                 let modelName = model.name;
@@ -144,7 +167,9 @@ export function SearchResults({ results, localize, searchValue }: SearchResultsP
                   endpoint.agentNames[modelId]
                 ) {
                   modelName = endpoint.agentNames[modelId];
-                  const modelInfo = endpoint?.models?.find((m) => m.name === modelId);
+                  const modelInfo = endpoint?.models?.find(
+                    (m) => m.name === modelId,
+                  );
                   isGlobal = modelInfo?.isGlobal ?? false;
                 } else if (
                   isAssistantsEndpoint(endpoint.value) &&
@@ -172,24 +197,27 @@ export function SearchResults({ results, localize, searchValue }: SearchResultsP
                       )}
                       <span>{modelName}</span>
                     </div>
-                    {isGlobal && <EarthIcon className="ml-auto size-4 text-green-400" />}
-                    {selectedEndpoint === endpoint.value && selectedModel === modelId && (
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="block"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          clipRule="evenodd"
-                          d="M2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12ZM16.0755 7.93219C16.5272 8.25003 16.6356 8.87383 16.3178 9.32549L11.5678 16.0755C11.3931 16.3237 11.1152 16.4792 10.8123 16.4981C10.5093 16.517 10.2142 16.3973 10.0101 16.1727L7.51006 13.4227C7.13855 13.014 7.16867 12.3816 7.57733 12.0101C7.98598 11.6386 8.61843 11.6687 8.98994 12.0773L10.6504 13.9039L14.6822 8.17451C15 7.72284 15.6238 7.61436 16.0755 7.93219Z"
-                          fill="currentColor"
-                        />
-                      </svg>
+                    {isGlobal && (
+                      <EarthIcon className="ml-auto size-4 text-green-400" />
                     )}
+                    {selectedEndpoint === endpoint.value &&
+                      selectedModel === modelId && (
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="block"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            clipRule="evenodd"
+                            d="M2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12ZM16.0755 7.93219C16.5272 8.25003 16.6356 8.87383 16.3178 9.32549L11.5678 16.0755C11.3931 16.3237 11.1152 16.4792 10.8123 16.4981C10.5093 16.517 10.2142 16.3973 10.0101 16.1727L7.51006 13.4227C7.13855 13.014 7.16867 12.3816 7.57733 12.0101C7.98598 11.6386 8.61843 11.6687 8.98994 12.0773L10.6504 13.9039L14.6822 8.17451C15 7.72284 15.6238 7.61436 16.0755 7.93219Z"
+                            fill="currentColor"
+                          />
+                        </svg>
+                      )}
                   </MenuItem>
                 );
               })}

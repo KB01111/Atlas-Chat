@@ -36,9 +36,7 @@ TEST_TOOLS = [
     {
         "name": "execute_code",
         "description": "Execute Python code",
-        "parameters": {
-            "code": {"type": "string", "description": "The Python code to execute"}
-        },
+        "parameters": {"code": {"type": "string", "description": "The Python code to execute"}},
     }
 ]
 
@@ -304,9 +302,7 @@ class TestOpenRouterGraphitiIntegration(unittest.TestCase):
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         results = loop.run_until_complete(
-            self.integration.search_graphiti_for_context(
-                query="Python libraries", limit=5
-            )
+            self.integration.search_graphiti_for_context(query="Python libraries", limit=5)
         )
 
         # Verify the results
@@ -339,12 +335,8 @@ class TestOpenRouterGraphitiIntegration(unittest.TestCase):
         )
 
         # Verify the results
-        self.assertEqual(
-            len(enhanced_messages), 2
-        )  # Original messages + system message
-        system_message = next(
-            (m for m in enhanced_messages if m["role"] == "system"), None
-        )
+        self.assertEqual(len(enhanced_messages), 2)  # Original messages + system message
+        system_message = next((m for m in enhanced_messages if m["role"] == "system"), None)
         self.assertIsNotNone(system_message)
         self.assertIn("Relevant context", system_message["content"])
         self.assertIn("Import the libraries you need", system_message["content"])
@@ -415,10 +407,10 @@ class TestPydanticModels(unittest.TestCase):
         self.assertEqual(len(graph_data["nodes"]), 1)
         self.assertEqual(graph_data["nodes"][0]["id"], "episode:test-episode")
         self.assertEqual(graph_data["nodes"][0]["label"], "Episode")
-        self.assertEqual(
-            graph_data["nodes"][0]["properties"]["content"], "Test content"
-        )
+        self.assertEqual(graph_data["nodes"][0]["properties"]["content"], "Test content")
         self.assertEqual(graph_data["nodes"][0]["properties"]["user_id"], "test-user")
+
+
 @pytest.mark.asyncio
 async def test_full_integration():
     """Test full integration of all components"""
@@ -445,9 +437,7 @@ async def test_full_integration():
     sdk_agent.client = client
 
     # 4. Execute the agent
-    response = await sdk_agent.execute(
-        agent_config=TEST_AGENT_CONFIG, messages=TEST_MESSAGES
-    )
+    response = await sdk_agent.execute(agent_config=TEST_AGENT_CONFIG, messages=TEST_MESSAGES)
 
     # 5. Verify the response
     assert response["role"] == "assistant"

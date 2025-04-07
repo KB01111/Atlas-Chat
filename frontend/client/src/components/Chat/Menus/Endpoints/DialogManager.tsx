@@ -22,9 +22,17 @@ const DialogManager = ({
         <SetKeyDialog
           open={keyDialogOpen}
           endpoint={keyDialogEndpoint}
-          endpointType={getEndpointField(endpointsConfig, keyDialogEndpoint, "type")}
+          endpointType={getEndpointField(
+            endpointsConfig,
+            keyDialogEndpoint,
+            "type",
+          )}
           onOpenChange={onOpenChange}
-          userProvideURL={getEndpointField(endpointsConfig, keyDialogEndpoint, "userProvideURL")}
+          userProvideURL={getEndpointField(
+            endpointsConfig,
+            keyDialogEndpoint,
+            "userProvideURL",
+          )}
         />
       )}
     </>

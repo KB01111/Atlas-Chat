@@ -85,9 +85,15 @@ export function getArtifactFilename(type: string, language?: string): string {
   return artifactFilename[key] ?? artifactFilename.default;
 }
 
-export function getTemplate(type: string, language?: string): SandpackPredefinedTemplate {
+export function getTemplate(
+  type: string,
+  language?: string,
+): SandpackPredefinedTemplate {
   const key = getKey(type, language);
-  return artifactTemplate[key] ?? (artifactTemplate.default as SandpackPredefinedTemplate);
+  return (
+    artifactTemplate[key] ??
+    (artifactTemplate.default as SandpackPredefinedTemplate)
+  );
 }
 
 const standardDependencies = {
@@ -159,7 +165,9 @@ export function getProps(type: string): Partial<SandpackProviderProps> {
 }
 
 export const sharedOptions: SandpackProviderProps["options"] = {
-  externalResources: ["https://unpkg.com/@tailwindcss/ui/dist/tailwind-ui.min.css"],
+  externalResources: [
+    "https://unpkg.com/@tailwindcss/ui/dist/tailwind-ui.min.css",
+  ],
 };
 
 export const sharedFiles = {

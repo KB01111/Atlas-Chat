@@ -35,7 +35,8 @@ const ImagePreview = ({
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-  const [previousActiveElement, setPreviousActiveElement] = useState<Element | null>(null);
+  const [previousActiveElement, setPreviousActiveElement] =
+    useState<Element | null>(null);
 
   const openModal = useCallback(() => {
     setPreviousActiveElement(document.activeElement);
@@ -71,7 +72,9 @@ const ImagePreview = ({
     if (isModalOpen) {
       document.addEventListener("keydown", handleKeyDown);
       document.body.style.overflow = "hidden";
-      const closeButton = document.querySelector('[aria-label="Close full view"]') as HTMLElement;
+      const closeButton = document.querySelector(
+        '[aria-label="Close full view"]',
+      ) as HTMLElement;
       if (closeButton) {
         setTimeout(() => closeButton.focus(), 0);
       }
@@ -98,7 +101,10 @@ const ImagePreview = ({
       }
     : baseStyle;
 
-  if (typeof style.backgroundImage !== "string" || style.backgroundImage.length === 0) {
+  if (
+    typeof style.backgroundImage !== "string" ||
+    style.backgroundImage.length === 0
+  ) {
     return null;
   }
 
@@ -155,7 +161,10 @@ const ImagePreview = ({
             />
           </div>
         )}
-        <SourceIcon source={source} aria-label={source ? `Source: ${source}` : undefined} />
+        <SourceIcon
+          source={source}
+          aria-label={source ? `Source: ${source}` : undefined}
+        />
       </div>
 
       <OGDialog open={isModalOpen} onOpenChange={setIsModalOpen}>

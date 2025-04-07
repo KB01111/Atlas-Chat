@@ -69,7 +69,12 @@ export const ErrorMessage = ({
   );
 };
 
-const DisplayMessage = ({ text, isCreatedByUser, message, showCursor }: TDisplayProps) => {
+const DisplayMessage = ({
+  text,
+  isCreatedByUser,
+  message,
+  showCursor,
+}: TDisplayProps) => {
   const { isSubmitting, latestMessage } = useChatContext();
   const enableUserMsgMarkdown = useRecoilValue(store.enableUserMsgMarkdown);
   const showCursorState = useMemo(
@@ -131,11 +136,16 @@ const MessageContent = ({
     const thinkingMatch = text.match(/:::thinking([\s\S]*?):::/);
     return {
       thinkingContent: thinkingMatch ? thinkingMatch[1].trim() : "",
-      regularContent: thinkingMatch ? text.replace(/:::thinking[\s\S]*?:::/, "").trim() : text,
+      regularContent: thinkingMatch
+        ? text.replace(/:::thinking[\s\S]*?:::/, "").trim()
+        : text,
     };
   }, [text]);
 
-  const showRegularCursor = useMemo(() => isLast && isSubmitting, [isLast, isSubmitting]);
+  const showRegularCursor = useMemo(
+    () => isLast && isSubmitting,
+    [isLast, isSubmitting],
+  );
 
   const unfinishedMessage = useMemo(
     () =>

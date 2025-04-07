@@ -70,11 +70,7 @@ class ModelSpecs:
         Returns:
             List of model specifications
         """
-        return [
-            spec
-            for spec in self.specs.values()
-            if spec.provider.lower() == provider.lower()
-        ]
+        return [spec for spec in self.specs.values() if spec.provider.lower() == provider.lower()]
 
     def get_models_by_strength(self, strength: str) -> List[ModelSpecification]:
         """
@@ -88,9 +84,7 @@ class ModelSpecs:
         """
         return [spec for spec in self.specs.values() if strength in spec.strengths]
 
-    def get_models_by_capability(
-        self, min_score: float = 0.0
-    ) -> List[ModelSpecification]:
+    def get_models_by_capability(self, min_score: float = 0.0) -> List[ModelSpecification]:
         """
         Get models by capability score.
 
@@ -100,9 +94,7 @@ class ModelSpecs:
         Returns:
             List of model specifications
         """
-        return [
-            spec for spec in self.specs.values() if spec.capability_score >= min_score
-        ]
+        return [spec for spec in self.specs.values() if spec.capability_score >= min_score]
 
     def add_spec(self, spec: ModelSpecification) -> None:
         """
@@ -113,9 +105,7 @@ class ModelSpecs:
         """
         self.specs[spec.model_id] = spec
 
-    def update_spec(
-        self, model_id: str, updates: Dict[str, Any]
-    ) -> Optional[ModelSpecification]:
+    def update_spec(self, model_id: str, updates: Dict[str, Any]) -> Optional[ModelSpecification]:
         """
         Update a model specification.
 
@@ -454,8 +444,6 @@ class ModelSpecs:
                     default_specs[model_id] = ModelSpecification(**updated_dict)
                 else:
                     # Add new spec
-                    default_specs[model_id] = ModelSpecification(
-                        model_id=model_id, **spec_dict
-                    )
+                    default_specs[model_id] = ModelSpecification(model_id=model_id, **spec_dict)
 
         return default_specs

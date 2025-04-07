@@ -100,7 +100,11 @@ export const ApiProvider = ({ children }) => {
     }
 
     try {
-      const response = await api.chat.sendMessage(selectedAgent, message, history);
+      const response = await api.chat.sendMessage(
+        selectedAgent,
+        message,
+        history,
+      );
       return { success: true, data: response };
     } catch (error) {
       return {
@@ -135,7 +139,12 @@ export const ApiProvider = ({ children }) => {
     }
 
     try {
-      const response = await api.code.executeCode(code, language, threadId, selectedAgent);
+      const response = await api.code.executeCode(
+        code,
+        language,
+        threadId,
+        selectedAgent,
+      );
       return response;
     } catch (error) {
       return {
@@ -151,7 +160,12 @@ export const ApiProvider = ({ children }) => {
     }
 
     try {
-      const response = await api.code.writeFile(filePath, content, threadId, selectedAgent);
+      const response = await api.code.writeFile(
+        filePath,
+        content,
+        threadId,
+        selectedAgent,
+      );
       return response;
     } catch (error) {
       return { success: false, error: error.detail || "Failed to write file" };
@@ -164,7 +178,11 @@ export const ApiProvider = ({ children }) => {
     }
 
     try {
-      const response = await api.code.readFile(filePath, threadId, selectedAgent);
+      const response = await api.code.readFile(
+        filePath,
+        threadId,
+        selectedAgent,
+      );
       return response;
     } catch (error) {
       return { success: false, error: error.detail || "Failed to read file" };
@@ -177,7 +195,12 @@ export const ApiProvider = ({ children }) => {
     }
 
     try {
-      const response = await api.code.installPackages(packages, language, threadId, selectedAgent);
+      const response = await api.code.installPackages(
+        packages,
+        language,
+        threadId,
+        selectedAgent,
+      );
       return response;
     } catch (error) {
       return {

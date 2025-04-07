@@ -24,7 +24,9 @@ const getEndpointFromSetup = (
     return targetEndpoint as EModelEndpoint;
   }
   if (targetEndpoint) {
-    console.warn(`Illegal target endpoint ${targetEndpoint} ${endpointsConfig}`);
+    console.warn(
+      `Illegal target endpoint ${targetEndpoint} ${endpointsConfig}`,
+    );
   }
   return null;
 };
@@ -33,7 +35,9 @@ const getEndpointFromLocalStorage = (endpointsConfig: TEndpointsConfig) => {
   try {
     const { lastConversationSetup } = getLocalStorageItems();
     const { endpoint } = lastConversationSetup ?? { endpoint: null };
-    const isDefaultConfig = Object.values(endpointsConfig ?? {}).every((value) => !value);
+    const isDefaultConfig = Object.values(endpointsConfig ?? {}).every(
+      (value) => !value,
+    );
 
     if (isDefaultConfig && endpoint) {
       return endpoint;

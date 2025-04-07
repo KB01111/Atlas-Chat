@@ -33,9 +33,17 @@ const FilePreview = ({
   };
 
   return (
-    <div className={cn("relative size-10 shrink-0 overflow-hidden rounded-xl", className)}>
+    <div
+      className={cn(
+        "relative size-10 shrink-0 overflow-hidden rounded-xl",
+        className,
+      )}
+    >
       <FileIcon file={file} fileType={fileType} />
-      <SourceIcon source={file?.source} isCodeFile={!!file?.metadata?.fileIdentifier} />
+      <SourceIcon
+        source={file?.source}
+        isCodeFile={!!file?.metadata?.fileIdentifier}
+      />
       {progress < 1 && (
         <ProgressCircle
           circumference={circumference}

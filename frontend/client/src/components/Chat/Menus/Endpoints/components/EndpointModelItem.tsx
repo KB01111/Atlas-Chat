@@ -1,4 +1,7 @@
-import { isAgentsEndpoint, isAssistantsEndpoint } from "librechat-data-provider";
+import {
+  isAgentsEndpoint,
+  isAssistantsEndpoint,
+} from "librechat-data-provider";
 import { EarthIcon } from "lucide-react";
 import React from "react";
 import type { Endpoint } from "~/common";
@@ -11,14 +14,23 @@ interface EndpointModelItemProps {
   isSelected: boolean;
 }
 
-export function EndpointModelItem({ modelId, endpoint, isSelected }: EndpointModelItemProps) {
+export function EndpointModelItem({
+  modelId,
+  endpoint,
+  isSelected,
+}: EndpointModelItemProps) {
   const { handleSelectModel } = useModelSelectorContext();
   let isGlobal = false;
   let modelName = modelId;
   const avatarUrl = endpoint?.modelIcons?.[modelId ?? ""] || null;
 
   // Use custom names if available
-  if (endpoint && modelId && isAgentsEndpoint(endpoint.value) && endpoint.agentNames?.[modelId]) {
+  if (
+    endpoint &&
+    modelId &&
+    isAgentsEndpoint(endpoint.value) &&
+    endpoint.agentNames?.[modelId]
+  ) {
     modelName = endpoint.agentNames[modelId];
 
     const modelInfo = endpoint?.models?.find((m) => m.name === modelId);
@@ -41,9 +53,14 @@ export function EndpointModelItem({ modelId, endpoint, isSelected }: EndpointMod
       <div className="flex items-center gap-2">
         {avatarUrl ? (
           <div className="flex h-5 w-5 items-center justify-center overflow-hidden rounded-full">
-            <img src={avatarUrl} alt={modelName ?? ""} className="h-full w-full object-cover" />
+            <img
+              src={avatarUrl}
+              alt={modelName ?? ""}
+              className="h-full w-full object-cover"
+            />
           </div>
-        ) : (isAgentsEndpoint(endpoint.value) || isAssistantsEndpoint(endpoint.value)) &&
+        ) : (isAgentsEndpoint(endpoint.value) ||
+            isAssistantsEndpoint(endpoint.value)) &&
           endpoint.icon ? (
           <div className="flex h-5 w-5 items-center justify-center overflow-hidden rounded-full">
             {endpoint.icon}

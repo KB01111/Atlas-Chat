@@ -17,7 +17,13 @@ import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { getFileExtension, getMimeType } from "../../utils/artifacts";
 import { copyToClipboard } from "../../utils/clipboard";
 
-const ArtifactDisplay = ({ artifact, onClose, onDownload, onShare, showMetadata = false }) => {
+const ArtifactDisplay = ({
+  artifact,
+  onClose,
+  onDownload,
+  onShare,
+  showMetadata = false,
+}) => {
   const { t } = useTranslation();
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [language, setLanguage] = useState("text");
@@ -189,33 +195,51 @@ const ArtifactDisplay = ({ artifact, onClose, onDownload, onShare, showMetadata 
           </div>
           <div className="artifact-actions">
             {!isImage && (
-              <button className="icon-button tooltip-container" onClick={handleCopyContent}>
+              <button
+                className="icon-button tooltip-container"
+                onClick={handleCopyContent}
+              >
                 <FiCopy />
                 <span className="tooltip">{t("Copy content")}</span>
               </button>
             )}
-            <button className="icon-button tooltip-container" onClick={handleDownload}>
+            <button
+              className="icon-button tooltip-container"
+              onClick={handleDownload}
+            >
               <FiDownload />
               <span className="tooltip">{t("Download")}</span>
             </button>
             {onShare && (
-              <button className="icon-button tooltip-container" onClick={handleShare}>
+              <button
+                className="icon-button tooltip-container"
+                onClick={handleShare}
+              >
                 <FiShare2 />
                 <span className="tooltip">{t("Share")}</span>
               </button>
             )}
-            <button className="icon-button tooltip-container" onClick={toggleFullscreen}>
+            <button
+              className="icon-button tooltip-container"
+              onClick={toggleFullscreen}
+            >
               {isFullscreen ? <FiMinimize2 /> : <FiMaximize2 />}
               <span className="tooltip">
                 {isFullscreen ? t("Exit fullscreen") : t("Fullscreen")}
               </span>
             </button>
-            <button className="icon-button tooltip-container info-button" onClick={toggleDetails}>
+            <button
+              className="icon-button tooltip-container info-button"
+              onClick={toggleDetails}
+            >
               <FiInfo />
               <span className="tooltip">{t("Details")}</span>
             </button>
             {onClose && (
-              <button className="icon-button close-button tooltip-container" onClick={onClose}>
+              <button
+                className="icon-button close-button tooltip-container"
+                onClick={onClose}
+              >
                 &times;
                 <span className="tooltip">{t("Close")}</span>
               </button>
@@ -253,7 +277,11 @@ const ArtifactDisplay = ({ artifact, onClose, onDownload, onShare, showMetadata 
                 <div className="detail-item">
                   <span className="detail-label">{t("Type")}:</span>
                   <span className="detail-value">
-                    {isImage ? t("Image") : language !== "text" ? language : t("Text")}
+                    {isImage
+                      ? t("Image")
+                      : language !== "text"
+                        ? language
+                        : t("Text")}
                   </span>
                 </div>
                 <div className="detail-item">
@@ -273,13 +301,17 @@ const ArtifactDisplay = ({ artifact, onClose, onDownload, onShare, showMetadata 
                 {artifact.metadata?.task_id && (
                   <div className="detail-item">
                     <span className="detail-label">{t("Task")}:</span>
-                    <span className="detail-value">{artifact.metadata.task_id}</span>
+                    <span className="detail-value">
+                      {artifact.metadata.task_id}
+                    </span>
                   </div>
                 )}
                 {artifact.metadata?.agent_id && (
                   <div className="detail-item">
                     <span className="detail-label">{t("Agent")}:</span>
-                    <span className="detail-value">{artifact.metadata.agent_id}</span>
+                    <span className="detail-value">
+                      {artifact.metadata.agent_id}
+                    </span>
                   </div>
                 )}
               </div>
@@ -289,14 +321,18 @@ const ArtifactDisplay = ({ artifact, onClose, onDownload, onShare, showMetadata 
 
         <div className="artifact-footer">
           <div className="artifact-metadata">
-            <span className="artifact-type">{isImage ? t("Image") : language}</span>
+            <span className="artifact-type">
+              {isImage ? t("Image") : language}
+            </span>
             <span className="artifact-size">
               {artifact.metadata?.size
                 ? `${Math.round(artifact.metadata.size / 1024)} KB`
                 : `${Math.round((artifact.content_base64.length * 3) / 4 / 1024)} KB`}
             </span>
           </div>
-          <div className="artifact-timestamp">{new Date(artifact.created_at).toLocaleString()}</div>
+          <div className="artifact-timestamp">
+            {new Date(artifact.created_at).toLocaleString()}
+          </div>
         </div>
       </div>
 
@@ -312,7 +348,11 @@ const ArtifactDisplay = ({ artifact, onClose, onDownload, onShare, showMetadata 
               <FiCopy />
             </button>
           )}
-          <button className="floating-action-button" onClick={handleDownload} title={t("Download")}>
+          <button
+            className="floating-action-button"
+            onClick={handleDownload}
+            title={t("Download")}
+          >
             <FiDownload />
           </button>
           <button

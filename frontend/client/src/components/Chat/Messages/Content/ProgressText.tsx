@@ -4,7 +4,13 @@ import { cn } from "~/utils";
 const wrapperClass =
   "progress-text-wrapper text-token-text-secondary relative -mt-[0.75px] h-5 w-full leading-5";
 
-const Wrapper = ({ popover, children }: { popover: boolean; children: React.ReactNode }) => {
+const Wrapper = ({
+  popover,
+  children,
+}: {
+  popover: boolean;
+  children: React.ReactNode;
+}) => {
   if (popover) {
     return (
       <div className={wrapperClass}>
@@ -53,12 +59,15 @@ export default function ProgressText({
   popover?: boolean;
   isExpanded?: boolean;
 }) {
-  const text = progress < 1 ? (authText ?? inProgressText) : finishedText;
+  const text = progress < 1 ? authText ?? inProgressText : finishedText;
   return (
     <Wrapper popover={popover}>
       <button
         type="button"
-        className={cn("inline-flex items-center gap-1", hasInput ? "" : "pointer-events-none")}
+        className={cn(
+          "inline-flex items-center gap-1",
+          hasInput ? "" : "pointer-events-none",
+        )}
         disabled={!hasInput}
         onClick={onClick}
       >

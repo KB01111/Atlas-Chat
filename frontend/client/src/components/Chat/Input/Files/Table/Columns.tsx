@@ -2,7 +2,12 @@ import type { ColumnDef } from "@tanstack/react-table";
 import type { TFile } from "librechat-data-provider";
 import { FileContext, FileSources } from "librechat-data-provider";
 import { ArrowUpDown, Database } from "lucide-react";
-import { AzureMinimalIcon, Button, Checkbox, OpenAIMinimalIcon } from "~/components";
+import {
+  AzureMinimalIcon,
+  Button,
+  Checkbox,
+  OpenAIMinimalIcon,
+} from "~/components";
 import FilePreview from "~/components/Chat/Input/Files/FilePreview";
 import ImagePreview from "~/components/Chat/Input/Files/ImagePreview";
 import { type TranslationKeys, useLocalize, useMediaQuery } from "~/hooks";
@@ -83,7 +88,9 @@ export const columns: ColumnDef<TFile>[] = [
       const fileType = getFileType(file.type);
       return (
         <div className="flex gap-2">
-          {fileType && <FilePreview fileType={fileType} className="relative" file={file} />}
+          {fileType && (
+            <FilePreview fileType={fileType} className="relative" file={file} />
+          )}
           <span className="self-center truncate">{file.filename}</span>
         </div>
       );
@@ -106,7 +113,10 @@ export const columns: ColumnDef<TFile>[] = [
     },
     cell: ({ row }) => {
       const isSmallScreen = useMediaQuery("(max-width: 768px)");
-      return formatDate(row.original.updatedAt?.toString() ?? "", isSmallScreen);
+      return formatDate(
+        row.original.updatedAt?.toString() ?? "",
+        isSmallScreen,
+      );
     },
   },
   {
@@ -204,7 +214,9 @@ export const columns: ColumnDef<TFile>[] = [
     },
     cell: ({ row }) => {
       const suffix = " MB";
-      const value = Number((Number(row.original.bytes) / 1024 / 1024).toFixed(2));
+      const value = Number(
+        (Number(row.original.bytes) / 1024 / 1024).toFixed(2),
+      );
       if (value < 0.01) {
         return "< 0.01 MB";
       }

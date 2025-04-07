@@ -24,7 +24,9 @@ jest.mock("./data-provider/simplified-api", () => ({
     register: jest.fn().mockResolvedValue({ user_id: "123" }),
     getAgents: jest
       .fn()
-      .mockResolvedValue([{ agent_id: "agent1", name: "Test Agent", agent_type: "sdk" }]),
+      .mockResolvedValue([
+        { agent_id: "agent1", name: "Test Agent", agent_type: "sdk" },
+      ]),
     getAgent: jest.fn().mockResolvedValue({
       agent_id: "agent1",
       name: "Test Agent",
@@ -43,7 +45,9 @@ describe("Login Component", () => {
 
     expect(screen.getByLabelText(/email address/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /sign in/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /sign in/i }),
+    ).toBeInTheDocument();
   });
 
   test("handles form submission", async () => {
@@ -74,7 +78,9 @@ describe("Register Component", () => {
     expect(screen.getByLabelText(/username/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/^password$/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/confirm password/i)).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /register/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /register/i }),
+    ).toBeInTheDocument();
   });
 
   test("validates password match", async () => {

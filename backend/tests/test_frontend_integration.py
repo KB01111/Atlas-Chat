@@ -160,9 +160,7 @@ def test_model_router_integration():
         except requests.RequestException as e:
             logger.error(f"❌ Request failed: {e}")
 
-    logger.info(
-        f"Model Router Integration Tests: {success_count}/{len(test_cases)} passed"
-    )
+    logger.info(f"Model Router Integration Tests: {success_count}/{len(test_cases)} passed")
     return success_count == len(test_cases)
 
 
@@ -209,9 +207,7 @@ def test_agent_factory_integration():
 
         data = response.json()
         if data.get("name") != test_agent["name"]:
-            logger.warning(
-                f"❌ Agent name mismatch: {data.get('name')} != {test_agent['name']}"
-            )
+            logger.warning(f"❌ Agent name mismatch: {data.get('name')} != {test_agent['name']}")
             return False
 
         logger.info("✅ Retrieved agent successfully")
@@ -313,28 +309,20 @@ def test_frontend_api_compatibility():
                     # Check first item in list
                     item = data[0]
                     missing_fields = [
-                        field
-                        for field in endpoint["expected_fields"]
-                        if field not in item
+                        field for field in endpoint["expected_fields"] if field not in item
                     ]
 
                     if missing_fields:
-                        logger.warning(
-                            f"❌ Missing fields in response: {missing_fields}"
-                        )
+                        logger.warning(f"❌ Missing fields in response: {missing_fields}")
                         continue
                 elif isinstance(data, dict):
                     # Check dictionary
                     missing_fields = [
-                        field
-                        for field in endpoint["expected_fields"]
-                        if field not in data
+                        field for field in endpoint["expected_fields"] if field not in data
                     ]
 
                     if missing_fields:
-                        logger.warning(
-                            f"❌ Missing fields in response: {missing_fields}"
-                        )
+                        logger.warning(f"❌ Missing fields in response: {missing_fields}")
                         continue
                 else:
                     logger.warning("❌ Unexpected response format")
@@ -349,9 +337,7 @@ def test_frontend_api_compatibility():
         except requests.RequestException as e:
             logger.error(f"❌ Request failed: {e}")
 
-    logger.info(
-        f"Frontend API Compatibility Tests: {success_count}/{len(endpoints)} passed"
-    )
+    logger.info(f"Frontend API Compatibility Tests: {success_count}/{len(endpoints)} passed")
     return success_count == len(endpoints)
 
 

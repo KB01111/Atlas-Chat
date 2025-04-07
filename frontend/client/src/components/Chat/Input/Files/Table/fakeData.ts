@@ -26,7 +26,8 @@ export const files: TFile[] = [
     bytes: 3147861,
     createdAt: "2024-01-23T18:25:47.698Z",
     filename: "img-337c49c7-fb1f-4a14-939d-40d12de11d5c.png",
-    filepath: "/images/652ac880c4102a77fe54c5db/img-337c49c7-fb1f-4a14-939d-40d12de11d5c.png",
+    filepath:
+      "/images/652ac880c4102a77fe54c5db/img-337c49c7-fb1f-4a14-939d-40d12de11d5c.png",
     height: 1024,
     object: "file",
     source: FileSources.local,
@@ -44,7 +45,8 @@ export const files: TFile[] = [
     bytes: 3147861,
     createdAt: "2024-01-23T18:25:25.324Z",
     filename: "img-459c76d1-16b7-48f9-9ff7-85ba6464e204.png",
-    filepath: "/images/652ac880c4102a77fe54c5db/img-459c76d1-16b7-48f9-9ff7-85ba6464e204.png",
+    filepath:
+      "/images/652ac880c4102a77fe54c5db/img-459c76d1-16b7-48f9-9ff7-85ba6464e204.png",
     height: 1024,
     object: "file",
     source: FileSources.local,
@@ -62,7 +64,8 @@ export const files: TFile[] = [
     bytes: 3147861,
     createdAt: "2024-01-23T18:25:25.035Z",
     filename: "img-c3fb2935-e578-4d72-b397-d1dcb122af67.png",
-    filepath: "/images/652ac880c4102a77fe54c5db/img-c3fb2935-e578-4d72-b397-d1dcb122af67.png",
+    filepath:
+      "/images/652ac880c4102a77fe54c5db/img-c3fb2935-e578-4d72-b397-d1dcb122af67.png",
     height: 1024,
     object: "file",
     source: FileSources.local,

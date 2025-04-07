@@ -28,7 +28,9 @@ export default function buildTree({
     };
 
     if (message.files && fileMap) {
-      extendedMessage.files = message.files.map((file) => fileMap[file.file_id ?? ""] ?? file);
+      extendedMessage.files = message.files.map(
+        (file) => fileMap[file.file_id ?? ""] ?? file,
+      );
     }
 
     messageMap[message.messageId] = extendedMessage;

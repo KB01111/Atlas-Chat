@@ -24,7 +24,8 @@ export const addPromptGroup = (
     data,
     InfiniteCollections.PROMPT_GROUPS,
     newPromptGroup,
-    (page) => page.promptGroups.findIndex((group) => group._id === newPromptGroup._id),
+    (page) =>
+      page.promptGroups.findIndex((group) => group._id === newPromptGroup._id),
   );
 };
 
@@ -36,7 +37,10 @@ export const updatePromptGroup = (
     data,
     InfiniteCollections.PROMPT_GROUPS,
     updatedPromptGroup,
-    (page) => page.promptGroups.findIndex((group) => group._id === updatedPromptGroup._id),
+    (page) =>
+      page.promptGroups.findIndex(
+        (group) => group._id === updatedPromptGroup._id,
+      ),
   );
 };
 
@@ -66,7 +70,9 @@ export const updateGroupFields = (
 };
 
 export const getSnippet = (promptText: string, length = 56) => {
-  return promptText.length > length ? `${promptText.slice(0, length - 3)}...` : promptText;
+  return promptText.length > length
+    ? `${promptText.slice(0, length - 3)}...`
+    : promptText;
 };
 
 export const findPromptGroup = (
@@ -80,8 +86,15 @@ export const findPromptGroup = (
   );
 };
 
-export const addGroupToAll = (queryClient: QueryClient, newGroup: TPromptGroup) => {
-  addToCacheList<TPromptGroup>(queryClient, [QueryKeys.allPromptGroups], newGroup);
+export const addGroupToAll = (
+  queryClient: QueryClient,
+  newGroup: TPromptGroup,
+) => {
+  addToCacheList<TPromptGroup>(
+    queryClient,
+    [QueryKeys.allPromptGroups],
+    newGroup,
+  );
 };
 
 export const updateGroupInAll = (
@@ -97,6 +110,14 @@ export const updateGroupInAll = (
   });
 };
 
-export const removeGroupFromAll = (queryClient: QueryClient, groupId: string) => {
-  removeFromCacheList<TPromptGroup>(queryClient, [QueryKeys.allPromptGroups], "_id", groupId);
+export const removeGroupFromAll = (
+  queryClient: QueryClient,
+  groupId: string,
+) => {
+  removeFromCacheList<TPromptGroup>(
+    queryClient,
+    [QueryKeys.allPromptGroups],
+    "_id",
+    groupId,
+  );
 };

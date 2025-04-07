@@ -1,6 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { FiCode, FiCopy, FiDownload, FiPlay, FiSave, FiTrash2, FiUpload } from "react-icons/fi";
+import {
+  FiCode,
+  FiCopy,
+  FiDownload,
+  FiPlay,
+  FiSave,
+  FiTrash2,
+  FiUpload,
+} from "react-icons/fi";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { copyToClipboard } from "../../utils/clipboard";
@@ -219,7 +227,10 @@ const CodeExecutionComponent = ({
           <div className="artifacts-list">
             {artifacts.map((artifact) => (
               <div key={artifact.id} className="artifact-item">
-                <div className="artifact-name" onClick={() => handleArtifactClick(artifact)}>
+                <div
+                  className="artifact-name"
+                  onClick={() => handleArtifactClick(artifact)}
+                >
                   {artifact.name}
                 </div>
                 <div className="artifact-actions">

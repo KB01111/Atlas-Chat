@@ -88,9 +88,7 @@ def get_password_hash(password: str) -> str:
     return hashlib.sha256(password.encode()).hexdigest()
 
 
-def create_access_token(
-    data: Dict[str, Any], expires_delta: Optional[timedelta] = None
-) -> str:
+def create_access_token(data: Dict[str, Any], expires_delta: Optional[timedelta] = None) -> str:
     """
     Create a JWT access token.
 
@@ -106,14 +104,10 @@ def create_access_token(
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(
-            minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
-        )
+        expire = datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
 
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(
-        to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM
-    )
+    encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
 
     return encoded_jwt
 
@@ -129,9 +123,7 @@ def decode_token(token: str) -> TokenData:
         TokenData object
     """
     try:
-        payload = jwt.decode(
-            token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
-        )
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
         username: str = payload.get("sub")
         token_scopes = payload.get("scopes", [])
         exp = datetime.fromtimestamp(payload.get("exp"))
@@ -275,9 +267,7 @@ def get_user_with_team_management_permission(
 
 
 def get_user_with_artifact_management_permission(
-    current_user: User = Security(
-        get_current_user, scopes=["user", "manage_artifacts"]
-    ),
+    current_user: User = Security(get_current_user, scopes=["user", "manage_artifacts"]),
 ) -> User:
     """
     Get the current user with artifact management permission.
@@ -319,9 +309,7 @@ def sanitize_code(code: str) -> str:
     ]
 
     for pattern in dangerous_imports:
-        code = re.sub(
-            pattern, "# Removed for security reasons", code, flags=re.IGNORECASE
-        )
+        code = re.sub(pattern, "# Removed for security reasons", code, flags=re.IGNORECASE)
 
     # Remove potentially dangerous functions
     dangerous_functions = [
@@ -411,9 +399,7 @@ def sanitize_code(code: str) -> str:
     ]
 
     for pattern in dangerous_functions:
-        code = re.sub(
-            pattern, "# Removed for security reasons(", code, flags=re.IGNORECASE
-        )
+        code = re.sub(pattern, "# Removed for security reasons(", code, flags=re.IGNORECASE)
 
     return code
 

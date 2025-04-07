@@ -52,7 +52,10 @@ const Login = () => {
           {error && <div className="text-red-500 text-sm">{error}</div>}
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium leading-6 text-gray-900"
+            >
               Email address
             </label>
             <div className="mt-2">

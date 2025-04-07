@@ -64,17 +64,13 @@ class OpenRouterLangGraphAgent:
 
                     tools_description = "You have access to the following tools:\n"
                     for tool in tools:
-                        tools_description += (
-                            f"- {tool['name']}: {tool['description']}\n"
-                        )
+                        tools_description += f"- {tool['name']}: {tool['description']}\n"
                         if "parameters" in tool:
                             tools_description += f"  Parameters: {tool['parameters']}\n"
 
                     if system_msg_idx is not None:
                         # Append tools to existing system message
-                        messages[system_msg_idx][
-                            "content"
-                        ] += f"\n\n{tools_description}"
+                        messages[system_msg_idx]["content"] += f"\n\n{tools_description}"
                     else:
                         # Create new system message with tools
                         messages.insert(

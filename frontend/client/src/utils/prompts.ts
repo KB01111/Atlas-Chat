@@ -1,7 +1,13 @@
 import { format } from "date-fns";
 import type { TPromptGroup, TUser } from "librechat-data-provider";
 
-export function replaceSpecialVars({ text, user }: { text: string; user?: TUser }) {
+export function replaceSpecialVars({
+  text,
+  user,
+}: {
+  text: string;
+  user?: TUser;
+}) {
   if (!text) {
     return text;
   }
@@ -93,7 +99,9 @@ export function formatDateTime(dateTimeString: string) {
   return `${formattedDate}, ${formattedTime}`;
 }
 
-export const mapPromptGroups = (groups: TPromptGroup[]): Record<string, TPromptGroup> => {
+export const mapPromptGroups = (
+  groups: TPromptGroup[],
+): Record<string, TPromptGroup> => {
   return groups.reduce(
     (acc, group) => {
       if (!group._id) {

@@ -60,9 +60,7 @@ class AgentMemory:
             Entry ID
         """
         # Create entry
-        entry = MemoryEntry(
-            agent_id=self.agent_id, content=content, metadata=metadata or {}
-        )
+        entry = MemoryEntry(agent_id=self.agent_id, content=content, metadata=metadata or {})
 
         # Add entry
         self.entries.append(entry)
@@ -115,9 +113,7 @@ class AgentMemory:
             List of matching memory entries
         """
         # Simple substring search for now
-        return [
-            entry for entry in self.entries if query.lower() in entry.content.lower()
-        ]
+        return [entry for entry in self.entries if query.lower() in entry.content.lower()]
 
     def clear(self):
         """Clear all memory entries."""
@@ -183,9 +179,7 @@ class MemoryManager:
         memory = self.get_memory(agent_id)
         return memory.add_entry(content, metadata)
 
-    def get_entries(
-        self, agent_id: str, limit: Optional[int] = None
-    ) -> List[MemoryEntry]:
+    def get_entries(self, agent_id: str, limit: Optional[int] = None) -> List[MemoryEntry]:
         """
         Get memory entries for an agent.
 

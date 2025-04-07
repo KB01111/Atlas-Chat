@@ -64,7 +64,10 @@ const AgentSelector = ({ onSelect }) => {
 
   return (
     <div className="agent-selector">
-      <label htmlFor="agent-select" className="block text-sm font-medium text-gray-700 mb-1">
+      <label
+        htmlFor="agent-select"
+        className="block text-sm font-medium text-gray-700 mb-1"
+      >
         Select Agent
       </label>
       <select
@@ -82,7 +85,8 @@ const AgentSelector = ({ onSelect }) => {
 
       {selectedAgentId && (
         <div className="mt-2 text-xs text-gray-500">
-          Using {agents.find((a) => a.agent_id === selectedAgentId)?.agent_type} agent
+          Using {agents.find((a) => a.agent_id === selectedAgentId)?.agent_type}{" "}
+          agent
         </div>
       )}
     </div>

@@ -6,7 +6,9 @@ export const addData = <TCollection, TData>(
   newData: TData,
   findIndex: (page: TCollection) => number,
 ) => {
-  const dataJson = JSON.parse(JSON.stringify(data)) as InfiniteData<TCollection>;
+  const dataJson = JSON.parse(
+    JSON.stringify(data),
+  ) as InfiniteData<TCollection>;
   const { pageIndex, index } = findPage<TCollection>(data, findIndex);
 
   if (pageIndex !== -1 && index !== -1) {
@@ -39,7 +41,10 @@ export const getRecordByProperty = <TCollection, TData>(
   return undefined;
 };
 
-export function findPage<TData>(data: InfiniteData<TData>, findIndex: (page: TData) => number) {
+export function findPage<TData>(
+  data: InfiniteData<TData>,
+  findIndex: (page: TData) => number,
+) {
   for (let pageIndex = 0; pageIndex < data.pages.length; pageIndex++) {
     const page = data.pages[pageIndex];
     const index = findIndex(page);
@@ -96,7 +101,9 @@ export const normalizeData = <TCollection, TData>(
   pageSize: number,
   uniqueProperty?: keyof TData,
 ): InfiniteData<TCollection> => {
-  const infiniteData = JSON.parse(JSON.stringify(data)) as InfiniteData<TCollection>;
+  const infiniteData = JSON.parse(
+    JSON.stringify(data),
+  ) as InfiniteData<TCollection>;
   const pageCount = infiniteData.pages.length;
   if (pageCount === 0) {
     return infiniteData;

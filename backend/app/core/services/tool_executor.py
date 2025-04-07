@@ -76,9 +76,7 @@ class ToolExecutor:
 
             # Only pre-install if enabled in settings
             if not settings.PREINSTALL_COMMON_PACKAGES:
-                logger.info(
-                    "Pre-installation of common packages is disabled in settings"
-                )
+                logger.info("Pre-installation of common packages is disabled in settings")
                 return
 
             # Pre-install Python packages
@@ -100,13 +98,9 @@ class ToolExecutor:
                     for pkg in batch:
                         pkg_name = pkg.split("==")[0]
                         self.installed_packages["python"].add(pkg_name)
-                    logger.info(
-                        f"Successfully pre-installed Python packages batch: {batch}"
-                    )
+                    logger.info(f"Successfully pre-installed Python packages batch: {batch}")
                 except Exception as e:
-                    logger.warning(
-                        f"Error pre-installing Python packages batch {batch}: {str(e)}"
-                    )
+                    logger.warning(f"Error pre-installing Python packages batch {batch}: {str(e)}")
 
             # Pre-install NPM packages
             npm_packages_to_install = [
@@ -125,13 +119,9 @@ class ToolExecutor:
                     for pkg in batch:
                         pkg_name = pkg.split("@")[0]
                         self.installed_packages["npm"].add(pkg_name)
-                    logger.info(
-                        f"Successfully pre-installed NPM packages batch: {batch}"
-                    )
+                    logger.info(f"Successfully pre-installed NPM packages batch: {batch}")
                 except Exception as e:
-                    logger.warning(
-                        f"Error pre-installing NPM packages batch {batch}: {str(e)}"
-                    )
+                    logger.warning(f"Error pre-installing NPM packages batch {batch}: {str(e)}")
 
             logger.info("Completed pre-installation of common packages")
 
@@ -261,9 +251,7 @@ class ToolExecutor:
         try:
             # Validate file path (security check)
             if ".." in file_path or file_path.startswith("/"):
-                error_msg = (
-                    "Invalid file path. Path cannot contain '..' or start with '/'"
-                )
+                error_msg = "Invalid file path. Path cannot contain '..' or start with '/'"
                 logger.error(error_msg)
                 return {"success": False, "error": error_msg}
 
@@ -301,9 +289,7 @@ class ToolExecutor:
 
             return {"success": False, "error": error_msg}
 
-    async def read_file(
-        self, file_path: str, context: RequestContext
-    ) -> Dict[str, Any]:
+    async def read_file(self, file_path: str, context: RequestContext) -> Dict[str, Any]:
         """
         Read content from a file in the sandbox
 
@@ -327,9 +313,7 @@ class ToolExecutor:
         try:
             # Validate file path (security check)
             if ".." in file_path or file_path.startswith("/"):
-                error_msg = (
-                    "Invalid file path. Path cannot contain '..' or start with '/'"
-                )
+                error_msg = "Invalid file path. Path cannot contain '..' or start with '/'"
                 logger.error(error_msg)
                 return {"success": False, "error": error_msg}
 
@@ -409,7 +393,7 @@ class ToolExecutor:
                     "status": "in_progress",
                     "progress": status.get("progress", 0),
                     "message": f"Installing packages: {', '.join(packages)}. This may take a few minutes.",
-                } # Closing the dictionary returned on line 407
+                }  # Closing the dictionary returned on line 407
 
         # Start the actual installation logic wit{y block
         try:
@@ -429,9 +413,7 @@ class ToolExecutor:
             for pkg in packages:
                 # Extract base package name for checking
                 pkg_name = (
-                    pkg.split("==")[0]
-                    if "==" in pkg
-                    else pkg.split("@")[0] if "@" in pkg else pkg
+                    pkg.split("==")[0] if "==" in pkg else pkg.split("@")[0] if "@" in pkg else pkg
                 ).strip()
 
                 if not pkg_name:  # Skip empty package names
@@ -452,9 +434,7 @@ class ToolExecutor:
                 else:
                     # Check for potentially problematic characters (basic sanitization)
                     # More robust validation might be needed depending on requirements
-                    if not all(
-                        c.isalnum() or c in ["-", "_", ".", "@", "="] for c in pkg
-                    ):
+                    if not all(c.isalnum() or c in ["-", "_", ".", "@", "="] for c in pkg):
                         logger.warning(
                             f"Skipping package with potentially unsafe characters: {pkg}"
                         )
@@ -497,11 +477,7 @@ class ToolExecutor:
                 "success": True,
                 "status": "in_progress",
                 "message": f"Starting installation for: {', '.join(packages_to_install)}. This may take a few minutes."
-                + (
-                    f" Skipped blocked: {', '.join(skipped_blocked)}."
-                    if skipped_blocked
-                    else ""
-                ),
+                + (f" Skipped blocked: {', '.join(skipped_blocked)}." if skipped_blocked else ""),
                 "skipped_blocked": skipped_blocked,
             }
         # This except block corresponds to the try starting on line 415
@@ -510,7 +486,7 @@ class ToolExecutor:
             logger.error(error_msg, exc_info=True)
             # Log audit event for preparation error
             audit_details = {
-                "action": "install_packages_prepare", # Different action name for clarity
+                "action": "install_packages_prepare",  # Different action name for clarity
                 "language": language,
                 "packages": packages,
                 "thread_id": context.thread_id,
@@ -521,8 +497,9 @@ class ToolExecutor:
             logger.info(f"AUDIT: {audit_details}")
             # Clean up if installation was marked as ongoing
             if installation_id in self.ongoing_installations:
-                 del self.ongoing_installations[installation_id]
+                del self.ongoing_installations[installation_id]
             return {"success": False, "error": error_msg}
+
     # End of install_packages method (Correctly indented)
 
     async def _install_packages_background(
@@ -591,17 +568,13 @@ class ToolExecutor:
 
             # Install packages with extended timeout
             if language.lower() == "python":
-                result = await self.e2b_client.install_python_packages(
-                    packages, timeout=timeout
-                )
+                result = await self.e2b_client.install_python_packages(packages, timeout=timeout)
                 # Update installed packages
                 for pkg in packages:
                     pkg_name = pkg.split("==")[0] if "==" in pkg else pkg
                     self.installed_packages["python"].add(pkg_name)
             elif language.lower() in ["javascript", "typescript"]:
-                result = await self.e2b_client.install_npm_packages(
-                    packages, timeout=timeout
-                )
+                result = await self.e2b_client.install_npm_packages(packages, timeout=timeout)
                 # Update installed packages
                 for pkg in packages:
                     pkg_name = pkg.split("@")[0] if "@" in pkg else pkg
@@ -758,9 +731,7 @@ class ToolExecutor:
 
             return False
 
-    async def search_graphiti(
-        self, query: str, context: RequestContext
-    ) -> List[Dict[str, Any]]:
+    async def search_graphiti(self, query: str, context: RequestContext) -> List[Dict[str, Any]]:
         """
         Search Graphiti for relevant information
 

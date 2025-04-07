@@ -56,10 +56,13 @@ const ChatContainer = () => {
     try {
       setIsLoadingMore(true);
 
-      const olderMessages = await api.chat.getConversationMessages(conversationId, {
-        before_id: oldestMessageId,
-        limit: 50,
-      });
+      const olderMessages = await api.chat.getConversationMessages(
+        conversationId,
+        {
+          before_id: oldestMessageId,
+          limit: 50,
+        },
+      );
 
       if (olderMessages.messages && olderMessages.messages.length > 0) {
         setMessages((prev) => [...olderMessages.messages, ...prev]);
@@ -93,18 +96,25 @@ const ChatContainer = () => {
       // Replace temp message with actual message
       setMessages((prev) =>
         prev.map((msg) =>
-          msg.id === newMessage.id ? { ...response.message, status: "sent" } : msg,
+          msg.id === newMessage.id
+            ? { ...response.message, status: "sent" }
+            : msg,
         ),
       );
 
       // Add agent response
       if (response.reply) {
-        setMessages((prev) => [...prev, { ...response.reply, status: "received" }]);
+        setMessages((prev) => [
+          ...prev,
+          { ...response.reply, status: "received" },
+        ]);
       }
     } catch (err) {
       // Mark message as failed
       setMessages((prev) =>
-        prev.map((msg) => (msg.id === `temp-${Date.now()}` ? { ...msg, status: "failed" } : msg)),
+        prev.map((msg) =>
+          msg.id === `temp-${Date.now()}` ? { ...msg, status: "failed" } : msg,
+        ),
       );
 
       setError("Failed to send message");

@@ -32,9 +32,7 @@ class ModelRouter:
 
         # Initialize components
         self.model_specs = ModelSpecs(self.config.get("model_specs"))
-        self.performance_metrics = PerformanceMetrics(
-            self.config.get("performance_metrics")
-        )
+        self.performance_metrics = PerformanceMetrics(self.config.get("performance_metrics"))
 
         # Initialize strategies
         self.task_strategy = TaskBasedStrategy(self.model_specs)
@@ -230,9 +228,7 @@ class ModelRouter:
         models = self.model_specs.get_models_by_strength(task_type)
 
         if not models:
-            self.logger.warning(
-                f"No models found for task type {task_type}, using default model"
-            )
+            self.logger.warning(f"No models found for task type {task_type}, using default model")
             return self.default_model
 
         # Sort by capability score (descending)

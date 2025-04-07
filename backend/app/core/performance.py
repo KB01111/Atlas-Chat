@@ -80,9 +80,7 @@ class PerformanceMonitor:
             result[name] = {
                 "count": data["count"],
                 "total_time": data["total_time"],
-                "avg_time": (
-                    data["total_time"] / data["count"] if data["count"] > 0 else 0
-                ),
+                "avg_time": (data["total_time"] / data["count"] if data["count"] > 0 else 0),
                 "min_time": data["min_time"] if data["min_time"] != float("inf") else 0,
                 "max_time": data["max_time"],
             }
@@ -328,9 +326,7 @@ class MemoryOptimizer:
 
 
 # Pagination utilities
-def paginate_results(
-    results: List[Any], page: int = 1, page_size: int = 20
-) -> Dict[str, Any]:
+def paginate_results(results: List[Any], page: int = 1, page_size: int = 20) -> Dict[str, Any]:
     """
     Paginate a list of results.
 
@@ -398,9 +394,7 @@ class RateLimiter:
 
         # Remove expired requests
         self.requests = {
-            k: v
-            for k, v in self.requests.items()
-            if current_time - v[-1] < self.time_window
+            k: v for k, v in self.requests.items() if current_time - v[-1] < self.time_window
         }
 
         # Get the requests for this key
@@ -579,9 +573,7 @@ class E2BSessionManager:
             sorted_sessions = sorted(self.last_used.items(), key=lambda x: x[1])
 
             # Delete the oldest sessions
-            for session_id, _ in sorted_sessions[
-                : len(self.sessions) - self.max_sessions + 1
-            ]:
+            for session_id, _ in sorted_sessions[: len(self.sessions) - self.max_sessions + 1]:
                 await self.delete_session(session_id)
 
 

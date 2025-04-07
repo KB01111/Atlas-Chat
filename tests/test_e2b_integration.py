@@ -446,9 +446,7 @@ class TestAgentDelegation(unittest.TestCase):
         self.mock_artifact_manager.scan_for_artifacts = AsyncMock(return_value=[])
 
         # Execute the task
-        result = await self.delegation_service.execute_coding_task(
-            team_id=team.id, task_id=task.id
-        )
+        result = await self.delegation_service.execute_coding_task(team_id=team.id, task_id=task.id)
 
         # Check that the process was started
         self.mock_session.process.start.assert_called_once()

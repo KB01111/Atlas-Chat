@@ -42,7 +42,8 @@ const VirtualizedChatList = ({
 
     // Calculate average message length
     const avgLength =
-      messages.reduce((sum, msg) => sum + (msg.content?.length || 0), 0) / messages.length;
+      messages.reduce((sum, msg) => sum + (msg.content?.length || 0), 0) /
+      messages.length;
 
     // Estimate number of lines
     const estimatedLines = Math.ceil(avgLength / charsPerLine);

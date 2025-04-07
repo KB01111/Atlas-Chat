@@ -8,9 +8,19 @@ interface DragDropWrapperProps {
   className?: string;
 }
 
-export default function DragDropWrapper({ children, className }: DragDropWrapperProps) {
-  const { isOver, canDrop, drop, showModal, setShowModal, draggedFiles, handleOptionSelect } =
-    useDragHelpers();
+export default function DragDropWrapper({
+  children,
+  className,
+}: DragDropWrapperProps) {
+  const {
+    isOver,
+    canDrop,
+    drop,
+    showModal,
+    setShowModal,
+    draggedFiles,
+    handleOptionSelect,
+  } = useDragHelpers();
 
   const isActive = canDrop && isOver;
 

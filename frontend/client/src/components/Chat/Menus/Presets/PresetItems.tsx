@@ -88,7 +88,8 @@ const PresetItems: FC<{
               }
               selection={{
                 selectHandler: clearAllPresets,
-                selectClasses: "bg-red-600 hover:bg-red-700 dark:hover:bg-red-600 text-white",
+                selectClasses:
+                  "bg-red-600 hover:bg-red-700 dark:hover:bg-red-600 text-white",
                 selectText: localize("com_ui_clear"),
               }}
             />
@@ -141,7 +142,11 @@ const PresetItems: FC<{
                         Icon != null && (
                           <Icon
                             context="menu-item"
-                            iconURL={getEndpointField(endpointsConfig, preset.endpoint, "iconURL")}
+                            iconURL={getEndpointField(
+                              endpointsConfig,
+                              preset.endpoint,
+                              "iconURL",
+                            )}
                             className="icon-md mr-1 dark:text-white"
                             endpoint={preset.endpoint}
                           />
@@ -161,10 +166,15 @@ const PresetItems: FC<{
                           onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
-                            onSetDefaultPreset(preset, defaultPreset?.presetId === presetId);
+                            onSetDefaultPreset(
+                              preset,
+                              defaultPreset?.presetId === presetId,
+                            );
                           }}
                         >
-                          <PinIcon unpin={defaultPreset?.presetId === presetId} />
+                          <PinIcon
+                            unpin={defaultPreset?.presetId === presetId}
+                          />
                         </button>
                         <button
                           className="m-0 h-full rounded-md p-2 text-gray-400 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 sm:invisible sm:group-hover:visible"

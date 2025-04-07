@@ -11,7 +11,13 @@ import { langSubset } from "~/utils";
 import { a, code, codeNoExecution, p } from "./Markdown";
 
 const MarkdownLite = memo(
-  ({ content = "", codeExecution = true }: { content?: string; codeExecution?: boolean }) => {
+  ({
+    content = "",
+    codeExecution = true,
+  }: {
+    content?: string;
+    codeExecution?: boolean;
+  }) => {
     const rehypePlugins: PluggableList = [
       [rehypeKatex, { output: "mathml" }],
       [

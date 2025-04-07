@@ -34,7 +34,10 @@ const SearchContent = ({ message }: { message: TMessage }) => {
         {message.unfinished === true && (
           <Suspense>
             <DelayedRender delay={250}>
-              <UnfinishedMessage message={message} key={`unfinished-${messageId}`} />
+              <UnfinishedMessage
+                message={message}
+                key={`unfinished-${messageId}`}
+              />
             </DelayedRender>
           </Suspense>
         )}
@@ -46,7 +49,9 @@ const SearchContent = ({ message }: { message: TMessage }) => {
     <div
       className={cn(
         "markdown prose dark:prose-invert light w-full break-words",
-        message.isCreatedByUser && !enableUserMsgMarkdown && "whitespace-pre-wrap",
+        message.isCreatedByUser &&
+          !enableUserMsgMarkdown &&
+          "whitespace-pre-wrap",
         message.isCreatedByUser ? "dark:text-gray-20" : "dark:text-gray-70",
       )}
       dir="auto"

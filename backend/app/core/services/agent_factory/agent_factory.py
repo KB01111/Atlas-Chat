@@ -55,9 +55,7 @@ class AgentProvider(ABC):
         pass
 
     @abstractmethod
-    def update_agent(
-        self, agent_id: str, updates: Dict[str, Any]
-    ) -> Optional[AgentDefinition]:
+    def update_agent(self, agent_id: str, updates: Dict[str, Any]) -> Optional[AgentDefinition]:
         """
         Update agent definition.
 
@@ -117,17 +115,13 @@ class AgentFactory:
             # Register OpenRouter provider
             from ..services.openrouter_sdk_agent import OpenRouterSDKProvider
 
-            self.register_provider(
-                "openrouter", OpenRouterSDKProvider(self.model_router)
-            )
+            self.register_provider("openrouter", OpenRouterSDKProvider(self.model_router))
 
             # Try to register Anthropic provider if available
             try:
                 from ..services.anthropic_agent import AnthropicProvider
 
-                self.register_provider(
-                    "anthropic", AnthropicProvider(self.model_router)
-                )
+                self.register_provider("anthropic", AnthropicProvider(self.model_router))
             except ImportError:
                 logger.info("Anthropic provider not available")
 
@@ -223,9 +217,7 @@ class AgentFactory:
         """
         return self.agents.get(agent_id)
 
-    def update_agent(
-        self, agent_id: str, updates: Dict[str, Any]
-    ) -> Optional[AgentDefinition]:
+    def update_agent(self, agent_id: str, updates: Dict[str, Any]) -> Optional[AgentDefinition]:
         """
         Update agent definition.
 
