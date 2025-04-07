@@ -118,7 +118,7 @@ class AtlasIntegration:
             Dictionary with processing results
         """
         # Add message to context manager
-        self.context_manager.add_message(session_id=session_id, message=message, role="user")
+        await self.context_manager.add_message(session_id=session_id, message=message, role="user")
 
         # Get agents of the specified type
         agents = self.team_manager.get_agents_by_type(agent_type)
