@@ -52,7 +52,7 @@ export default function StreamAudio({ index = 0 }) {
   const queryParam =
     paramId === "new"
       ? paramId
-      : (latestMessage?.conversationId ?? paramId ?? "");
+      : latestMessage?.conversationId ?? paramId ?? "";
 
   const queryClient = useQueryClient();
   const getMessages = useCallback(

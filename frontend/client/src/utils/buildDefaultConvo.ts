@@ -35,9 +35,9 @@ const buildDefaultConvo = ({
     lastConversationSetup?.model ?? lastSelectedModel?.[endpoint] ?? "";
   const secondaryModel: string | null =
     endpoint === EModelEndpoint.gptPlugins
-      ? (lastConversationSetup?.agentOptions?.model ??
+      ? lastConversationSetup?.agentOptions?.model ??
         lastSelectedModel?.secondaryModel ??
-        null)
+        null
       : null;
 
   let possibleModels: string[];

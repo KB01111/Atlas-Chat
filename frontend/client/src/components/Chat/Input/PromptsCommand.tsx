@@ -73,7 +73,7 @@ function PromptsCommand({
         }: ${
           (group.oneliner?.length ?? 0) > 0
             ? group.oneliner
-            : (group.productionPrompt?.prompt ?? "")
+            : group.productionPrompt?.prompt ?? ""
         }`,
         icon: (
           <CategoryIcon category={group.category ?? ""} className="h-5 w-5" />

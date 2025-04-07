@@ -255,7 +255,7 @@ export function getIconEndpoint({
   endpoint?: string | null;
 }) {
   return (
-    (endpointsConfig?.[iconURL ?? ""] ? (iconURL ?? endpoint) : endpoint) ?? ""
+    (endpointsConfig?.[iconURL ?? ""] ? iconURL ?? endpoint : endpoint) ?? ""
   );
 }
 
@@ -278,7 +278,7 @@ export function getIconKey({
   if (endpointIconURL && EModelEndpoint[endpointIconURL] != null) {
     return endpointIconURL;
   }
-  return endpointType ? "unknown" : (endpoint ?? "unknown");
+  return endpointType ? "unknown" : endpoint ?? "unknown";
 }
 
 export const getEntity = ({
