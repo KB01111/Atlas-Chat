@@ -1,7 +1,9 @@
-from typing import AsyncGenerator, Dict, Any, List
-from app.models.models import RequestContext
+from collections.abc import AsyncGenerator
+from typing import Any, Dict, List
+
 from app.core.logging_config import setup_logging
 from app.core.services.tool_executor import ToolExecutor
+from app.models.models import RequestContext
 
 logger = setup_logging()
 

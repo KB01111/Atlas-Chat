@@ -2,11 +2,11 @@
 Routing strategies for model selection.
 """
 
-from typing import Dict, Any, List, Optional, Protocol
-from abc import ABC, abstractmethod
 import re
+from abc import ABC, abstractmethod
+from typing import Any, Dict, List, Optional
 
-from .model_specs import ModelSpecs, ModelSpecification
+from .model_specs import ModelSpecs
 from .performance_metrics import PerformanceMetrics
 
 
@@ -343,8 +343,7 @@ class ComplexityBasedStrategy(RoutingStrategy):
         ]
 
         complex_word_count = sum(
-            len(re.findall(pattern, message, re.IGNORECASE))
-            for pattern in complex_word_patterns
+            len(re.findall(pattern, message, re.IGNORECASE)) for pattern in complex_word_patterns
         )
 
         vocabulary_score = 0
@@ -424,9 +423,7 @@ class CostAwareStrategy(RoutingStrategy):
 class PerformanceBasedStrategy(RoutingStrategy):
     """Strategy that scores models based on performance metrics."""
 
-    def __init__(
-        self, model_specs: ModelSpecs, performance_metrics: PerformanceMetrics
-    ):
+    def __init__(self, model_specs: ModelSpecs, performance_metrics: PerformanceMetrics):
         """
         Initialize performance-based strategy.
 
@@ -616,8 +613,6 @@ class CompositeStrategy(RoutingStrategy):
         ]
 
         # Calculate weighted sum
-        weighted_sum = sum(
-            score * weight for score, weight in zip(scores, self.weights)
-        )
+        weighted_sum = sum(score * weight for score, weight in zip(scores, self.weights))
 
         return weighted_sum

@@ -65,6 +65,7 @@ AtlasChat provides multiple specialized agents:
 - **Custom Agents**: Create your own specialized agents (Admin only)
 
 To switch agents:
+
 1. Click the Agent Selector dropdown at the top of the chat
 2. Select your desired agent
 3. A new conversation will start with the selected agent
@@ -159,6 +160,7 @@ AtlasChat can remember important information for future reference.
 ### Getting Help
 
 For additional assistance:
+
 1. Click the "Help" button in the bottom-right corner
 2. Browse the knowledge base for common questions
 3. Contact support through the help form

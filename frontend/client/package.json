@@ -19,12 +19,6 @@
     "lint": "biome check .",
     "format": "biome format --write ."
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
   "browserslist": {
     "production": [
       ">0.2%",

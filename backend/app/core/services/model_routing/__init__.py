@@ -6,12 +6,12 @@ from .model_router import ModelRouter
 from .model_specs import ModelSpecs
 from .performance_metrics import PerformanceMetrics
 from .routing_strategies import (
-    TaskBasedStrategy,
     ComplexityBasedStrategy,
+    CompositeStrategy,
     CostAwareStrategy,
     PerformanceBasedStrategy,
+    TaskBasedStrategy,
     UserPreferenceStrategy,
-    CompositeStrategy
 )
 
 __all__ = [
@@ -23,5 +23,5 @@ __all__ = [
     "CostAwareStrategy",
     "PerformanceBasedStrategy",
     "UserPreferenceStrategy",
-    "CompositeStrategy"
+    "CompositeStrategy",
 ]

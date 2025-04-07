@@ -1,36 +1,7 @@
-version: "3.8"
+# Removed obsolete version line
 
 services:
-  # MongoDB database service
-  mongodb:
-    image: mongo:latest
-    container_name: atlas-chat-mongodb
-    restart: always
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USERNAME}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD}
-    volumes:
-      - mongodb_data:/data/db
-    networks:
-      - atlas-network
-    healthcheck:
-      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
-    # Security enhancements
-    deploy:
-      resources:
-        limits:
-          cpus: "1"
-          memory: 1G
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
-
+  # MongoDB service removed as it's not used
   # PostgreSQL database service
   postgres:
     image: postgres:latest
@@ -100,15 +71,14 @@ services:
     container_name: atlas-chat-backend
     restart: always
     depends_on:
-      mongodb:
-        condition: service_healthy
+      # Removed mongodb dependency
       postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
     environment:
       # Database configurations
-      MONGODB_URI: mongodb://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@mongodb:27017/atlas-chat?authSource=admin
+      # MONGODB_URI: mongodb://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@mongodb:27017/atlas-chat?authSource=admin (Removed)
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
@@ -138,7 +108,7 @@ services:
     networks:
       - atlas-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8000/ping"] # Changed path to /ping
       interval: 30s
       timeout: 10s
       retries: 3
@@ -201,8 +171,9 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        VITE_API_BASE_URL: ${API_BASE_URL}
-        VITE_E2B_CODEINTERPRETER_URL: ${E2B_CODEINTERPRETER_URL}
+        REACT_APP_API_BASE_URL: ${API_BASE_URL}
+        REACT_APP_E2B_CODEINTERPRETER_URL: ${E2B_CODEINTERPRETER_URL}
+        REACT_APP_SENTRY_DSN: ${SENTRY_DSN} # Added Sentry DSN
         NODE_ENV: production
     container_name: atlas-chat-frontend
     restart: always
@@ -214,7 +185,7 @@ services:
     networks:
       - atlas-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      test: ["CMD", "curl", "-f", "http://localhost:3000"] # Corrected port for serve
       interval: 30s
       timeout: 10s
       retries: 3
@@ -350,7 +321,7 @@ services:
     container_name: atlas-chat-backup
     restart: always
     volumes:
-      - mongodb_data:/data/mongodb:ro
+      # - mongodb_data:/data/mongodb:ro (Removed from backup)
       - postgres_data:/data/postgres:ro
       - redis_data:/data/redis:ro
       - backend_data:/data/backend:ro
@@ -370,12 +341,7 @@ services:
         max-file: "3"
 
 volumes:
-  mongodb_data:
-    driver: local
-    driver_opts:
-      type: none
-      device: ${DATA_PATH}/mongodb
-      o: bind
+  # mongodb_data volume removed
   postgres_data:
     driver: local
     driver_opts:

@@ -5,10 +5,11 @@ This module implements the short-term, high-fidelity memory component
 that stores recent interactions in full detail.
 """
 
-from typing import List, Dict, Any, Optional, Union
-from datetime import datetime, timedelta
-import uuid
 import logging
+import uuid
+from datetime import datetime, timedelta
+from typing import Any, Dict, List, Optional
+
 from pydantic import BaseModel, Field
 
 from .context_summarizer import ConversationSegment
@@ -49,9 +50,7 @@ class WorkingMemory:
         self.max_entries = max_entries
         self.ttl_minutes = ttl_minutes
         self.entries: Dict[str, WorkingMemoryEntry] = {}
-        self.session_entries: Dict[
-            str, List[str]
-        ] = {}  # session_id -> list of entry_ids
+        self.session_entries: Dict[str, List[str]] = {}  # session_id -> list of entry_ids
 
     def add_entry(
         self,
@@ -145,9 +144,7 @@ class WorkingMemory:
 
         return entries
 
-    def get_conversation_history(
-        self, session_id: str, limit: Optional[int] = None
-    ) -> str:
+    def get_conversation_history(self, session_id: str, limit: Optional[int] = None) -> str:
         """
         Get conversation history for a session.
 
@@ -191,8 +188,7 @@ class WorkingMemory:
         self.session_entries[session_id] = []
 
     def _is_expired(self, entry: WorkingMemoryEntry) -> bool:
-        """
-        Check if an entry is expired.
+        """Check if an entry is expired based on its TTL.
 
         Args:
             entry: Entry to check
@@ -200,14 +196,10 @@ class WorkingMemory:
         Returns:
             True if expired, False otherwise
         """
-        if entry.expires_at and entry.expires_at < datetime.now():
-            return True
-
-        return False
+        return bool(entry.expires_at and entry.expires_at < datetime.now())
 
     def _remove_entry(self, entry_id: str) -> None:
-        """
-        Remove an entry.
+        """Remove an entry.
 
         Args:
             entry_id: ID of the entry to remove
@@ -225,7 +217,7 @@ class WorkingMemory:
                     self.session_entries[session_id].remove(entry_id)
 
     def _clean_expired_entries(self) -> None:
-        """Clean expired entries"""
+        """Clean expired entries."""
         # Get expired entry IDs
         expired_ids = []
         for entry_id, entry in self.entries.items():
@@ -237,8 +229,7 @@ class WorkingMemory:
             self._remove_entry(entry_id)
 
     def _enforce_capacity_limit(self, session_id: str) -> None:
-        """
-        Enforce capacity limit for a session.
+        """Enforce capacity limit for a session.
 
         Args:
             session_id: ID of the session
@@ -255,8 +246,7 @@ class WorkingMemory:
                     self._remove_entry(entry_ids[i])
 
     def to_conversation_segments(self, session_id: str) -> List[ConversationSegment]:
-        """
-        Convert session entries to conversation segments.
+        """Convert session entries to conversation segments.
 
         Args:
             session_id: ID of the session

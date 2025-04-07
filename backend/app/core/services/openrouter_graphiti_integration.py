@@ -3,16 +3,14 @@ Graphiti Integration for OpenRouter in AtlasChat
 Ensures compatibility between OpenRouter and Graphiti knowledge graph system
 """
 
+import asyncio
+import json
 import logging
-from typing import Dict, Any, List, Optional
+from typing import Any, Dict, List, Optional
+
 from app.core.models.openrouter_models import (
-    GraphitiNode,
-    GraphitiRelationship,
     GraphitiEpisode,
 )
-from pydantic import BaseModel, Field
-import json
-import asyncio
 
 logger = logging.getLogger(__name__)
 
@@ -77,18 +75,14 @@ class OpenRouterGraphitiIntegration:
             await self.graphiti_client.add_nodes(graph_data["nodes"])
             await self.graphiti_client.add_relationships(graph_data["relationships"])
 
-            logger.info(
-                f"Added conversation {conversation_id} to Graphiti as episode {episode_id}"
-            )
+            logger.info(f"Added conversation {conversation_id} to Graphiti as episode {episode_id}")
             return episode_id
 
         except Exception as e:
             logger.error(f"Error adding conversation to Graphiti: {str(e)}")
             return f"error:{str(e)}"
 
-    async def search_graphiti_for_context(
-        self, query: str, limit: int = 5
-    ) -> List[Dict[str, Any]]:
+    async def search_graphiti_for_context(self, query: str, limit: int = 5) -> List[Dict[str, Any]]:
         """
         Search Graphiti for relevant context based on a query
 

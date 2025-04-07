@@ -5,10 +5,11 @@ This module implements the long-term memory component that stores
 structured knowledge using a graph-based approach.
 """
 
-from typing import List, Dict, Any, Optional, Union
-from datetime import datetime
-import uuid
 import logging
+import uuid
+from datetime import datetime
+from typing import Any, Dict, List, Optional
+
 from pydantic import BaseModel, Field
 
 logger = logging.getLogger(__name__)
@@ -60,9 +61,7 @@ class KnowledgeGraph:
         self.client = openai_client
         self.nodes: Dict[str, KnowledgeNode] = {}
         self.relations: Dict[str, KnowledgeRelation] = {}
-        self.node_relations: Dict[
-            str, List[str]
-        ] = {}  # node_id -> list of relation_ids
+        self.node_relations: Dict[str, List[str]] = {}  # node_id -> list of relation_ids
         self.session_nodes: Dict[str, List[str]] = {}  # session_id -> list of node_ids
 
     def add_node(
@@ -258,17 +257,14 @@ class KnowledgeGraph:
 
         # Sort by relevance (simple implementation)
         matching_nodes.sort(
-            key=lambda n: n.label.lower().count(query_lower)
-            + n.content.lower().count(query_lower),
+            key=lambda n: n.label.lower().count(query_lower) + n.content.lower().count(query_lower),
             reverse=True,
         )
 
         # Apply limit
         return matching_nodes[:limit]
 
-    async def extract_knowledge(
-        self, content: str, session_id: Optional[str] = None
-    ) -> List[str]:
+    async def extract_knowledge(self, content: str, session_id: Optional[str] = None) -> List[str]:
         """
         Extract knowledge from content and add to the graph.
 
@@ -353,9 +349,7 @@ class KnowledgeGraph:
 
                     # Remove from node relations
                     other_node_id = (
-                        relation.target_id
-                        if relation.source_id == node_id
-                        else relation.source_id
+                        relation.target_id if relation.source_id == node_id else relation.source_id
                     )
                     if (
                         other_node_id in self.node_relations

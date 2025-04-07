@@ -6,15 +6,12 @@ the Tiered Context Management system and Agent Team Coordination framework
 with the existing Atlas-Chat components.
 """
 
-from typing import List, Dict, Any, Optional, Union
-from datetime import datetime
-import uuid
 import logging
-from pydantic import BaseModel, Field
+from typing import Any, Dict
 
-from ..tiered_context import TieredContextManager
 from ..agent_team import AgentTeamManager
 from ..model_routing import ModelRouter
+from ..tiered_context import TieredContextManager
 
 logger = logging.getLogger(__name__)
 
@@ -62,9 +59,7 @@ class AtlasIntegration:
             Dictionary with processing results
         """
         # Add message to context manager
-        self.context_manager.add_message(
-            session_id=session_id, message=message, role="user"
-        )
+        self.context_manager.add_message(session_id=session_id, message=message, role="user")
 
         # Process with agent team if requested
         if use_team:
@@ -86,14 +81,10 @@ class AtlasIntegration:
             )
 
             # Format context for prompt
-            formatted_context = self.context_manager.format_context_for_prompt(
-                context_bundle
-            )
+            formatted_context = self.context_manager.format_context_for_prompt(context_bundle)
 
             # Select model
-            model = self.model_router.select_model(
-                query=message, context=formatted_context
-            )
+            model = self.model_router.select_model(message=message, context=formatted_context)
 
             # In a real implementation, this would use the selected model
             # to generate a response
@@ -127,9 +118,7 @@ class AtlasIntegration:
             Dictionary with processing results
         """
         # Add message to context manager
-        self.context_manager.add_message(
-            session_id=session_id, message=message, role="user"
-        )
+        await self.context_manager.add_message(session_id=session_id, message=message, role="user")
 
         # Get agents of the specified type
         agents = self.team_manager.get_agents_by_type(agent_type)

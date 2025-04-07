@@ -1,16 +1,16 @@
-from typing import AsyncGenerator, Dict, Any, List, Callable, Optional
-import os
-import json
 import asyncio
+import json
+import os
+from collections.abc import AsyncGenerator
+from typing import Any, Dict, List, Optional
+
 from openai import OpenAI
-from openai.types.beta.threads import Run
 from openai.types.beta.assistant import Assistant
-from openai.types.beta.threads.thread_message import ThreadMessage
-import openai
-from pydantic import BaseModel, Field
-from app.models.models import RequestContext
+from openai.types.beta.threads import Run
+
 from app.core.logging_config import setup_logging
 from app.core.services.tool_executor import ToolExecutor
+from app.models.models import RequestContext
 
 logger = setup_logging()
 
@@ -18,9 +18,7 @@ logger = setup_logging()
 class SDKExecutor:
     """Executor for OpenAI Agents SDK based agents"""
 
-    def __init__(
-        self, tool_executor: ToolExecutor = None, api_key: Optional[str] = None
-    ):
+    def __init__(self, tool_executor: ToolExecutor = None, api_key: Optional[str] = None):
         """
         Initialize the SDK Executor
 
@@ -61,9 +59,7 @@ class SDKExecutor:
             allowed_tools = agent_definition.get("allowed_tools", [])
             uses_graphiti = agent_definition.get("uses_graphiti", False)
             model = agent_definition.get("model", "gpt-4o")
-            instructions = agent_definition.get(
-                "instructions", "You are a helpful assistant."
-            )
+            instructions = agent_definition.get("instructions", "You are a helpful assistant.")
 
             # Check if tool_executor is available
             if not self.tool_executor:
@@ -327,9 +323,7 @@ class SDKExecutor:
             async for chunk in self._stream_run_response(thread_id, run.id):
                 yield chunk
 
-            logger.info(
-                f"SDKExecutor.execute: Completed execution for agent_id={agent_id}"
-            )
+            logger.info(f"SDKExecutor.execute: Completed execution for agent_id={agent_id}")
 
         except Exception as e:
             logger.error(f"Error in SDKExecutor.execute: {str(e)}")
@@ -376,9 +370,7 @@ class SDKExecutor:
         """
         return self.client.beta.threads.create()
 
-    async def _add_message_to_thread(
-        self, thread_id: str, content: str, role: str = "user"
-    ) -> Any:
+    async def _add_message_to_thread(self, thread_id: str, content: str, role: str = "user") -> Any:
         """
         Add a message to a thread
 
@@ -405,13 +397,9 @@ class SDKExecutor:
         Returns:
             Run object
         """
-        return self.client.beta.threads.runs.create(
-            thread_id=thread_id, assistant_id=assistant_id
-        )
+        return self.client.beta.threads.runs.create(thread_id=thread_id, assistant_id=assistant_id)
 
-    async def _stream_run_response(
-        self, thread_id: str, run_id: str
-    ) -> AsyncGenerator[str, None]:
+    async def _stream_run_response(self, thread_id: str, run_id: str) -> AsyncGenerator[str, None]:
         """
         Stream the response from a run
 
@@ -424,9 +412,7 @@ class SDKExecutor:
         """
         # Poll for run completion
         while True:
-            run = self.client.beta.threads.runs.retrieve(
-                thread_id=thread_id, run_id=run_id
-            )
+            run = self.client.beta.threads.runs.retrieve(thread_id=thread_id, run_id=run_id)
 
             if run.status == "completed":
                 break
@@ -456,9 +442,7 @@ class SDKExecutor:
                     if content_part.type == "text":
                         yield content_part.text.value
 
-    async def _process_tool_calls(
-        self, thread_id: str, run_id: str, tool_calls: List[Any]
-    ) -> None:
+    async def _process_tool_calls(self, thread_id: str, run_id: str, tool_calls: List[Any]) -> None:
         """
         Process tool calls from a run
 
@@ -478,9 +462,7 @@ class SDKExecutor:
                 output = await self._execute_tool(function_name, function_args)
 
                 # Add the output to the list
-                tool_outputs.append(
-                    {"tool_call_id": tool_call.id, "output": json.dumps(output)}
-                )
+                tool_outputs.append({"tool_call_id": tool_call.id, "output": json.dumps(output)})
 
             except Exception as e:
                 logger.error(f"Error executing tool {function_name}: {str(e)}")
@@ -527,9 +509,7 @@ class SDKExecutor:
             )
 
         elif function_name == "execute_command":
-            return await self.tool_executor.execute_command(
-                args.get("command", ""), None
-            )
+            return await self.tool_executor.execute_command(args.get("command", ""), None)
 
         elif function_name == "add_graphiti_episode":
             return await self.tool_executor.add_graphiti_episode(
@@ -545,9 +525,7 @@ class SDKExecutor:
             )
 
         elif function_name == "retrieve_relevant_context":
-            return await self.tool_executor.retrieve_relevant_context(
-                args.get("query", ""), None
-            )
+            return await self.tool_executor.retrieve_relevant_context(args.get("query", ""), None)
 
         elif function_name == "web_search":
             return await self.tool_executor.web_search(args.get("query", ""), None)

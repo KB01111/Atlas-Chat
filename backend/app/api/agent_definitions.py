@@ -1,10 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from typing import List, Dict, Any, Optional
-from sqlalchemy.orm import Session
-from app.core.database import get_db
-from app.models.models import AgentDefinition
-from app.core.logging_config import setup_logging
 import uuid
+from typing import Any, Dict, List
+
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.orm import Session
+
+from app.core.database import get_db
+from app.core.logging_config import setup_logging
 
 logger = setup_logging()
 router = APIRouter()
@@ -18,9 +19,7 @@ async def get_current_user():
 
 
 @router.get("/agents", response_model=List[Dict[str, Any]])
-async def get_agents(
-    db: Session = Depends(get_db), user_id: str = Depends(get_current_user)
-):
+async def get_agents(db: Session = Depends(get_db), user_id: str = Depends(get_current_user)):
     """
     Get all agent definitions
 
@@ -81,9 +80,7 @@ async def get_agents(
         return agents
     except Exception as e:
         logger.error(f"Error retrieving agent definitions: {str(e)}")
-        raise HTTPException(
-            status_code=500, detail=f"Error retrieving agent definitions: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=f"Error retrieving agent definitions: {str(e)}")
 
 
 @router.get("/agents/{agent_id}", response_model=Dict[str, Any])
@@ -168,21 +165,15 @@ async def get_agent(
                 },
             }
         else:
-            raise HTTPException(
-                status_code=404, detail=f"Agent with ID {agent_id} not found"
-            )
+            raise HTTPException(status_code=404, detail=f"Agent with ID {agent_id} not found")
     except HTTPException:
         raise
     except Exception as e:
         logger.error(f"Error retrieving agent definition: {str(e)}")
-        raise HTTPException(
-            status_code=500, detail=f"Error retrieving agent definition: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=f"Error retrieving agent definition: {str(e)}")
 
 
-@router.post(
-    "/agents", response_model=Dict[str, Any], status_code=status.HTTP_201_CREATED
-)
+@router.post("/agents", response_model=Dict[str, Any], status_code=status.HTTP_201_CREATED)
 async def create_agent(
     agent: Dict[str, Any],
     db: Session = Depends(get_db),
@@ -202,15 +193,11 @@ async def create_agent(
     try:
         # Validate agent_type
         if agent.get("agent_type") not in ["sdk", "langgraph"]:
-            raise HTTPException(
-                status_code=400, detail="agent_type must be 'sdk' or 'langgraph'"
-            )
+            raise HTTPException(status_code=400, detail="agent_type must be 'sdk' or 'langgraph'")
 
         # Validate uses_graphiti
         if not isinstance(agent.get("uses_graphiti"), bool):
-            raise HTTPException(
-                status_code=400, detail="uses_graphiti must be a boolean"
-            )
+            raise HTTPException(status_code=400, detail="uses_graphiti must be a boolean")
 
         # Validate allowed_tools
         if not isinstance(agent.get("allowed_tools"), list):
@@ -229,9 +216,7 @@ async def create_agent(
         raise
     except Exception as e:
         logger.error(f"Error creating agent definition: {str(e)}")
-        raise HTTPException(
-            status_code=500, detail=f"Error creating agent definition: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=f"Error creating agent definition: {str(e)}")
 
 
 @router.put("/agents/{agent_id}", response_model=Dict[str, Any])
@@ -256,15 +241,11 @@ async def update_agent(
     try:
         # Validate agent_type
         if agent.get("agent_type") not in ["sdk", "langgraph"]:
-            raise HTTPException(
-                status_code=400, detail="agent_type must be 'sdk' or 'langgraph'"
-            )
+            raise HTTPException(status_code=400, detail="agent_type must be 'sdk' or 'langgraph'")
 
         # Validate uses_graphiti
         if not isinstance(agent.get("uses_graphiti"), bool):
-            raise HTTPException(
-                status_code=400, detail="uses_graphiti must be a boolean"
-            )
+            raise HTTPException(status_code=400, detail="uses_graphiti must be a boolean")
 
         # Validate allowed_tools
         if not isinstance(agent.get("allowed_tools"), list):
@@ -282,9 +263,7 @@ async def update_agent(
         raise
     except Exception as e:
         logger.error(f"Error updating agent definition: {str(e)}")
-        raise HTTPException(
-            status_code=500, detail=f"Error updating agent definition: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=f"Error updating agent definition: {str(e)}")
 
 
 @router.delete("/agents/{agent_id}", status_code=status.HTTP_204_NO_CONTENT)
@@ -309,6 +288,4 @@ async def delete_agent(
         return None
     except Exception as e:
         logger.error(f"Error deleting agent definition: {str(e)}")
-        raise HTTPException(
-            status_code=500, detail=f"Error deleting agent definition: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=f"Error deleting agent definition: {str(e)}")

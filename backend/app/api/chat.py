@@ -1,8 +1,10 @@
+from typing import Any, Dict
+
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import StreamingResponse
-from typing import List, Dict, Any
-from app.core.services.agent_service import AgentService
+
 from app.core.logging_config import setup_logging
+from app.core.services.agent_service import AgentService
 
 logger = setup_logging()
 router = APIRouter()
@@ -45,9 +47,7 @@ async def chat(
         raise HTTPException(status_code=400, detail="agent_id and message are required")
 
     async def generate():
-        async for chunk in agent_service.handle_chat_request(
-            agent_id, message, history, user_id
-        ):
+        async for chunk in agent_service.handle_chat_request(agent_id, message, history, user_id):
             yield f"data: {chunk}\n\n"
         yield "data: [DONE]\n\n"
 

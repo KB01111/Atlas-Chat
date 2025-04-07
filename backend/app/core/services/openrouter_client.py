@@ -3,13 +3,12 @@ OpenRouter API Client for AtlasChat
 Provides integration with OpenRouter API for accessing models like DeepSeek v3
 """
 
-import os
-import requests
-from typing import Dict, Any, Optional, List, Union
 import json
 import logging
-import asyncio
-from pydantic import BaseModel, Field, ConfigDict
+import os
+from typing import Any, Dict, List, Optional
+
+from pydantic import BaseModel, ConfigDict, Field
 
 logger = logging.getLogger(__name__)
 
@@ -37,18 +36,14 @@ class SensitiveFormatter(logging.Formatter):
 
 # Apply the sensitive formatter to the logger
 handler = logging.StreamHandler()
-handler.setFormatter(
-    SensitiveFormatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-)
+handler.setFormatter(SensitiveFormatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s"))
 logger.addHandler(handler)
 
 
 class OpenRouterMessage(BaseModel):
     model_config = ConfigDict(extra="allow")
 
-    role: str = Field(
-        ..., description="The role of the message sender (system, user, assistant)"
-    )
+    role: str = Field(..., description="The role of the message sender (system, user, assistant)")
     content: str = Field(..., description="The content of the message")
 
 
@@ -105,17 +100,12 @@ class OpenRouterClient:
         }
 
         # Log request without sensitive information
-        logger.info(
-            "Sending chat completion request to OpenRouter for model: %s", model
-        )
+        logger.info("Sending chat completion request to OpenRouter for model: %s", model)
 
         # Validate and prepare the request using Pydantic
         request_data = OpenRouterCompletionRequest(
             model=model,
-            messages=[
-                OpenRouterMessage(role=m["role"], content=m["content"])
-                for m in messages
-            ],
+            messages=[OpenRouterMessage(role=m["role"], content=m["content"]) for m in messages],
             temperature=temperature,
             stream=stream,
         )
@@ -124,10 +114,10 @@ class OpenRouterClient:
             request_data.max_tokens = max_tokens
 
         # Use model_dump instead of dict
-        payload = request_data.model_dump()
+        payload = request_data.model_dump(exclude_none=True)
 
         try:
-            # Using aiohttp for async HTTP requests
+            # Dynamically import aiohttp only when needed
             import aiohttp
 
             async with aiohttp.ClientSession() as session:
@@ -136,45 +126,98 @@ class OpenRouterClient:
                 ) as response:
                     if response.status != 200:
                         error_text = await response.text()
-                        logger.error("OpenRouter API error: %s", error_text)
+                        logger.error("OpenRouter API error (%s): %s", response.status, error_text)
+                        # Consider raising a more specific custom exception
                         raise Exception(
-                            f"OpenRouter API returned status code {response.status}"
+                            f"OpenRouter API returned status code {response.status}: {error_text}"
                         )
 
                     if stream:
-                        # Return a generator for streaming responses
-                        return await self._process_streaming_response_async(response)
-                    else:
-                        return await response.json()
+                        # Return the response object directly for the caller to handle streaming
+                        # Or process it here if consistent handling is preferred
+                        # For now, returning the processed list for simplicity in this example fix
+                        # In a real scenario, yielding chunks might be better:
+                        # async for chunk in self._process_streaming_response_async(response): yield chunk
+                        processed_stream = await self._process_streaming_response_async(response)
+                        # Assuming the caller expects a final aggregated dictionary for stream=True too for now
+                        # This might need adjustment based on how streaming is handled upstream
+                        # Let's aggregate the content for simplicity here
+                        full_content = ""
+                        usage = {}
+                        finish_reason = "stop"
+                        final_model = model
+                        for chunk_resp in processed_stream:
+                            if chunk_resp.get("choices") and len(chunk_resp["choices"]) > 0:
+                                delta = chunk_resp["choices"][0].get("delta", {})
+                                full_content += delta.get("content", "")
+                                if chunk_resp["choices"][0].get("finish_reason"):
+                                    finish_reason = chunk_resp["choices"][0]["finish_reason"]
+                            if chunk_resp.get("usage"):
+                                usage = chunk_resp["usage"]
+                            if chunk_resp.get("model"):
+                                final_model = chunk_resp["model"]
 
+                        # Return a structure similar to the non-streaming one
+                        return {
+                            "choices": [
+                                {
+                                    "message": {"role": "assistant", "content": full_content},
+                                    "finish_reason": finish_reason,
+                                }
+                            ],
+                            "model": final_model,
+                            "usage": usage,
+                        }
+
+                    else:
+                        # Process non-streaming response
+                        response_json = await response.json()
+                        return response_json  # Return the full JSON response
+
+        except aiohttp.ClientError as ce:
+            logger.error("Network error calling OpenRouter API: %s", str(ce))
+            raise Exception(f"Network error calling OpenRouter API: {str(ce)}") from ce
         except Exception as e:
             # Log error without exposing the API key
             logger.error(
                 "Error calling OpenRouter API: %s",
-                str(e).replace(self.api_key, "***MASKED***"),
+                str(e).replace(self.api_key, "***MASKED***") if self.api_key else str(e),
+                exc_info=True,  # Include traceback for better debugging
             )
+            # Re-raise the original exception to preserve traceback
             raise
 
-    async def _process_streaming_response_async(self, response):
-        """Process a streaming response from OpenRouter asynchronously"""
-        result = []
-        async for line in response.content:
-            line = line.strip()
-            if line:
+    # Ensure this helper function is correctly indented outside the chat_completion method
+    async def _process_streaming_response_async(self, response) -> List[Dict[str, Any]]:
+        """Process a streaming response from OpenRouter asynchronously, yielding JSON chunks."""
+        # This implementation collects all chunks; consider yielding for true streaming
+        results = []
+        try:
+            async for line in response.content:
+                line = line.strip()
+                if not line:
+                    continue
                 if line == b"data: [DONE]":
+                    logger.debug("Received [DONE] marker from OpenRouter stream.")
                     break
-
                 if line.startswith(b"data: "):
-                    json_str = line[6:].decode("utf-8")
+                    json_str = line[len(b"data: ") :].decode("utf-8")
                     try:
-                        result.append(json.loads(json_str))
+                        chunk_data = json.loads(json_str)
+                        results.append(chunk_data)  # Collect results
+                        # yield chunk_data # Use yield for true async generator behavior
                     except json.JSONDecodeError:
-                        logger.error("Error decoding JSON from stream")
-        return result
+                        logger.error(
+                            "Error decoding JSON chunk from OpenRouter stream: %s", json_str
+                        )
+                else:
+                    logger.warning("Received unexpected line from OpenRouter stream: %s", line)
+        except Exception as e:
+            logger.error("Error processing OpenRouter stream: %s", str(e), exc_info=True)
+            # Depending on desired behavior, you might re-raise or yield an error indicator
+        return results  # Return collected results
 
-    async def format_openrouter_response(
-        self, response: Dict[str, Any]
-    ) -> Dict[str, Any]:
+    async def format_openrouter_response(self, response: Dict[str, Any]) -> Dict[str, Any]:
         """
         Format OpenRouter response to match the format expected by AtlasChat
 
@@ -207,3 +250,6 @@ class OpenRouterClient:
         except Exception as e:
             logger.error("Error formatting OpenRouter response: %s", str(e))
             return {"content": "Error processing response", "role": "assistant"}
+
+
+# Ensure no trailing code or incorrect indentation at the end of the file

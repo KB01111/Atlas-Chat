@@ -2,10 +2,11 @@
 Performance metrics for model routing.
 """
 
-from typing import Dict, Any, List, Optional
-import time
 import json
 import os
+import time
+from typing import Any, Dict, Optional
+
 from pydantic import BaseModel
 
 
@@ -90,9 +91,7 @@ class PerformanceMetrics:
 
         if tokens > 0:
             metrics.total_tokens += tokens
-            metrics.avg_tokens_per_request = (
-                metrics.total_tokens / metrics.total_requests
-            )
+            metrics.avg_tokens_per_request = metrics.total_tokens / metrics.total_requests
 
         metrics.last_updated = time.time()
 
@@ -127,7 +126,7 @@ class PerformanceMetrics:
         # Try to load from file
         if os.path.exists(self.metrics_file):
             try:
-                with open(self.metrics_file, "r") as f:
+                with open(self.metrics_file) as f:
                     data = json.load(f)
 
                 for model_id, metrics_dict in data.items():
@@ -145,10 +144,7 @@ class PerformanceMetrics:
         """Save metrics to file."""
         try:
             with open(self.metrics_file, "w") as f:
-                data = {
-                    model_id: metrics.dict()
-                    for model_id, metrics in self.metrics.items()
-                }
+                data = {model_id: metrics.dict() for model_id, metrics in self.metrics.items()}
                 json.dump(data, f, indent=2)
         except Exception as e:
             print(f"Error saving metrics: {e}")

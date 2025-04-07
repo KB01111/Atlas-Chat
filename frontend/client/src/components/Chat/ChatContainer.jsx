@@ -58,7 +58,10 @@ const ChatContainer = () => {
 
       const olderMessages = await api.chat.getConversationMessages(
         conversationId,
-        { before_id: oldestMessageId, limit: 50 },
+        {
+          before_id: oldestMessageId,
+          limit: 50,
+        },
       );
 
       if (olderMessages.messages && olderMessages.messages.length > 0) {

@@ -5,11 +5,8 @@ This module implements specialized agents with domain-specific capabilities
 for research, coding, writing, and analysis tasks.
 """
 
-from typing import List, Dict, Any, Optional, Union
-from datetime import datetime
-import uuid
 import logging
-from pydantic import BaseModel, Field
+from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -119,14 +116,8 @@ class SpecializedAgent:
         """
         # In a real implementation, this would use more sophisticated
         # logic to determine if the agent can handle the task
-
-        # Simple check based on capabilities
         task_lower = task_description.lower()
-        for capability in self.capabilities:
-            if capability.lower() in task_lower:
-                return True
-
-        return False
+        return any(capability.lower() in task_lower for capability in self.capabilities)
 
 
 class ResearchAgent(SpecializedAgent):

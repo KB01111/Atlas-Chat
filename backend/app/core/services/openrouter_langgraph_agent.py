@@ -3,11 +3,11 @@ OpenRouter LangGraph Integration for AtlasChat
 Implements LangGraph support for OpenRouter models
 """
 
-import os
 import logging
-from typing import Dict, Any, List, Optional, Callable, AsyncGenerator
-from langchain.schema import HumanMessage, AIMessage, SystemMessage
-from langgraph.graph import StateGraph, END
+from typing import Any, Dict, List, Optional
+
+from langgraph.graph import END, StateGraph
+
 from app.core.services.openrouter_client import OpenRouterClient
 
 logger = logging.getLogger(__name__)
@@ -39,7 +39,7 @@ class OpenRouterLangGraphAgent:
             # Extract configuration
             model = agent_config.get("model", "deepseek/deepseek-v3")
             temperature = agent_config.get("temperature", 0.7)
-            max_tokens = agent_config.get("max_tokens", None)
+            max_tokens = agent_config.get("max_tokens")
 
             # Define the state schema
             class AgentState(dict):
@@ -64,17 +64,13 @@ class OpenRouterLangGraphAgent:
 
                     tools_description = "You have access to the following tools:\n"
                     for tool in tools:
-                        tools_description += (
-                            f"- {tool['name']}: {tool['description']}\n"
-                        )
+                        tools_description += f"- {tool['name']}: {tool['description']}\n"
                         if "parameters" in tool:
                             tools_description += f"  Parameters: {tool['parameters']}\n"
 
                     if system_msg_idx is not None:
                         # Append tools to existing system message
-                        messages[system_msg_idx]["content"] += (
-                            f"\n\n{tools_description}"
-                        )
+                        messages[system_msg_idx]["content"] += f"\n\n{tools_description}"
                     else:
                         # Create new system message with tools
                         messages.insert(

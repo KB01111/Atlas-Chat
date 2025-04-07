@@ -5,16 +5,16 @@ This module implements the main context manager that coordinates all memory tier
 and provides context retrieval based on query relevance.
 """
 
-from typing import List, Dict, Any, Optional, Union
-from datetime import datetime
-import uuid
 import logging
-from pydantic import BaseModel, Field
+from datetime import datetime
+from typing import Any, Dict, List, Optional
 
-from .context_summarizer import ContextSummarizer, ConversationSegment
-from .working_memory import WorkingMemory
+from pydantic import BaseModel
+
+from .context_summarizer import ContextSummarizer
 from .episodic_memory import EpisodicMemory
 from .knowledge_graph import KnowledgeGraph
+from .working_memory import WorkingMemory
 
 logger = logging.getLogger(__name__)
 
@@ -54,9 +54,7 @@ class TieredContextManager:
         # Initialize components
         self.context_summarizer = ContextSummarizer(openrouter_client=self.client)
         self.working_memory = WorkingMemory()
-        self.episodic_memory = EpisodicMemory(
-            context_summarizer=self.context_summarizer
-        )
+        self.episodic_memory = EpisodicMemory(context_summarizer=self.context_summarizer)
         self.knowledge_graph = KnowledgeGraph(openrouter_client=self.client)
 
         # Initialize active sessions
@@ -94,9 +92,7 @@ class TieredContextManager:
         # logic to determine when to create episodes
         if len(message) > 100:
             # Get recent messages for context
-            recent_messages = self.working_memory.get_conversation_history(
-                session_id, limit=5
-            )
+            recent_messages = self.working_memory.get_conversation_history(session_id, limit=5)
 
             # Add to episodic memory
             await self.episodic_memory.add_episode(
@@ -108,15 +104,11 @@ class TieredContextManager:
 
         # Extract knowledge if appropriate
         if role == "assistant" and len(message) > 200:
-            await self.knowledge_graph.extract_knowledge(
-                content=message, session_id=session_id
-            )
+            await self.knowledge_graph.extract_knowledge(content=message, session_id=session_id)
 
         return message_id
 
-    async def retrieve_context(
-        self, session_id: str, query: str, depth: int = 2
-    ) -> ContextBundle:
+    async def retrieve_context(self, session_id: str, query: str, depth: int = 2) -> ContextBundle:
         """
         Retrieve context based on query relevance.
 
@@ -158,10 +150,8 @@ class TieredContextManager:
         if context_bundle.total_tokens < self.max_context_tokens:
             # Get episodic memory entries
             episodic_memory_limit = 3 if depth == 1 else (5 if depth == 2 else 10)
-            episodic_memory_entries = (
-                await self.episodic_memory.retrieve_relevant_episodes(
-                    session_id=session_id, query=query, limit=episodic_memory_limit
-                )
+            episodic_memory_entries = await self.episodic_memory.retrieve_relevant_episodes(
+                session_id=session_id, query=query, limit=episodic_memory_limit
             )
 
             # Add to context bundle

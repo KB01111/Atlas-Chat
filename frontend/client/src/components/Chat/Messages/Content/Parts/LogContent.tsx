@@ -1,9 +1,5 @@
 import { isAfter } from "date-fns";
-import type {
-  TAttachment,
-  TAttachmentMetadata,
-  TFile,
-} from "librechat-data-provider";
+import type { TAttachment, TAttachmentMetadata, TFile } from "librechat-data-provider";
 import { imageExtRegex } from "librechat-data-provider";
 import React, { useMemo } from "react";
 import Image from "~/components/Chat/Messages/Content/Image";
@@ -22,11 +18,7 @@ type ImageAttachment = TFile &
     width: number;
   };
 
-const LogContent: React.FC<LogContentProps> = ({
-  output = "",
-  renderImages,
-  attachments,
-}) => {
+const LogContent: React.FC<LogContentProps> = ({ output = "", renderImages, attachments }) => {
   const localize = useLocalize();
 
   const processedContent = useMemo(() => {
@@ -43,11 +35,7 @@ const LogContent: React.FC<LogContentProps> = ({
     const nonImageAtts: TAttachment[] = [];
 
     attachments?.forEach((attachment) => {
-      const {
-        width,
-        height,
-        filepath = null,
-      } = attachment as TFile & TAttachmentMetadata;
+      const { width, height, filepath = null } = attachment as TFile & TAttachmentMetadata;
       const isImage =
         imageExtRegex.test(attachment.filename) &&
         width != null &&
@@ -68,8 +56,7 @@ const LogContent: React.FC<LogContentProps> = ({
 
   const renderAttachment = (file: TAttachment) => {
     const now = new Date();
-    const expiresAt =
-      typeof file.expiresAt === "number" ? new Date(file.expiresAt) : null;
+    const expiresAt = typeof file.expiresAt === "number" ? new Date(file.expiresAt) : null;
     const isExpired = expiresAt ? isAfter(now, expiresAt) : false;
 
     if (isExpired) {

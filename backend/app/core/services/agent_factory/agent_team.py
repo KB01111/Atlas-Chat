@@ -2,12 +2,11 @@
 Agent team module for creating and managing agent teams.
 """
 
-from typing import Dict, Any, List, Optional, Set
-from pydantic import BaseModel, Field
 import logging
 import uuid
+from typing import Any, Dict, List, Optional, Set
 
-from .agent_definition import AgentDefinition
+from pydantic import BaseModel, Field
 
 logger = logging.getLogger(__name__)
 

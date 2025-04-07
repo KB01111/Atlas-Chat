@@ -5,10 +5,11 @@ This module implements the team context manager that maintains shared context
 across multiple agents and integrates with the Tiered Context Management system.
 """
 
-from typing import List, Dict, Any, Optional, Union
-from datetime import datetime
-import uuid
 import logging
+import uuid
+from datetime import datetime
+from typing import Any, Dict, List, Optional
+
 from pydantic import BaseModel, Field
 
 logger = logging.getLogger(__name__)
@@ -300,9 +301,7 @@ class TeamContextManager:
         # Simulate context retrieval
         return f"Context for IDs: {', '.join(context_ids)}"
 
-    async def get_relevant_context(
-        self, thread_id: str, query: str, limit: int = 5
-    ) -> str:
+    async def get_relevant_context(self, thread_id: str, query: str, limit: int = 5) -> str:
         """
         Get context relevant to a query.
 
@@ -336,9 +335,7 @@ class TeamContextManager:
             elif message.sender_type == "assistant":
                 formatted_context.append(f"Assistant: {message.content}")
             elif message.sender_type == "agent":
-                formatted_context.append(
-                    f"Agent ({message.sender_id}): {message.content}"
-                )
+                formatted_context.append(f"Agent ({message.sender_id}): {message.content}")
             elif message.sender_type == "system":
                 formatted_context.append(f"System: {message.content}")
 
