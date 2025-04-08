@@ -174,3 +174,6 @@ temp/
 
 # windsurf rules
 .windsurfrules
+# Ignore Roo-related files and folders
+.roo/
+*roo*
