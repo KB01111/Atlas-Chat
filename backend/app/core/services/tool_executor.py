@@ -5,7 +5,7 @@ import e2b
 
 from app.core.config import settings
 from app.core.logging_config import setup_logging
-from app.models.models import RequestContext
+from app.models import RequestContext
 
 logger = setup_logging()
 

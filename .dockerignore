@@ -1,0 +1,21 @@
+# Ignore all node_modules recursively
+node_modules
+temp_librechat/node_modules
+
+# Git and editor files
+.git
+.vscode
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+*.log
+*.tmp
+*.swp
+.DS_Store
+
+# Environment files
+.env
+*.env

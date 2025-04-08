@@ -37,7 +37,7 @@ class AtlasIntegration:
         self.client = openai_client
 
         # Initialize components
-        self.context_manager = TieredContextManager(openai_client=self.client)
+        self.context_manager = TieredContextManager(openrouter_client=self.client)
         self.team_manager = AgentTeamManager(openai_client=self.client)
         self.model_router = ModelRouter()
 

@@ -12,7 +12,6 @@ COPY frontend/packages/data-provider/ ./frontend/packages/data-provider/
 
 # Explicitly copy Craco config
 COPY frontend/client/craco.config.js ./frontend/client/craco.config.js
-COPY temp_librechat/ ./temp_librechat/
 COPY frontend/client/craco.config.js ./frontend/client/craco.config.js
 COPY frontend/client/ ./frontend/client/
 
@@ -63,4 +62,4 @@ EXPOSE 3000
 
 # Use 'serve' to host the static files from the 'build' directory
 # The '-s' flag ensures that routing works correctly for single-page applications
-CMD ["serve", "-s", "build", "-l", "3000"]
+CMD ["serve", "-s", "build", "-l", "tcp://0.0.0.0:3000"]

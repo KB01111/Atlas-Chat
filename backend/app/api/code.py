@@ -3,9 +3,9 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 
-from app.core.auth import get_current_user
+from app.core.security import get_current_user
 from app.core.services.tool_executor import ToolExecutor
-from app.models.models import RequestContext
+from app.models import RequestContext
 
 
 # Create a dependency to get the ToolExecutor instance
