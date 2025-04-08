@@ -77,13 +77,11 @@ def test_login_endpoint(mock_db_session):
 # Test user info endpoint
 def test_user_info_endpoint(mock_db_session):
     # Mock user query
-    mock_db_session.query.return_value.filter.return_value.first.return_value = (
-        MagicMock(
-            id=TEST_USER["id"],
-            name=TEST_USER["name"],
-            email=TEST_USER["email"],
-            created_at="2023-01-01T00:00:00",
-        )
+    mock_db_session.query.return_value.filter.return_value.first.return_value = MagicMock(
+        id=TEST_USER["id"],
+        name=TEST_USER["name"],
+        email=TEST_USER["email"],
+        created_at="2023-01-01T00:00:00",
     )
 
     # Test with valid token
@@ -95,9 +93,7 @@ def test_user_info_endpoint(mock_db_session):
     assert response.json()["email"] == TEST_USER["email"]
 
     # Test with invalid token
-    response = client.get(
-        "/api/auth/me", headers={"Authorization": "Bearer invalid-token"}
-    )
+    response = client.get("/api/auth/me", headers={"Authorization": "Bearer invalid-token"})
     assert response.status_code == 403
 
 
@@ -135,14 +131,12 @@ def test_get_agents_endpoint(mock_db_session):
 # Test code execution
 def test_code_execution_endpoint(mock_db_session, mock_e2b_sandbox):
     # Mock agent query
-    mock_db_session.query.return_value.filter.return_value.first.return_value = (
-        MagicMock(
-            id="agent-1",
-            name="Test Agent",
-            agent_type="sdk",
-            uses_graphiti=False,
-            allowed_tools=["execute_code"],
-        )
+    mock_db_session.query.return_value.filter.return_value.first.return_value = MagicMock(
+        id="agent-1",
+        name="Test Agent",
+        agent_type="sdk",
+        uses_graphiti=False,
+        allowed_tools=["execute_code"],
     )
 
     # Test with valid token and code
@@ -180,14 +174,12 @@ def test_code_execution_endpoint(mock_db_session, mock_e2b_sandbox):
 # Test file operations
 def test_file_operations(mock_db_session, mock_e2b_sandbox):
     # Mock agent query
-    mock_db_session.query.return_value.filter.return_value.first.return_value = (
-        MagicMock(
-            id="agent-1",
-            name="Test Agent",
-            agent_type="sdk",
-            uses_graphiti=False,
-            allowed_tools=["execute_code"],
-        )
+    mock_db_session.query.return_value.filter.return_value.first.return_value = MagicMock(
+        id="agent-1",
+        name="Test Agent",
+        agent_type="sdk",
+        uses_graphiti=False,
+        allowed_tools=["execute_code"],
     )
 
     token = get_test_token()
@@ -239,15 +231,13 @@ def test_file_operations(mock_db_session, mock_e2b_sandbox):
 # Test chat endpoint
 def test_chat_endpoint(mock_db_session):
     # Mock agent query
-    mock_db_session.query.return_value.filter.return_value.first.return_value = (
-        MagicMock(
-            id="agent-1",
-            name="Test Agent",
-            agent_type="sdk",
-            uses_graphiti=False,
-            allowed_tools=["execute_code"],
-            sdk_config={"model": "gpt-4"},
-        )
+    mock_db_session.query.return_value.filter.return_value.first.return_value = MagicMock(
+        id="agent-1",
+        name="Test Agent",
+        agent_type="sdk",
+        uses_graphiti=False,
+        allowed_tools=["execute_code"],
+        sdk_config={"model": "gpt-4"},
     )
 
     # Mock agent service

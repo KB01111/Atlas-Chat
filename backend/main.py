@@ -16,7 +16,7 @@ app = FastAPI(title="AtlasChat Backend")
 
 
 @app.get("/sentry-debug")
-pass):
+async def trigger_error():
     division_by_zero = 1 / 0
 
 

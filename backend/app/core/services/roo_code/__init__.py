@@ -71,9 +71,7 @@ class RooCodeAdapter(AgentProvider):
 
         # Check if Roo-Code is available
         if not ROO_CODE_AVAILABLE:
-            logger.warning(
-                "Roo-Code is not available. Some functionality will be limited."
-            )
+            logger.warning("Roo-Code is not available. Some functionality will be limited.")
 
         # Create workspace directory if it doesn't exist
         os.makedirs(self.config.workspace_dir, exist_ok=True)
@@ -92,9 +90,7 @@ class RooCodeAdapter(AgentProvider):
             # Fallback implementation when Roo-Code is not available
             agent_id = definition.agent_id
             self.agents[agent_id] = definition
-            logger.info(
-                f"Created Roo-Code agent (fallback mode): {definition.name} ({agent_id})"
-            )
+            logger.info(f"Created Roo-Code agent (fallback mode): {definition.name} ({agent_id})")
             return agent_id
 
         # Store agent definition
@@ -154,9 +150,7 @@ class RooCodeAdapter(AgentProvider):
         """
         return self.agents.get(agent_id)
 
-    def update_agent(
-        self, agent_id: str, updates: Dict[str, Any]
-    ) -> Optional[AgentDefinition]:
+    def update_agent(self, agent_id: str, updates: Dict[str, Any]) -> Optional[AgentDefinition]:
         """
         Update agent definition.
 
@@ -241,9 +235,7 @@ class RooCodeAdapter(AgentProvider):
             "description": definition.description,
             "system_prompt": definition.system_prompt,
             "model": definition.model_id,
-            "workspace_dir": os.path.join(
-                self.config.workspace_dir, definition.agent_id
-            ),
+            "workspace_dir": os.path.join(self.config.workspace_dir, definition.agent_id),
             "max_iterations": self.config.max_iterations,
             "auto_improve": self.config.auto_improve,
             "verbose": self.config.verbose,

@@ -59,9 +59,7 @@ class AtlasIntegration:
             Dictionary with processing results
         """
         # Add message to context manager
-        self.context_manager.add_message(
-            session_id=session_id, message=message, role="user"
-        )
+        self.context_manager.add_message(session_id=session_id, message=message, role="user")
 
         # Process with agent team if requested
         if use_team:
@@ -83,14 +81,10 @@ class AtlasIntegration:
             )
 
             # Format context for prompt
-            formatted_context = self.context_manager.format_context_for_prompt(
-                context_bundle
-            )
+            formatted_context = self.context_manager.format_context_for_prompt(context_bundle)
 
             # Select model
-            model = self.model_router.select_model(
-                query=message, context=formatted_context
-            )
+            model = self.model_router.select_model(query=message, context=formatted_context)
 
             # In a real implementation, this would use the selected model
             # to generate a response
@@ -124,9 +118,7 @@ class AtlasIntegration:
             Dictionary with processing results
         """
         # Add message to context manager
-        self.context_manager.add_message(
-            session_id=session_id, message=message, role="user"
-        )
+        self.context_manager.add_message(session_id=session_id, message=message, role="user")
 
         # Get agents of the specified type
         agents = self.team_manager.get_agents_by_type(agent_type)

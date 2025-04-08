@@ -148,9 +148,7 @@ class AgentTeamManager:
         """
         return list(self.agents.values())
 
-    async def process_request(
-        self, thread_id: str, user_request: str
-    ) -> Dict[str, Any]:
+    async def process_request(self, thread_id: str, user_request: str) -> Dict[str, Any]:
         """
         Process a user request using the agent team.
 
@@ -219,14 +217,10 @@ class AgentTeamManager:
         self.context_manager.add_user_message(thread_id=thread_id, content=user_request)
 
         # Execute task
-        result = await agent.execute_task(
-            thread_id=thread_id, task_description=user_request
-        )
+        result = await agent.execute_task(thread_id=thread_id, task_description=user_request)
 
         # Store assistant response in context manager
-        self.context_manager.add_assistant_message(
-            thread_id=thread_id, content=result["content"]
-        )
+        self.context_manager.add_assistant_message(thread_id=thread_id, content=result["content"])
 
         return {"agent_id": agent_id, "result": result}
 

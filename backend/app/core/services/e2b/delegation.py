@@ -443,9 +443,7 @@ class AgentTeam:
         Returns:
             List of agents with the specified capability
         """
-        return [
-            agent for agent in self.agents.values() if agent.has_capability(capability)
-        ]
+        return [agent for agent in self.agents.values() if agent.has_capability(capability)]
 
     def get_agents_by_capabilities(
         self, capabilities: List[str], require_all: bool = True
@@ -462,15 +460,11 @@ class AgentTeam:
         """
         if require_all:
             return [
-                agent
-                for agent in self.agents.values()
-                if agent.has_all_capabilities(capabilities)
+                agent for agent in self.agents.values() if agent.has_all_capabilities(capabilities)
             ]
         else:
             return [
-                agent
-                for agent in self.agents.values()
-                if agent.has_any_capability(capabilities)
+                agent for agent in self.agents.values() if agent.has_any_capability(capabilities)
             ]
 
     def add_message(
@@ -538,9 +532,7 @@ class AgentDelegationService:
         self.e2b_session = e2b_session
         self.artifact_manager = ArtifactManager(e2b_session)
         self.teams: Dict[str, AgentTeam] = {}
-        self.task_callbacks: Dict[str, List[Callable[[AgentTask], Awaitable[None]]]] = (
-            {}
-        )
+        self.task_callbacks: Dict[str, List[Callable[[AgentTask], Awaitable[None]]]] = {}
 
     async def initialize(self) -> None:
         """
@@ -565,9 +557,7 @@ class AgentDelegationService:
         team_id = str(uuid.uuid4())
         supervisor_id = str(uuid.uuid4())
 
-        team = AgentTeam(
-            team_id=team_id, name=name, supervisor_id=supervisor_id, metadata=metadata
-        )
+        team = AgentTeam(team_id=team_id, name=name, supervisor_id=supervisor_id, metadata=metadata)
 
         supervisor = Agent(
             agent_id=supervisor_id,
@@ -838,18 +828,14 @@ class AgentDelegationService:
 
         try:
             if language == "python":
-                process = await self.e2b_session.process.start(
-                    cmd=["python3", file_path]
-                )
+                process = await self.e2b_session.process.start(cmd=["python3", file_path])
             elif language == "javascript" or language == "js":
                 process = await self.e2b_session.process.start(cmd=["node", file_path])
             elif language == "typescript" or language == "ts":
                 # Compile TypeScript to JavaScript first
                 await self.e2b_session.process.start(cmd=["tsc", file_path])
                 js_file_path = file_path.replace(".ts", ".js")
-                process = await self.e2b_session.process.start(
-                    cmd=["node", js_file_path]
-                )
+                process = await self.e2b_session.process.start(cmd=["node", js_file_path])
             elif language == "bash" or language == "sh":
                 process = await self.e2b_session.process.start(cmd=["bash", file_path])
             else:
@@ -962,9 +948,7 @@ class AgentDelegationService:
 
         return True
 
-    def register_task_callback(
-        self, callback: Callable[[AgentTask], Awaitable[None]]
-    ) -> str:
+    def register_task_callback(self, callback: Callable[[AgentTask], Awaitable[None]]) -> str:
         """
         Register a callback function to be called when a task is updated.
 
@@ -1061,9 +1045,7 @@ class AgentDelegationService:
             logger.error(f"Sender {sender_id} is not a member of team {team_id}")
             return None
 
-        return team.add_message(
-            content=content, sender_id=sender_id, message_type=message_type
-        )
+        return team.add_message(content=content, sender_id=sender_id, message_type=message_type)
 
     def get_team_messages(
         self, team_id: str, limit: Optional[int] = None, before: Optional[str] = None
@@ -1130,9 +1112,7 @@ class AgentDelegationService:
         await self.e2b_session.create_file(file_path, json.dumps(state, indent=2))
 
     @classmethod
-    async def load_state(
-        cls, file_path: str, e2b_session: E2BSession
-    ) -> "AgentDelegationService":
+    async def load_state(cls, file_path: str, e2b_session: E2BSession) -> "AgentDelegationService":
         """
         Load the state of the agent delegation service from a file.
 

@@ -75,18 +75,14 @@ class OpenRouterGraphitiIntegration:
             await self.graphiti_client.add_nodes(graph_data["nodes"])
             await self.graphiti_client.add_relationships(graph_data["relationships"])
 
-            logger.info(
-                f"Added conversation {conversation_id} to Graphiti as episode {episode_id}"
-            )
+            logger.info(f"Added conversation {conversation_id} to Graphiti as episode {episode_id}")
             return episode_id
 
         except Exception as e:
             logger.error(f"Error adding conversation to Graphiti: {str(e)}")
             return f"error:{str(e)}"
 
-    async def search_graphiti_for_context(
-        self, query: str, limit: int = 5
-    ) -> List[Dict[str, Any]]:
+    async def search_graphiti_for_context(self, query: str, limit: int = 5) -> List[Dict[str, Any]]:
         """
         Search Graphiti for relevant context based on a query
 
@@ -205,9 +201,9 @@ class OpenRouterGraphitiIntegration:
             context = "Relevant context from previous conversations:\n\n"
             for i, result in enumerate(results):
                 if result["type"] == "episode":
-                    context += f"{i+1}. {result['content']}\n\n"
+                    context += f"{i + 1}. {result['content']}\n\n"
                 else:
-                    context += f"{i+1}. {result['label']}: {json.dumps(result['properties'])}\n\n"
+                    context += f"{i + 1}. {result['label']}: {json.dumps(result['properties'])}\n\n"
 
             # Find system message or create one
             system_msg_idx = next(

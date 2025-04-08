@@ -1,6 +1,35 @@
 version: "3.8"
 
 services:
+  # Optional: Uncomment to run Postgres locally with this compose file
+  # postgres:
+  #   image: postgres:latest
+  #   container_name: atlas-chat-postgres-e2b
+  #   environment:
+  #     POSTGRES_USER: ${POSTGRES_USER}
+  #     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  #     POSTGRES_DB: ${POSTGRES_DB}
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - postgres_data_e2b:/var/lib/postgresql/data
+  #   networks:
+  #     - atlas-network
+  #   restart: unless-stopped
+
+  # Optional: Uncomment to run Redis locally with this compose file
+  # redis:
+  #   image: redis:latest
+  #   container_name: atlas-chat-redis-e2b
+  #   command: redis-server --requirepass ${REDIS_PASSWORD}
+  #   ports:
+  #     - "6379:6379"
+  #   volumes:
+  #     - redis_data_e2b:/data
+  #   networks:
+  #     - atlas-network
+  #   restart: unless-stopped
+
   # Backend service
   backend:
     build:
@@ -18,6 +47,30 @@ services:
       - E2B_API_KEY=${E2B_API_KEY}
     volumes:
       - ./backend:/app
+    depends_on:
+      # Uncomment if enabling Postgres and Redis above
+      # postgres:
+      #   condition: service_started
+      # redis:
+      #   condition: service_started
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: 1G
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - atlas-network
     restart: unless-stopped
 
   # Frontend service
@@ -33,4 +86,30 @@ services:
       - ./frontend:/app
     depends_on:
       - backend
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - atlas-network
     restart: unless-stopped
+
+volumes:
+  postgres_data_e2b:
+  redis_data_e2b:
+
+networks:
+  atlas-network:
+    driver: bridge

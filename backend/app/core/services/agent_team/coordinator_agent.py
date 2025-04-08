@@ -95,7 +95,7 @@ class CoordinatorAgent:
                     "step_id": f"step_{step_id}",
                     "agent_id": agent_id,
                     "task_description": f"Process the following request: {user_request}",
-                    "dependencies": [] if step_id == 1 else [f"step_{step_id-1}"],
+                    "dependencies": [] if step_id == 1 else [f"step_{step_id - 1}"],
                 }
             )
             step_id += 1
@@ -108,9 +108,7 @@ class CoordinatorAgent:
 
         return plan
 
-    async def execute_plan(
-        self, plan_id: str, agent_instances: Dict[str, Any]
-    ) -> Dict[str, Any]:
+    async def execute_plan(self, plan_id: str, agent_instances: Dict[str, Any]) -> Dict[str, Any]:
         """
         Execute a task plan using the specified agent instances.
 
@@ -156,10 +154,7 @@ class CoordinatorAgent:
             dependencies = step.get("dependencies", [])
             dependency_failed = False
             for dep_id in dependencies:
-                if (
-                    dep_id not in results
-                    or results[dep_id].get("status") != "completed"
-                ):
+                if dep_id not in results or results[dep_id].get("status") != "completed":
                     dependency_failed = True
                     break
 

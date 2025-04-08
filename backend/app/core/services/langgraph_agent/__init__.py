@@ -52,9 +52,7 @@ try:
 
     LANGGRAPH_AVAILABLE = True
 except ImportError:
-    logger.warning(
-        "langgraph library not available. Install with 'pip install langgraph'"
-    )
+    logger.warning("langgraph library not available. Install with 'pip install langgraph'")
     LANGGRAPH_AVAILABLE = False
 
 
@@ -85,9 +83,7 @@ class LangGraphProvider(AgentProvider):
 
         # Check if LangGraph is available
         if not LANGGRAPH_AVAILABLE:
-            logger.warning(
-                "LangGraph is not available. Some functionality will be limited."
-            )
+            logger.warning("LangGraph is not available. Some functionality will be limited.")
 
     def create_agent(self, definition: AgentDefinition) -> str:
         """
@@ -146,9 +142,7 @@ class LangGraphProvider(AgentProvider):
         """
         return self.agents.get(agent_id)
 
-    def update_agent(
-        self, agent_id: str, updates: Dict[str, Any]
-    ) -> Optional[AgentDefinition]:
+    def update_agent(self, agent_id: str, updates: Dict[str, Any]) -> Optional[AgentDefinition]:
         """
         Update agent definition.
 
@@ -342,7 +336,7 @@ class LangGraphProvider(AgentProvider):
         """
 
         def start_node(state: GraphState) -> GraphState:
-            """Start node ze state
+            """Initializes the state for the start node."""
             state.current_node = "start"
             state.next_node = "process"
             return state
@@ -350,10 +344,7 @@ class LangGraphProvider(AgentProvider):
         return start_node
 
     def _create_process_node(self, definition: AgentDefinition) -> Callable:
-        """
-        Create prurns:
-            Node function
-        """
+        """Create process node."""
         model_router = self.model_router
 
         def process_node(state: GraphState) -> GraphState:
@@ -464,17 +455,11 @@ class LangGraphProvider(AgentProvider):
                                 logging.warning(
                                     f"Could not parse tool args for {tool_name}. Type: {type(tool_args)}, Value: {tool_args}. Using empty dict."
                                 )
-                                parsed_args = (
-                                    {}
-                                )  # Default to empty dict if parsing fails
+                                parsed_args = {}  # Default to empty dict if parsing fails
 
                     except json.JSONDecodeError:
-                        logging.error(
-                            f"Invalid JSON arguments for tool {tool_name}: {tool_args}"
-                        )
-                        raise ValueError(
-                            f"Invalid JSON arguments provided for tool {tool_name}"
-                        )
+                        logging.error(f"Invalid JSON arguments for tool {tool_name}: {tool_args}")
+                        raise ValueError(f"Invalid JSON arguments provided for tool {tool_name}")
 
                     # Execute the tool using the ToolExecutor instance
                     # Ensure execute_tool is an async method in ToolExecutor class
@@ -489,15 +474,11 @@ class LangGraphProvider(AgentProvider):
                         tool_content = str(execution_result)
 
                 except Exception as e:
-                    logging.error(
-                        f"Error executing tool '{tool_name}': {e}", exc_info=True
-                    )
+                    logging.error(f"Error executing tool '{tool_name}': {e}", exc_info=True)
                     tool_content = f"Error: Failed to execute tool '{tool_name}'. Details: {str(e)}"
                 finally:
                     # Ensure ToolExecutor resources are cleaned up if it was instantiated
-                    if tool_executor_instance and hasattr(
-                        tool_executor_instance, "close"
-                    ):
+                    if tool_executor_instance and hasattr(tool_executor_instance, "close"):
                         try:
                             # If close is async, it needs await here, but ToolExecutor.close was sync previously
                             # Assuming it's synchronous based on code.py usage
@@ -605,14 +586,13 @@ class LangGraphProvider(AgentProvider):
         return state.next_node or END
 
     def _extract_response(self, state: GraphState) -> str:
-        """
-        Extract response from final state.
+        """Extract response from final state.
 
         Args:
-            state: Final graph state
+            state (GraphState): Final graph state.
 
         Returns:
-            Response content
+            str: Response content, or empty string if not found.
         """
         # Get last assistant message
         for msg in reversed(state.messages):

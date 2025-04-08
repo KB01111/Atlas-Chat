@@ -484,7 +484,7 @@ def run_all_tests():
     all_passed = True
 
     for name, test_func in tests:
-        logger.info(f"\n{'='*50}\nRunning {name} tests\n{'='*50}")
+        logger.info(f"\n{'=' * 50}\nRunning {name} tests\n{'=' * 50}")
         try:
             passed = test_func()
             results[name] = "PASSED" if passed else "FAILED"

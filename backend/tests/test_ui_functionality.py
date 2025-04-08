@@ -71,9 +71,7 @@ class AtlasChatUITester:
             # Check login form elements
             email_input = self.driver.find_element(By.ID, "email")
             password_input = self.driver.find_element(By.ID, "password")
-            login_button = self.driver.find_element(
-                By.XPATH, "//button[contains(text(), 'Login')]"
-            )
+            login_button = self.driver.find_element(By.XPATH, "//button[contains(text(), 'Login')]")
 
             if not all([email_input, password_input, login_button]):
                 logger.warning("❌ Login form elements not found")
@@ -153,9 +151,9 @@ class AtlasChatUITester:
                 # Check if agent info is updated
                 try:
                     agent_info = self.driver.find_element(By.CLASS_NAME, "agent-info")
-                    logger.info(f"✅ Agent info updated for option {i+1}")
+                    logger.info(f"✅ Agent info updated for option {i + 1}")
                 except NoSuchElementException:
-                    logger.warning(f"❌ Agent info not updated for option {i+1}")
+                    logger.warning(f"❌ Agent info not updated for option {i + 1}")
                     return False
 
             logger.info("Agent selector test completed successfully")
@@ -201,9 +199,7 @@ class AtlasChatUITester:
             # Check if message appears in chat
             try:
                 WebDriverWait(self.driver, 10).until(
-                    EC.text_to_be_present_in_element(
-                        (By.CLASS_NAME, "user-message"), test_message
-                    )
+                    EC.text_to_be_present_in_element((By.CLASS_NAME, "user-message"), test_message)
                 )
                 logger.info("✅ User message appears in chat")
             except TimeoutException:
@@ -262,9 +258,7 @@ class AtlasChatUITester:
             # Check if output is updated
             try:
                 WebDriverWait(self.driver, 10).until(
-                    lambda driver: driver.find_element(
-                        By.CLASS_NAME, "output-content"
-                    ).text
+                    lambda driver: driver.find_element(By.CLASS_NAME, "output-content").text
                     != "Run your code to see output here..."
                 )
                 logger.info("✅ Code execution output updated")
@@ -313,9 +307,9 @@ class AtlasChatUITester:
                 # Check if model info is updated
                 try:
                     model_info = self.driver.find_element(By.CLASS_NAME, "model-info")
-                    logger.info(f"✅ Model info updated for option {i+1}")
+                    logger.info(f"✅ Model info updated for option {i + 1}")
                 except NoSuchElementException:
-                    logger.warning(f"❌ Model info not updated for option {i+1}")
+                    logger.warning(f"❌ Model info not updated for option {i + 1}")
                     return False
 
             # Navigate to chat page to test model in action
@@ -357,7 +351,7 @@ class AtlasChatUITester:
             all_passed = True
 
             for name, test_func in tests:
-                logger.info(f"\n{'='*50}\nRunning {name} test\n{'='*50}")
+                logger.info(f"\n{'=' * 50}\nRunning {name} test\n{'=' * 50}")
                 try:
                     passed = test_func()
                     results[name] = "PASSED" if passed else "FAILED"

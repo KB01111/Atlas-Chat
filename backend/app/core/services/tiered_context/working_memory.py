@@ -50,9 +50,7 @@ class WorkingMemory:
         self.max_entries = max_entries
         self.ttl_minutes = ttl_minutes
         self.entries: Dict[str, WorkingMemoryEntry] = {}
-        self.session_entries: Dict[str, List[str]] = (
-            {}
-        )  # session_id -> list of entry_ids
+        self.session_entries: Dict[str, List[str]] = {}  # session_id -> list of entry_ids
 
     def add_entry(
         self,
@@ -146,9 +144,7 @@ class WorkingMemory:
 
         return entries
 
-    def get_conversation_history(
-        self, session_id: str, limit: Optional[int] = None
-    ) -> str:
+    def get_conversation_history(self, session_id: str, limit: Optional[int] = None) -> str:
         """
         Get conversation history for a session.
 

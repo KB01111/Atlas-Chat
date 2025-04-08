@@ -36,9 +36,7 @@ class Artifact:
         self.id = artifact_id
         self.name = name
         self.content_type = content_type
-        self.content = (
-            content if isinstance(content, bytes) else content.encode("utf-8")
-        )
+        self.content = content if isinstance(content, bytes) else content.encode("utf-8")
         self.metadata = metadata or {}
         self.created_at = datetime.now().isoformat()
 
@@ -101,9 +99,7 @@ class ArtifactManager:
         Initialize the artifact manager by creating the artifacts directory.
         """
         # Create the artifacts directory if it doesn't exist
-        process = await self.session.process.start(
-            {"cmd": ["mkdir", "-p", self.artifacts_dir]}
-        )
+        process = await self.session.process.start({"cmd": ["mkdir", "-p", self.artifacts_dir]})
         result = await process.wait()
         if result.exit_code != 0:
             logger.error(f"Failed to create artifacts directory: {result.stderr}")
@@ -228,9 +224,7 @@ class ArtifactManager:
             artifact_path = f"{self.artifacts_dir}/{artifact.name}"
 
             # Delete the artifact file from the E2B sandbox
-            process = await self.session.process.start(
-                {"cmd": ["rm", "-f", artifact_path]}
-            )
+            process = await self.session.process.start({"cmd": ["rm", "-f", artifact_path]})
             result = await process.wait()
             if result.exit_code != 0:
                 logger.warning(f"Failed to delete artifact file: {result.stderr}")
@@ -252,9 +246,7 @@ class ArtifactManager:
             List of created artifacts
         """
         # Find files matching the pattern
-        matching_files = await self.session.filesystem.glob(
-            f"{self.artifacts_dir}/{pattern}"
-        )
+        matching_files = await self.session.filesystem.glob(f"{self.artifacts_dir}/{pattern}")
 
         # Create artifacts for each file
         created_artifacts = []

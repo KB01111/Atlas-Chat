@@ -171,3 +171,6 @@ temp/
 *.sqlite
 *.sqlite3
 *.db
+
+# windsurf rules
+.windsurfrules

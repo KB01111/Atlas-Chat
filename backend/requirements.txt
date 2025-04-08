@@ -5,7 +5,6 @@ python-jose[cryptography]>=3.3.0
 aioredis>=2.0.0
 redis>=5.0.0  # Ensure compatibility with aioredis
 unstructured>=0.10.0
-pymongo>=4.5.0
 psycopg2-binary>=2.9.5
 requests>=2.28.0
 langgraph>=0.0.10
@@ -14,6 +13,5 @@ e2b_code_interpreter>=0.2.0
 python-dotenv>=1.0.0
 sentry-sdk[fastapi]>=1.28.0
 # Additional dependencies from codebase
-neo4j>=5.8.0  # For knowledge graph functionality
-qdrant-client>=1.4.0  # For vector database
 supabase>=1.0.0  # For Supabase integration
+sqlalchemy>=1.4

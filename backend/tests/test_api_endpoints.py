@@ -9,9 +9,7 @@ except ImportError:
     # Fallback if the structure is different, adjust as needed
     # This might happen if tests are run from a different context
     # You might need to adjust sys.path or use relative imports carefully
-    print(
-        "Warning: Could not import 'app' from 'backend.main'. TestClient setup might fail."
-    )
+    print("Warning: Could not import 'app' from 'backend.main'. TestClient setup might fail.")
     app = None  # Avoid crashing if import fails, but tests will likely fail
 
 
@@ -118,9 +116,7 @@ def test_update_agent(client: TestClient, auth_headers: dict):
         "tools": ["tool1", "tool_updated"],
         "config": {"model": "updated-model"},
     }
-    response = client.put(
-        f"/api/agents/{created_agent_id}", json=update_data, headers=auth_headers
-    )
+    response = client.put(f"/api/agents/{created_agent_id}", json=update_data, headers=auth_headers)
     assert response.status_code == 200
     response_data = response.json()
     assert response_data["name"] == update_data["name"]

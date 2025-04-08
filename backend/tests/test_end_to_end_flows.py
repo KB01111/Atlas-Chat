@@ -63,9 +63,7 @@ class AtlasChatE2ETester:
         # Fill in login form
         email_input = self.driver.find_element(By.ID, "email")
         password_input = self.driver.find_element(By.ID, "password")
-        login_button = self.driver.find_element(
-            By.XPATH, "//button[contains(text(), 'Login')]"
-        )
+        login_button = self.driver.find_element(By.XPATH, "//button[contains(text(), 'Login')]")
 
         email_input.clear()
         email_input.send_keys(email)
@@ -75,9 +73,7 @@ class AtlasChatE2ETester:
 
         # Wait for dashboard to load
         try:
-            WebDriverWait(self.driver, 10).until(
-                lambda driver: "/dashboard" in driver.current_url
-            )
+            WebDriverWait(self.driver, 10).until(lambda driver: "/dashboard" in driver.current_url)
             logger.info("✅ Login successful")
             return True
         except TimeoutException:
@@ -130,9 +126,7 @@ class AtlasChatE2ETester:
                 )
                 send_button = self.driver.find_element(By.ID, "send-button")
 
-                research_query = (
-                    "What are the latest developments in quantum computing?"
-                )
+                research_query = "What are the latest developments in quantum computing?"
                 message_input.clear()
                 message_input.send_keys(research_query)
                 send_button.click()
@@ -214,9 +208,7 @@ class AtlasChatE2ETester:
                 )
                 send_button = self.driver.find_element(By.ID, "send-button")
 
-                coding_query = (
-                    "Write a Python function to calculate the Fibonacci sequence"
-                )
+                coding_query = "Write a Python function to calculate the Fibonacci sequence"
                 message_input.clear()
                 message_input.send_keys(coding_query)
                 send_button.click()
@@ -235,10 +227,7 @@ class AtlasChatE2ETester:
 
                 # Check for code block
                 agent_message = self.driver.find_element(By.CLASS_NAME, "agent-message")
-                if (
-                    "```python" in agent_message.text
-                    or "def fibonacci" in agent_message.text
-                ):
+                if "```python" in agent_message.text or "def fibonacci" in agent_message.text:
                     logger.info("✅ Received coding response with code")
                 else:
                     logger.warning("❌ Coding response does not contain code")
@@ -343,9 +332,7 @@ class AtlasChatE2ETester:
                 # Check if model switch notification appears
                 try:
                     WebDriverWait(self.driver, 5).until(
-                        EC.presence_of_element_located(
-                            (By.CLASS_NAME, "model-switch-notification")
-                        )
+                        EC.presence_of_element_located((By.CLASS_NAME, "model-switch-notification"))
                     )
                     logger.info("✅ Model switch notification appeared")
                 except TimeoutException:
@@ -361,7 +348,9 @@ class AtlasChatE2ETester:
                 message_input = self.driver.find_element(By.ID, "message-input")
                 send_button = self.driver.find_element(By.ID, "send-button")
 
-                followup_query = "What's the difference between quantum computing and classical computing?"
+                followup_query = (
+                    "What's the difference between quantum computing and classical computing?"
+                )
                 message_input.clear()
                 message_input.send_keys(followup_query)
                 send_button.click()
@@ -375,15 +364,11 @@ class AtlasChatE2ETester:
             # Wait for response from new model
             try:
                 # Get current message count
-                current_messages = len(
-                    self.driver.find_elements(By.CLASS_NAME, "agent-message")
-                )
+                current_messages = len(self.driver.find_elements(By.CLASS_NAME, "agent-message"))
 
                 # Wait for new message
                 WebDriverWait(self.driver, 30).until(
-                    lambda driver: len(
-                        driver.find_elements(By.CLASS_NAME, "agent-message")
-                    )
+                    lambda driver: len(driver.find_elements(By.CLASS_NAME, "agent-message"))
                     > current_messages
                 )
 
@@ -442,9 +427,7 @@ class AtlasChatE2ETester:
             # Wait for team chat to load
             try:
                 WebDriverWait(self.driver, 10).until(
-                    EC.presence_of_element_located(
-                        (By.CLASS_NAME, "team-chat-container")
-                    )
+                    EC.presence_of_element_located((By.CLASS_NAME, "team-chat-container"))
                 )
                 logger.info("✅ Team chat loaded")
 
@@ -472,33 +455,25 @@ class AtlasChatE2ETester:
             try:
                 # Wait for first agent response
                 WebDriverWait(self.driver, 30).until(
-                    EC.presence_of_element_located(
-                        (By.CLASS_NAME, "team-agent-message")
-                    )
+                    EC.presence_of_element_located((By.CLASS_NAME, "team-agent-message"))
                 )
 
                 # Wait for additional agent responses
                 time.sleep(5)  # Give time for other agents to respond
 
                 # Check if multiple agents responded
-                agent_messages = self.driver.find_elements(
-                    By.CLASS_NAME, "team-agent-message"
-                )
+                agent_messages = self.driver.find_elements(By.CLASS_NAME, "team-agent-message")
                 agent_names = set()
 
                 for message in agent_messages:
                     try:
-                        agent_name = message.find_element(
-                            By.CLASS_NAME, "agent-name"
-                        ).text
+                        agent_name = message.find_element(By.CLASS_NAME, "agent-name").text
                         agent_names.add(agent_name)
                     except NoSuchElementException:
                         pass
 
                 if len(agent_names) > 1:
-                    logger.info(
-                        f"✅ Multiple agents responded: {', '.join(agent_names)}"
-                    )
+                    logger.info(f"✅ Multiple agents responded: {', '.join(agent_names)}")
                 else:
                     logger.warning("❌ Only one agent responded")
                     # Not critical, continue test
@@ -532,7 +507,7 @@ class AtlasChatE2ETester:
             all_passed = True
 
             for name, test_func in tests:
-                logger.info(f"\n{'='*50}\nRunning {name} test\n{'='*50}")
+                logger.info(f"\n{'=' * 50}\nRunning {name} test\n{'=' * 50}")
                 try:
                     passed = test_func()
                     results[name] = "PASSED" if passed else "FAILED"

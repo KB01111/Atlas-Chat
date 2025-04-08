@@ -38,9 +38,7 @@ class MessageResponse(BaseModel):
 
 
 @router.post("/message", response_model=MessageResponse)
-async def process_message(
-    request: MessageRequest, current_user: Dict = Depends(get_current_user)
-):
+async def process_message(request: MessageRequest, current_user: Dict = Depends(get_current_user)):
     """
     Process a user message using the integrated components.
 
@@ -148,9 +146,7 @@ async def get_agents(current_user: Dict = Depends(get_current_user)):
 
 
 @router.get("/agents/{agent_type}")
-async def get_agents_by_type(
-    agent_type: str, current_user: Dict = Depends(get_current_user)
-):
+async def get_agents_by_type(agent_type: str, current_user: Dict = Depends(get_current_user)):
     """
     Get agents by type.
 
@@ -176,9 +172,7 @@ async def get_agents_by_type(
     except HTTPException:  # Re-raise HTTPExceptions directly
         raise
     except Exception as e:
-        logging.error(
-            f"Error retrieving agents by type '{agent_type}': {e}", exc_info=True
-        )
+        logging.error(f"Error retrieving agents by type '{agent_type}': {e}", exc_info=True)
         raise HTTPException from e(
             status_code=500,
             detail="An internal error occurred while retrieving agents by type.",

@@ -111,9 +111,7 @@ class Process:
     Represents a process running in the E2B sandbox.
     """
 
-    def __init__(
-        self, session: E2BSession, options: Dict[str, Any], e2b_process: E2BProcess
-    ):
+    def __init__(self, session: E2BSession, options: Dict[str, Any], e2b_process: E2BProcess):
         """
         Initialize the process.
 
@@ -195,9 +193,7 @@ class StdinStream:
         """
         End the standard input stream.
         """
-        logger.info(
-            f"Ending stdin stream for process in session: {self.process.session.id}"
-        )
+        logger.info(f"Ending stdin stream for process in session: {self.process.session.id}")
         try:
             await self.process.e2b_process.stdin.end()
             logger.info(
