@@ -1,7 +1,7 @@
 export enum ArtifactModes {
-  DEFAULT = 'default',
-  SHADCNUI = 'shadcnui',
-  CUSTOM = 'custom',
+  DEFAULT = "default",
+  SHADCNUI = "shadcnui",
+  CUSTOM = "custom",
 }
 
 export const utils = `

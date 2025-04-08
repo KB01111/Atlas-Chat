@@ -1,9 +1,9 @@
-import type { OpenAPIV3 } from 'openapi-types';
-import type { AssistantsEndpoint, AgentProvider } from 'src/schemas';
-import type { ContentTypes } from './runs';
-import type { Agents } from './agents';
-import type { TFile } from './files';
-import { ArtifactModes } from 'src/artifacts';
+import type { OpenAPIV3 } from "openapi-types";
+import type { AssistantsEndpoint, AgentProvider } from "src/schemas";
+import type { ContentTypes } from "./runs";
+import type { Agents } from "./agents";
+import type { TFile } from "./files";
+import { ArtifactModes } from "src/artifacts";
 
 export type Schema = OpenAPIV3.SchemaObject & { description?: string };
 export type Reference = OpenAPIV3.ReferenceObject & { description?: string };
@@ -16,18 +16,18 @@ export type Metadata = {
 };
 
 export enum Tools {
-  execute_code = 'execute_code',
-  code_interpreter = 'code_interpreter',
-  file_search = 'file_search',
-  retrieval = 'retrieval',
-  function = 'function',
+  execute_code = "execute_code",
+  code_interpreter = "code_interpreter",
+  file_search = "file_search",
+  retrieval = "retrieval",
+  function = "function",
 }
 
 export enum EToolResources {
-  code_interpreter = 'code_interpreter',
-  execute_code = 'execute_code',
-  file_search = 'file_search',
-  ocr = 'ocr',
+  code_interpreter = "code_interpreter",
+  execute_code = "execute_code",
+  file_search = "file_search",
+  ocr = "ocr",
 }
 
 export type Tool = {
@@ -91,7 +91,10 @@ export type Assistant = {
   tool_resources?: ToolResources;
 };
 
-export type TAssistantsMap = Record<AssistantsEndpoint, Record<string, Assistant>>;
+export type TAssistantsMap = Record<
+  AssistantsEndpoint,
+  Record<string, Assistant>
+>;
 
 export type AssistantCreateParams = {
   model: string;
@@ -125,7 +128,7 @@ export type AssistantListParams = {
   limit?: number;
   before?: string | null;
   after?: string | null;
-  order?: 'asc' | 'desc';
+  order?: "asc" | "desc";
   endpoint: AssistantsEndpoint;
 };
 
@@ -145,7 +148,11 @@ export type File = {
   created_at: number;
   filename: string;
   object: string;
-  purpose: 'fine-tune' | 'fine-tune-results' | 'assistants' | 'assistants_output';
+  purpose:
+    | "fine-tune"
+    | "fine-tune-results"
+    | "assistants"
+    | "assistants_output";
 };
 
 /* Agent types */
@@ -166,7 +173,7 @@ export type AgentModelParameters = {
 export interface AgentToolResources {
   execute_code?: ExecuteCodeResource;
   file_search?: AgentFileResource;
-  ocr?: Omit<AgentFileResource, 'vector_store_ids'>;
+  ocr?: Omit<AgentFileResource, "vector_store_ids">;
 }
 export interface ExecuteCodeResource {
   /**
@@ -240,7 +247,11 @@ export type AgentCreateParams = {
   model_parameters: AgentModelParameters;
 } & Pick<
   Agent,
-  'agent_ids' | 'end_after_tools' | 'hide_sequential_outputs' | 'artifacts' | 'recursion_limit'
+  | "agent_ids"
+  | "end_after_tools"
+  | "hide_sequential_outputs"
+  | "artifacts"
+  | "recursion_limit"
 >;
 
 export type AgentUpdateParams = {
@@ -259,14 +270,18 @@ export type AgentUpdateParams = {
   isCollaborative?: boolean;
 } & Pick<
   Agent,
-  'agent_ids' | 'end_after_tools' | 'hide_sequential_outputs' | 'artifacts' | 'recursion_limit'
+  | "agent_ids"
+  | "end_after_tools"
+  | "hide_sequential_outputs"
+  | "artifacts"
+  | "recursion_limit"
 >;
 
 export type AgentListParams = {
   limit?: number;
   before?: string | null;
   after?: string | null;
-  order?: 'asc' | 'desc';
+  order?: "asc" | "desc";
   provider?: AgentProvider;
 };
 
@@ -286,7 +301,7 @@ export type AgentFile = {
   created_at: number;
   filename: string;
   object: string;
-  purpose: 'fine-tune' | 'fine-tune-results' | 'agents' | 'agents_output';
+  purpose: "fine-tune" | "fine-tune-results" | "agents" | "agents_output";
 };
 
 /**
@@ -299,7 +314,7 @@ export type CodeToolCall = {
     input: string; // The input to the Code Interpreter tool call.
     outputs: Array<Record<string, unknown>>; // The outputs from the Code Interpreter tool call.
   };
-  type: 'code_interpreter'; // The type of tool call, always 'code_interpreter'.
+  type: "code_interpreter"; // The type of tool call, always 'code_interpreter'.
 };
 
 /**
@@ -313,7 +328,7 @@ export type FunctionToolCall = {
     name: string; // The name of the function.
     output: string | null; // The output of the function, null if not submitted.
   };
-  type: 'function'; // The type of tool call, always 'function'.
+  type: "function"; // The type of tool call, always 'function'.
 };
 
 /**
@@ -323,7 +338,7 @@ export type FunctionToolCall = {
 export type RetrievalToolCall = {
   id: string; // The ID of the tool call object.
   retrieval: unknown; // An empty object for now.
-  type: 'retrieval'; // The type of tool call, always 'retrieval'.
+  type: "retrieval"; // The type of tool call, always 'retrieval'.
 };
 
 /**
@@ -333,7 +348,7 @@ export type RetrievalToolCall = {
 export type FileSearchToolCall = {
   id: string; // The ID of the tool call object.
   file_search: unknown; // An empty object for now.
-  type: 'file_search'; // The type of tool call, always 'retrieval'.
+  type: "file_search"; // The type of tool call, always 'retrieval'.
 };
 
 /**
@@ -341,8 +356,10 @@ export type FileSearchToolCall = {
  * Can be associated with one of three types of tools: `code_interpreter`, `retrieval`, or `function`.
  */
 export type ToolCallsStepDetails = {
-  tool_calls: Array<CodeToolCall | RetrievalToolCall | FileSearchToolCall | FunctionToolCall>; // An array of tool calls the run step was involved in.
-  type: 'tool_calls'; // Always 'tool_calls'.
+  tool_calls: Array<
+    CodeToolCall | RetrievalToolCall | FileSearchToolCall | FunctionToolCall
+  >; // An array of tool calls the run step was involved in.
+  type: "tool_calls"; // Always 'tool_calls'.
 };
 
 export type ImageFile = TFile & {
@@ -371,7 +388,7 @@ export type FileCitation = {
   file_citation: FileCitationDetails;
   start_index: number;
   text: string;
-  type: 'file_citation';
+  type: "file_citation";
 };
 
 export type FileCitationDetails = {
@@ -384,7 +401,7 @@ export type FilePath = {
   file_path: FilePathDetails;
   start_index: number;
   text: string;
-  type: 'file_path';
+  type: "file_path";
 };
 
 export type FilePathDetails = {
@@ -397,34 +414,34 @@ export type Text = {
 };
 
 export enum AnnotationTypes {
-  FILE_CITATION = 'file_citation',
-  FILE_PATH = 'file_path',
+  FILE_CITATION = "file_citation",
+  FILE_PATH = "file_path",
 }
 
 export enum StepStatus {
-  IN_PROGRESS = 'in_progress',
-  CANCELLED = 'cancelled',
-  FAILED = 'failed',
-  COMPLETED = 'completed',
-  EXPIRED = 'expired',
+  IN_PROGRESS = "in_progress",
+  CANCELLED = "cancelled",
+  FAILED = "failed",
+  COMPLETED = "completed",
+  EXPIRED = "expired",
 }
 
 export enum MessageContentTypes {
-  TEXT = 'text',
-  IMAGE_FILE = 'image_file',
+  TEXT = "text",
+  IMAGE_FILE = "image_file",
 }
 
 //enum for RunStatus
 // The status of the run: queued, in_progress, requires_action, cancelling, cancelled, failed, completed, or expired.
 export enum RunStatus {
-  QUEUED = 'queued',
-  IN_PROGRESS = 'in_progress',
-  REQUIRES_ACTION = 'requires_action',
-  CANCELLING = 'cancelling',
-  CANCELLED = 'cancelled',
-  FAILED = 'failed',
-  COMPLETED = 'completed',
-  EXPIRED = 'expired',
+  QUEUED = "queued",
+  IN_PROGRESS = "in_progress",
+  REQUIRES_ACTION = "requires_action",
+  CANCELLING = "cancelling",
+  CANCELLED = "cancelled",
+  FAILED = "failed",
+  COMPLETED = "completed",
+  EXPIRED = "expired",
 }
 
 export type PartMetadata = {
@@ -448,9 +465,17 @@ export type ContentPart = (
   PartMetadata;
 
 export type TMessageContentParts =
-  | { type: ContentTypes.ERROR; text?: string | (Text & PartMetadata); error?: string }
+  | {
+      type: ContentTypes.ERROR;
+      text?: string | (Text & PartMetadata);
+      error?: string;
+    }
   | { type: ContentTypes.THINK; think: string | (Text & PartMetadata) }
-  | { type: ContentTypes.TEXT; text: string | (Text & PartMetadata); tool_call_ids?: string[] }
+  | {
+      type: ContentTypes.TEXT;
+      text: string | (Text & PartMetadata);
+      tool_call_ids?: string[];
+    }
   | {
       type: ContentTypes.TOOL_CALL;
       tool_call: (
@@ -481,26 +506,26 @@ export type TContentData = StreamContentData & {
   stream?: boolean;
 };
 
-export const actionDelimiter = '_action_';
-export const actionDomainSeparator = '---';
-export const hostImageIdSuffix = '_host_copy';
-export const hostImageNamePrefix = 'host_copy_';
+export const actionDelimiter = "_action_";
+export const actionDomainSeparator = "---";
+export const hostImageIdSuffix = "_host_copy";
+export const hostImageNamePrefix = "host_copy_";
 
 export enum AuthTypeEnum {
-  ServiceHttp = 'service_http',
-  OAuth = 'oauth',
-  None = 'none',
+  ServiceHttp = "service_http",
+  OAuth = "oauth",
+  None = "none",
 }
 
 export enum AuthorizationTypeEnum {
-  Bearer = 'bearer',
-  Basic = 'basic',
-  Custom = 'custom',
+  Bearer = "bearer",
+  Basic = "basic",
+  Custom = "custom",
 }
 
 export enum TokenExchangeMethodEnum {
-  DefaultPost = 'default_post',
-  BasicAuthHeader = 'basic_auth_header',
+  DefaultPost = "default_post",
+  BasicAuthHeader = "basic_auth_header",
 }
 
 export type ActionAuth = {
@@ -538,7 +563,10 @@ export type Action = {
   settings?: Record<string, unknown>;
   metadata: ActionMetadata;
   version: number | string;
-} & ({ assistant_id: string; agent_id?: never } | { assistant_id?: never; agent_id: string });
+} & (
+  | { assistant_id: string; agent_id?: never }
+  | { assistant_id?: never; agent_id: string }
+);
 
 export type AssistantAvatar = {
   filepath: string;
@@ -566,43 +594,43 @@ export type AgentAvatar = {
 };
 
 export enum FilePurpose {
-  Vision = 'vision',
-  FineTune = 'fine-tune',
-  FineTuneResults = 'fine-tune-results',
-  Assistants = 'assistants',
-  AssistantsOutput = 'assistants_output',
+  Vision = "vision",
+  FineTune = "fine-tune",
+  FineTuneResults = "fine-tune-results",
+  Assistants = "assistants",
+  AssistantsOutput = "assistants_output",
 }
 
 export const defaultOrderQuery: {
-  order: 'desc';
+  order: "desc";
   limit: 100;
 } = {
-  order: 'desc',
+  order: "desc",
   limit: 100,
 };
 
 export enum AssistantStreamEvents {
-  ThreadCreated = 'thread.created',
-  ThreadRunCreated = 'thread.run.created',
-  ThreadRunQueued = 'thread.run.queued',
-  ThreadRunInProgress = 'thread.run.in_progress',
-  ThreadRunRequiresAction = 'thread.run.requires_action',
-  ThreadRunCompleted = 'thread.run.completed',
-  ThreadRunFailed = 'thread.run.failed',
-  ThreadRunCancelling = 'thread.run.cancelling',
-  ThreadRunCancelled = 'thread.run.cancelled',
-  ThreadRunExpired = 'thread.run.expired',
-  ThreadRunStepCreated = 'thread.run.step.created',
-  ThreadRunStepInProgress = 'thread.run.step.in_progress',
-  ThreadRunStepCompleted = 'thread.run.step.completed',
-  ThreadRunStepFailed = 'thread.run.step.failed',
-  ThreadRunStepCancelled = 'thread.run.step.cancelled',
-  ThreadRunStepExpired = 'thread.run.step.expired',
-  ThreadRunStepDelta = 'thread.run.step.delta',
-  ThreadMessageCreated = 'thread.message.created',
-  ThreadMessageInProgress = 'thread.message.in_progress',
-  ThreadMessageCompleted = 'thread.message.completed',
-  ThreadMessageIncomplete = 'thread.message.incomplete',
-  ThreadMessageDelta = 'thread.message.delta',
-  ErrorEvent = 'error',
+  ThreadCreated = "thread.created",
+  ThreadRunCreated = "thread.run.created",
+  ThreadRunQueued = "thread.run.queued",
+  ThreadRunInProgress = "thread.run.in_progress",
+  ThreadRunRequiresAction = "thread.run.requires_action",
+  ThreadRunCompleted = "thread.run.completed",
+  ThreadRunFailed = "thread.run.failed",
+  ThreadRunCancelling = "thread.run.cancelling",
+  ThreadRunCancelled = "thread.run.cancelled",
+  ThreadRunExpired = "thread.run.expired",
+  ThreadRunStepCreated = "thread.run.step.created",
+  ThreadRunStepInProgress = "thread.run.step.in_progress",
+  ThreadRunStepCompleted = "thread.run.step.completed",
+  ThreadRunStepFailed = "thread.run.step.failed",
+  ThreadRunStepCancelled = "thread.run.step.cancelled",
+  ThreadRunStepExpired = "thread.run.step.expired",
+  ThreadRunStepDelta = "thread.run.step.delta",
+  ThreadMessageCreated = "thread.message.created",
+  ThreadMessageInProgress = "thread.message.in_progress",
+  ThreadMessageCompleted = "thread.message.completed",
+  ThreadMessageIncomplete = "thread.message.incomplete",
+  ThreadMessageDelta = "thread.message.delta",
+  ErrorEvent = "error",
 }

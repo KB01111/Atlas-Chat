@@ -1,7 +1,7 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 export type JsonSchemaType = {
-  type: 'string' | 'number' | 'boolean' | 'array' | 'object';
+  type: "string" | "number" | "boolean" | "array" | "object";
   enum?: string[];
   items?: JsonSchemaType;
   properties?: Record<string, JsonSchemaType>;
@@ -13,9 +13,10 @@ export type JsonSchemaType = {
 function isEmptyObjectSchema(jsonSchema?: JsonSchemaType): boolean {
   return (
     jsonSchema != null &&
-    typeof jsonSchema === 'object' &&
-    jsonSchema.type === 'object' &&
-    (jsonSchema.properties == null || Object.keys(jsonSchema.properties).length === 0)
+    typeof jsonSchema === "object" &&
+    jsonSchema.type === "object" &&
+    (jsonSchema.properties == null ||
+      Object.keys(jsonSchema.properties).length === 0)
   );
 }
 
@@ -31,21 +32,21 @@ export function convertJsonSchemaToZod(
   let zodSchema: z.ZodType;
 
   // Handle primitive types
-  if (schema.type === 'string') {
+  if (schema.type === "string") {
     if (Array.isArray(schema.enum) && schema.enum.length > 0) {
       const [first, ...rest] = schema.enum;
       zodSchema = z.enum([first, ...rest] as [string, ...string[]]);
     } else {
       zodSchema = z.string();
     }
-  } else if (schema.type === 'number') {
+  } else if (schema.type === "number") {
     zodSchema = z.number();
-  } else if (schema.type === 'boolean') {
+  } else if (schema.type === "boolean") {
     zodSchema = z.boolean();
-  } else if (schema.type === 'array' && schema.items !== undefined) {
+  } else if (schema.type === "array" && schema.items !== undefined) {
     const itemSchema = convertJsonSchemaToZod(schema.items);
     zodSchema = z.array(itemSchema as z.ZodType);
-  } else if (schema.type === 'object') {
+  } else if (schema.type === "object") {
     const shape: Record<string, z.ZodType> = {};
     const properties = schema.properties ?? {};
 
@@ -54,7 +55,7 @@ export function convertJsonSchemaToZod(
       if (!fieldSchema) {
         continue;
       }
-      if (value.description != null && value.description !== '') {
+      if (value.description != null && value.description !== "") {
         fieldSchema = fieldSchema.describe(value.description);
       }
       shape[key] = fieldSchema;
@@ -78,7 +79,7 @@ export function convertJsonSchemaToZod(
     if (schema.additionalProperties === true) {
       // This allows any additional properties with any type
       zodSchema = objectSchema.passthrough();
-    } else if (typeof schema.additionalProperties === 'object') {
+    } else if (typeof schema.additionalProperties === "object") {
       // For specific additional property types
       const additionalSchema = convertJsonSchemaToZod(
         schema.additionalProperties as JsonSchemaType,
@@ -92,7 +93,7 @@ export function convertJsonSchemaToZod(
   }
 
   // Add description if present
-  if (schema.description != null && schema.description !== '') {
+  if (schema.description != null && schema.description !== "") {
     zodSchema = zodSchema.describe(schema.description);
   }
 

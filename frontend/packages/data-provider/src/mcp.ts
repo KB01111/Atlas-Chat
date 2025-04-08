@@ -1,5 +1,5 @@
-import { z } from 'zod';
-import { extractEnvVariable } from './utils';
+import { z } from "zod";
+import { extractEnvVariable } from "./utils";
 
 const BaseOptionsSchema = z.object({
   iconPath: z.string().optional(),
@@ -8,7 +8,7 @@ const BaseOptionsSchema = z.object({
 });
 
 export const StdioOptionsSchema = BaseOptionsSchema.extend({
-  type: z.literal('stdio').optional(),
+  type: z.literal("stdio").optional(),
   /**
    * The executable to run to start the server.
    */
@@ -48,23 +48,23 @@ export const StdioOptionsSchema = BaseOptionsSchema.extend({
 });
 
 export const WebSocketOptionsSchema = BaseOptionsSchema.extend({
-  type: z.literal('websocket').optional(),
+  type: z.literal("websocket").optional(),
   url: z
     .string()
     .url()
     .refine(
       (val) => {
         const protocol = new URL(val).protocol;
-        return protocol === 'ws:' || protocol === 'wss:';
+        return protocol === "ws:" || protocol === "wss:";
       },
       {
-        message: 'WebSocket URL must start with ws:// or wss://',
+        message: "WebSocket URL must start with ws:// or wss://",
       },
     ),
 });
 
 export const SSEOptionsSchema = BaseOptionsSchema.extend({
-  type: z.literal('sse').optional(),
+  type: z.literal("sse").optional(),
   headers: z.record(z.string(), z.string()).optional(),
   url: z
     .string()
@@ -72,10 +72,10 @@ export const SSEOptionsSchema = BaseOptionsSchema.extend({
     .refine(
       (val) => {
         const protocol = new URL(val).protocol;
-        return protocol !== 'ws:' && protocol !== 'wss:';
+        return protocol !== "ws:" && protocol !== "wss:";
       },
       {
-        message: 'SSE URL must not start with ws:// or wss://',
+        message: "SSE URL must not start with ws:// or wss://",
       },
     ),
 });
@@ -101,16 +101,16 @@ export function processMCPEnv(obj: MCPOptions, userId?: string): MCPOptions {
     return obj;
   }
 
-  if ('env' in obj && obj.env) {
+  if ("env" in obj && obj.env) {
     const processedEnv: Record<string, string> = {};
     for (const [key, value] of Object.entries(obj.env)) {
       processedEnv[key] = extractEnvVariable(value);
     }
     obj.env = processedEnv;
-  } else if ('headers' in obj && obj.headers) {
+  } else if ("headers" in obj && obj.headers) {
     const processedHeaders: Record<string, string> = {};
     for (const [key, value] of Object.entries(obj.headers)) {
-      if (value === '{{LIBRECHAT_USER_ID}}' && userId != null && userId) {
+      if (value === "{{LIBRECHAT_USER_ID}}" && userId != null && userId) {
         processedHeaders[key] = userId;
         continue;
       }

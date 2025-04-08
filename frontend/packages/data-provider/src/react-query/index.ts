@@ -1,1 +1,1 @@
-export * from './react-query-service';
+export * from "./react-query-service";

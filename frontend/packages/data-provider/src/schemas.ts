@@ -1,32 +1,36 @@
-import { z } from 'zod';
-import { Tools } from './types/assistants';
-import type { TMessageContentParts, FunctionTool, FunctionToolCall } from './types/assistants';
-import type { TFile } from './types/files';
+import { z } from "zod";
+import { Tools } from "./types/assistants";
+import type {
+  TMessageContentParts,
+  FunctionTool,
+  FunctionToolCall,
+} from "./types/assistants";
+import type { TFile } from "./types/files";
 
 export const isUUID = z.string().uuid();
 
 export enum AuthType {
-  OVERRIDE_AUTH = 'override_auth',
-  USER_PROVIDED = 'user_provided',
-  SYSTEM_DEFINED = 'system_defined',
+  OVERRIDE_AUTH = "override_auth",
+  USER_PROVIDED = "user_provided",
+  SYSTEM_DEFINED = "system_defined",
 }
 
 export const authTypeSchema = z.nativeEnum(AuthType);
 
 export enum EModelEndpoint {
-  azureOpenAI = 'azureOpenAI',
-  openAI = 'openAI',
-  google = 'google',
-  anthropic = 'anthropic',
-  assistants = 'assistants',
-  azureAssistants = 'azureAssistants',
-  agents = 'agents',
-  custom = 'custom',
-  bedrock = 'bedrock',
+  azureOpenAI = "azureOpenAI",
+  openAI = "openAI",
+  google = "google",
+  anthropic = "anthropic",
+  assistants = "assistants",
+  azureAssistants = "azureAssistants",
+  agents = "agents",
+  custom = "custom",
+  bedrock = "bedrock",
   /** @deprecated */
-  chatGPTBrowser = 'chatGPTBrowser',
+  chatGPTBrowser = "chatGPTBrowser",
   /** @deprecated */
-  gptPlugins = 'gptPlugins',
+  gptPlugins = "gptPlugins",
 }
 
 export const paramEndpoints = new Set<EModelEndpoint | string>([
@@ -40,19 +44,22 @@ export const paramEndpoints = new Set<EModelEndpoint | string>([
 ]);
 
 export enum BedrockProviders {
-  AI21 = 'ai21',
-  Amazon = 'amazon',
-  Anthropic = 'anthropic',
-  Cohere = 'cohere',
-  Meta = 'meta',
-  MistralAI = 'mistral',
-  StabilityAI = 'stability',
-  DeepSeek = 'deepseek',
+  AI21 = "ai21",
+  Amazon = "amazon",
+  Anthropic = "anthropic",
+  Cohere = "cohere",
+  Meta = "meta",
+  MistralAI = "mistral",
+  StabilityAI = "stability",
+  DeepSeek = "deepseek",
 }
 
-export const getModelKey = (endpoint: EModelEndpoint | string, model: string) => {
+export const getModelKey = (
+  endpoint: EModelEndpoint | string,
+  model: string,
+) => {
   if (endpoint === EModelEndpoint.bedrock) {
-    const parts = model.split('.');
+    const parts = model.split(".");
     const provider = [parts[0], parts[1]].find((part) =>
       Object.values(BedrockProviders).includes(part as BedrockProviders),
     );
@@ -61,27 +68,38 @@ export const getModelKey = (endpoint: EModelEndpoint | string, model: string) =>
   return model;
 };
 
-export const getSettingsKeys = (endpoint: EModelEndpoint | string, model: string) => {
+export const getSettingsKeys = (
+  endpoint: EModelEndpoint | string,
+  model: string,
+) => {
   const endpointKey = endpoint;
   const modelKey = getModelKey(endpointKey, model);
   const combinedKey = `${endpointKey}-${modelKey}`;
   return [combinedKey, endpointKey];
 };
 
-export type AssistantsEndpoint = EModelEndpoint.assistants | EModelEndpoint.azureAssistants;
+export type AssistantsEndpoint =
+  | EModelEndpoint.assistants
+  | EModelEndpoint.azureAssistants;
 
-export const isAssistantsEndpoint = (_endpoint?: AssistantsEndpoint | null | string): boolean => {
-  const endpoint = _endpoint ?? '';
+export const isAssistantsEndpoint = (
+  _endpoint?: AssistantsEndpoint | null | string,
+): boolean => {
+  const endpoint = _endpoint ?? "";
   if (!endpoint) {
     return false;
   }
   return endpoint.toLowerCase().endsWith(EModelEndpoint.assistants);
 };
 
-export type AgentProvider = Exclude<keyof typeof EModelEndpoint, EModelEndpoint.agents> | string;
+export type AgentProvider =
+  | Exclude<keyof typeof EModelEndpoint, EModelEndpoint.agents>
+  | string;
 
-export const isAgentsEndpoint = (_endpoint?: EModelEndpoint.agents | null | string): boolean => {
-  const endpoint = _endpoint ?? '';
+export const isAgentsEndpoint = (
+  _endpoint?: EModelEndpoint.agents | null | string,
+): boolean => {
+  const endpoint = _endpoint ?? "";
   if (!endpoint) {
     return false;
   }
@@ -104,15 +122,15 @@ export const isParamEndpoint = (
 };
 
 export enum ImageDetail {
-  low = 'low',
-  auto = 'auto',
-  high = 'high',
+  low = "low",
+  auto = "auto",
+  high = "high",
 }
 
 export enum ReasoningEffort {
-  low = 'low',
-  medium = 'medium',
-  high = 'high',
+  low = "low",
+  medium = "medium",
+  high = "high",
 }
 
 export const imageDetailNumeric = {
@@ -131,13 +149,13 @@ export const eImageDetailSchema = z.nativeEnum(ImageDetail);
 export const eReasoningEffortSchema = z.nativeEnum(ReasoningEffort);
 
 export const defaultAssistantFormValues = {
-  assistant: '',
-  id: '',
-  name: '',
-  description: '',
-  instructions: '',
+  assistant: "",
+  id: "",
+  name: "",
+  description: "",
+  instructions: "",
   conversation_starters: [],
-  model: '',
+  model: "",
   functions: [],
   code_interpreter: false,
   image_vision: false,
@@ -147,16 +165,16 @@ export const defaultAssistantFormValues = {
 
 export const defaultAgentFormValues = {
   agent: {},
-  id: '',
-  name: '',
-  description: '',
-  instructions: '',
-  model: '',
+  id: "",
+  name: "",
+  description: "",
+  instructions: "",
+  model: "",
   model_parameters: {},
   tools: [],
   provider: {},
   projectIds: [],
-  artifacts: '',
+  artifacts: "",
   isCollaborative: false,
   recursion_limit: undefined,
   [Tools.execute_code]: false,
@@ -166,10 +184,11 @@ export const defaultAgentFormValues = {
 export const ImageVisionTool: FunctionTool = {
   type: Tools.function,
   [Tools.function]: {
-    name: 'image_vision',
-    description: 'Get detailed text descriptions for all current image attachments.',
+    name: "image_vision",
+    description:
+      "Get detailed text descriptions for all current image attachments.",
     parameters: {
-      type: 'object',
+      type: "object",
       properties: {},
       required: [],
     },
@@ -177,11 +196,12 @@ export const ImageVisionTool: FunctionTool = {
 };
 
 export const isImageVisionTool = (tool: FunctionTool | FunctionToolCall) =>
-  tool.type === 'function' && tool.function?.name === ImageVisionTool.function?.name;
+  tool.type === "function" &&
+  tool.function?.name === ImageVisionTool.function?.name;
 
 export const openAISettings = {
   model: {
-    default: 'gpt-4o-mini' as const,
+    default: "gpt-4o-mini" as const,
   },
   temperature: {
     min: 0 as const,
@@ -226,7 +246,7 @@ export const openAISettings = {
 
 export const googleSettings = {
   model: {
-    default: 'gemini-1.5-flash-latest' as const,
+    default: "gemini-1.5-flash-latest" as const,
   },
   maxOutputTokens: {
     min: 1 as const,
@@ -259,7 +279,7 @@ const DEFAULT_MAX_OUTPUT = 8192 as const;
 const LEGACY_ANTHROPIC_MAX_OUTPUT = 4096 as const;
 export const anthropicSettings = {
   model: {
-    default: 'claude-3-5-sonnet-latest' as const,
+    default: "claude-3-5-sonnet-latest" as const,
   },
   temperature: {
     min: 0 as const,
@@ -285,7 +305,10 @@ export const anthropicSettings = {
     step: 1 as const,
     default: DEFAULT_MAX_OUTPUT,
     reset: (modelName: string) => {
-      if (/claude-3[-.]5-sonnet/.test(modelName) || /claude-3[-.]7/.test(modelName)) {
+      if (
+        /claude-3[-.]5-sonnet/.test(modelName) ||
+        /claude-3[-.]7/.test(modelName)
+      ) {
         return DEFAULT_MAX_OUTPUT;
       }
 
@@ -293,7 +316,10 @@ export const anthropicSettings = {
     },
     set: (value: number, modelName: string) => {
       if (
-        !(/claude-3[-.]5-sonnet/.test(modelName) || /claude-3[-.]7/.test(modelName)) &&
+        !(
+          /claude-3[-.]5-sonnet/.test(modelName) ||
+          /claude-3[-.]7/.test(modelName)
+        ) &&
         value > LEGACY_ANTHROPIC_MAX_OUTPUT
       ) {
         return LEGACY_ANTHROPIC_MAX_OUTPUT;
@@ -332,7 +358,7 @@ export const anthropicSettings = {
 
 export const agentsSettings = {
   model: {
-    default: 'gpt-3.5-turbo-test' as const,
+    default: "gpt-3.5-turbo-test" as const,
   },
   temperature: {
     min: 0 as const,
@@ -384,7 +410,10 @@ const google = endpointSettings[EModelEndpoint.google];
 
 export const eModelEndpointSchema = z.nativeEnum(EModelEndpoint);
 
-export const extendedModelEndpointSchema = z.union([eModelEndpointSchema, z.string()]);
+export const extendedModelEndpointSchema = z.union([
+  eModelEndpointSchema,
+  z.string(),
+]);
 
 export const tPluginAuthConfigSchema = z.object({
   authField: z.string(),
@@ -433,13 +462,13 @@ export const tExampleSchema = z.object({
 export type TExample = z.infer<typeof tExampleSchema>;
 
 export enum EAgent {
-  functions = 'functions',
-  classic = 'classic',
+  functions = "functions",
+  classic = "classic",
 }
 
 export const agentOptionSettings = {
   model: {
-    default: 'gpt-4o-mini',
+    default: "gpt-4o-mini",
   },
   temperature: {
     min: 0,
@@ -460,7 +489,9 @@ export const eAgentOptionsSchema = z.nativeEnum(EAgent);
 
 export const tAgentOptionsSchema = z.object({
   agent: z.string().default(EAgent.functions),
-  skipCompletion: z.boolean().default(agentOptionSettings.skipCompletion.default),
+  skipCompletion: z
+    .boolean()
+    .default(agentOptionSettings.skipCompletion.default),
   model: z.string(),
   temperature: z.number().default(agentOptionSettings.temperature.default),
 });
@@ -475,7 +506,7 @@ export const tMessageSchema = z.object({
   overrideParentMessageId: z.string().nullable().optional(),
   bg: z.string().nullable().optional(),
   model: z.string().nullable().optional(),
-  title: z.string().nullable().or(z.literal('New Chat')).default('New Chat'),
+  title: z.string().nullable().or(z.literal("New Chat")).default("New Chat"),
   sender: z.string().optional(),
   text: z.string(),
   generation: z.string().nullable().optional(),
@@ -503,7 +534,7 @@ export const tMessageSchema = z.object({
 export type TAttachmentMetadata = { messageId: string; toolCallId: string };
 export type TAttachment =
   | (TFile & TAttachmentMetadata)
-  | (Pick<TFile, 'filename' | 'filepath' | 'conversationId'> & {
+  | (Pick<TFile, "filename" | "filepath" | "conversationId"> & {
       expiresAt: number;
     } & TAttachmentMetadata);
 
@@ -519,12 +550,14 @@ export type TMessage = z.input<typeof tMessageSchema> & {
   clientTimestamp?: string;
 };
 
-export const coerceNumber = z.union([z.number(), z.string()]).transform((val) => {
-  if (typeof val === 'string') {
-    return val.trim() === '' ? undefined : parseFloat(val);
-  }
-  return val;
-});
+export const coerceNumber = z
+  .union([z.number(), z.string()])
+  .transform((val) => {
+    if (typeof val === "string") {
+      return val.trim() === "" ? undefined : parseFloat(val);
+    }
+    return val;
+  });
 
 type DocumentTypeValue =
   | null
@@ -550,7 +583,7 @@ export const tConversationSchema = z.object({
   endpoint: eModelEndpointSchema.nullable(),
   endpointType: eModelEndpointSchema.nullable().optional(),
   isArchived: z.boolean().optional(),
-  title: z.string().nullable().or(z.literal('New Chat')).default('New Chat'),
+  title: z.string().nullable().or(z.literal("New Chat")).default("New Chat"),
   user: z.string().optional(),
   messages: z.array(z.string()).optional(),
   tools: z.union([z.array(tPluginSchema), z.array(z.string())]).optional(),
@@ -722,7 +755,9 @@ export type TPreset = z.infer<typeof tPresetSchema>;
 
 export type TSetOption = (
   param: number | string,
-) => (newValue: number | string | boolean | string[] | Partial<TPreset>) => void;
+) => (
+  newValue: number | string | boolean | string[] | Partial<TPreset>,
+) => void;
 
 export type TConversation = z.infer<typeof tConversationSchema> & {
   presetOverride?: Partial<TPreset>;
@@ -796,10 +831,10 @@ export const chatGPTBrowserSchema = tConversationSchema
   })
   .transform((obj) => ({
     ...obj,
-    model: obj.model ?? 'text-davinci-002-render-sha',
+    model: obj.model ?? "text-davinci-002-render-sha",
   }))
   .catch(() => ({
-    model: 'text-davinci-002-render-sha',
+    model: "text-davinci-002-render-sha",
   }));
 
 export const gptPluginsSchema = tConversationSchema
@@ -823,7 +858,7 @@ export const gptPluginsSchema = tConversationSchema
   .transform((obj) => {
     const result = {
       ...obj,
-      model: obj.model ?? 'gpt-3.5-turbo',
+      model: obj.model ?? "gpt-3.5-turbo",
       chatGptLabel: obj.chatGptLabel ?? obj.modelLabel ?? null,
       promptPrefix: obj.promptPrefix ?? null,
       temperature: obj.temperature ?? 0.8,
@@ -834,7 +869,7 @@ export const gptPluginsSchema = tConversationSchema
       agentOptions: obj.agentOptions ?? {
         agent: EAgent.functions,
         skipCompletion: true,
-        model: 'gpt-3.5-turbo',
+        model: "gpt-3.5-turbo",
         temperature: 0,
       },
       iconURL: obj.iconURL ?? undefined,
@@ -843,14 +878,14 @@ export const gptPluginsSchema = tConversationSchema
       maxContextTokens: obj.maxContextTokens ?? undefined,
     };
 
-    if (obj.modelLabel != null && obj.modelLabel !== '') {
+    if (obj.modelLabel != null && obj.modelLabel !== "") {
       result.modelLabel = null;
     }
 
     return result;
   })
   .catch(() => ({
-    model: 'gpt-3.5-turbo',
+    model: "gpt-3.5-turbo",
     chatGptLabel: null,
     promptPrefix: null,
     temperature: 0.8,
@@ -861,7 +896,7 @@ export const gptPluginsSchema = tConversationSchema
     agentOptions: {
       agent: EAgent.functions,
       skipCompletion: true,
-      model: 'gpt-3.5-turbo',
+      model: "gpt-3.5-turbo",
       temperature: 0,
     },
     iconURL: undefined,
@@ -881,7 +916,7 @@ export function removeNullishValues<T extends Record<string, unknown>>(
     if (value === undefined || value === null) {
       delete newObj[key];
     }
-    if (removeEmptyStrings && typeof value === 'string' && value === '') {
+    if (removeEmptyStrings && typeof value === "string" && value === "") {
       delete newObj[key];
     }
   });
@@ -963,7 +998,9 @@ export const agentsSchema = tConversationSchema
     presence_penalty: obj.presence_penalty ?? 0,
     frequency_penalty: obj.frequency_penalty ?? 0,
     resendFiles:
-      typeof obj.resendFiles === 'boolean' ? obj.resendFiles : agentsSettings.resendFiles.default,
+      typeof obj.resendFiles === "boolean"
+        ? obj.resendFiles
+        : agentsSettings.resendFiles.default,
     imageDetail: obj.imageDetail ?? ImageDetail.auto,
     agent_id: obj.agent_id ?? undefined,
     instructions: obj.instructions ?? undefined,
@@ -1128,7 +1165,7 @@ export const compactPluginsSchema = tConversationSchema
       newObj.agentOptions &&
       newObj.agentOptions.agent === EAgent.functions &&
       newObj.agentOptions.skipCompletion === true &&
-      newObj.agentOptions.model === 'gpt-3.5-turbo' &&
+      newObj.agentOptions.model === "gpt-3.5-turbo" &&
       newObj.agentOptions.temperature === 0
     ) {
       delete newObj.agentOptions;

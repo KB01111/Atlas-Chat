@@ -1,7 +1,7 @@
-import type { InfiniteData } from '@tanstack/react-query';
-import type * as a from '../types/agents';
-import type * as s from '../schemas';
-import type * as t from '../types';
+import type { InfiniteData } from "@tanstack/react-query";
+import type * as a from "../types/agents";
+import type * as s from "../schemas";
+import type * as t from "../types";
 
 export type Conversation = {
   id: string;
@@ -16,7 +16,7 @@ export type ConversationListParams = {
   limit?: number;
   before?: string | null;
   after?: string | null;
-  order?: 'asc' | 'desc';
+  order?: "asc" | "desc";
   pageNumber: string;
   conversationId?: string;
   isArchived?: boolean;
@@ -38,15 +38,15 @@ export type ConversationUpdater = (
   conversation: s.TConversation,
 ) => ConversationData;
 
-export type SharedMessagesResponse = Omit<s.TSharedLink, 'messages'> & {
+export type SharedMessagesResponse = Omit<s.TSharedLink, "messages"> & {
   messages: s.TMessage[];
 };
 
 export interface SharedLinksListParams {
   pageSize: number;
   isPublic: boolean;
-  sortBy: 'title' | 'createdAt';
-  sortDirection: 'asc' | 'desc';
+  sortBy: "title" | "createdAt";
+  sortDirection: "asc" | "desc";
   search?: string;
   cursor?: string;
 }
@@ -76,7 +76,7 @@ export type AllPromptGroupsFilterRequest = {
   pageSize: string | number;
   before?: string | null;
   after?: string | null;
-  order?: 'asc' | 'desc';
+  order?: "asc" | "desc";
   name?: string;
   author?: string;
 };
@@ -86,7 +86,10 @@ export type AllPromptGroupsResponse = t.TPromptGroup[];
 export type ConversationTagsResponse = s.TConversationTag[];
 
 export type VerifyToolAuthParams = { toolId: string };
-export type VerifyToolAuthResponse = { authenticated: boolean; message?: string | s.AuthType };
+export type VerifyToolAuthResponse = {
+  authenticated: boolean;
+  message?: string | s.AuthType;
+};
 
 export type GetToolCallParams = { conversationId: string };
 export type ToolCallResults = a.ToolCallResult[];

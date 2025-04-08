@@ -1,81 +1,82 @@
-import { OpenAPIV3 } from 'openapi-types';
+import { OpenAPIV3 } from "openapi-types";
 
 export type FlowchartSchema = {
   mermaid: {
-    type: 'string';
-    description: 'Flowchart to be rendered, in Mermaid syntax';
+    type: "string";
+    description: "Flowchart to be rendered, in Mermaid syntax";
   };
   title: {
-    type: 'string';
-    description: 'Title of the flowchart';
+    type: "string";
+    description: "Title of the flowchart";
   };
 };
 
 export const getWeatherOpenapiSpec: OpenAPIV3.Document = {
-  openapi: '3.1.0',
+  openapi: "3.1.0",
   info: {
-    title: 'Get weather data',
-    description: 'Retrieves current weather data for a location.',
-    version: 'v1.0.0',
+    title: "Get weather data",
+    description: "Retrieves current weather data for a location.",
+    version: "v1.0.0",
   },
   servers: [
     {
-      url: 'https://weather.example.com',
+      url: "https://weather.example.com",
     },
   ],
   paths: {
-    '/location': {
+    "/location": {
       get: {
-        description: 'Get temperature for a specific location',
-        operationId: 'GetCurrentWeather',
+        description: "Get temperature for a specific location",
+        operationId: "GetCurrentWeather",
         parameters: [
           {
-            name: 'location',
-            in: 'query',
-            description: 'The city and state to retrieve the weather for',
+            name: "location",
+            in: "query",
+            description: "The city and state to retrieve the weather for",
             required: true,
             schema: {
-              type: 'string',
+              type: "string",
             },
           },
         ],
         requestBody: {
           required: true,
           content: {
-            'application/json': {
+            "application/json": {
               schema: {
-                type: 'object',
+                type: "object",
                 properties: {
                   locations: {
-                    type: 'array',
+                    type: "array",
                     items: {
-                      type: 'object',
+                      type: "object",
                       properties: {
                         city: {
-                          type: 'string',
-                          example: 'San Francisco',
+                          type: "string",
+                          example: "San Francisco",
                         },
                         state: {
-                          type: 'string',
-                          example: 'CA',
+                          type: "string",
+                          example: "CA",
                         },
                         countryCode: {
-                          type: 'string',
-                          description: 'ISO 3166-1 alpha-2 country code',
-                          example: 'US',
+                          type: "string",
+                          description: "ISO 3166-1 alpha-2 country code",
+                          example: "US",
                         },
                         time: {
-                          type: 'string',
+                          type: "string",
                           description:
-                            'Optional time for which the weather is requested, in ISO 8601 format.',
-                          example: '2023-12-04T14:00:00Z',
+                            "Optional time for which the weather is requested, in ISO 8601 format.",
+                          example: "2023-12-04T14:00:00Z",
                         },
                       },
-                      required: ['city', 'state', 'countryCode'],
+                      required: ["city", "state", "countryCode"],
                       description:
-                        'Details of the location for which the weather data is requested.',
+                        "Details of the location for which the weather data is requested.",
                     },
-                    description: 'A list of locations to retrieve the weather for.',
+                    description:
+                      "A list of locations to retrieve the weather for.",
                   },
                 },
               },
@@ -93,38 +94,39 @@ export const getWeatherOpenapiSpec: OpenAPIV3.Document = {
 };
 
 export const whimsicalOpenapiSpec: OpenAPIV3.Document = {
-  openapi: '3.0.0',
+  openapi: "3.0.0",
   info: {
-    version: '1.0.0',
-    title: 'Diagram to Image API',
-    description: 'A simple API to generate flowchart, mindmap, or sequence diagram images.',
+    version: "1.0.0",
+    title: "Diagram to Image API",
+    description:
+      "A simple API to generate flowchart, mindmap, or sequence diagram images.",
   },
-  servers: [{ url: 'https://whimsical.com/api' }],
+  servers: [{ url: "https://whimsical.com/api" }],
   paths: {
-    '/ai.chatgpt.render-flowchart': {
+    "/ai.chatgpt.render-flowchart": {
       post: {
-        operationId: 'postRenderFlowchart',
+        operationId: "postRenderFlowchart",
         // 'x-openai-isConsequential': false,
-        summary: 'Renders a flowchart',
+        summary: "Renders a flowchart",
         description:
-          'Accepts a string describing a flowchart and returns a URL to a rendered image',
+          "Accepts a string describing a flowchart and returns a URL to a rendered image",
         requestBody: {
           content: {
-            'application/json': {
+            "application/json": {
               schema: {
-                $ref: '#/components/schemas/FlowchartRequest',
+                $ref: "#/components/schemas/FlowchartRequest",
               },
             },
           },
           required: true,
         },
         responses: {
-          '200': {
-            description: 'URL to the rendered image',
+          "200": {
+            description: "URL to the rendered image",
             content: {
-              'application/json': {
+              "application/json": {
                 schema: {
-                  $ref: '#/components/schemas/FlowchartResponse',
+                  $ref: "#/components/schemas/FlowchartResponse",
                 },
               },
             },
@@ -136,25 +138,25 @@ export const whimsicalOpenapiSpec: OpenAPIV3.Document = {
   components: {
     schemas: {
       FlowchartRequest: {
-        type: 'object',
+        type: "object",
         properties: {
           mermaid: {
-            type: 'string',
-            description: 'Flowchart to be rendered, in Mermaid syntax',
+            type: "string",
+            description: "Flowchart to be rendered, in Mermaid syntax",
           },
           title: {
-            type: 'string',
-            description: 'Title of the flowchart',
+            type: "string",
+            description: "Title of the flowchart",
           },
         },
-        required: ['mermaid'],
+        required: ["mermaid"],
       },
       FlowchartResponse: {
-        type: 'object',
+        type: "object",
         properties: {
           imageURL: {
-            type: 'string',
-            description: 'URL of the rendered image',
+            type: "string",
+            description: "URL of the rendered image",
           },
         },
       },

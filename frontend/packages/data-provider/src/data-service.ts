@@ -1,21 +1,23 @@
-import type { AxiosResponse } from 'axios';
-import type * as t from './types';
-import * as endpoints from './api-endpoints';
-import * as a from './types/assistants';
-import * as m from './types/mutations';
-import * as q from './types/queries';
-import * as f from './types/files';
-import * as config from './config';
-import request from './request';
-import * as s from './schemas';
-import * as r from './roles';
+import type { AxiosResponse } from "axios";
+import type * as t from "./types";
+import * as endpoints from "./api-endpoints";
+import * as a from "./types/assistants";
+import * as m from "./types/mutations";
+import * as q from "./types/queries";
+import * as f from "./types/files";
+import * as config from "./config";
+import request from "./request";
+import * as s from "./schemas";
+import * as r from "./roles";
 
 export function abortRequestWithMessage(
   endpoint: string,
   abortKey: string,
   message: string,
 ): Promise<void> {
-  return request.post(endpoints.abortRequest(endpoint), { arg: { abortKey, message } });
+  return request.post(endpoints.abortRequest(endpoint), {
+    arg: { abortKey, message },
+  });
 }
 
 export function revokeUserKey(name: string): Promise<unknown> {
@@ -30,14 +32,18 @@ export function deleteUser(): Promise<s.TPreset> {
   return request.delete(endpoints.deleteUser());
 }
 
-export function getMessagesByConvoId(conversationId: string): Promise<s.TMessage[]> {
-  if (conversationId === 'new') {
+export function getMessagesByConvoId(
+  conversationId: string,
+): Promise<s.TMessage[]> {
+  if (conversationId === "new") {
     return Promise.resolve([]);
   }
   return request.get(endpoints.messages(conversationId));
 }
 
-export function getSharedMessages(shareId: string): Promise<t.TSharedMessagesResponse> {
+export function getSharedMessages(
+  shareId: string,
+): Promise<t.TSharedMessagesResponse> {
   return request.get(endpoints.shareMessages(shareId));
 }
 
@@ -47,30 +53,47 @@ export const listSharedLinks = async (
   const { pageSize, isPublic, sortBy, sortDirection, search, cursor } = params;
 
   return request.get(
-    endpoints.getSharedLinks(pageSize, isPublic, sortBy, sortDirection, search, cursor),
+    endpoints.getSharedLinks(
+      pageSize,
+      isPublic,
+      sortBy,
+      sortDirection,
+      search,
+      cursor,
+    ),
   );
 };
 
-export function getSharedLink(conversationId: string): Promise<t.TSharedLinkGetResponse> {
+export function getSharedLink(
+  conversationId: string,
+): Promise<t.TSharedLinkGetResponse> {
   return request.get(endpoints.getSharedLink(conversationId));
 }
 
-export function createSharedLink(conversationId: string): Promise<t.TSharedLinkResponse> {
+export function createSharedLink(
+  conversationId: string,
+): Promise<t.TSharedLinkResponse> {
   return request.post(endpoints.createSharedLink(conversationId));
 }
 
-export function updateSharedLink(shareId: string): Promise<t.TSharedLinkResponse> {
+export function updateSharedLink(
+  shareId: string,
+): Promise<t.TSharedLinkResponse> {
   return request.patch(endpoints.updateSharedLink(shareId));
 }
 
-export function deleteSharedLink(shareId: string): Promise<m.TDeleteSharedLinkResponse> {
+export function deleteSharedLink(
+  shareId: string,
+): Promise<m.TDeleteSharedLinkResponse> {
   return request.delete(endpoints.shareMessages(shareId));
 }
 
-export function updateMessage(payload: t.TUpdateMessageRequest): Promise<unknown> {
+export function updateMessage(
+  payload: t.TUpdateMessageRequest,
+): Promise<unknown> {
   const { conversationId, messageId, text } = payload;
   if (!conversationId) {
-    throw new Error('conversationId is required');
+    throw new Error("conversationId is required");
   }
 
   return request.put(endpoints.messages(conversationId, messageId), { text });
@@ -83,19 +106,24 @@ export const editArtifact = async ({
   return request.post(`/api/messages/artifact/${messageId}`, params);
 };
 
-export function updateMessageContent(payload: t.TUpdateMessageContent): Promise<unknown> {
+export function updateMessageContent(
+  payload: t.TUpdateMessageContent,
+): Promise<unknown> {
   const { conversationId, messageId, index, text } = payload;
   if (!conversationId) {
-    throw new Error('conversationId is required');
+    throw new Error("conversationId is required");
   }
 
-  return request.put(endpoints.messages(conversationId, messageId), { text, index });
+  return request.put(endpoints.messages(conversationId, messageId), {
+    text,
+    index,
+  });
 }
 
 export function updateUserKey(payload: t.TUpdateUserKeyRequest) {
   const { value } = payload;
   if (!value) {
-    throw new Error('value is required');
+    throw new Error("value is required");
   }
 
   return request.put(endpoints.keys(), payload);
@@ -113,7 +141,9 @@ export function updatePreset(payload: s.TPreset): Promise<s.TPreset> {
   return request.post(endpoints.presets(), payload);
 }
 
-export function deletePreset(arg: s.TPreset | undefined): Promise<m.PresetDeleteResponse> {
+export function deletePreset(
+  arg: s.TPreset | undefined,
+): Promise<m.PresetDeleteResponse> {
   return request.post(endpoints.deletePreset(), arg);
 }
 
@@ -162,7 +192,9 @@ export const resetPassword = (payload: t.TResetPassword) => {
   return request.post(endpoints.resetPassword(), payload);
 };
 
-export const verifyEmail = (payload: t.TVerifyEmail): Promise<t.VerifyEmailResponse> => {
+export const verifyEmail = (
+  payload: t.TVerifyEmail,
+): Promise<t.VerifyEmailResponse> => {
   return request.post(endpoints.verifyEmail(), payload);
 };
 
@@ -282,7 +314,7 @@ export function getAssistantDocs({
   }
   return request.get(
     endpoints.assistants({
-      path: 'documents',
+      path: "documents",
       version,
       options: { endpoint },
       endpoint: endpoint as s.AssistantsEndpoint,
@@ -296,17 +328,17 @@ export const getAvailableTools = (
   _endpoint: s.AssistantsEndpoint | s.EModelEndpoint.agents,
   version?: number | string,
 ): Promise<s.TPlugin[]> => {
-  let path = '';
+  let path = "";
   if (s.isAssistantsEndpoint(_endpoint)) {
     const endpoint = _endpoint as s.AssistantsEndpoint;
     path = endpoints.assistants({
-      path: 'tools',
+      path: "tools",
       endpoint: endpoint,
       version: version ?? config.defaultAssistantsVersion[endpoint],
     });
   } else {
     path = endpoints.agents({
-      path: 'tools',
+      path: "tools",
     });
   }
 
@@ -338,10 +370,12 @@ export const callTool = <T extends m.ToolId>({
   );
 };
 
-export const getToolCalls = (params: q.GetToolCallParams): Promise<q.ToolCallResults> => {
+export const getToolCalls = (
+  params: q.GetToolCallParams,
+): Promise<q.ToolCallResults> => {
   return request.get(
     endpoints.agents({
-      path: 'tools/calls',
+      path: "tools/calls",
       options: params,
     }),
   );
@@ -365,14 +399,19 @@ export const uploadImage = (
   return request.postMultiPart(endpoints.images(), data, requestConfig);
 };
 
-export const uploadFile = (data: FormData, signal?: AbortSignal | null): Promise<f.TFileUpload> => {
+export const uploadFile = (
+  data: FormData,
+  signal?: AbortSignal | null,
+): Promise<f.TFileUpload> => {
   const requestConfig = signal ? { signal } : undefined;
   return request.postMultiPart(endpoints.files(), data, requestConfig);
 };
 
 /* actions */
 
-export const updateAction = (data: m.UpdateActionVariables): Promise<m.UpdateActionResponse> => {
+export const updateAction = (
+  data: m.UpdateActionVariables,
+): Promise<m.UpdateActionResponse> => {
   const { assistant_id, version, ...body } = data;
   return request.post(
     endpoints.assistants({
@@ -386,7 +425,7 @@ export const updateAction = (data: m.UpdateActionVariables): Promise<m.UpdateAct
 export function getActions(): Promise<a.Action[]> {
   return request.get(
     endpoints.agents({
-      path: 'actions',
+      path: "actions",
     }),
   );
 }
@@ -410,11 +449,17 @@ export const deleteAction = async ({
  * Agents
  */
 
-export const createAgent = ({ ...data }: a.AgentCreateParams): Promise<a.Agent> => {
+export const createAgent = ({
+  ...data
+}: a.AgentCreateParams): Promise<a.Agent> => {
   return request.post(endpoints.agents({}), data);
 };
 
-export const getAgentById = ({ agent_id }: { agent_id: string }): Promise<a.Agent> => {
+export const getAgentById = ({
+  agent_id,
+}: {
+  agent_id: string;
+}): Promise<a.Agent> => {
   return request.get(
     endpoints.agents({
       path: agent_id,
@@ -455,7 +500,9 @@ export const deleteAgent = ({ agent_id }: m.DeleteAgentBody): Promise<void> => {
   );
 };
 
-export const listAgents = (params: a.AgentListParams): Promise<a.AgentListResponse> => {
+export const listAgents = (
+  params: a.AgentListParams,
+): Promise<a.AgentListResponse> => {
   return request.get(
     endpoints.agents({
       options: params,
@@ -468,7 +515,7 @@ export const listAgents = (params: a.AgentListParams): Promise<a.AgentListRespon
 export const getAvailableAgentTools = (): Promise<s.TPlugin[]> => {
   return request.get(
     endpoints.agents({
-      path: 'tools',
+      path: "tools",
     }),
   );
 };
@@ -503,15 +550,21 @@ export const deleteAgentAction = async ({
  * @param data - The FormData containing the file to import.
  * @returns A Promise that resolves to the import start response.
  */
-export const importConversationsFile = (data: FormData): Promise<t.TImportResponse> => {
+export const importConversationsFile = (
+  data: FormData,
+): Promise<t.TImportResponse> => {
   return request.postMultiPart(endpoints.importConversation(), data);
 };
 
-export const uploadAvatar = (data: FormData): Promise<f.AvatarUploadResponse> => {
+export const uploadAvatar = (
+  data: FormData,
+): Promise<f.AvatarUploadResponse> => {
   return request.postMultiPart(endpoints.avatar(), data);
 };
 
-export const uploadAssistantAvatar = (data: m.AssistantAvatarVariables): Promise<a.Assistant> => {
+export const uploadAssistantAvatar = (
+  data: m.AssistantAvatarVariables,
+): Promise<a.Assistant> => {
   return request.postMultiPart(
     endpoints.assistants({
       isAvatar: true,
@@ -523,27 +576,37 @@ export const uploadAssistantAvatar = (data: m.AssistantAvatarVariables): Promise
   );
 };
 
-export const uploadAgentAvatar = (data: m.AgentAvatarVariables): Promise<a.Agent> => {
+export const uploadAgentAvatar = (
+  data: m.AgentAvatarVariables,
+): Promise<a.Agent> => {
   return request.postMultiPart(
     `${endpoints.images()}/agents/${data.agent_id}/avatar`,
     data.formData,
   );
 };
 
-export const getFileDownload = async (userId: string, file_id: string): Promise<AxiosResponse> => {
-  return request.getResponse(`${endpoints.files()}/download/${userId}/${file_id}`, {
-    responseType: 'blob',
-    headers: {
-      Accept: 'application/octet-stream',
+export const getFileDownload = async (
+  userId: string,
+  file_id: string,
+): Promise<AxiosResponse> => {
+  return request.getResponse(
+    `${endpoints.files()}/download/${userId}/${file_id}`,
+    {
+      responseType: "blob",
+      headers: {
+        Accept: "application/octet-stream",
+      },
     },
-  });
+  );
 };
 
-export const getCodeOutputDownload = async (url: string): Promise<AxiosResponse> => {
+export const getCodeOutputDownload = async (
+  url: string,
+): Promise<AxiosResponse> => {
   return request.getResponse(url, {
-    responseType: 'blob',
+    responseType: "blob",
     headers: {
-      Accept: 'application/octet-stream',
+      Accept: "application/octet-stream",
     },
   });
 };
@@ -560,7 +623,9 @@ export const deleteFiles = async (payload: {
 
 /* Speech */
 
-export const speechToText = (data: FormData): Promise<f.SpeechToTextResponse> => {
+export const speechToText = (
+  data: FormData,
+): Promise<f.SpeechToTextResponse> => {
   return request.postMultiPart(endpoints.speechToText(), data);
 };
 
@@ -572,9 +637,10 @@ export const getVoices = (): Promise<f.VoiceResponse> => {
   return request.get(endpoints.textToSpeechVoices());
 };
 
-export const getCustomConfigSpeech = (): Promise<t.TCustomConfigSpeechResponse> => {
-  return request.get(endpoints.getCustomConfigSpeech());
-};
+export const getCustomConfigSpeech =
+  (): Promise<t.TCustomConfigSpeechResponse> => {
+    return request.get(endpoints.getCustomConfigSpeech());
+  };
 
 /* conversations */
 
@@ -584,7 +650,9 @@ export function duplicateConversation(
   return request.post(endpoints.duplicateConversation(), payload);
 }
 
-export function forkConversation(payload: t.TForkConvoRequest): Promise<t.TForkConvoResponse> {
+export function forkConversation(
+  payload: t.TForkConvoRequest,
+): Promise<t.TForkConvoResponse> {
   return request.post(endpoints.forkConversation(), payload);
 }
 
@@ -601,7 +669,7 @@ export const listConversations = (
   params?: q.ConversationListParams,
 ): Promise<q.ConversationListResponse> => {
   // Assuming params has a pageNumber property
-  const pageNumber = (params?.pageNumber ?? '1') || '1'; // Default to page 1 if not provided
+  const pageNumber = (params?.pageNumber ?? "1") || "1"; // Default to page 1 if not provided
   const isArchived = params?.isArchived ?? false; // Default to false if not provided
   const tags = params?.tags || []; // Default to an empty array if not provided
   return request.get(endpoints.conversations(pageNumber, isArchived, tags));
@@ -610,10 +678,10 @@ export const listConversations = (
 export const listConversationsByQuery = (
   params?: q.ConversationListParams & { searchQuery?: string },
 ): Promise<q.ConversationListResponse> => {
-  const pageNumber = (params?.pageNumber ?? '1') || '1'; // Default to page 1 if not provided
-  const searchQuery = params?.searchQuery ?? ''; // If no search query is provided, default to an empty string
+  const pageNumber = (params?.pageNumber ?? "1") || "1"; // Default to page 1 if not provided
+  const searchQuery = params?.searchQuery ?? ""; // If no search query is provided, default to an empty string
   // Update the endpoint to handle a search query
-  if (searchQuery !== '') {
+  if (searchQuery !== "") {
     return request.get(endpoints.search(searchQuery, pageNumber));
   } else {
     return request.get(endpoints.conversations(pageNumber));
@@ -627,7 +695,9 @@ export const searchConversations = async (
   return request.get(endpoints.search(q, pageNumber));
 };
 
-export function getConversations(pageNumber: string): Promise<t.TGetConversationsResponse> {
+export function getConversations(
+  pageNumber: string,
+): Promise<t.TGetConversationsResponse> {
   return request.get(endpoints.conversations(pageNumber));
 }
 
@@ -647,7 +717,9 @@ export function archiveConversation(
   return request.post(endpoints.updateConversation(), { arg: payload });
 }
 
-export function genTitle(payload: m.TGenTitleRequest): Promise<m.TGenTitleResponse> {
+export function genTitle(
+  payload: m.TGenTitleRequest,
+): Promise<m.TGenTitleResponse> {
   return request.post(endpoints.genTitle(), payload);
 }
 
@@ -655,7 +727,9 @@ export function getPrompt(id: string): Promise<{ prompt: t.TPrompt }> {
   return request.get(endpoints.getPrompt(id));
 }
 
-export function getPrompts(filter: t.TPromptsWithFilterRequest): Promise<t.TPrompt[]> {
+export function getPrompts(
+  filter: t.TPromptsWithFilterRequest,
+): Promise<t.TPrompt[]> {
   return request.get(endpoints.getPromptsWithFilters(filter));
 }
 
@@ -673,31 +747,45 @@ export function getPromptGroup(id: string): Promise<t.TPromptGroup> {
   return request.get(endpoints.getPromptGroup(id));
 }
 
-export function createPrompt(payload: t.TCreatePrompt): Promise<t.TCreatePromptResponse> {
+export function createPrompt(
+  payload: t.TCreatePrompt,
+): Promise<t.TCreatePromptResponse> {
   return request.post(endpoints.postPrompt(), payload);
 }
 
 export function updatePromptGroup(
   variables: t.TUpdatePromptGroupVariables,
 ): Promise<t.TUpdatePromptGroupResponse> {
-  return request.patch(endpoints.updatePromptGroup(variables.id), variables.payload);
+  return request.patch(
+    endpoints.updatePromptGroup(variables.id),
+    variables.payload,
+  );
 }
 
-export function deletePrompt(payload: t.TDeletePromptVariables): Promise<t.TDeletePromptResponse> {
+export function deletePrompt(
+  payload: t.TDeletePromptVariables,
+): Promise<t.TDeletePromptResponse> {
   return request.delete(endpoints.deletePrompt(payload));
 }
 
-export function makePromptProduction(id: string): Promise<t.TMakePromptProductionResponse> {
+export function makePromptProduction(
+  id: string,
+): Promise<t.TMakePromptProductionResponse> {
   return request.patch(endpoints.updatePromptTag(id));
 }
 
 export function updatePromptLabels(
   variables: t.TUpdatePromptLabelsRequest,
 ): Promise<t.TUpdatePromptLabelsResponse> {
-  return request.patch(endpoints.updatePromptLabels(variables.id), variables.payload);
+  return request.patch(
+    endpoints.updatePromptLabels(variables.id),
+    variables.payload,
+  );
 }
 
-export function deletePromptGroup(id: string): Promise<t.TDeletePromptGroupResponse> {
+export function deletePromptGroup(
+  id: string,
+): Promise<t.TDeletePromptGroupResponse> {
   return request.delete(endpoints.deletePromptGroup(id));
 }
 
@@ -708,7 +796,9 @@ export function getCategories(): Promise<t.TGetCategoriesResponse> {
 export function getRandomPrompts(
   variables: t.TGetRandomPromptsRequest,
 ): Promise<t.TGetRandomPromptsResponse> {
-  return request.get(endpoints.getRandomPrompts(variables.limit, variables.skip));
+  return request.get(
+    endpoints.getRandomPrompts(variables.limit, variables.skip),
+  );
 }
 
 /* Roles */
@@ -719,13 +809,19 @@ export function getRole(roleName: string): Promise<r.TRole> {
 export function updatePromptPermissions(
   variables: m.UpdatePromptPermVars,
 ): Promise<m.UpdatePermResponse> {
-  return request.put(endpoints.updatePromptPermissions(variables.roleName), variables.updates);
+  return request.put(
+    endpoints.updatePromptPermissions(variables.roleName),
+    variables.updates,
+  );
 }
 
 export function updateAgentPermissions(
   variables: m.UpdateAgentPermVars,
 ): Promise<m.UpdatePermResponse> {
-  return request.put(endpoints.updateAgentPermissions(variables.roleName), variables.updates);
+  return request.put(
+    endpoints.updateAgentPermissions(variables.roleName),
+    variables.updates,
+  );
 }
 
 /* Tags */
@@ -745,7 +841,9 @@ export function updateConversationTag(
 ): Promise<t.TConversationTagResponse> {
   return request.put(endpoints.conversationTags(tag), payload);
 }
-export function deleteConversationTag(tag: string): Promise<t.TConversationTagResponse> {
+export function deleteConversationTag(
+  tag: string,
+): Promise<t.TConversationTagResponse> {
   return request.delete(endpoints.conversationTags(tag));
 }
 
@@ -756,7 +854,7 @@ export function addTagToConversation(
   return request.put(endpoints.addTagToConversation(conversationId), payload);
 }
 export function rebuildConversationTags(): Promise<t.TConversationTagsResponse> {
-  return request.post(endpoints.conversationTags('rebuild'));
+  return request.post(endpoints.conversationTags("rebuild"));
 }
 
 export function healthCheck(): Promise<string> {

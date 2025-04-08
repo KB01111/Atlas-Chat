@@ -1,5 +1,5 @@
-import type OpenAI from 'openai';
-import type { InfiniteData } from '@tanstack/react-query';
+import type OpenAI from "openai";
+import type { InfiniteData } from "@tanstack/react-query";
 import type {
   TMessage,
   TResPlugin,
@@ -9,10 +9,10 @@ import type {
   EModelEndpoint,
   TConversationTag,
   TBanner,
-} from './schemas';
+} from "./schemas";
 export type TOpenAIMessage = OpenAI.Chat.ChatCompletionMessageParam;
 
-export * from './schemas';
+export * from "./schemas";
 
 export type TMessages = TMessage[];
 
@@ -65,11 +65,13 @@ export type TSubmission = {
   clientTimestamp?: string;
 };
 
-export type EventSubmission = Omit<TSubmission, 'initialResponse'> & { initialResponse: TMessage };
+export type EventSubmission = Omit<TSubmission, "initialResponse"> & {
+  initialResponse: TMessage;
+};
 
 export type TPluginAction = {
   pluginKey: string;
-  action: 'install' | 'uninstall';
+  action: "install" | "uninstall";
   auth?: unknown;
   isEntityTool?: boolean;
 };
@@ -179,16 +181,16 @@ export type TArchiveConversationRequest = {
 
 export type TArchiveConversationResponse = TConversation;
 
-export type TSharedMessagesResponse = Omit<TSharedLink, 'messages'> & {
+export type TSharedMessagesResponse = Omit<TSharedLink, "messages"> & {
   messages: TMessage[];
 };
 
-export type TCreateShareLinkRequest = Pick<TConversation, 'conversationId'>;
+export type TCreateShareLinkRequest = Pick<TConversation, "conversationId">;
 
-export type TUpdateShareLinkRequest = Pick<TSharedLink, 'shareId'>;
+export type TUpdateShareLinkRequest = Pick<TSharedLink, "shareId">;
 
-export type TSharedLinkResponse = Pick<TSharedLink, 'shareId'> &
-  Pick<TConversation, 'conversationId'>;
+export type TSharedLinkResponse = Pick<TSharedLink, "shareId"> &
+  Pick<TConversation, "conversationId">;
 
 export type TSharedLinkGetResponse = TSharedLinkResponse & {
   success: boolean;
@@ -198,7 +200,7 @@ export type TSharedLinkGetResponse = TSharedLinkResponse & {
 export type TConversationTagsResponse = TConversationTag[];
 // type for creating conversation tag
 export type TConversationTagRequest = Partial<
-  Omit<TConversationTag, 'createdAt' | 'updatedAt' | 'count' | 'user'>
+  Omit<TConversationTag, "createdAt" | "updatedAt" | "count" | "user">
 > & {
   conversationId?: string;
   addToConversation?: boolean;
@@ -369,7 +371,7 @@ export type TVerifyEmail = {
   token: string;
 };
 
-export type TResendVerificationEmail = Omit<TVerifyEmail, 'token'>;
+export type TResendVerificationEmail = Omit<TVerifyEmail, "token">;
 
 export type TRefreshTokenResponse = {
   token: string;
@@ -401,7 +403,7 @@ export type TPrompt = {
   groupId: string;
   author: string;
   prompt: string;
-  type: 'text' | 'chat';
+  type: "text" | "chat";
   createdAt: string;
   updatedAt: string;
   _id?: string;
@@ -415,7 +417,7 @@ export type TPromptGroup = {
   category?: string;
   projectIds?: string[];
   productionId?: string | null;
-  productionPrompt?: Pick<TPrompt, 'prompt'> | null;
+  productionPrompt?: Pick<TPrompt, "prompt"> | null;
   author: string;
   authorName: string;
   createdAt?: Date;
@@ -424,11 +426,17 @@ export type TPromptGroup = {
 };
 
 export type TCreatePrompt = {
-  prompt: Pick<TPrompt, 'prompt' | 'type'> & { groupId?: string };
-  group?: { name: string; category?: string; oneliner?: string; command?: string };
+  prompt: Pick<TPrompt, "prompt" | "type"> & { groupId?: string };
+  group?: {
+    name: string;
+    category?: string;
+    oneliner?: string;
+    command?: string;
+  };
 };
 
-export type TCreatePromptRecord = TCreatePrompt & Pick<TPromptGroup, 'author' | 'authorName'>;
+export type TCreatePromptRecord = TCreatePrompt &
+  Pick<TPromptGroup, "author" | "authorName">;
 
 export type TPromptsWithFilterRequest = {
   groupId: string;
@@ -443,7 +451,7 @@ export type TPromptGroupsWithFilterRequest = {
   pageSize: string | number;
   before?: string | null;
   after?: string | null;
-  order?: 'asc' | 'desc';
+  order?: "asc" | "desc";
   name?: string;
   author?: string;
 };
@@ -490,7 +498,7 @@ export type TMakePromptProductionResponse = {
 export type TMakePromptProductionRequest = {
   id: string;
   groupId: string;
-  productionPrompt: Pick<TPrompt, 'prompt'>;
+  productionPrompt: Pick<TPrompt, "prompt">;
 };
 
 export type TUpdatePromptLabelsRequest = {

@@ -1,12 +1,19 @@
 /* eslint-disable @typescript-eslint/no-namespace */
-import { StepTypes, ContentTypes, ToolCallTypes } from './runs';
-import type { FunctionToolCall } from './assistants';
-import type { TAttachment } from 'src/schemas';
+import { StepTypes, ContentTypes, ToolCallTypes } from "./runs";
+import type { FunctionToolCall } from "./assistants";
+import type { TAttachment } from "src/schemas";
 
 export namespace Agents {
-  export type MessageType = 'human' | 'ai' | 'generic' | 'system' | 'function' | 'tool' | 'remove';
+  export type MessageType =
+    | "human"
+    | "ai"
+    | "generic"
+    | "system"
+    | "function"
+    | "tool"
+    | "remove";
 
-  export type ImageDetail = 'auto' | 'low' | 'high';
+  export type ImageDetail = "auto" | "low" | "high";
 
   export type ReasoningContentText = {
     type: ContentTypes.THINK;
@@ -141,7 +148,7 @@ export namespace Agents {
 
     index?: number;
 
-    type?: 'tool_call_chunk';
+    type?: "tool_call_chunk";
   };
 
   /** Event names are of the format: on_[runnable_type]_(start|stream|end).
@@ -261,7 +268,10 @@ export namespace Agents {
     content?: MessageContentComplex[];
   }
 
-  export type ReasoningDeltaUpdate = { type: ContentTypes.THINK; think: string };
+  export type ReasoningDeltaUpdate = {
+    type: ContentTypes.THINK;
+    think: string;
+  };
   export type ContentType =
     | ContentTypes.THINK
     | ContentTypes.TEXT

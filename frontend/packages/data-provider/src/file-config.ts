@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
-import { z } from 'zod';
-import { EModelEndpoint } from './schemas';
-import type { FileConfig, EndpointFileConfig } from './types/files';
+import { z } from "zod";
+import { EModelEndpoint } from "./schemas";
+import type { FileConfig, EndpointFileConfig } from "./types/files";
 
 export const supportsFiles = {
   [EModelEndpoint.openAI]: true,
@@ -16,94 +16,94 @@ export const supportsFiles = {
 };
 
 export const excelFileTypes = [
-  'application/vnd.ms-excel',
-  'application/msexcel',
-  'application/x-msexcel',
-  'application/x-ms-excel',
-  'application/x-excel',
-  'application/x-dos_ms_excel',
-  'application/xls',
-  'application/x-xls',
-  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  "application/vnd.ms-excel",
+  "application/msexcel",
+  "application/x-msexcel",
+  "application/x-ms-excel",
+  "application/x-excel",
+  "application/x-dos_ms_excel",
+  "application/xls",
+  "application/x-xls",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
 ];
 
 export const fullMimeTypesList = [
-  'text/x-c',
-  'text/x-c++',
-  'application/csv',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  'text/html',
-  'text/x-java',
-  'application/json',
-  'text/markdown',
-  'application/pdf',
-  'text/x-php',
-  'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-  'text/x-python',
-  'text/x-script.python',
-  'text/x-ruby',
-  'text/x-tex',
-  'text/plain',
-  'text/css',
-  'text/vtt',
-  'image/jpeg',
-  'text/javascript',
-  'image/gif',
-  'image/png',
-  'application/x-tar',
-  'application/typescript',
-  'application/xml',
-  'application/zip',
-  'image/svg',
-  'image/svg+xml',
+  "text/x-c",
+  "text/x-c++",
+  "application/csv",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "text/html",
+  "text/x-java",
+  "application/json",
+  "text/markdown",
+  "application/pdf",
+  "text/x-php",
+  "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+  "text/x-python",
+  "text/x-script.python",
+  "text/x-ruby",
+  "text/x-tex",
+  "text/plain",
+  "text/css",
+  "text/vtt",
+  "image/jpeg",
+  "text/javascript",
+  "image/gif",
+  "image/png",
+  "application/x-tar",
+  "application/typescript",
+  "application/xml",
+  "application/zip",
+  "image/svg",
+  "image/svg+xml",
   ...excelFileTypes,
 ];
 
 export const codeInterpreterMimeTypesList = [
-  'text/x-c',
-  'text/x-c++',
-  'application/csv',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  'text/html',
-  'text/x-java',
-  'application/json',
-  'text/markdown',
-  'application/pdf',
-  'text/x-php',
-  'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-  'text/x-python',
-  'text/x-script.python',
-  'text/x-ruby',
-  'text/x-tex',
-  'text/plain',
-  'text/css',
-  'image/jpeg',
-  'text/javascript',
-  'image/gif',
-  'image/png',
-  'application/x-tar',
-  'application/typescript',
-  'application/xml',
-  'application/zip',
+  "text/x-c",
+  "text/x-c++",
+  "application/csv",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "text/html",
+  "text/x-java",
+  "application/json",
+  "text/markdown",
+  "application/pdf",
+  "text/x-php",
+  "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+  "text/x-python",
+  "text/x-script.python",
+  "text/x-ruby",
+  "text/x-tex",
+  "text/plain",
+  "text/css",
+  "image/jpeg",
+  "text/javascript",
+  "image/gif",
+  "image/png",
+  "application/x-tar",
+  "application/typescript",
+  "application/xml",
+  "application/zip",
   ...excelFileTypes,
 ];
 
 export const retrievalMimeTypesList = [
-  'text/x-c',
-  'text/x-c++',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  'text/html',
-  'text/x-java',
-  'application/json',
-  'text/markdown',
-  'application/pdf',
-  'text/x-php',
-  'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-  'text/x-python',
-  'text/x-script.python',
-  'text/x-ruby',
-  'text/x-tex',
-  'text/plain',
+  "text/x-c",
+  "text/x-c++",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "text/html",
+  "text/x-java",
+  "application/json",
+  "text/markdown",
+  "application/pdf",
+  "text/x-php",
+  "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+  "text/x-python",
+  "text/x-script.python",
+  "text/x-ruby",
+  "text/x-tex",
+  "text/plain",
 ];
 
 export const imageExtRegex = /\.(jpg|jpeg|png|gif|webp)$/i;
@@ -136,22 +136,22 @@ export const codeInterpreterMimeTypes = [
 ];
 
 export const codeTypeMapping: { [key: string]: string } = {
-  c: 'text/x-c',
-  cs: 'text/x-csharp',
-  cpp: 'text/x-c++',
-  md: 'text/markdown',
-  php: 'text/x-php',
-  py: 'text/x-python',
-  rb: 'text/x-ruby',
-  tex: 'text/x-tex',
-  js: 'text/javascript',
-  sh: 'application/x-sh',
-  ts: 'application/typescript',
-  tar: 'application/x-tar',
-  zip: 'application/zip',
-  yml: 'application/x-yaml',
-  yaml: 'application/x-yaml',
-  log: 'text/plain',
+  c: "text/x-c",
+  cs: "text/x-csharp",
+  cpp: "text/x-c++",
+  md: "text/markdown",
+  php: "text/x-php",
+  py: "text/x-python",
+  rb: "text/x-ruby",
+  tex: "text/x-tex",
+  js: "text/javascript",
+  sh: "application/x-sh",
+  ts: "application/typescript",
+  tar: "application/x-tar",
+  zip: "application/zip",
+  yml: "application/x-yaml",
+  yaml: "application/x-yaml",
+  log: "text/plain",
 };
 
 export const retrievalMimeTypes = [
@@ -187,7 +187,10 @@ export const fileConfig = {
   },
   serverFileSizeLimit: defaultSizeLimit,
   avatarSizeLimit: mbToBytes(2),
-  checkType: function (fileType: string, supportedTypes: RegExp[] = supportedMimeTypes) {
+  checkType: function (
+    fileType: string,
+    supportedTypes: RegExp[] = supportedMimeTypes,
+  ) {
     return supportedTypes.some((regex) => regex.test(fileType));
   },
 };
@@ -201,11 +204,12 @@ const supportedMimeTypesSchema = z
         return true;
       }
       return mimeTypes.every(
-        (mimeType) => mimeType instanceof RegExp || typeof mimeType === 'string',
+        (mimeType) =>
+          mimeType instanceof RegExp || typeof mimeType === "string",
       );
     },
     {
-      message: 'Each mimeType must be a string or a RegExp object.',
+      message: "Each mimeType must be a string or a RegExp object.",
     },
   );
 
@@ -235,7 +239,9 @@ export const convertStringsToRegex = (patterns: string[]): RegExp[] =>
     return acc;
   }, []);
 
-export function mergeFileConfig(dynamic: z.infer<typeof fileConfigSchema> | undefined): FileConfig {
+export function mergeFileConfig(
+  dynamic: z.infer<typeof fileConfigSchema> | undefined,
+): FileConfig {
   const mergedConfig = fileConfig as FileConfig;
   if (!dynamic) {
     return mergedConfig;
@@ -254,7 +260,9 @@ export function mergeFileConfig(dynamic: z.infer<typeof fileConfigSchema> | unde
   }
 
   for (const key in dynamic.endpoints) {
-    const dynamicEndpoint = (dynamic.endpoints as Record<string, EndpointFileConfig>)[key];
+    const dynamicEndpoint = (
+      dynamic.endpoints as Record<string, EndpointFileConfig>
+    )[key];
 
     if (!mergedConfig.endpoints[key]) {
       mergedConfig.endpoints[key] = {};
@@ -279,7 +287,7 @@ export function mergeFileConfig(dynamic: z.infer<typeof fileConfigSchema> | unde
       mergedEndpoint.totalSizeLimit = mbToBytes(dynamicEndpoint.totalSizeLimit);
     }
 
-    const configKeys = ['fileLimit'] as const;
+    const configKeys = ["fileLimit"] as const;
     configKeys.forEach((field) => {
       if (dynamicEndpoint[field] !== undefined) {
         mergedEndpoint[field] = dynamicEndpoint[field];

@@ -1,6 +1,6 @@
-import axios from 'axios';
-import { z } from 'zod';
-import { OpenAPIV3 } from 'openapi-types';
+import axios from "axios";
+import { z } from "zod";
+import { OpenAPIV3 } from "openapi-types";
 import {
   createURL,
   resolveRef,
@@ -8,71 +8,84 @@ import {
   openapiToFunction,
   FunctionSignature,
   validateAndParseOpenAPISpec,
-} from '../src/actions';
+} from "../src/actions";
 import {
   getWeatherOpenapiSpec,
   whimsicalOpenapiSpec,
   scholarAIOpenapiSpec,
   swapidev,
-} from './openapiSpecs';
-import { AuthorizationTypeEnum, AuthTypeEnum } from '../src/types/assistants';
-import type { FlowchartSchema } from './openapiSpecs';
-import type { ParametersSchema } from '../src/actions';
+} from "./openapiSpecs";
+import { AuthorizationTypeEnum, AuthTypeEnum } from "../src/types/assistants";
+import type { FlowchartSchema } from "./openapiSpecs";
+import type { ParametersSchema } from "../src/actions";
 
-jest.mock('axios');
+jest.mock("axios");
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 mockedAxios.create.mockReturnValue(mockedAxios);
 
-describe('FunctionSignature', () => {
-  it('creates a function signature and converts to JSON tool', () => {
-    const signature = new FunctionSignature('testFunction', 'A test function', {
-      param1: { type: 'string' },
+describe("FunctionSignature", () => {
+  it("creates a function signature and converts to JSON tool", () => {
+    const signature = new FunctionSignature("testFunction", "A test function", {
+      param1: { type: "string" },
     } as unknown as ParametersSchema);
-    expect(signature.name).toBe('testFunction');
-    expect(signature.description).toBe('A test function');
+    expect(signature.name).toBe("testFunction");
+    expect(signature.description).toBe("A test function");
     expect(signature.toObjectTool()).toEqual({
-      type: 'function',
+      type: "function",
       function: {
-        name: 'testFunction',
-        description: 'A test function',
+        name: "testFunction",
+        description: "A test function",
         parameters: {
-          param1: { type: 'string' },
+          param1: { type: "string" },
         },
       },
     });
   });
 });
 
-describe('ActionRequest', () => {
+describe("ActionRequest", () => {
   // Mocking responses for each method
   beforeEach(() => {
-    mockedAxios.get.mockResolvedValue({ data: { success: true, method: 'GET' } });
-    mockedAxios.post.mockResolvedValue({ data: { success: true, method: 'POST' } });
-    mockedAxios.put.mockResolvedValue({ data: { success: true, method: 'PUT' } });
-    mockedAxios.delete.mockResolvedValue({ data: { success: true, method: 'DELETE' } });
-    mockedAxios.patch.mockResolvedValue({ data: { success: true, method: 'PATCH' } });
+    mockedAxios.get.mockResolvedValue({
+      data: { success: true, method: "GET" },
+    });
+    mockedAxios.post.mockResolvedValue({
+      data: { success: true, method: "POST" },
+    });
+    mockedAxios.put.mockResolvedValue({
+      data: { success: true, method: "PUT" },
+    });
+    mockedAxios.delete.mockResolvedValue({
+      data: { success: true, method: "DELETE" },
+    });
+    mockedAxios.patch.mockResolvedValue({
+      data: { success: true, method: "PATCH" },
+    });
   });
 
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it('should make a GET request', async () => {
+  it("should make a GET request", async () => {
     const actionRequest = new ActionRequest(
-      'https://example.com',
-      '/test',
-      'GET',
-      'testOp',
+      "https://example.com",
+      "/test",
+      "GET",
+      "testOp",
       false,
-      'application/json',
+      "application/json",
     );
-    actionRequest.setParams({ param1: 'value1' });
+    actionRequest.setParams({ param1: "value1" });
     const response = await actionRequest.execute();
-    expect(mockedAxios.get).toHaveBeenCalledWith('https://example.com/test', expect.anything());
-    expect(response.data).toEqual({ success: true, method: 'GET' });
+    expect(mockedAxios.get).toHaveBeenCalledWith(
+      "https://example.com/test",
+      expect.anything(),
+    );
+    expect(response.data).toEqual({ success: true, method: "GET" });
   });
 
-  describe('ActionRequest', () => {
+  describe("ActionRequest", () => {
     beforeEach(() => {
       mockedAxios.get.mockClear();
       mockedAxios.post.mockClear();
@@ -81,146 +94,153 @@ describe('ActionRequest', () => {
       mockedAxios.patch.mockClear();
     });
 
-    it('handles GET requests', async () => {
+    it("handles GET requests", async () => {
       mockedAxios.get.mockResolvedValue({ data: { success: true } });
       const actionRequest = new ActionRequest(
-        'https://example.com',
-        '/get',
-        'GET',
-        'testGet',
+        "https://example.com",
+        "/get",
+        "GET",
+        "testGet",
         false,
-        'application/json',
+        "application/json",
       );
-      actionRequest.setParams({ param: 'test' });
+      actionRequest.setParams({ param: "test" });
       const response = await actionRequest.execute();
       expect(mockedAxios.get).toHaveBeenCalled();
       expect(response.data.success).toBe(true);
     });
 
-    it('handles POST requests', async () => {
+    it("handles POST requests", async () => {
       mockedAxios.post.mockResolvedValue({ data: { success: true } });
       const actionRequest = new ActionRequest(
-        'https://example.com',
-        '/post',
-        'POST',
-        'testPost',
+        "https://example.com",
+        "/post",
+        "POST",
+        "testPost",
         false,
-        'application/json',
+        "application/json",
       );
-      actionRequest.setParams({ param: 'test' });
+      actionRequest.setParams({ param: "test" });
       const response = await actionRequest.execute();
       expect(mockedAxios.post).toHaveBeenCalled();
       expect(response.data.success).toBe(true);
     });
 
-    it('handles PUT requests', async () => {
+    it("handles PUT requests", async () => {
       mockedAxios.put.mockResolvedValue({ data: { success: true } });
       const actionRequest = new ActionRequest(
-        'https://example.com',
-        '/put',
-        'PUT',
-        'testPut',
+        "https://example.com",
+        "/put",
+        "PUT",
+        "testPut",
         false,
-        'application/json',
+        "application/json",
       );
-      actionRequest.setParams({ param: 'test' });
+      actionRequest.setParams({ param: "test" });
       const response = await actionRequest.execute();
       expect(mockedAxios.put).toHaveBeenCalled();
       expect(response.data.success).toBe(true);
     });
 
-    it('handles DELETE requests', async () => {
+    it("handles DELETE requests", async () => {
       mockedAxios.delete.mockResolvedValue({ data: { success: true } });
       const actionRequest = new ActionRequest(
-        'https://example.com',
-        '/delete',
-        'DELETE',
-        'testDelete',
+        "https://example.com",
+        "/delete",
+        "DELETE",
+        "testDelete",
         false,
-        'application/json',
+        "application/json",
       );
-      actionRequest.setParams({ param: 'test' });
+      actionRequest.setParams({ param: "test" });
       const response = await actionRequest.execute();
       expect(mockedAxios.delete).toHaveBeenCalled();
       expect(response.data.success).toBe(true);
     });
 
-    it('handles PATCH requests', async () => {
+    it("handles PATCH requests", async () => {
       mockedAxios.patch.mockResolvedValue({ data: { success: true } });
       const actionRequest = new ActionRequest(
-        'https://example.com',
-        '/patch',
-        'PATCH',
-        'testPatch',
+        "https://example.com",
+        "/patch",
+        "PATCH",
+        "testPatch",
         false,
-        'application/json',
+        "application/json",
       );
-      actionRequest.setParams({ param: 'test' });
+      actionRequest.setParams({ param: "test" });
       const response = await actionRequest.execute();
       expect(mockedAxios.patch).toHaveBeenCalled();
       expect(response.data.success).toBe(true);
     });
 
-    it('throws an error for unsupported HTTP methods', async () => {
+    it("throws an error for unsupported HTTP methods", async () => {
       const actionRequest = new ActionRequest(
-        'https://example.com',
-        '/invalid',
-        'INVALID',
-        'testInvalid',
+        "https://example.com",
+        "/invalid",
+        "INVALID",
+        "testInvalid",
         false,
-        'application/json',
+        "application/json",
       );
-      await expect(actionRequest.execute()).rejects.toThrow('Unsupported HTTP method: invalid');
+      await expect(actionRequest.execute()).rejects.toThrow(
+        "Unsupported HTTP method: invalid",
+      );
     });
 
-    it('replaces path parameters with values from toolInput', async () => {
+    it("replaces path parameters with values from toolInput", async () => {
       const actionRequest = new ActionRequest(
-        'https://example.com',
-        '/stocks/{stocksTicker}/bars/{multiplier}',
-        'GET',
-        'getAggregateBars',
+        "https://example.com",
+        "/stocks/{stocksTicker}/bars/{multiplier}",
+        "GET",
+        "getAggregateBars",
         false,
-        'application/json',
+        "application/json",
       );
 
       const executor = actionRequest.createExecutor();
       executor.setParams({
-        stocksTicker: 'AAPL',
+        stocksTicker: "AAPL",
         multiplier: 5,
-        startDate: '2023-01-01',
-        endDate: '2023-12-31',
+        startDate: "2023-01-01",
+        endDate: "2023-12-31",
       });
 
-      expect(executor.path).toBe('/stocks/AAPL/bars/5');
+      expect(executor.path).toBe("/stocks/AAPL/bars/5");
       expect(executor.params).toEqual({
-        startDate: '2023-01-01',
-        endDate: '2023-12-31',
+        startDate: "2023-01-01",
+        endDate: "2023-12-31",
       });
 
       await executor.execute();
-      expect(mockedAxios.get).toHaveBeenCalledWith('https://example.com/stocks/AAPL/bars/5', {
-        headers: expect.anything(),
-        params: {
-          startDate: '2023-01-01',
-          endDate: '2023-12-31',
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        "https://example.com/stocks/AAPL/bars/5",
+        {
+          headers: expect.anything(),
+          params: {
+            startDate: "2023-01-01",
+            endDate: "2023-12-31",
+          },
         },
-      });
+      );
     });
   });
 
-  it('throws an error for unsupported HTTP method', async () => {
+  it("throws an error for unsupported HTTP method", async () => {
     const actionRequest = new ActionRequest(
-      'https://example.com',
-      '/test',
-      'INVALID',
-      'testOp',
+      "https://example.com",
+      "/test",
+      "INVALID",
+      "testOp",
       false,
-      'application/json',
+      "application/json",
     );
-    await expect(actionRequest.execute()).rejects.toThrow('Unsupported HTTP method: invalid');
+    await expect(actionRequest.execute()).rejects.toThrow(
+      "Unsupported HTTP method: invalid",
+    );
   });
 
-  describe('ActionRequest Concurrent Execution', () => {
+  describe("ActionRequest Concurrent Execution", () => {
     beforeEach(() => {
       jest.clearAllMocks();
       mockedAxios.get.mockImplementation(async (url, config) => ({
@@ -228,21 +248,21 @@ describe('ActionRequest', () => {
       }));
     });
 
-    it('maintains isolated state between concurrent executions with different parameters', async () => {
+    it("maintains isolated state between concurrent executions with different parameters", async () => {
       const actionRequest = new ActionRequest(
-        'https://example.com',
-        '/math/sqrt/{number}',
-        'GET',
-        'getSqrt',
+        "https://example.com",
+        "/math/sqrt/{number}",
+        "GET",
+        "getSqrt",
         false,
-        'application/json',
+        "application/json",
       );
 
       // Simulate concurrent requests with different numbers
       const numbers = [20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30];
       const requests = numbers.map((num) => ({
         number: num.toString(),
-        precision: '2',
+        precision: "2",
       }));
 
       const responses = await Promise.all(
@@ -256,42 +276,42 @@ describe('ActionRequest', () => {
       responses.forEach((response, index) => {
         const expectedUrl = `https://example.com/math/sqrt/${numbers[index]}`;
         expect(response.data.url).toBe(expectedUrl);
-        expect(response.data.params).toEqual({ precision: '2' });
+        expect(response.data.params).toEqual({ precision: "2" });
       });
 
       // Verify the correct number of calls were made
       expect(mockedAxios.get).toHaveBeenCalledTimes(numbers.length);
     });
 
-    it('maintains isolated authentication state between concurrent executions', async () => {
+    it("maintains isolated authentication state between concurrent executions", async () => {
       const actionRequest = new ActionRequest(
-        'https://example.com',
-        '/secure/resource/{id}',
-        'GET',
-        'getResource',
+        "https://example.com",
+        "/secure/resource/{id}",
+        "GET",
+        "getResource",
         false,
-        'application/json',
+        "application/json",
       );
 
       const requests = [
         {
-          params: { id: '1' },
+          params: { id: "1" },
           auth: {
             auth: {
               type: AuthTypeEnum.ServiceHttp,
               authorization_type: AuthorizationTypeEnum.Bearer,
             },
-            api_key: 'token1',
+            api_key: "token1",
           },
         },
         {
-          params: { id: '2' },
+          params: { id: "2" },
           auth: {
             auth: {
               type: AuthTypeEnum.ServiceHttp,
               authorization_type: AuthorizationTypeEnum.Bearer,
             },
-            api_key: 'token2',
+            api_key: "token2",
           },
         },
       ];
@@ -313,46 +333,46 @@ describe('ActionRequest', () => {
       });
     });
 
-    it('handles mixed authentication types concurrently', async () => {
+    it("handles mixed authentication types concurrently", async () => {
       const actionRequest = new ActionRequest(
-        'https://example.com',
-        '/api/{version}/data',
-        'GET',
-        'getData',
+        "https://example.com",
+        "/api/{version}/data",
+        "GET",
+        "getData",
         false,
-        'application/json',
+        "application/json",
       );
 
       const requests = [
         {
-          params: { version: 'v1' },
+          params: { version: "v1" },
           auth: {
             auth: {
               type: AuthTypeEnum.ServiceHttp,
               authorization_type: AuthorizationTypeEnum.Bearer,
             },
-            api_key: 'bearer_token',
+            api_key: "bearer_token",
           },
         },
         {
-          params: { version: 'v2' },
+          params: { version: "v2" },
           auth: {
             auth: {
               type: AuthTypeEnum.ServiceHttp,
               authorization_type: AuthorizationTypeEnum.Basic,
             },
-            api_key: 'basic:auth',
+            api_key: "basic:auth",
           },
         },
         {
-          params: { version: 'v3' },
+          params: { version: "v3" },
           auth: {
             auth: {
               type: AuthTypeEnum.ServiceHttp,
               authorization_type: AuthorizationTypeEnum.Custom,
-              custom_auth_header: 'X-API-Key',
+              custom_auth_header: "X-API-Key",
             },
-            api_key: 'custom_key',
+            api_key: "custom_key",
           },
         },
       ];
@@ -366,32 +386,32 @@ describe('ActionRequest', () => {
 
       // Verify each response had the correct auth type and headers
       expect(responses[0].data.headers).toMatchObject({
-        Authorization: 'Bearer bearer_token',
+        Authorization: "Bearer bearer_token",
       });
 
       expect(responses[1].data.headers).toMatchObject({
-        Authorization: `Basic ${Buffer.from('basic:auth').toString('base64')}`,
+        Authorization: `Basic ${Buffer.from("basic:auth").toString("base64")}`,
       });
 
       expect(responses[2].data.headers).toMatchObject({
-        'X-API-Key': 'custom_key',
+        "X-API-Key": "custom_key",
       });
     });
 
-    it('maintains parameter integrity during concurrent path parameter replacement', async () => {
+    it("maintains parameter integrity during concurrent path parameter replacement", async () => {
       const actionRequest = new ActionRequest(
-        'https://example.com',
-        '/users/{userId}/posts/{postId}',
-        'GET',
-        'getUserPost',
+        "https://example.com",
+        "/users/{userId}/posts/{postId}",
+        "GET",
+        "getUserPost",
         false,
-        'application/json',
+        "application/json",
       );
 
       const requests = [
-        { userId: '1', postId: 'a', filter: 'recent' },
-        { userId: '2', postId: 'b', filter: 'popular' },
-        { userId: '3', postId: 'c', filter: 'trending' },
+        { userId: "1", postId: "a", filter: "recent" },
+        { userId: "2", postId: "b", filter: "popular" },
+        { userId: "3", postId: "c", filter: "trending" },
       ];
 
       const responses = await Promise.all(
@@ -404,18 +424,20 @@ describe('ActionRequest', () => {
       responses.forEach((response, index) => {
         const expectedUrl = `https://example.com/users/${requests[index].userId}/posts/${requests[index].postId}`;
         expect(response.data.url).toBe(expectedUrl);
-        expect(response.data.params).toEqual({ filter: requests[index].filter });
+        expect(response.data.params).toEqual({
+          filter: requests[index].filter,
+        });
       });
     });
 
-    it('preserves original ActionRequest state after multiple executions', async () => {
+    it("preserves original ActionRequest state after multiple executions", async () => {
       const actionRequest = new ActionRequest(
-        'https://example.com',
-        '/original/{param}',
-        'GET',
-        'testOp',
+        "https://example.com",
+        "/original/{param}",
+        "GET",
+        "testOp",
         false,
-        'application/json',
+        "application/json",
       );
 
       // Store original values
@@ -425,9 +447,9 @@ describe('ActionRequest', () => {
 
       // Perform multiple concurrent executions
       await Promise.all([
-        actionRequest.createExecutor().setParams({ param: '1' }).execute(),
-        actionRequest.createExecutor().setParams({ param: '2' }).execute(),
-        actionRequest.createExecutor().setParams({ param: '3' }).execute(),
+        actionRequest.createExecutor().setParams({ param: "1" }).execute(),
+        actionRequest.createExecutor().setParams({ param: "2" }).execute(),
+        actionRequest.createExecutor().setParams({ param: "3" }).execute(),
       ]);
 
       // Verify original ActionRequest remains unchanged
@@ -436,14 +458,14 @@ describe('ActionRequest', () => {
       expect(actionRequest.method).toBe(originalMethod);
     });
 
-    it('shares immutable configuration between executors from the same ActionRequest', () => {
+    it("shares immutable configuration between executors from the same ActionRequest", () => {
       const actionRequest = new ActionRequest(
-        'https://example.com',
-        '/api/{version}/data',
-        'GET',
-        'getData',
+        "https://example.com",
+        "/api/{version}/data",
+        "GET",
+        "getData",
         false,
-        'application/json',
+        "application/json",
       );
 
       // Create multiple executors
@@ -455,12 +477,12 @@ describe('ActionRequest', () => {
       [executor1, executor2, executor3].forEach((executor) => {
         expect(executor.getConfig()).toBeDefined();
         expect(executor.getConfig()).toEqual({
-          domain: 'https://example.com',
-          basePath: '/api/{version}/data',
-          method: 'GET',
-          operation: 'getData',
+          domain: "https://example.com",
+          basePath: "/api/{version}/data",
+          method: "GET",
+          operation: "getData",
           isConsequential: false,
-          contentType: 'application/json',
+          contentType: "application/json",
         });
       });
 
@@ -469,38 +491,38 @@ describe('ActionRequest', () => {
       expect(executor2.getConfig()).toBe(executor3.getConfig());
 
       // Verify that modifying mutable state doesn't affect other executors
-      executor1.setParams({ version: 'v1' });
-      executor2.setParams({ version: 'v2' });
-      executor3.setParams({ version: 'v3' });
+      executor1.setParams({ version: "v1" });
+      executor2.setParams({ version: "v2" });
+      executor3.setParams({ version: "v3" });
 
-      expect(executor1.path).toBe('/api/v1/data');
-      expect(executor2.path).toBe('/api/v2/data');
-      expect(executor3.path).toBe('/api/v3/data');
+      expect(executor1.path).toBe("/api/v1/data");
+      expect(executor2.path).toBe("/api/v2/data");
+      expect(executor3.path).toBe("/api/v3/data");
 
       // Verify that the original config remains unchanged
-      expect(executor1.getConfig().basePath).toBe('/api/{version}/data');
-      expect(executor2.getConfig().basePath).toBe('/api/{version}/data');
-      expect(executor3.getConfig().basePath).toBe('/api/{version}/data');
+      expect(executor1.getConfig().basePath).toBe("/api/{version}/data");
+      expect(executor2.getConfig().basePath).toBe("/api/{version}/data");
+      expect(executor3.getConfig().basePath).toBe("/api/{version}/data");
     });
   });
 });
 
-describe('Authentication Handling', () => {
-  it('correctly sets Basic Auth header', async () => {
+describe("Authentication Handling", () => {
+  it("correctly sets Basic Auth header", async () => {
     const actionRequest = new ActionRequest(
-      'https://example.com',
-      '/test',
-      'GET',
-      'testOp',
+      "https://example.com",
+      "/test",
+      "GET",
+      "testOp",
       false,
-      'application/json',
+      "application/json",
     );
 
-    const api_key = 'user:pass';
-    const encodedCredentials = Buffer.from('user:pass').toString('base64');
+    const api_key = "user:pass";
+    const encodedCredentials = Buffer.from("user:pass").toString("base64");
 
     const executor = actionRequest.createExecutor();
-    await executor.setParams({ param1: 'value1' }).setAuth({
+    await executor.setParams({ param1: "value1" }).setAuth({
       auth: {
         type: AuthTypeEnum.ServiceHttp,
         authorization_type: AuthorizationTypeEnum.Basic,
@@ -509,82 +531,82 @@ describe('Authentication Handling', () => {
     });
 
     await executor.execute();
-    expect(mockedAxios.get).toHaveBeenCalledWith('https://example.com/test', {
+    expect(mockedAxios.get).toHaveBeenCalledWith("https://example.com/test", {
       headers: expect.objectContaining({
         Authorization: `Basic ${encodedCredentials}`,
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       }),
-      params: { param1: 'value1' },
+      params: { param1: "value1" },
     });
   });
 
-  it('correctly sets Bearer token', async () => {
+  it("correctly sets Bearer token", async () => {
     const actionRequest = new ActionRequest(
-      'https://example.com',
-      '/test',
-      'GET',
-      'testOp',
+      "https://example.com",
+      "/test",
+      "GET",
+      "testOp",
       false,
-      'application/json',
+      "application/json",
     );
 
     const executor = actionRequest.createExecutor();
-    await executor.setParams({ param1: 'value1' }).setAuth({
+    await executor.setParams({ param1: "value1" }).setAuth({
       auth: {
         type: AuthTypeEnum.ServiceHttp,
         authorization_type: AuthorizationTypeEnum.Bearer,
       },
-      api_key: 'token123',
+      api_key: "token123",
     });
 
     await executor.execute();
-    expect(mockedAxios.get).toHaveBeenCalledWith('https://example.com/test', {
+    expect(mockedAxios.get).toHaveBeenCalledWith("https://example.com/test", {
       headers: expect.objectContaining({
-        Authorization: 'Bearer token123',
-        'Content-Type': 'application/json',
+        Authorization: "Bearer token123",
+        "Content-Type": "application/json",
       }),
-      params: { param1: 'value1' },
+      params: { param1: "value1" },
     });
   });
 
-  it('correctly sets API Key', async () => {
+  it("correctly sets API Key", async () => {
     const actionRequest = new ActionRequest(
-      'https://example.com',
-      '/test',
-      'GET',
-      'testOp',
+      "https://example.com",
+      "/test",
+      "GET",
+      "testOp",
       false,
-      'application/json',
+      "application/json",
     );
 
     const executor = actionRequest.createExecutor();
-    await executor.setParams({ param1: 'value1' }).setAuth({
+    await executor.setParams({ param1: "value1" }).setAuth({
       auth: {
         type: AuthTypeEnum.ServiceHttp,
         authorization_type: AuthorizationTypeEnum.Custom,
-        custom_auth_header: 'X-API-KEY',
+        custom_auth_header: "X-API-KEY",
       },
-      api_key: 'abc123',
+      api_key: "abc123",
     });
 
     await executor.execute();
-    expect(mockedAxios.get).toHaveBeenCalledWith('https://example.com/test', {
+    expect(mockedAxios.get).toHaveBeenCalledWith("https://example.com/test", {
       headers: expect.objectContaining({
-        'X-API-KEY': 'abc123',
-        'Content-Type': 'application/json',
+        "X-API-KEY": "abc123",
+        "Content-Type": "application/json",
       }),
-      params: { param1: 'value1' },
+      params: { param1: "value1" },
     });
   });
 });
 
-describe('resolveRef', () => {
-  it('correctly resolves $ref references in the OpenAPI spec', () => {
+describe("resolveRef", () => {
+  it("correctly resolves $ref references in the OpenAPI spec", () => {
     const openapiSpec = whimsicalOpenapiSpec;
     const flowchartRequestRef = (
-      openapiSpec.paths['/ai.chatgpt.render-flowchart']?.post
+      openapiSpec.paths["/ai.chatgpt.render-flowchart"]?.post
         ?.requestBody as OpenAPIV3.RequestBodyObject
-    ).content['application/json'].schema;
+    ).content["application/json"].schema;
 
     expect(flowchartRequestRef).toBeDefined();
 
@@ -594,37 +616,37 @@ describe('resolveRef', () => {
     ) as OpenAPIV3.SchemaObject;
 
     expect(resolvedSchemaObject).toBeDefined();
-    expect(resolvedSchemaObject.type).toBe('object');
+    expect(resolvedSchemaObject.type).toBe("object");
     expect(resolvedSchemaObject.properties).toBeDefined();
 
     const properties = resolvedSchemaObject.properties as FlowchartSchema;
     expect(properties.mermaid).toBeDefined();
-    expect(properties.mermaid.type).toBe('string');
+    expect(properties.mermaid.type).toBe("string");
   });
 });
 
-describe('resolveRef general cases', () => {
+describe("resolveRef general cases", () => {
   const spec = {
-    openapi: '3.0.0',
-    info: { title: 'TestSpec', version: '1.0.0' },
+    openapi: "3.0.0",
+    info: { title: "TestSpec", version: "1.0.0" },
     paths: {},
     components: {
       schemas: {
-        TestSchema: { type: 'string' },
+        TestSchema: { type: "string" },
       },
       parameters: {
         TestParam: {
-          name: 'myParam',
-          in: 'query',
+          name: "myParam",
+          in: "query",
           required: false,
-          schema: { $ref: '#/components/schemas/TestSchema' },
+          schema: { $ref: "#/components/schemas/TestSchema" },
         },
       },
       requestBodies: {
         TestRequestBody: {
           content: {
-            'application/json': {
-              schema: { $ref: '#/components/schemas/TestSchema' },
+            "application/json": {
+              schema: { $ref: "#/components/schemas/TestSchema" },
             },
           },
         },
@@ -632,79 +654,84 @@ describe('resolveRef general cases', () => {
     },
   } satisfies OpenAPIV3.Document;
 
-  it('resolves schema refs correctly', () => {
-    const schemaRef: OpenAPIV3.ReferenceObject = { $ref: '#/components/schemas/TestSchema' };
-    const resolvedSchema = resolveRef<OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject>(
-      schemaRef,
-      spec.components,
-    );
-    expect(resolvedSchema.type).toEqual('string');
+  it("resolves schema refs correctly", () => {
+    const schemaRef: OpenAPIV3.ReferenceObject = {
+      $ref: "#/components/schemas/TestSchema",
+    };
+    const resolvedSchema = resolveRef<
+      OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject
+    >(schemaRef, spec.components);
+    expect(resolvedSchema.type).toEqual("string");
   });
 
-  it('resolves parameter refs correctly, then schema within parameter', () => {
-    const paramRef: OpenAPIV3.ReferenceObject = { $ref: '#/components/parameters/TestParam' };
-    const resolvedParam = resolveRef<OpenAPIV3.ReferenceObject | OpenAPIV3.ParameterObject>(
-      paramRef,
-      spec.components,
-    );
-    expect(resolvedParam.name).toEqual('myParam');
-    expect(resolvedParam.in).toEqual('query');
+  it("resolves parameter refs correctly, then schema within parameter", () => {
+    const paramRef: OpenAPIV3.ReferenceObject = {
+      $ref: "#/components/parameters/TestParam",
+    };
+    const resolvedParam = resolveRef<
+      OpenAPIV3.ReferenceObject | OpenAPIV3.ParameterObject
+    >(paramRef, spec.components);
+    expect(resolvedParam.name).toEqual("myParam");
+    expect(resolvedParam.in).toEqual("query");
     expect(resolvedParam.required).toBe(false);
 
-    const paramSchema = resolveRef<OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject>(
-      resolvedParam.schema as OpenAPIV3.ReferenceObject,
-      spec.components,
-    );
-    expect(paramSchema.type).toEqual('string');
+    const paramSchema = resolveRef<
+      OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject
+    >(resolvedParam.schema as OpenAPIV3.ReferenceObject, spec.components);
+    expect(paramSchema.type).toEqual("string");
   });
 
-  it('resolves requestBody refs correctly, then schema within requestBody', () => {
+  it("resolves requestBody refs correctly, then schema within requestBody", () => {
     const requestBodyRef: OpenAPIV3.ReferenceObject = {
-      $ref: '#/components/requestBodies/TestRequestBody',
+      $ref: "#/components/requestBodies/TestRequestBody",
     };
-    const resolvedRequestBody = resolveRef<OpenAPIV3.ReferenceObject | OpenAPIV3.RequestBodyObject>(
-      requestBodyRef,
+    const resolvedRequestBody = resolveRef<
+      OpenAPIV3.ReferenceObject | OpenAPIV3.RequestBodyObject
+    >(requestBodyRef, spec.components);
+
+    expect(resolvedRequestBody.content["application/json"]).toBeDefined();
+
+    const schemaInRequestBody = resolveRef<
+      OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject
+    >(
+      resolvedRequestBody.content["application/json"]
+        .schema as OpenAPIV3.ReferenceObject,
       spec.components,
     );
 
-    expect(resolvedRequestBody.content['application/json']).toBeDefined();
-
-    const schemaInRequestBody = resolveRef<OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject>(
-      resolvedRequestBody.content['application/json'].schema as OpenAPIV3.ReferenceObject,
-      spec.components,
-    );
-
-    expect(schemaInRequestBody.type).toEqual('string');
+    expect(schemaInRequestBody.type).toEqual("string");
   });
 });
 
-describe('openapiToFunction', () => {
-  it('converts OpenAPI spec to function signatures and request builders', () => {
-    const { functionSignatures, requestBuilders } = openapiToFunction(getWeatherOpenapiSpec);
+describe("openapiToFunction", () => {
+  it("converts OpenAPI spec to function signatures and request builders", () => {
+    const { functionSignatures, requestBuilders } = openapiToFunction(
+      getWeatherOpenapiSpec,
+    );
     expect(functionSignatures.length).toBe(1);
-    expect(functionSignatures[0].name).toBe('GetCurrentWeather');
+    expect(functionSignatures[0].name).toBe("GetCurrentWeather");
 
     const parameters = functionSignatures[0].parameters as ParametersSchema & {
       properties: {
         location: {
-          type: 'string';
+          type: "string";
         };
         locations: {
-          type: 'array';
+          type: "array";
           items: {
-            type: 'object';
+            type: "object";
             properties: {
               city: {
-                type: 'string';
+                type: "string";
               };
               state: {
-                type: 'string';
+                type: "string";
               };
               countryCode: {
-                type: 'string';
+                type: "string";
               };
               time: {
-                type: 'string';
+                type: "string";
               };
             };
           };
@@ -714,62 +741,74 @@ describe('openapiToFunction', () => {
 
     expect(parameters).toBeDefined();
     expect(parameters.properties.locations).toBeDefined();
-    expect(parameters.properties.locations.type).toBe('array');
-    expect(parameters.properties.locations.items.type).toBe('object');
+    expect(parameters.properties.locations.type).toBe("array");
+    expect(parameters.properties.locations.items.type).toBe("object");
 
-    expect(parameters.properties.locations.items.properties.city.type).toBe('string');
-    expect(parameters.properties.locations.items.properties.state.type).toBe('string');
-    expect(parameters.properties.locations.items.properties.countryCode.type).toBe('string');
-    expect(parameters.properties.locations.items.properties.time.type).toBe('string');
+    expect(parameters.properties.locations.items.properties.city.type).toBe(
+      "string",
+    );
+    expect(parameters.properties.locations.items.properties.state.type).toBe(
+      "string",
+    );
+    expect(
+      parameters.properties.locations.items.properties.countryCode.type,
+    ).toBe("string");
+    expect(parameters.properties.locations.items.properties.time.type).toBe(
+      "string",
+    );
 
-    expect(requestBuilders).toHaveProperty('GetCurrentWeather');
+    expect(requestBuilders).toHaveProperty("GetCurrentWeather");
     expect(requestBuilders.GetCurrentWeather).toBeInstanceOf(ActionRequest);
   });
 
-  describe('openapiToFunction with $ref resolution', () => {
-    it('correctly converts OpenAPI spec to function signatures and request builders, resolving $ref references', () => {
-      const { functionSignatures, requestBuilders } = openapiToFunction(whimsicalOpenapiSpec);
+  describe("openapiToFunction with $ref resolution", () => {
+    it("correctly converts OpenAPI spec to function signatures and request builders, resolving $ref references", () => {
+      const { functionSignatures, requestBuilders } =
+        openapiToFunction(whimsicalOpenapiSpec);
 
       expect(functionSignatures.length).toBeGreaterThan(0);
 
       const postRenderFlowchartSignature = functionSignatures.find(
-        (sig) => sig.name === 'postRenderFlowchart',
+        (sig) => sig.name === "postRenderFlowchart",
       );
       expect(postRenderFlowchartSignature).toBeDefined();
-      expect(postRenderFlowchartSignature?.name).toBe('postRenderFlowchart');
+      expect(postRenderFlowchartSignature?.name).toBe("postRenderFlowchart");
       expect(postRenderFlowchartSignature?.parameters).toBeDefined();
 
-      expect(requestBuilders).toHaveProperty('postRenderFlowchart');
-      const postRenderFlowchartRequestBuilder = requestBuilders['postRenderFlowchart'];
+      expect(requestBuilders).toHaveProperty("postRenderFlowchart");
+      const postRenderFlowchartRequestBuilder =
+        requestBuilders["postRenderFlowchart"];
       expect(postRenderFlowchartRequestBuilder).toBeDefined();
-      expect(postRenderFlowchartRequestBuilder.method).toBe('post');
-      expect(postRenderFlowchartRequestBuilder.path).toBe('/ai.chatgpt.render-flowchart');
+      expect(postRenderFlowchartRequestBuilder.method).toBe("post");
+      expect(postRenderFlowchartRequestBuilder.path).toBe(
+        "/ai.chatgpt.render-flowchart",
+      );
     });
   });
 });
 
-const invalidServerURL = 'Could not find a valid URL in `servers`';
+const invalidServerURL = "Could not find a valid URL in `servers`";
 
-describe('validateAndParseOpenAPISpec', () => {
-  it('validates a correct OpenAPI spec successfully', () => {
+describe("validateAndParseOpenAPISpec", () => {
+  it("validates a correct OpenAPI spec successfully", () => {
     const validSpec = JSON.stringify({
-      openapi: '3.0.0',
-      info: { title: 'Test API', version: '1.0.0' },
-      servers: [{ url: 'https://test.api' }],
-      paths: { '/test': {} },
+      openapi: "3.0.0",
+      info: { title: "Test API", version: "1.0.0" },
+      servers: [{ url: "https://test.api" }],
+      paths: { "/test": {} },
       components: { schemas: {} },
     });
 
     const result = validateAndParseOpenAPISpec(validSpec);
     expect(result.status).toBe(true);
-    expect(result.message).toBe('OpenAPI spec is valid.');
+    expect(result.message).toBe("OpenAPI spec is valid.");
   });
 
-  it('returns an error for spec with no servers', () => {
+  it("returns an error for spec with no servers", () => {
     const noServerSpec = JSON.stringify({
-      openapi: '3.0.0',
-      info: { title: 'Test API', version: '1.0.0' },
-      paths: { '/test': {} },
+      openapi: "3.0.0",
+      info: { title: "Test API", version: "1.0.0" },
+      paths: { "/test": {} },
       components: { schemas: {} },
     });
 
@@ -778,7 +817,7 @@ describe('validateAndParseOpenAPISpec', () => {
     expect(result.message).toBe(invalidServerURL);
   });
 
-  it('returns an error for spec with empty server URL', () => {
+  it("returns an error for spec with empty server URL", () => {
     const emptyURLSpec = `{
       "openapi": "3.1.0",
       "info": {
@@ -802,31 +841,33 @@ describe('validateAndParseOpenAPISpec', () => {
     expect(result.message).toBe(invalidServerURL);
   });
 
-  it('returns an error for spec with no paths', () => {
+  it("returns an error for spec with no paths", () => {
     const noPathsSpec = JSON.stringify({
-      openapi: '3.0.0',
-      info: { title: 'Test API', version: '1.0.0' },
-      servers: [{ url: 'https://test.api' }],
+      openapi: "3.0.0",
+      info: { title: "Test API", version: "1.0.0" },
+      servers: [{ url: "https://test.api" }],
       components: { schemas: {} },
     });
 
     const result = validateAndParseOpenAPISpec(noPathsSpec);
     expect(result.status).toBe(false);
-    expect(result.message).toBe('No paths found in the OpenAPI spec.');
+    expect(result.message).toBe("No paths found in the OpenAPI spec.");
   });
 
-  it('detects missing components in spec', () => {
+  it("detects missing components in spec", () => {
     const missingComponentSpec = JSON.stringify({
-      openapi: '3.0.0',
-      info: { title: 'Test API', version: '1.0.0' },
-      servers: [{ url: 'https://test.api' }],
+      openapi: "3.0.0",
+      info: { title: "Test API", version: "1.0.0" },
+      servers: [{ url: "https://test.api" }],
       paths: {
-        '/test': {
+        "/test": {
           get: {
             responses: {
-              '200': {
+              "200": {
                 content: {
-                  'application/json': { schema: { $ref: '#/components/schemas/Missing' } },
+                  "application/json": {
+                    schema: { $ref: "#/components/schemas/Missing" },
+                  },
                 },
               },
             },
@@ -837,79 +878,81 @@ describe('validateAndParseOpenAPISpec', () => {
 
     const result = validateAndParseOpenAPISpec(missingComponentSpec);
     expect(result.status).toBe(true);
-    expect(result.message).toContain('reference to unknown component Missing');
+    expect(result.message).toContain("reference to unknown component Missing");
     expect(result.spec).toBeDefined();
   });
 
-  it('handles invalid spec formats', () => {
-    const invalidSpec = 'not a valid spec';
+  it("handles invalid spec formats", () => {
+    const invalidSpec = "not a valid spec";
 
     const result = validateAndParseOpenAPISpec(invalidSpec);
     expect(result.status).toBe(false);
     expect(result.message).toBe(invalidServerURL);
   });
 
-  it('handles YAML spec and correctly converts to Function Signatures', () => {
+  it("handles YAML spec and correctly converts to Function Signatures", () => {
     const result = validateAndParseOpenAPISpec(scholarAIOpenapiSpec);
     expect(result.status).toBe(true);
 
     const spec = result.spec;
     expect(spec).toBeDefined();
 
-    const { functionSignatures, requestBuilders } = openapiToFunction(spec as OpenAPIV3.Document);
+    const { functionSignatures, requestBuilders } = openapiToFunction(
+      spec as OpenAPIV3.Document,
+    );
     expect(functionSignatures.length).toBe(3);
-    expect(requestBuilders).toHaveProperty('searchAbstracts');
-    expect(requestBuilders).toHaveProperty('getFullText');
-    expect(requestBuilders).toHaveProperty('saveCitation');
+    expect(requestBuilders).toHaveProperty("searchAbstracts");
+    expect(requestBuilders).toHaveProperty("getFullText");
+    expect(requestBuilders).toHaveProperty("saveCitation");
   });
 });
 
-describe('createURL', () => {
-  it('correctly combines domain and path', () => {
-    expect(createURL('https://example.com', '/api/v1/users')).toBe(
-      'https://example.com/api/v1/users',
+describe("createURL", () => {
+  it("correctly combines domain and path", () => {
+    expect(createURL("https://example.com", "/api/v1/users")).toBe(
+      "https://example.com/api/v1/users",
     );
   });
 
-  it('handles domain with trailing slash', () => {
-    expect(createURL('https://example.com/', '/api/v1/users')).toBe(
-      'https://example.com/api/v1/users',
+  it("handles domain with trailing slash", () => {
+    expect(createURL("https://example.com/", "/api/v1/users")).toBe(
+      "https://example.com/api/v1/users",
     );
   });
 
-  it('handles path with leading slash', () => {
-    expect(createURL('https://example.com', 'api/v1/users')).toBe(
-      'https://example.com/api/v1/users',
+  it("handles path with leading slash", () => {
+    expect(createURL("https://example.com", "api/v1/users")).toBe(
+      "https://example.com/api/v1/users",
     );
   });
 
-  it('handles domain with trailing slash and path with leading slash', () => {
-    expect(createURL('https://example.com/', '/api/v1/users')).toBe(
-      'https://example.com/api/v1/users',
+  it("handles domain with trailing slash and path with leading slash", () => {
+    expect(createURL("https://example.com/", "/api/v1/users")).toBe(
+      "https://example.com/api/v1/users",
     );
   });
 
-  it('handles domain without trailing slash and path without leading slash', () => {
-    expect(createURL('https://example.com', 'api/v1/users')).toBe(
-      'https://example.com/api/v1/users',
+  it("handles domain without trailing slash and path without leading slash", () => {
+    expect(createURL("https://example.com", "api/v1/users")).toBe(
+      "https://example.com/api/v1/users",
     );
   });
 
-  it('handles empty path', () => {
-    expect(createURL('https://example.com', '')).toBe('https://example.com/');
+  it("handles empty path", () => {
+    expect(createURL("https://example.com", "")).toBe("https://example.com/");
   });
 
-  it('handles domain with subdirectory', () => {
-    expect(createURL('https://example.com/subdirectory', '/api/v1/users')).toBe(
-      'https://example.com/subdirectory/api/v1/users',
+  it("handles domain with subdirectory", () => {
+    expect(createURL("https://example.com/subdirectory", "/api/v1/users")).toBe(
+      "https://example.com/subdirectory/api/v1/users",
     );
   });
 
-  describe('openapiToFunction zodSchemas', () => {
-    describe('getWeatherOpenapiSpec', () => {
+  describe("openapiToFunction zodSchemas", () => {
+    describe("getWeatherOpenapiSpec", () => {
       const { zodSchemas } = openapiToFunction(getWeatherOpenapiSpec, true);
 
-      it('generates correct Zod schema for GetCurrentWeather', () => {
+      it("generates correct Zod schema for GetCurrentWeather", () => {
         expect(zodSchemas).toBeDefined();
         expect(zodSchemas?.GetCurrentWeather).toBeDefined();
 
@@ -918,7 +961,7 @@ describe('createURL', () => {
         expect(GetCurrentWeatherSchema instanceof z.ZodObject).toBe(true);
 
         if (!(GetCurrentWeatherSchema instanceof z.ZodObject)) {
-          throw new Error('GetCurrentWeatherSchema is not a ZodObject');
+          throw new Error("GetCurrentWeatherSchema is not a ZodObject");
         }
 
         const shape = GetCurrentWeatherSchema.shape;
@@ -929,69 +972,89 @@ describe('createURL', () => {
         expect(shape.locations instanceof z.ZodOptional).toBe(true);
 
         if (!(shape.locations instanceof z.ZodOptional)) {
-          throw new Error('locations is not a ZodOptional');
+          throw new Error("locations is not a ZodOptional");
         }
 
         const locationsInnerType = shape.locations._def.innerType;
         expect(locationsInnerType instanceof z.ZodArray).toBe(true);
 
         if (!(locationsInnerType instanceof z.ZodArray)) {
-          throw new Error('locationsInnerType is not a ZodArray');
+          throw new Error("locationsInnerType is not a ZodArray");
         }
 
         const locationsItemSchema = locationsInnerType.element;
         expect(locationsItemSchema instanceof z.ZodObject).toBe(true);
 
         if (!(locationsItemSchema instanceof z.ZodObject)) {
-          throw new Error('locationsItemSchema is not a ZodObject');
+          throw new Error("locationsItemSchema is not a ZodObject");
         }
 
         // Validate the structure of locationsItemSchema
-        expect(locationsItemSchema.shape.city instanceof z.ZodString).toBe(true);
-        expect(locationsItemSchema.shape.state instanceof z.ZodString).toBe(true);
-        expect(locationsItemSchema.shape.countryCode instanceof z.ZodString).toBe(true);
+        expect(locationsItemSchema.shape.city instanceof z.ZodString).toBe(
+          true,
+        );
+        expect(locationsItemSchema.shape.state instanceof z.ZodString).toBe(
+          true,
+        );
+        expect(
+          locationsItemSchema.shape.countryCode instanceof z.ZodString,
+        ).toBe(true);
 
         // Check if time is optional
         const timeSchema = locationsItemSchema.shape.time;
         expect(timeSchema instanceof z.ZodOptional).toBe(true);
 
         if (!(timeSchema instanceof z.ZodOptional)) {
-          throw new Error('timeSchema is not a ZodOptional');
+          throw new Error("timeSchema is not a ZodOptional");
         }
 
         expect(timeSchema._def.innerType instanceof z.ZodString).toBe(true);
 
         // Check the description
         expect(shape.locations._def.description).toBe(
-          'A list of locations to retrieve the weather for.',
+          "A list of locations to retrieve the weather for.",
         );
       });
 
-      it('validates correct data for GetCurrentWeather', () => {
-        const GetCurrentWeatherSchema = zodSchemas?.GetCurrentWeather as z.ZodTypeAny;
+      it("validates correct data for GetCurrentWeather", () => {
+        const GetCurrentWeatherSchema =
+          zodSchemas?.GetCurrentWeather as z.ZodTypeAny;
         const validData = {
-          location: 'New York',
+          location: "New York",
           locations: [
-            { city: 'New York', state: 'NY', countryCode: 'US', time: '2023-12-04T14:00:00Z' },
+            {
+              city: "New York",
+              state: "NY",
+              countryCode: "US",
+              time: "2023-12-04T14:00:00Z",
+            },
           ],
         };
         expect(() => GetCurrentWeatherSchema.parse(validData)).not.toThrow();
       });
 
-      it('throws error for invalid data for GetCurrentWeather', () => {
-        const GetCurrentWeatherSchema = zodSchemas?.GetCurrentWeather as z.ZodTypeAny;
+      it("throws error for invalid data for GetCurrentWeather", () => {
+        const GetCurrentWeatherSchema =
+          zodSchemas?.GetCurrentWeather as z.ZodTypeAny;
         const invalidData = {
           location: 123,
-          locations: [{ city: 'New York', state: 'NY', countryCode: 'US', time: 'invalid-time' }],
+          locations: [
+            {
+              city: "New York",
+              state: "NY",
+              countryCode: "US",
+              time: "invalid-time",
+            },
+          ],
         };
         expect(() => GetCurrentWeatherSchema.parse(invalidData)).toThrow();
       });
     });
 
-    describe('whimsicalOpenapiSpec', () => {
+    describe("whimsicalOpenapiSpec", () => {
       const { zodSchemas } = openapiToFunction(whimsicalOpenapiSpec, true);
 
-      it('generates correct Zod schema for postRenderFlowchart', () => {
+      it("generates correct Zod schema for postRenderFlowchart", () => {
         expect(zodSchemas).toBeDefined();
         expect(zodSchemas?.postRenderFlowchart).toBeDefined();
 
@@ -1005,21 +1068,21 @@ describe('createURL', () => {
         const shape = PostRenderFlowchartSchema.shape;
         expect(shape.mermaid).toBeInstanceOf(z.ZodString);
         expect(shape.title).toBeInstanceOf(z.ZodOptional);
-        expect((shape.title as z.ZodOptional<z.ZodString>)._def.innerType).toBeInstanceOf(
-          z.ZodString,
-        );
+        expect(
+          (shape.title as z.ZodOptional<z.ZodString>)._def.innerType,
+        ).toBeInstanceOf(z.ZodString);
       });
 
-      it('validates correct data for postRenderFlowchart', () => {
+      it("validates correct data for postRenderFlowchart", () => {
         const PostRenderFlowchartSchema = zodSchemas?.postRenderFlowchart;
         const validData = {
-          mermaid: 'graph TD; A-->B; B-->C; C-->D;',
-          title: 'Test Flowchart',
+          mermaid: "graph TD; A-->B; B-->C; C-->D;",
+          title: "Test Flowchart",
         };
         expect(() => PostRenderFlowchartSchema?.parse(validData)).not.toThrow();
       });
 
-      it('throws error for invalid data for postRenderFlowchart', () => {
+      it("throws error for invalid data for postRenderFlowchart", () => {
         const PostRenderFlowchartSchema = zodSchemas?.postRenderFlowchart;
         const invalidData = {
           mermaid: 123,
@@ -1029,12 +1092,12 @@ describe('createURL', () => {
       });
     });
 
-    describe('scholarAIOpenapiSpec', () => {
+    describe("scholarAIOpenapiSpec", () => {
       const result = validateAndParseOpenAPISpec(scholarAIOpenapiSpec);
       const spec = result.spec as OpenAPIV3.Document;
       const { zodSchemas } = openapiToFunction(spec, true);
 
-      it('generates correct Zod schema for searchAbstracts', () => {
+      it("generates correct Zod schema for searchAbstracts", () => {
         expect(zodSchemas).toBeDefined();
         expect(zodSchemas?.searchAbstracts).toBeDefined();
 
@@ -1049,7 +1112,8 @@ describe('createURL', () => {
         expect(shape.keywords).toBeInstanceOf(z.ZodString);
         expect(shape.sort).toBeInstanceOf(z.ZodOptional);
         expect(
-          (shape.sort as z.ZodOptional<z.ZodEnum<[string, ...string[]]>>)._def.innerType,
+          (shape.sort as z.ZodOptional<z.ZodEnum<[string, ...string[]]>>)._def
+            .innerType,
         ).toBeInstanceOf(z.ZodEnum);
         expect(shape.query).toBeInstanceOf(z.ZodString);
         expect(shape.peer_reviewed_only).toBeInstanceOf(z.ZodOptional);
@@ -1058,27 +1122,27 @@ describe('createURL', () => {
         expect(shape.offset).toBeInstanceOf(z.ZodOptional);
       });
 
-      it('validates correct data for searchAbstracts', () => {
+      it("validates correct data for searchAbstracts", () => {
         const SearchAbstractsSchema = zodSchemas?.searchAbstracts;
         const validData = {
-          keywords: 'machine learning',
-          sort: 'cited_by_count',
-          query: 'AI applications',
-          peer_reviewed_only: 'true',
-          start_year: '2020',
-          end_year: '2023',
-          offset: '0',
+          keywords: "machine learning",
+          sort: "cited_by_count",
+          query: "AI applications",
+          peer_reviewed_only: "true",
+          start_year: "2020",
+          end_year: "2023",
+          offset: "0",
         };
         expect(() => SearchAbstractsSchema?.parse(validData)).not.toThrow();
       });
 
-      it('throws error for invalid data for searchAbstracts', () => {
+      it("throws error for invalid data for searchAbstracts", () => {
         const SearchAbstractsSchema = zodSchemas?.searchAbstracts;
         const invalidData = {
           keywords: 123,
-          sort: 'invalid_sort',
+          sort: "invalid_sort",
           query: 42,
-          peer_reviewed_only: 'maybe',
+          peer_reviewed_only: "maybe",
           start_year: 2020,
           end_year: 2023,
           offset: 0,
@@ -1086,7 +1150,7 @@ describe('createURL', () => {
         expect(() => SearchAbstractsSchema?.parse(invalidData)).toThrow();
       });
 
-      it('generates correct Zod schema for getFullText', () => {
+      it("generates correct Zod schema for getFullText", () => {
         expect(zodSchemas?.getFullText).toBeDefined();
 
         const GetFullTextSchema = zodSchemas?.getFullText;
@@ -1099,12 +1163,12 @@ describe('createURL', () => {
         const shape = GetFullTextSchema.shape;
         expect(shape.pdf_url).toBeInstanceOf(z.ZodString);
         expect(shape.chunk).toBeInstanceOf(z.ZodOptional);
-        expect((shape.chunk as z.ZodOptional<z.ZodNumber>)._def.innerType).toBeInstanceOf(
-          z.ZodNumber,
-        );
+        expect(
+          (shape.chunk as z.ZodOptional<z.ZodNumber>)._def.innerType,
+        ).toBeInstanceOf(z.ZodNumber);
       });
 
-      it('generates correct Zod schema for saveCitation', () => {
+      it("generates correct Zod schema for saveCitation", () => {
         expect(zodSchemas?.saveCitation).toBeDefined();
 
         const SaveCitationSchema = zodSchemas?.saveCitation;
@@ -1122,30 +1186,30 @@ describe('createURL', () => {
     });
   });
 
-  describe('openapiToFunction zodSchemas for SWAPI', () => {
+  describe("openapiToFunction zodSchemas for SWAPI", () => {
     const result = validateAndParseOpenAPISpec(swapidev);
     const spec = result.spec as OpenAPIV3.Document;
     const { zodSchemas } = openapiToFunction(spec, true);
 
-    describe('getPeople schema', () => {
-      it('does not generate Zod schema for getPeople (no parameters)', () => {
+    describe("getPeople schema", () => {
+      it("does not generate Zod schema for getPeople (no parameters)", () => {
         expect(zodSchemas).toBeDefined();
         expect(zodSchemas?.getPeople).toBeUndefined();
       });
 
-      it('validates correct data for getPeople', () => {
+      it("validates correct data for getPeople", () => {
         const GetPeopleSchema = zodSchemas?.getPeople;
         expect(GetPeopleSchema).toBeUndefined();
       });
 
-      it('does not throw for invalid data for getPeople', () => {
+      it("does not throw for invalid data for getPeople", () => {
         const GetPeopleSchema = zodSchemas?.getPeople;
         expect(GetPeopleSchema).toBeUndefined();
       });
     });
 
-    describe('getPersonById schema', () => {
-      it('generates correct Zod schema for getPersonById', () => {
+    describe("getPersonById schema", () => {
+      it("generates correct Zod schema for getPersonById", () => {
         expect(zodSchemas).toBeDefined();
         expect(zodSchemas?.getPersonById).toBeDefined();
 
@@ -1160,13 +1224,13 @@ describe('createURL', () => {
         expect(shape.id).toBeInstanceOf(z.ZodString);
       });
 
-      it('validates correct data for getPersonById', () => {
+      it("validates correct data for getPersonById", () => {
         const GetPersonByIdSchema = zodSchemas?.getPersonById;
-        const validData = { id: '1' };
+        const validData = { id: "1" };
         expect(() => GetPersonByIdSchema?.parse(validData)).not.toThrow();
       });
 
-      it('throws error for invalid data for getPersonById', () => {
+      it("throws error for invalid data for getPersonById", () => {
         const GetPersonByIdSchema = zodSchemas?.getPersonById;
         const invalidData = { id: 1 }; // should be string
         expect(() => GetPersonByIdSchema?.parse(invalidData)).toThrow();
@@ -1174,42 +1238,49 @@ describe('createURL', () => {
     });
   });
 
-  describe('openapiToFunction parameter refs resolution', () => {
+  describe("openapiToFunction parameter refs resolution", () => {
     const weatherSpec = {
-      openapi: '3.0.0',
-      info: { title: 'Weather', version: '1.0.0' },
-      servers: [{ url: 'https://api.weather.gov' }],
+      openapi: "3.0.0",
+      info: { title: "Weather", version: "1.0.0" },
+      servers: [{ url: "https://api.weather.gov" }],
       paths: {
-        '/points/{point}': {
+        "/points/{point}": {
           get: {
-            operationId: 'getPoint',
-            parameters: [{ $ref: '#/components/parameters/PathPoint' }],
-            responses: { '200': { description: 'ok' } },
+            operationId: "getPoint",
+            parameters: [{ $ref: "#/components/parameters/PathPoint" }],
+            responses: { "200": { description: "ok" } },
           },
         },
       },
       components: {
         parameters: {
           PathPoint: {
-            name: 'point',
-            in: 'path',
+            name: "point",
+            in: "path",
             required: true,
-            schema: { type: 'string', pattern: '^(-?\\d+(?:\\.\\d+)?),(-?\\d+(?:\\.\\d+)?)$' },
+            schema: {
+              type: "string",
+              pattern: "^(-?\\d+(?:\\.\\d+)?),(-?\\d+(?:\\.\\d+)?)$",
+            },
           },
         },
       },
     } satisfies OpenAPIV3.Document;
 
-    it('correctly resolves $ref for parameters', () => {
+    it("correctly resolves $ref for parameters", () => {
       const { functionSignatures } = openapiToFunction(weatherSpec, true);
-      const func = functionSignatures.find((sig) => sig.name === 'getPoint');
+      const func = functionSignatures.find((sig) => sig.name === "getPoint");
       expect(func).toBeDefined();
-      expect(func?.parameters.properties).toHaveProperty('point');
-      expect(func?.parameters.required).toContain('point');
+      expect(func?.parameters.properties).toHaveProperty("point");
+      expect(func?.parameters.required).toContain("point");
 
-      const paramSchema = func?.parameters.properties['point'] as OpenAPIV3.SchemaObject;
-      expect(paramSchema.type).toEqual('string');
-      expect(paramSchema.pattern).toEqual('^(-?\\d+(?:\\.\\d+)?),(-?\\d+(?:\\.\\d+)?)$');
+      const paramSchema = func?.parameters.properties[
+        "point"
+      ] as OpenAPIV3.SchemaObject;
+      expect(paramSchema.type).toEqual("string");
+      expect(paramSchema.pattern).toEqual(
+        "^(-?\\d+(?:\\.\\d+)?),(-?\\d+(?:\\.\\d+)?)$",
+      );
     });
   });
 });

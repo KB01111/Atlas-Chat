@@ -1,8 +1,8 @@
-import type { ZodIssue } from 'zod';
-import type * as a from './types/assistants';
-import type * as s from './schemas';
-import type * as t from './types';
-import { ContentTypes } from './types/runs';
+import type { ZodIssue } from "zod";
+import type * as a from "./types/assistants";
+import type * as s from "./schemas";
+import type * as t from "./types";
+import { ContentTypes } from "./types/runs";
 import {
   openAISchema,
   googleSchema,
@@ -17,10 +17,10 @@ import {
   chatGPTBrowserSchema,
   compactPluginsSchema,
   compactAssistantSchema,
-} from './schemas';
-import { bedrockInputSchema } from './bedrock';
-import { extractEnvVariable } from './utils';
-import { alternateName } from './config';
+} from "./schemas";
+import { bedrockInputSchema } from "./bedrock";
+import { extractEnvVariable } from "./utils";
+import { alternateName } from "./config";
 
 type EndpointSchema =
   | typeof openAISchema
@@ -65,11 +65,11 @@ export function getEnabledEndpoints() {
     EModelEndpoint.bedrock,
   ];
 
-  const endpointsEnv = process.env.ENDPOINTS ?? '';
+  const endpointsEnv = process.env.ENDPOINTS ?? "";
   let enabledEndpoints = defaultEndpoints;
   if (endpointsEnv) {
     enabledEndpoints = endpointsEnv
-      .split(',')
+      .split(",")
       .filter((endpoint) => endpoint.trim())
       .map((endpoint) => endpoint.trim());
   }
@@ -85,7 +85,10 @@ export function orderEndpointsConfig(endpointsConfig: t.TEndpointsConfig) {
   const endpointKeys = Object.keys(endpointsConfig);
   const defaultCustomIndex = enabledEndpoints.indexOf(EModelEndpoint.custom);
   return endpointKeys.reduce(
-    (accumulatedConfig: Record<string, t.TConfig | null | undefined>, currentEndpointKey) => {
+    (
+      accumulatedConfig: Record<string, t.TConfig | null | undefined>,
+      currentEndpointKey,
+    ) => {
       const isCustom = !(currentEndpointKey in EModelEndpoint);
       const isEnabled = enabledEndpoints.includes(currentEndpointKey);
       if (!isEnabled && !isCustom) {
@@ -97,7 +100,10 @@ export function orderEndpointsConfig(endpointsConfig: t.TEndpointsConfig) {
       if (isCustom) {
         accumulatedConfig[currentEndpointKey] = {
           order: defaultCustomIndex >= 0 ? defaultCustomIndex : 9999,
-          ...(endpointsConfig[currentEndpointKey] as Omit<t.TConfig, 'order'> & { order?: number }),
+          ...(endpointsConfig[currentEndpointKey] as Omit<
+            t.TConfig,
+            "order"
+          > & { order?: number }),
         };
       } else if (endpointsConfig[currentEndpointKey]) {
         accumulatedConfig[currentEndpointKey] = {
@@ -115,19 +121,19 @@ export function orderEndpointsConfig(endpointsConfig: t.TEndpointsConfig) {
 export function errorsToString(errors: ZodIssue[]) {
   return errors
     .map((error) => {
-      const field = error.path.join('.');
+      const field = error.path.join(".");
       const message = error.message;
 
       return `${field}: ${message}`;
     })
-    .join(' ');
+    .join(" ");
 }
 
 /** Resolves header values to env variables if detected */
 export function resolveHeaders(headers: Record<string, string> | undefined) {
   const resolvedHeaders = { ...(headers ?? {}) };
 
-  if (headers && typeof headers === 'object' && !Array.isArray(headers)) {
+  if (headers && typeof headers === "object" && !Array.isArray(headers)) {
     Object.keys(headers).forEach((key) => {
       resolvedHeaders[key] = extractEnvVariable(headers[key]);
     });
@@ -149,7 +155,7 @@ export function getFirstDefinedValue(possibleValues: string[]) {
 
 export function getNonEmptyValue(possibleValues: string[]) {
   for (const value of possibleValues) {
-    if (value && value.trim() !== '') {
+    if (value && value.trim() !== "") {
       return value;
     }
   }
@@ -194,7 +200,8 @@ export const parseConvo = ({
   }
 
   if (secondaryModels && convo?.agentOptions) {
-    convo.agentOptions.model = getFirstDefinedValue(secondaryModels) ?? convo.agentOptions.model;
+    convo.agentOptions.model =
+      getFirstDefinedValue(secondaryModels) ?? convo.agentOptions.model;
   }
 
   return convo;
@@ -207,10 +214,10 @@ const extractGPTVersion = (modelStr: string): string => {
   const gptMatch = modelStr.match(/gpt-(\d+(?:\.\d+)?)([a-z])?/i);
   if (gptMatch) {
     const version = gptMatch[1];
-    const suffix = gptMatch[2] || '';
+    const suffix = gptMatch[2] || "";
     return `GPT-${version}${suffix}`;
   }
-  return '';
+  return "";
 };
 
 /** Match omni models (o1, o3, etc.), "o" followed by a digit, possibly with decimal */
@@ -220,10 +227,12 @@ const extractOmniVersion = (modelStr: string): string => {
     const version = omniMatch[1];
     return `o${version}`;
   }
-  return '';
+  return "";
 };
 
-export const getResponseSender = (endpointOption: t.TEndpointOption): string => {
+export const getResponseSender = (
+  endpointOption: t.TEndpointOption,
+): string => {
   const {
     model: _m,
     endpoint,
@@ -233,10 +242,10 @@ export const getResponseSender = (endpointOption: t.TEndpointOption): string => 
     modelLabel: _ml,
   } = endpointOption;
 
-  const model = _m ?? '';
-  const modelDisplayLabel = _mdl ?? '';
-  const chatGptLabel = _cgl ?? '';
-  const modelLabel = _ml ?? '';
+  const model = _m ?? "";
+  const modelDisplayLabel = _mdl ?? "";
+  const chatGptLabel = _cgl ?? "";
+  const modelLabel = _ml ?? "";
   if (
     [
       EModelEndpoint.openAI,
@@ -252,17 +261,17 @@ export const getResponseSender = (endpointOption: t.TEndpointOption): string => 
       return modelLabel;
     } else if (model && extractOmniVersion(model)) {
       return extractOmniVersion(model);
-    } else if (model && model.includes('mistral')) {
-      return 'Mistral';
-    } else if (model && model.includes('gpt-')) {
+    } else if (model && model.includes("mistral")) {
+      return "Mistral";
+    } else if (model && model.includes("gpt-")) {
       const gptVersion = extractGPTVersion(model);
-      return gptVersion || 'GPT';
+      return gptVersion || "GPT";
     }
-    return (alternateName[endpoint] as string | undefined) ?? 'ChatGPT';
+    return (alternateName[endpoint] as string | undefined) ?? "ChatGPT";
   }
 
   if (endpoint === EModelEndpoint.anthropic) {
-    return modelLabel || 'Claude';
+    return modelLabel || "Claude";
   }
 
   if (endpoint === EModelEndpoint.bedrock) {
@@ -272,35 +281,41 @@ export const getResponseSender = (endpointOption: t.TEndpointOption): string => 
   if (endpoint === EModelEndpoint.google) {
     if (modelLabel) {
       return modelLabel;
-    } else if (model && (model.includes('gemini') || model.includes('learnlm'))) {
-      return 'Gemini';
-    } else if (model && model.includes('code')) {
-      return 'Codey';
+    } else if (
+      model &&
+      (model.includes("gemini") || model.includes("learnlm"))
+    ) {
+      return "Gemini";
+    } else if (model && model.includes("code")) {
+      return "Codey";
     }
 
-    return 'PaLM2';
+    return "PaLM2";
   }
 
-  if (endpoint === EModelEndpoint.custom || endpointType === EModelEndpoint.custom) {
+  if (
+    endpoint === EModelEndpoint.custom ||
+    endpointType === EModelEndpoint.custom
+  ) {
     if (modelLabel) {
       return modelLabel;
     } else if (chatGptLabel) {
       return chatGptLabel;
     } else if (model && extractOmniVersion(model)) {
       return extractOmniVersion(model);
-    } else if (model && model.includes('mistral')) {
-      return 'Mistral';
-    } else if (model && model.includes('gpt-')) {
+    } else if (model && model.includes("mistral")) {
+      return "Mistral";
+    } else if (model && model.includes("gpt-")) {
       const gptVersion = extractGPTVersion(model);
-      return gptVersion || 'GPT';
+      return gptVersion || "GPT";
     } else if (modelDisplayLabel) {
       return modelDisplayLabel;
     }
 
-    return 'AI';
+    return "AI";
   }
 
-  return '';
+  return "";
 };
 
 type CompactEndpointSchema =
@@ -344,7 +359,9 @@ export const parseCompactConvo = ({
     throw new Error(`undefined endpoint: ${endpoint}`);
   }
 
-  let schema = compactEndpointSchemas[endpoint] as CompactEndpointSchema | undefined;
+  let schema = compactEndpointSchemas[endpoint] as
+    | CompactEndpointSchema
+    | undefined;
 
   if (!schema && !endpointType) {
     throw new Error(`Unknown endpoint: ${endpoint}`);
@@ -372,33 +389,34 @@ export const parseCompactConvo = ({
 };
 
 export function parseTextParts(contentParts: a.TMessageContentParts[]): string {
-  let result = '';
+  let result = "";
 
   for (const part of contentParts) {
     if (!part.type) {
       continue;
     }
     if (part.type === ContentTypes.TEXT) {
-      const textValue = typeof part.text === 'string' ? part.text : part.text.value;
+      const textValue =
+        typeof part.text === "string" ? part.text : part.text.value;
 
       if (
         result.length > 0 &&
         textValue.length > 0 &&
-        result[result.length - 1] !== ' ' &&
-        textValue[0] !== ' '
+        result[result.length - 1] !== " " &&
+        textValue[0] !== " "
       ) {
-        result += ' ';
+        result += " ";
       }
       result += textValue;
     } else if (part.type === ContentTypes.THINK) {
-      const textValue = typeof part.think === 'string' ? part.think : '';
+      const textValue = typeof part.think === "string" ? part.think : "";
       if (
         result.length > 0 &&
         textValue.length > 0 &&
-        result[result.length - 1] !== ' ' &&
-        textValue[0] !== ' '
+        result[result.length - 1] !== " " &&
+        textValue[0] !== " "
       ) {
-        result += ' ';
+        result += " ";
       }
       result += textValue;
     }
@@ -407,9 +425,24 @@ export function parseTextParts(contentParts: a.TMessageContentParts[]): string {
   return result;
 }
 
-export const SEPARATORS = ['.', '?', '!', '۔', '。', '‥', ';', '¡', '¿', '\n', '```'];
+export const SEPARATORS = [
+  ".",
+  "?",
+  "!",
+  "۔",
+  "。",
+  "‥",
+  ";",
+  "¡",
+  "¿",
+  "\n",
+  "```",
+];
 
-export function findLastSeparatorIndex(text: string, separators = SEPARATORS): number {
+export function findLastSeparatorIndex(
+  text: string,
+  separators = SEPARATORS,
+): number {
   let lastIndex = -1;
   for (const separator of separators) {
     const index = text.lastIndexOf(separator);

@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 import {
   Permissions,
   PermissionTypes,
@@ -9,7 +9,7 @@ import {
   bookmarkPermissionsSchema,
   multiConvoPermissionsSchema,
   temporaryChatPermissionsSchema,
-} from './permissions';
+} from "./permissions";
 
 /**
  * Enum for System Defined Roles
@@ -18,11 +18,11 @@ export enum SystemRoles {
   /**
    * The Admin role
    */
-  ADMIN = 'ADMIN',
+  ADMIN = "ADMIN",
   /**
    * The default user role
    */
-  USER = 'USER',
+  USER = "USER",
 }
 
 // The role schema now only needs to reference the permissions schema.

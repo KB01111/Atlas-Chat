@@ -1,6 +1,6 @@
-import * as types from '../types';
-import * as r from '../roles';
-import * as p from '../permissions';
+import * as types from "../types";
+import * as r from "../roles";
+import * as p from "../permissions";
 import {
   Tools,
   Assistant,
@@ -13,7 +13,7 @@ import {
   Agent,
   AgentCreateParams,
   AgentUpdateParams,
-} from './assistants';
+} from "./assistants";
 
 export type MutationOptions<
   Response,
@@ -24,7 +24,12 @@ export type MutationOptions<
 > = {
   onSuccess?: (data: Response, variables: Request, context?: Context) => void;
   onMutate?: (variables: Request) => Snapshot | Promise<Snapshot>;
-  onError?: (error: Error, variables: Request, context?: Context, snapshot?: Snapshot) => void;
+  onError?: (
+    error: Error,
+    variables: Request,
+    context?: Context,
+    snapshot?: Snapshot,
+  ) => void;
   onSettled?: (
     data: Response | undefined,
     error: Error | null,
@@ -48,7 +53,10 @@ export type PresetDeleteResponse = {
 
 export type UpdatePresetOptions = MutationOptions<types.TPreset, types.TPreset>;
 
-export type DeletePresetOptions = MutationOptions<PresetDeleteResponse, types.TPreset | undefined>;
+export type DeletePresetOptions = MutationOptions<
+  PresetDeleteResponse,
+  types.TPreset | undefined
+>;
 
 /* Assistant mutations */
 
@@ -71,16 +79,25 @@ export type UpdateActionVariables = {
   version: number | string;
 };
 
-export type UploadAssistantAvatarOptions = MutationOptions<Assistant, AssistantAvatarVariables>;
+export type UploadAssistantAvatarOptions = MutationOptions<
+  Assistant,
+  AssistantAvatarVariables
+>;
 
-export type CreateAssistantMutationOptions = MutationOptions<Assistant, AssistantCreateParams>;
+export type CreateAssistantMutationOptions = MutationOptions<
+  Assistant,
+  AssistantCreateParams
+>;
 
 export type UpdateAssistantVariables = {
   assistant_id: string;
   data: AssistantUpdateParams;
 };
 
-export type UpdateAssistantMutationOptions = MutationOptions<Assistant, UpdateAssistantVariables>;
+export type UpdateAssistantMutationOptions = MutationOptions<
+  Assistant,
+  UpdateAssistantVariables
+>;
 
 export type DeleteAssistantBody = {
   assistant_id: string;
@@ -90,11 +107,14 @@ export type DeleteAssistantBody = {
 
 export type DeleteAssistantMutationOptions = MutationOptions<
   void,
-  Pick<DeleteAssistantBody, 'assistant_id'>
+  Pick<DeleteAssistantBody, "assistant_id">
 >;
 
 export type UpdateActionResponse = [AssistantDocument, Assistant, Action];
-export type UpdateActionOptions = MutationOptions<UpdateActionResponse, UpdateActionVariables>;
+export type UpdateActionOptions = MutationOptions<
+  UpdateActionResponse,
+  UpdateActionVariables
+>;
 
 export type DeleteActionVariables = {
   endpoint: types.AssistantsEndpoint;
@@ -120,16 +140,25 @@ export type UpdateAgentActionVariables = {
   functions: FunctionTool[];
 };
 
-export type UploadAgentAvatarOptions = MutationOptions<Agent, AgentAvatarVariables>;
+export type UploadAgentAvatarOptions = MutationOptions<
+  Agent,
+  AgentAvatarVariables
+>;
 
-export type CreateAgentMutationOptions = MutationOptions<Agent, AgentCreateParams>;
+export type CreateAgentMutationOptions = MutationOptions<
+  Agent,
+  AgentCreateParams
+>;
 
 export type UpdateAgentVariables = {
   agent_id: string;
   data: AgentUpdateParams;
 };
 
-export type UpdateAgentMutationOptions = MutationOptions<Agent, UpdateAgentVariables>;
+export type UpdateAgentMutationOptions = MutationOptions<
+  Agent,
+  UpdateAgentVariables
+>;
 
 export type DuplicateAgentBody = {
   agent_id: string;
@@ -137,14 +166,17 @@ export type DuplicateAgentBody = {
 
 export type DuplicateAgentMutationOptions = MutationOptions<
   { agent: Agent; actions: Action[] },
-  Pick<DuplicateAgentBody, 'agent_id'>
+  Pick<DuplicateAgentBody, "agent_id">
 >;
 
 export type DeleteAgentBody = {
   agent_id: string;
 };
 
-export type DeleteAgentMutationOptions = MutationOptions<void, Pick<DeleteAgentBody, 'agent_id'>>;
+export type DeleteAgentMutationOptions = MutationOptions<
+  void,
+  Pick<DeleteAgentBody, "agent_id">
+>;
 
 export type UpdateAgentActionResponse = [Agent, Action];
 export type UpdateAgentActionOptions = MutationOptions<
@@ -157,7 +189,10 @@ export type DeleteAgentActionVariables = {
   action_id: string;
 };
 
-export type DeleteAgentActionOptions = MutationOptions<void, DeleteAgentActionVariables>;
+export type DeleteAgentActionOptions = MutationOptions<
+  void,
+  DeleteAgentActionVariables
+>;
 
 export type DeleteConversationOptions = MutationOptions<
   types.TDeleteConversationResponse,
@@ -169,7 +204,10 @@ export type DuplicateConvoOptions = MutationOptions<
   types.TDuplicateConvoRequest
 >;
 
-export type ForkConvoOptions = MutationOptions<types.TForkConvoResponse, types.TForkConvoRequest>;
+export type ForkConvoOptions = MutationOptions<
+  types.TForkConvoResponse,
+  types.TForkConvoRequest
+>;
 
 export type CreateSharedLinkOptions = MutationOptions<
   types.TSharedLink,
@@ -191,7 +229,9 @@ export type ArchiveConvoOptions = MutationOptions<
   types.TArchiveConversationRequest
 >;
 
-export type DeleteSharedLinkContext = { previousQueries?: Map<string, TDeleteSharedLinkResponse> };
+export type DeleteSharedLinkContext = {
+  previousQueries?: Map<string, TDeleteSharedLinkResponse>;
+};
 export type DeleteSharedLinkOptions = MutationOptions<
   TDeleteSharedLinkResponse,
   { shareId: string },
@@ -211,7 +251,10 @@ export type UpdatePromptGroupOptions = MutationOptions<
   TUpdatePromptContext
 >;
 
-export type CreatePromptOptions = MutationOptions<types.TCreatePromptResponse, types.TCreatePrompt>;
+export type CreatePromptOptions = MutationOptions<
+  types.TCreatePromptResponse,
+  types.TCreatePrompt
+>;
 
 export type DeletePromptOptions = MutationOptions<
   types.TDeletePromptResponse,
@@ -235,7 +278,10 @@ export type MakePromptProductionOptions = MutationOptions<
 >;
 
 /* Auth mutations */
-export type VerifyEmailOptions = MutationOptions<types.VerifyEmailResponse, types.TVerifyEmail>;
+export type VerifyEmailOptions = MutationOptions<
+  types.VerifyEmailResponse,
+  types.TVerifyEmail
+>;
 export type ResendVerifcationOptions = MutationOptions<
   types.VerifyEmailResponse,
   types.TResendVerificationEmail
@@ -276,7 +322,10 @@ export type UpdateConversationTagOptions = MutationOptions<
   types.TConversationTag,
   types.TConversationTagRequest
 >;
-export type DeleteConversationTagOptions = MutationOptions<types.TConversationTag, string>;
+export type DeleteConversationTagOptions = MutationOptions<
+  types.TConversationTag,
+  string
+>;
 
 export type AcceptTermsMutationOptions = MutationOptions<
   types.TAcceptTermsResponse,
@@ -286,7 +335,10 @@ export type AcceptTermsMutationOptions = MutationOptions<
 >;
 
 /* Tools */
-export type UpdatePluginAuthOptions = MutationOptions<types.TUser, types.TUpdateUserPlugins>;
+export type UpdatePluginAuthOptions = MutationOptions<
+  types.TUser,
+  types.TUpdateUserPlugins
+>;
 
 export type ToolParamsMap = {
   [Tools.execute_code]: {
@@ -303,7 +355,10 @@ export type ToolParams<T extends ToolId> = ToolParamsMap[T] & {
   blockIndex?: number;
   conversationId: string;
 };
-export type ToolCallResponse = { result: unknown; attachments?: types.TAttachment[] };
+export type ToolCallResponse = {
+  result: unknown;
+  attachments?: types.TAttachment[];
+};
 export type ToolCallMutationOptions<T extends ToolId> = MutationOptions<
   ToolCallResponse,
   ToolParams<T>
@@ -322,7 +377,10 @@ export type TEditArtifactRequest = {
   updated: string;
 };
 
-export type TEditArtifactResponse = Pick<types.TMessage, 'content' | 'text' | 'conversationId'>;
+export type TEditArtifactResponse = Pick<
+  types.TMessage,
+  "content" | "text" | "conversationId"
+>;
 
 export type EditArtifactOptions = MutationOptions<
   TEditArtifactResponse,

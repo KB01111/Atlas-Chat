@@ -37,7 +37,10 @@ export function extractEnvVariable(value: string) {
     const envValue = process.env[varName] || fullMatch;
 
     // Replace at exact position
-    result = result.substring(0, index) + envValue + result.substring(index + fullMatch.length);
+    result =
+      result.substring(0, index) +
+      envValue +
+      result.substring(index + fullMatch.length);
   }
 
   return result;

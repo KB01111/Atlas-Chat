@@ -1,17 +1,17 @@
-import { z } from 'zod';
-import _axios from 'axios';
-import { URL } from 'url';
-import crypto from 'crypto';
-import { load } from 'js-yaml';
+import { z } from "zod";
+import _axios from "axios";
+import { URL } from "url";
+import crypto from "crypto";
+import { load } from "js-yaml";
 import type {
   FunctionTool,
   Schema,
   Reference,
   ActionMetadata,
   ActionMetadataRuntime,
-} from './types/assistants';
-import type { OpenAPIV3 } from 'openapi-types';
-import { Tools, AuthTypeEnum, AuthorizationTypeEnum } from './types/assistants';
+} from "./types/assistants";
+import type { OpenAPIV3 } from "openapi-types";
+import { Tools, AuthTypeEnum, AuthorizationTypeEnum } from "./types/assistants";
 
 export type ParametersSchema = {
   type: string;
@@ -46,22 +46,25 @@ type MediaTypeObject =
       [media: string]: OpenAPIV3.MediaTypeObject | undefined;
     };
 
-type RequestBodyObject = Omit<OpenAPIV3.RequestBodyObject, 'content'> & {
+type RequestBodyObject = Omit<OpenAPIV3.RequestBodyObject, "content"> & {
   content: MediaTypeObject;
 };
 
 export function sha1(input: string) {
-  return crypto.createHash('sha1').update(input).digest('hex');
+  return crypto.createHash("sha1").update(input).digest("hex");
 }
 
 export function createURL(domain: string, path: string) {
-  const cleanDomain = domain.replace(/\/$/, '');
-  const cleanPath = path.replace(/^\//, '');
+  const cleanDomain = domain.replace(/\/$/, "");
+  const cleanPath = path.replace(/^\//, "");
   const fullURL = `${cleanDomain}/${cleanPath}`;
   return new URL(fullURL).toString();
 }
 
-const schemaTypeHandlers: Record<string, (schema: OpenAPISchema) => z.ZodTypeAny> = {
+const schemaTypeHandlers: Record<
+  string,
+  (schema: OpenAPISchema) => z.ZodTypeAny
+> = {
   string: (schema) => {
     if (schema.enum) {
       return z.enum(schema.enum as [string, ...string[]]);
@@ -106,9 +109,9 @@ const schemaTypeHandlers: Record<string, (schema: OpenAPISchema) => z.ZodTypeAny
         const zodSchema = openAPISchemaToZod(value as OpenAPISchema);
         shape[key] = zodSchema || z.unknown();
         if (schema.required && schema.required.includes(key)) {
-          shape[key] = shape[key].describe(value.description || '');
+          shape[key] = shape[key].describe(value.description || "");
         } else {
-          shape[key] = shape[key].optional().describe(value.description || '');
+          shape[key] = shape[key].optional().describe(value.description || "");
         }
       });
     }
@@ -117,11 +120,15 @@ const schemaTypeHandlers: Record<string, (schema: OpenAPISchema) => z.ZodTypeAny
 };
 
 function openAPISchemaToZod(schema: OpenAPISchema): z.ZodTypeAny | undefined {
-  if (schema.type === 'object' && Object.keys(schema.properties || {}).length === 0) {
+  if (
+    schema.type === "object" &&
+    Object.keys(schema.properties || {}).length === 0
+  ) {
     return undefined;
   }
 
-  const handler = schemaTypeHandlers[schema.type as string] || (() => z.unknown());
+  const handler =
+    schemaTypeHandlers[schema.type as string] || (() => z.unknown());
   return handler(schema);
 }
 
@@ -134,7 +141,12 @@ export class FunctionSignature {
   parameters: ParametersSchema;
   strict: boolean;
 
-  constructor(name: string, description: string, parameters: ParametersSchema, strict?: boolean) {
+  constructor(
+    name: string,
+    description: string,
+    parameters: ParametersSchema,
+    strict?: boolean,
+  ) {
     this.name = name;
     this.description = description;
     this.parameters = parameters;
@@ -188,7 +200,10 @@ class RequestExecutor {
     for (const [key, value] of Object.entries(params)) {
       const paramPattern = `{${key}}`;
       if (this.path.includes(paramPattern)) {
-        this.path = this.path.replace(paramPattern, encodeURIComponent(value as string));
+        this.path = this.path.replace(
+          paramPattern,
+          encodeURIComponent(value as string),
+        );
         delete (this.params as Record<string, unknown>)[key];
       }
     }
@@ -219,10 +234,13 @@ class RequestExecutor {
       oauth_client_id,
       oauth_client_secret,
       oauth_token_expires_at,
-      oauth_access_token = '',
+      oauth_access_token = "",
     } = metadata;
 
-    const isApiKey = api_key != null && api_key.length > 0 && type === AuthTypeEnum.ServiceHttp;
+    const isApiKey =
+      api_key != null &&
+      api_key.length > 0 &&
+      type === AuthTypeEnum.ServiceHttp;
     const isOAuth = !!(
       oauth_client_id != null &&
       oauth_client_id &&
@@ -239,10 +257,13 @@ class RequestExecutor {
     );
 
     if (isApiKey && authorization_type === AuthorizationTypeEnum.Basic) {
-      const basicToken = Buffer.from(api_key).toString('base64');
-      this.authHeaders['Authorization'] = `Basic ${basicToken}`;
-    } else if (isApiKey && authorization_type === AuthorizationTypeEnum.Bearer) {
-      this.authHeaders['Authorization'] = `Bearer ${api_key}`;
+      const basicToken = Buffer.from(api_key).toString("base64");
+      this.authHeaders["Authorization"] = `Basic ${basicToken}`;
+    } else if (
+      isApiKey &&
+      authorization_type === AuthorizationTypeEnum.Bearer
+    ) {
+      this.authHeaders["Authorization"] = `Bearer ${api_key}`;
     } else if (
       isApiKey &&
       authorization_type === AuthorizationTypeEnum.Custom &&
@@ -257,18 +278,18 @@ class RequestExecutor {
 
       // 1. Check if token is set
       if (!oauth_access_token) {
-        throw new Error('No access token found. Please log in first.');
+        throw new Error("No access token found. Please log in first.");
       }
 
       // 2. Check if token is expired
       if (oauth_token_expires_at && now >= new Date(oauth_token_expires_at)) {
         // Optionally check refresh_token logic, or just prompt user to re-login
-        throw new Error('Access token is expired. Please re-login.');
+        throw new Error("Access token is expired. Please re-login.");
       }
 
       // If valid, use it
       this.authToken = oauth_access_token;
-      this.authHeaders['Authorization'] = `Bearer ${this.authToken}`;
+      this.authHeaders["Authorization"] = `Bearer ${this.authToken}`;
     }
     return this;
   }
@@ -277,20 +298,20 @@ class RequestExecutor {
     const url = createURL(this.config.domain, this.path);
     const headers = {
       ...this.authHeaders,
-      'Content-Type': this.config.contentType,
+      "Content-Type": this.config.contentType,
     };
 
     const method = this.config.method.toLowerCase();
     const axios = _axios.create();
-    if (method === 'get') {
+    if (method === "get") {
       return axios.get(url, { headers, params: this.params });
-    } else if (method === 'post') {
+    } else if (method === "post") {
       return axios.post(url, this.params, { headers });
-    } else if (method === 'put') {
+    } else if (method === "put") {
       return axios.put(url, this.params, { headers });
-    } else if (method === 'delete') {
+    } else if (method === "delete") {
       return axios.delete(url, { headers, data: this.params });
-    } else if (method === 'patch') {
+    } else if (method === "patch") {
       return axios.patch(url, this.params, { headers });
     } else {
       throw new Error(`Unsupported HTTP method: ${method}`);
@@ -313,7 +334,14 @@ export class ActionRequest {
     isConsequential: boolean,
     contentType: string,
   ) {
-    this.config = new RequestConfig(domain, path, method, operation, isConsequential, contentType);
+    this.config = new RequestConfig(
+      domain,
+      path,
+      method,
+      operation,
+      isConsequential,
+      contentType,
+    );
   }
 
   // Add getters to maintain backward compatibility
@@ -364,27 +392,37 @@ export function resolveRef<
     | OpenAPIV3.SchemaObject
     | OpenAPIV3.ParameterObject
     | OpenAPIV3.RequestBodyObject,
->(obj: T, components?: OpenAPIV3.ComponentsObject): Exclude<T, OpenAPIV3.ReferenceObject> {
-  if ('$ref' in obj && components) {
-    const refPath = obj.$ref.replace(/^#\/components\//, '').split('/');
+>(
+  obj: T,
+  components?: OpenAPIV3.ComponentsObject,
+): Exclude<T, OpenAPIV3.ReferenceObject> {
+  if ("$ref" in obj && components) {
+    const refPath = obj.$ref.replace(/^#\/components\//, "").split("/");
 
     let resolved: unknown = components as Record<string, unknown>;
     for (const segment of refPath) {
-      if (typeof resolved === 'object' && resolved !== null && segment in resolved) {
+      if (
+        typeof resolved === "object" &&
+        resolved !== null &&
+        segment in resolved
+      ) {
         resolved = (resolved as Record<string, unknown>)[segment];
       } else {
         throw new Error(`Could not resolve reference: ${obj.$ref}`);
       }
     }
 
-    return resolveRef(resolved as typeof obj, components) as Exclude<T, OpenAPIV3.ReferenceObject>;
+    return resolveRef(resolved as typeof obj, components) as Exclude<
+      T,
+      OpenAPIV3.ReferenceObject
+    >;
   }
 
   return obj as Exclude<T, OpenAPIV3.ReferenceObject>;
 }
 
 function sanitizeOperationId(input: string) {
-  return input.replace(/[^a-zA-Z0-9_-]/g, '');
+  return input.replace(/[^a-zA-Z0-9_-]/g, "");
 }
 
 /**
@@ -401,25 +439,29 @@ export function openapiToFunction(
   const functionSignatures: FunctionSignature[] = [];
   const requestBuilders: Record<string, ActionRequest> = {};
   const zodSchemas: Record<string, z.ZodTypeAny> = {};
-  const baseUrl = openapiSpec.servers?.[0]?.url ?? '';
+  const baseUrl = openapiSpec.servers?.[0]?.url ?? "";
 
   // Iterate over each path and method in the OpenAPI spec
   for (const [path, methods] of Object.entries(openapiSpec.paths)) {
-    for (const [method, operation] of Object.entries(methods as OpenAPIV3.PathsObject)) {
+    for (const [method, operation] of Object.entries(
+      methods as OpenAPIV3.PathsObject,
+    )) {
       const operationObj = operation as OpenAPIV3.OperationObject & {
-        'x-openai-isConsequential'?: boolean;
+        "x-openai-isConsequential"?: boolean;
       } & {
-        'x-strict'?: boolean;
+        "x-strict"?: boolean;
       };
 
       // Operation ID is used as the function name
       const defaultOperationId = `${method}_${path}`;
-      const operationId = operationObj.operationId || sanitizeOperationId(defaultOperationId);
-      const description = operationObj.summary || operationObj.description || '';
-      const isStrict = operationObj['x-strict'] ?? false;
+      const operationId =
+        operationObj.operationId || sanitizeOperationId(defaultOperationId);
+      const description =
+        operationObj.summary || operationObj.description || "";
+      const isStrict = operationObj["x-strict"] ?? false;
 
       const parametersSchema: OpenAPISchema = {
-        type: 'object',
+        type: "object",
         properties: {},
         required: [],
       };
@@ -479,13 +521,16 @@ export function openapiToFunction(
         path,
         method,
         operationId,
-        !!(operationObj['x-openai-isConsequential'] ?? false),
-        operationObj.requestBody ? 'application/json' : '',
+        !!(operationObj["x-openai-isConsequential"] ?? false),
+        operationObj.requestBody ? "application/json" : "",
       );
 
       requestBuilders[operationId] = actionRequest;
 
-      if (generateZodSchemas && Object.keys(parametersSchema.properties).length > 0) {
+      if (
+        generateZodSchemas &&
+        Object.keys(parametersSchema.properties).length > 0
+      ) {
         const schema = openAPISchemaToZod(parametersSchema);
         if (schema) {
           zodSchemas[operationId] = schema;
@@ -506,7 +551,9 @@ export type ValidationResult = {
 /**
  * Validates and parses an OpenAPI spec.
  */
-export function validateAndParseOpenAPISpec(specString: string): ValidationResult {
+export function validateAndParseOpenAPISpec(
+  specString: string,
+): ValidationResult {
   try {
     let parsedSpec;
     try {
@@ -521,33 +568,52 @@ export function validateAndParseOpenAPISpec(specString: string): ValidationResul
       !Array.isArray(parsedSpec.servers) ||
       parsedSpec.servers.length === 0
     ) {
-      return { status: false, message: 'Could not find a valid URL in `servers`' };
+      return {
+        status: false,
+        message: "Could not find a valid URL in `servers`",
+      };
     }
 
     if (!parsedSpec.servers[0].url) {
-      return { status: false, message: 'Could not find a valid URL in `servers`' };
+      return {
+        status: false,
+        message: "Could not find a valid URL in `servers`",
+      };
     }
 
     // Check for paths
     const paths = parsedSpec.paths;
-    if (!paths || typeof paths !== 'object' || Object.keys(paths).length === 0) {
-      return { status: false, message: 'No paths found in the OpenAPI spec.' };
+    if (
+      !paths ||
+      typeof paths !== "object" ||
+      Object.keys(paths).length === 0
+    ) {
+      return { status: false, message: "No paths found in the OpenAPI spec." };
     }
 
     const components = parsedSpec.components?.schemas || {};
     const messages = [];
 
     for (const [path, methods] of Object.entries(paths)) {
-      for (const [httpMethod, operation] of Object.entries(methods as OpenAPIV3.PathItemObject)) {
+      for (const [httpMethod, operation] of Object.entries(
+        methods as OpenAPIV3.PathItemObject,
+      )) {
         // Ensure operation is a valid operation object
-        const { responses } = operation as OpenAPIV3.OperationObject | { responses: undefined };
-        if (typeof operation === 'object' && responses) {
+        const { responses } = operation as
+          | OpenAPIV3.OperationObject
+          | { responses: undefined };
+        if (typeof operation === "object" && responses) {
           for (const [statusCode, response] of Object.entries(responses)) {
-            const content = (response as OpenAPIV3.ResponseObject).content as MediaTypeObject;
-            if (content && content['application/json'] && content['application/json'].schema) {
-              const schema = content['application/json'].schema;
-              if ('$ref' in schema && typeof schema.$ref === 'string') {
-                const refName = schema.$ref.split('/').pop();
+            const content = (response as OpenAPIV3.ResponseObject)
+              .content as MediaTypeObject;
+            if (
+              content &&
+              content["application/json"] &&
+              content["application/json"].schema
+            ) {
+              const schema = content["application/json"].schema;
+              if ("$ref" in schema && typeof schema.$ref === "string") {
+                const refName = schema.$ref.split("/").pop();
                 if (refName && !components[refName]) {
                   messages.push(
                     `In context=('paths', '${path}', '${httpMethod}', '${statusCode}', 'response', 'content', 'application/json', 'schema'), reference to unknown component ${refName}; using empty schema`,
@@ -562,11 +628,11 @@ export function validateAndParseOpenAPISpec(specString: string): ValidationResul
 
     return {
       status: true,
-      message: messages.join('\n') || 'OpenAPI spec is valid.',
+      message: messages.join("\n") || "OpenAPI spec is valid.",
       spec: parsedSpec,
     };
   } catch (error) {
     console.error(error);
-    return { status: false, message: 'Error parsing OpenAPI spec.' };
+    return { status: false, message: "Error parsing OpenAPI spec." };
   }
 }

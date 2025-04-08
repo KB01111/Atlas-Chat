@@ -1,35 +1,37 @@
-import type { AssistantsEndpoint } from './schemas';
+import type { AssistantsEndpoint } from "./schemas";
 
-export const health = () => '/health';
-export const user = () => '/api/user';
+export const health = () => "/health";
+export const user = () => "/api/user";
 
-export const balance = () => '/api/balance';
+export const balance = () => "/api/balance";
 
-export const userPlugins = () => '/api/user/plugins';
+export const userPlugins = () => "/api/user/plugins";
 
-export const deleteUser = () => '/api/user/delete';
+export const deleteUser = () => "/api/user/delete";
 
 export const messages = (conversationId: string, messageId?: string) =>
-  `/api/messages/${conversationId}${messageId != null && messageId ? `/${messageId}` : ''}`;
+  `/api/messages/${conversationId}${messageId != null && messageId ? `/${messageId}` : ""}`;
 
-const shareRoot = '/api/share';
+const shareRoot = "/api/share";
 export const shareMessages = (shareId: string) => `${shareRoot}/${shareId}`;
-export const getSharedLink = (conversationId: string) => `${shareRoot}/link/${conversationId}`;
+export const getSharedLink = (conversationId: string) =>
+  `${shareRoot}/link/${conversationId}`;
 export const getSharedLinks = (
   pageSize: number,
   isPublic: boolean,
-  sortBy: 'title' | 'createdAt',
-  sortDirection: 'asc' | 'desc',
+  sortBy: "title" | "createdAt",
+  sortDirection: "asc" | "desc",
   search?: string,
   cursor?: string,
 ) =>
   `${shareRoot}?pageSize=${pageSize}&isPublic=${isPublic}&sortBy=${sortBy}&sortDirection=${sortDirection}${
-    search ? `&search=${search}` : ''
-  }${cursor ? `&cursor=${cursor}` : ''}`;
-export const createSharedLink = (conversationId: string) => `${shareRoot}/${conversationId}`;
+    search ? `&search=${search}` : ""
+  }${cursor ? `&cursor=${cursor}` : ""}`;
+export const createSharedLink = (conversationId: string) =>
+  `${shareRoot}/${conversationId}`;
 export const updateSharedLink = (shareId: string) => `${shareRoot}/${shareId}`;
 
-const keysEndpoint = '/api/keys';
+const keysEndpoint = "/api/keys";
 
 export const keys = () => keysEndpoint;
 
@@ -41,12 +43,16 @@ export const revokeAllUserKeys = () => `${keysEndpoint}?all=true`;
 
 export const abortRequest = (endpoint: string) => `/api/ask/${endpoint}/abort`;
 
-export const conversationsRoot = '/api/convos';
+export const conversationsRoot = "/api/convos";
 
-export const conversations = (pageNumber: string, isArchived?: boolean, tags?: string[]) =>
+export const conversations = (
+  pageNumber: string,
+  isArchived?: boolean,
+  tags?: string[],
+) =>
   `${conversationsRoot}?pageNumber=${pageNumber}${
-    isArchived === true ? '&isArchived=true' : ''
-  }${tags?.map((tag) => `&tags=${tag}`).join('')}`;
+    isArchived === true ? "&isArchived=true" : ""
+  }${tags?.map((tag) => `&tags=${tag}`).join("")}`;
 
 export const conversationById = (id: string) => `${conversationsRoot}/${id}`;
 
@@ -65,49 +71,49 @@ export const duplicateConversation = () => `${conversationsRoot}/duplicate`;
 export const search = (q: string, pageNumber: string) =>
   `/api/search?q=${q}&pageNumber=${pageNumber}`;
 
-export const searchEnabled = () => '/api/search/enable';
+export const searchEnabled = () => "/api/search/enable";
 
-export const presets = () => '/api/presets';
+export const presets = () => "/api/presets";
 
-export const deletePreset = () => '/api/presets/delete';
+export const deletePreset = () => "/api/presets/delete";
 
-export const aiEndpoints = () => '/api/endpoints';
+export const aiEndpoints = () => "/api/endpoints";
 
-export const endpointsConfigOverride = () => '/api/endpoints/config/override';
+export const endpointsConfigOverride = () => "/api/endpoints/config/override";
 
-export const models = () => '/api/models';
+export const models = () => "/api/models";
 
-export const tokenizer = () => '/api/tokenizer';
+export const tokenizer = () => "/api/tokenizer";
 
-export const login = () => '/api/auth/login';
+export const login = () => "/api/auth/login";
 
-export const logout = () => '/api/auth/logout';
+export const logout = () => "/api/auth/logout";
 
-export const register = () => '/api/auth/register';
+export const register = () => "/api/auth/register";
 
-export const loginFacebook = () => '/api/auth/facebook';
+export const loginFacebook = () => "/api/auth/facebook";
 
-export const loginGoogle = () => '/api/auth/google';
+export const loginGoogle = () => "/api/auth/google";
 
 export const refreshToken = (retry?: boolean) =>
-  `/api/auth/refresh${retry === true ? '?retry=true' : ''}`;
+  `/api/auth/refresh${retry === true ? "?retry=true" : ""}`;
 
-export const requestPasswordReset = () => '/api/auth/requestPasswordReset';
+export const requestPasswordReset = () => "/api/auth/requestPasswordReset";
 
-export const resetPassword = () => '/api/auth/resetPassword';
+export const resetPassword = () => "/api/auth/resetPassword";
 
-export const verifyEmail = () => '/api/user/verify';
+export const verifyEmail = () => "/api/user/verify";
 
-export const resendVerificationEmail = () => '/api/user/verify/resend';
+export const resendVerificationEmail = () => "/api/user/verify/resend";
 
-export const plugins = () => '/api/plugins';
+export const plugins = () => "/api/plugins";
 
-export const config = () => '/api/config';
+export const config = () => "/api/config";
 
-export const prompts = () => '/api/prompts';
+export const prompts = () => "/api/prompts";
 
 export const assistants = ({
-  path = '',
+  path = "",
   options,
   version,
   endpoint,
@@ -119,9 +125,12 @@ export const assistants = ({
   version: number | string;
   isAvatar?: boolean;
 }) => {
-  let url = isAvatar === true ? `${images()}/assistants` : `/api/assistants/v${version}`;
+  let url =
+    isAvatar === true
+      ? `${images()}/assistants`
+      : `/api/assistants/v${version}`;
 
-  if (path && path !== '') {
+  if (path && path !== "") {
     url += `/${path}`;
   }
 
@@ -133,29 +142,39 @@ export const assistants = ({
   }
 
   if (options && Object.keys(options).length > 0) {
-    const queryParams = new URLSearchParams(options as Record<string, string>).toString();
+    const queryParams = new URLSearchParams(
+      options as Record<string, string>,
+    ).toString();
     url += `?${queryParams}`;
   }
 
   return url;
 };
 
-export const agents = ({ path = '', options }: { path?: string; options?: object }) => {
-  let url = '/api/agents';
+export const agents = ({
+  path = "",
+  options,
+}: {
+  path?: string;
+  options?: object;
+}) => {
+  let url = "/api/agents";
 
-  if (path && path !== '') {
+  if (path && path !== "") {
     url += `/${path}`;
   }
 
   if (options && Object.keys(options).length > 0) {
-    const queryParams = new URLSearchParams(options as Record<string, string>).toString();
+    const queryParams = new URLSearchParams(
+      options as Record<string, string>,
+    ).toString();
     url += `?${queryParams}`;
   }
 
   return url;
 };
 
-export const files = () => '/api/files';
+export const files = () => "/api/files";
 
 export const images = () => `${files()}/images`;
 
@@ -178,7 +197,9 @@ export const getPromptGroup = (_id: string) => `${prompts()}/groups/${_id}`;
 export const getPromptGroupsWithFilters = (filter: object) => {
   let url = `${prompts()}/groups`;
   if (Object.keys(filter).length > 0) {
-    const queryParams = new URLSearchParams(filter as Record<string, string>).toString();
+    const queryParams = new URLSearchParams(
+      filter as Record<string, string>,
+    ).toString();
     url += `?${queryParams}`;
   }
   return url;
@@ -187,7 +208,9 @@ export const getPromptGroupsWithFilters = (filter: object) => {
 export const getPromptsWithFilters = (filter: object) => {
   let url = prompts();
   if (Object.keys(filter).length > 0) {
-    const queryParams = new URLSearchParams(filter as Record<string, string>).toString();
+    const queryParams = new URLSearchParams(
+      filter as Record<string, string>,
+    ).toString();
     url += `?${queryParams}`;
   }
   return url;
@@ -204,44 +227,58 @@ export const updatePromptGroup = getPromptGroup;
 
 export const updatePromptLabels = (_id: string) => `${getPrompt(_id)}/labels`;
 
-export const updatePromptTag = (_id: string) => `${getPrompt(_id)}/tags/production`;
+export const updatePromptTag = (_id: string) =>
+  `${getPrompt(_id)}/tags/production`;
 
 export const deletePromptGroup = getPromptGroup;
 
-export const deletePrompt = ({ _id, groupId }: { _id: string; groupId: string }) => {
+export const deletePrompt = ({
+  _id,
+  groupId,
+}: {
+  _id: string;
+  groupId: string;
+}) => {
   return `${prompts()}/${_id}?groupId=${groupId}`;
 };
 
-export const getCategories = () => '/api/categories';
+export const getCategories = () => "/api/categories";
 
 export const getAllPromptGroups = () => `${prompts()}/all`;
 
 /* Roles */
-export const roles = () => '/api/roles';
-export const getRole = (roleName: string) => `${roles()}/${roleName.toLowerCase()}`;
-export const updatePromptPermissions = (roleName: string) => `${getRole(roleName)}/prompts`;
-export const updateAgentPermissions = (roleName: string) => `${getRole(roleName)}/agents`;
+export const roles = () => "/api/roles";
+export const getRole = (roleName: string) =>
+  `${roles()}/${roleName.toLowerCase()}`;
+export const updatePromptPermissions = (roleName: string) =>
+  `${getRole(roleName)}/prompts`;
+export const updateAgentPermissions = (roleName: string) =>
+  `${getRole(roleName)}/agents`;
 
 /* Conversation Tags */
 export const conversationTags = (tag?: string) =>
-  `/api/tags${tag != null && tag ? `/${encodeURIComponent(tag)}` : ''}`;
+  `/api/tags${tag != null && tag ? `/${encodeURIComponent(tag)}` : ""}`;
 
-export const conversationTagsList = (pageNumber: string, sort?: string, order?: string) =>
-  `${conversationTags()}/list?pageNumber=${pageNumber}${sort ? `&sort=${sort}` : ''}${
-    order ? `&order=${order}` : ''
+export const conversationTagsList = (
+  pageNumber: string,
+  sort?: string,
+  order?: string,
+) =>
+  `${conversationTags()}/list?pageNumber=${pageNumber}${sort ? `&sort=${sort}` : ""}${
+    order ? `&order=${order}` : ""
   }`;
 
 export const addTagToConversation = (conversationId: string) =>
   `${conversationTags()}/convo/${conversationId}`;
 
-export const userTerms = () => '/api/user/terms';
-export const acceptUserTerms = () => '/api/user/terms/accept';
-export const banner = () => '/api/banner';
+export const userTerms = () => "/api/user/terms";
+export const acceptUserTerms = () => "/api/user/terms/accept";
+export const banner = () => "/api/banner";
 
 // Two-Factor Endpoints
-export const enableTwoFactor = () => '/api/auth/2fa/enable';
-export const verifyTwoFactor = () => '/api/auth/2fa/verify';
-export const confirmTwoFactor = () => '/api/auth/2fa/confirm';
-export const disableTwoFactor = () => '/api/auth/2fa/disable';
-export const regenerateBackupCodes = () => '/api/auth/2fa/backup/regenerate';
-export const verifyTwoFactorTemp = () => '/api/auth/2fa/verify-temp';
+export const enableTwoFactor = () => "/api/auth/2fa/enable";
+export const verifyTwoFactor = () => "/api/auth/2fa/verify";
+export const confirmTwoFactor = () => "/api/auth/2fa/confirm";
+export const disableTwoFactor = () => "/api/auth/2fa/disable";
+export const regenerateBackupCodes = () => "/api/auth/2fa/backup/regenerate";
+export const verifyTwoFactorTemp = () => "/api/auth/2fa/verify-temp";
