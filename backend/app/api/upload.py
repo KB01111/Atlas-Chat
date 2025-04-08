@@ -6,7 +6,7 @@ import uuid
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional
 
-import aioredis
+import redis.asyncio as aioredis
 from fastapi import (
     APIRouter,
     BackgroundTasks,

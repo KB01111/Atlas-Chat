@@ -178,5 +178,3 @@ async def get_agents_by_type(agent_type: str, current_user: Dict = Depends(get_c
             status_code=500,
             detail="An internal error occurred while retrieving agents by type.",
         )
-            status_code=500, detail="An internal error occurred while retrieving agents by type."
-        ) from e

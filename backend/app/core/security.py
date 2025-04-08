@@ -567,3 +567,11 @@ def rate_limit_check(
     # In a real implementation, use Redis or a similar cache to track rate limits
     # For now, always return True
     return True
+
+
+def validate_password_strength(password: str) -> bool:
+    """
+    Validate password strength.
+    """
+    # Basic check: at least 8 characters
+    return len(password) >= 8

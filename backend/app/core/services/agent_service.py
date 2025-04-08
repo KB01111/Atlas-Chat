@@ -4,7 +4,7 @@ from typing import Any, Dict
 
 from app.core.logging_config import setup_logging
 from app.core.services.tool_executor import ToolExecutor
-from app.models.models import RequestContext
+from app.models import RequestContext
 
 logger = setup_logging()
 

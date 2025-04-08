@@ -1,6 +1,6 @@
 fastapi>=0.100.0
 uvicorn[standard]>=0.22.0
-pydantic>=2.0.0
+pydantic[email]>=2.0.0
 python-jose[cryptography]>=3.3.0
 aioredis>=2.0.0
 redis>=5.0.0  # Ensure compatibility with aioredis
@@ -15,3 +15,5 @@ sentry-sdk[fastapi]>=1.28.0
 # Additional dependencies from codebase
 supabase>=1.0.0  # For Supabase integration
 sqlalchemy>=1.4
+loguru>=0.7.0
+python-multipart>=0.0.6

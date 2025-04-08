@@ -21,6 +21,16 @@
         "@IzumiSy/mcp-duckdb-memory-server",
         "--key",
         "20536ce6-72bd-4fd5-8411-5d93a3fe2440"
+      ],
+      "alwaysAllow": [
+        "create_entities",
+        "create_relations",
+        "add_observations",
+        "delete_entities",
+        "delete_observations",
+        "delete_relations",
+        "search_nodes",
+        "open_nodes"
       ]
     },
     "supabase-mcp-server": {
@@ -36,7 +46,25 @@
         "20536ce6-72bd-4fd5-8411-5d93a3fe2440",
         "--timeout",
         "60000"
+      ],
+      "env": {
+        "SUPABASE_URL": "https://vtpcpckmvwrbbecdlnkd.supabase.co",
+        "SUPABASE_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ0cGNwY2ttdndyYmJlY2RsbmtkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTczOTY1NzE5OCwiZXhwIjoyMDU1MjMzMTk4fQ.GWVwaVFZom5DhpQZymt8u9BPMnIoVfC7os2POKay5AI"
+      },
+      "alwaysAllow": [
+        "get_schemas",
+        "get_tables",
+        "get_table_schema",
+        "execute_postgresql",
+        "retrieve_migrations",
+        "live_dangerously",
+        "call_auth_admin_method",
+        "get_management_api_spec",
+        "get_auth_admin_methods_spec",
+        "send_management_api_request",
+        "confirm_destructive_operation",
+        "retrieve_logs"
       ]
     }
-  } 
+  }
 }

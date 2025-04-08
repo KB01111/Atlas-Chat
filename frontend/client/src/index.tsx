@@ -1,41 +1,36 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import * as Sentry from "@sentry/react";
-import { BrowserTracing } from "@sentry/browser";
-import "./index.css"; // Assuming you have a base CSS file
-// Import your main App component - Adjust path if needed
-// Check if App.integration.jsx or another file is the intended root
-import App from "./App.integration"; // Using .jsx temporarily, might need renaming/refactoring
+import * as Sentry from '@sentry/react';
+import { BrowserTracing } from '@sentry/tracing';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { RecoilRoot } from 'recoil';
+import SupabaseProvider from './Providers/SupabaseProvider';
+import ThemeProvider from './Providers/ThemeProvider';
+import ApiErrorBoundaryProvider from './Providers/ApiErrorBoundaryProvider';
+import App from './components/App';
 
-// import reportWebVitals from './reportWebVitals'; // If you use web vitals - File seems missing
+import './styles/global.css';
 
-// Initialize Sentry
 Sentry.init({
-  dsn: process.env.REACT_APP_SENTRY_DSN,
+  dsn: 'https://33edc136c49f638f27ba5912df6e0482@o4508916501970944.ingest.de.sentry.io/4509068742033488',
   integrations: [new BrowserTracing()],
-  // Set tracesSampleRate to 1.0 to capture 100%
-  // of transactions for performance monitoring.
-  // We recommend adjusting this value in production
   tracesSampleRate: 1.0,
-  // Capture Replay for 10% of all sessions,
-  // plus for 100% of sessions with an error
-  replaysSessionSampleRate: 0.1,
-  replaysOnErrorSampleRate: 1.0,
+  tracePropagationTargets: ["localhost", /\/api\//],
 });
 
-const rootElement = document.getElementById("root");
-if (!rootElement) {
-  throw new Error("Failed to find the root element with ID 'root'");
-}
+const queryClient = new QueryClient();
 
-const root = ReactDOM.createRoot(rootElement);
+const root = ReactDOM.createRoot(document.getElementById("root")!);
 root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <QueryClientProvider client={queryClient}>
+    <RecoilRoot>
+      <SupabaseProvider>
+        <ThemeProvider>
+          <ApiErrorBoundaryProvider>
+            <App />
+          </ApiErrorBoundaryProvider>
+        </ThemeProvider>
+      </SupabaseProvider>
+    </RecoilRoot>
+  </QueryClientProvider>
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-// reportWebVitals();

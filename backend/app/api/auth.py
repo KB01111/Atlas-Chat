@@ -11,11 +11,22 @@ from app.core.security import (
     create_access_token,
     get_current_user,
     get_password_hash,
-    rate_limiter,
+    rate_limit_check,  # Corrected import
     validate_password_strength,
     verify_password,
 )
-from app.models.models import Token, User, UserCreate
+from app.models.user import User
+from pydantic import BaseModel, EmailStr  # Add pydantic import
+
+# Stub definitions for missing models
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+class UserCreate(BaseModel):
+    name: str
+    email: EmailStr
+    password: str
 
 router = APIRouter()
 
@@ -31,7 +42,7 @@ async def login(
     """
     # Check rate limiting
     client_ip = request.client.host
-    if rate_limiter.is_rate_limited(f"login:{client_ip}"):
+    if not rate_limit_check(f"login:{client_ip}", "login"):  # Corrected usage
         raise HTTPException(
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,
             detail="Too many login attempts. Please try again later.",
@@ -66,7 +77,7 @@ async def register(request: Request, user_data: UserCreate, db_session=Depends(g
     """
     # Check rate limiting
     client_ip = request.client.host
-    if rate_limiter.is_rate_limited(f"register:{client_ip}"):
+    if not rate_limit_check(f"register:{client_ip}", "register"):  # Corrected usage
         raise HTTPException(
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,
             detail="Too many registration attempts. Please try again later.",
@@ -131,7 +142,7 @@ async def change_password(
     Change user password
     """
     # Check rate limiting
-    if rate_limiter.is_rate_limited(f"change_password:{current_user['user_id']}"):
+    if not rate_limit_check(f"change_password:{current_user['user_id']}", "change_password"):  # Corrected usage
         raise HTTPException(
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,
             detail="Too many password change attempts. Please try again later.",

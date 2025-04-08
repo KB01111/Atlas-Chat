@@ -56,7 +56,6 @@ class TieredContextManager:
         self.working_memory = WorkingMemory()
         self.episodic_memory = EpisodicMemory(context_summarizer=self.context_summarizer)
         self.knowledge_graph = KnowledgeGraph(openrouter_client=self.client)
-
         # Initialize active sessions
         self.active_sessions: Dict[str, Dict[str, Any]] = {}
 
