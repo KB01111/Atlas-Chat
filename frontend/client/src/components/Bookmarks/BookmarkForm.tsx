@@ -36,7 +36,7 @@ const BookmarkForm = ({
     getValues,
     control,
     formState: { errors },
-  } = useForm<any>({
+  } = useForm<TConversationTagRequest>({
     defaultValues: {
       tag: bookmark?.tag ?? '',
       description: bookmark?.description ?? '',
