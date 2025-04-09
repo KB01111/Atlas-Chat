@@ -11,8 +11,8 @@ COPY frontend/packages/ ./frontend/packages/
 COPY frontend/packages/data-provider/ ./frontend/packages/data-provider/
 
 # Explicitly copy Craco config
-COPY frontend/client/craco.config.js ./frontend/client/craco.config.js
-COPY frontend/client/craco.config.js ./frontend/client/craco.config.js
+# Copy the real craco.config.js into frontend directory inside container
+COPY frontend/craco.config.js ./frontend/craco.config.js
 COPY frontend/client/ ./frontend/client/
 
 RUN bun install --frozen-lockfile

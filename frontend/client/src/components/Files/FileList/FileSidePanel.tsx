@@ -1,6 +1,6 @@
 import React from 'react';
 import FileList from './FileList';
-import { TFile } from 'librechat-data-provider/dist/types';
+import type { TFile } from 'librechat-data-provider';
 import FilesSectionSelector from '../FilesSectionSelector';
 import { Button, Input } from '~/components/ui';
 import { ListFilter } from 'lucide-react';

@@ -5,6 +5,9 @@ import { cn } from '~/utils';
 
 interface OGDialogProps extends DialogPrimitive.DialogProps {
   triggerRef?: React.RefObject<HTMLButtonElement>;
+  children?: React.ReactNode;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
 const Dialog = React.forwardRef<HTMLDivElement, OGDialogProps>(

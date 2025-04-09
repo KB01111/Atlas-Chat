@@ -4,9 +4,9 @@ import * as Sentry from '@sentry/react';
 import { BrowserTracing } from '@sentry/tracing';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { RecoilRoot } from 'recoil';
-import SupabaseProvider from './Providers/SupabaseProvider';
-import ThemeProvider from './Providers/ThemeProvider';
-import ApiErrorBoundaryProvider from './Providers/ApiErrorBoundaryProvider';
+import SupabaseProvider from '~shared/Providers/SupabaseProvider';
+import ThemeProvider from '~shared/Providers/ThemeProvider';
+import ApiErrorBoundaryProvider from '~shared/Providers/ApiErrorBoundaryProvider';
 import App from './components/App';
 
 import './styles/global.css';

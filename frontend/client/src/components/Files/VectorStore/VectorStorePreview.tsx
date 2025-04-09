@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import DeleteIconButton from '../DeleteIconButton';
 import { Button } from '~/components/ui';
 import { TrashIcon } from '~/components/svg';
-import { TFile } from 'librechat-data-provider/dist/types';
+import type { TFile } from 'librechat-data-provider';
 import UploadFileButton from '../FileList/UploadFileButton';
 import UploadFileModal from '../FileList/UploadFileModal';
 import { BarChart4Icon, Clock3, FileClock, FileIcon, InfoIcon, PlusIcon } from 'lucide-react';

@@ -1,6 +1,7 @@
+import React from 'react';
 import { useMemo } from 'react';
-import MinimalMessagesWrapper from '~/components/Chat/Messages/MinimalMessages';
-import SearchMessage from '~/components/Chat/Messages/SearchMessage';
+import MinimalMessagesWrapper from '~/features/chat/components/Chat/Messages/MinimalMessages';
+import SearchMessage from '~/features/chat/components/Chat/Messages/SearchMessage';
 import { useSearchContext, useFileMapContext } from '~/Providers';
 import { useNavScrolling, useLocalize } from '~/hooks';
 import { buildTree } from '~/utils';

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { BookmarkPlusIcon } from 'lucide-react';
-import type { ConversationTagsResponse, TConversationTag } from 'librechat-data-provider';
+import type { ConversationTagsResponse } from 'librechat-data-provider';
 import {
   Table,
   Input,
@@ -17,7 +17,7 @@ import { BookmarkEditDialog } from '~/components/Bookmarks';
 import BookmarkTableRow from './BookmarkTableRow';
 import { useLocalize } from '~/hooks';
 
-const removeDuplicates = (bookmarks: TConversationTag[]) => {
+const removeDuplicates = (bookmarks: any[]) => {
   const seen = new Set();
   return bookmarks.filter((bookmark) => {
     const duplicate = seen.has(bookmark._id);
@@ -42,7 +42,7 @@ const BookmarkTable = () => {
   }, [bookmarks]);
 
   const moveRow = useCallback((dragIndex: number, hoverIndex: number) => {
-    setRows((prevTags: TConversationTag[]) => {
+    setRows((prevTags: any[]) => {
       const updatedRows = [...prevTags];
       const [movedRow] = updatedRows.splice(dragIndex, 1);
       updatedRows.splice(hoverIndex, 0, movedRow);
@@ -51,7 +51,7 @@ const BookmarkTable = () => {
   }, []);
 
   const renderRow = useCallback(
-    (row: TConversationTag) => (
+    (row: any) => (
       <BookmarkTableRow key={row._id} moveRow={moveRow} row={row} position={row.position} />
     ),
     [moveRow],

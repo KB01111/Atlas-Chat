@@ -16,9 +16,9 @@ import {
   // DropdownMenuTrigger,
 } from '~/components/ui';
 import { useLocalize, useCustomLink, useAuthContext } from '~/hooks';
-import AdvancedSwitch from '~/components/Prompts/AdvancedSwitch';
+import AdvancedSwitch from '~/features/prompts/components/Prompts/AdvancedSwitch';
 // import { RightPanel } from '../../components/Prompts/RightPanel';
-import AdminSettings from '~/components/Prompts/AdminSettings';
+import AdminSettings from '~/features/prompts/components/Prompts/AdminSettings';
 import { useDashboardContext } from '~/Providers';
 // import { PromptsEditorMode } from '~/common';
 import store from '~/store';

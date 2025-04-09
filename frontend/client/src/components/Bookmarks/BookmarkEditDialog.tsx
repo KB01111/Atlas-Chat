@@ -1,13 +1,19 @@
 import React, { useRef, Dispatch, SetStateAction } from 'react';
-import { TConversationTag } from 'librechat-data-provider';
 import OGDialogTemplate from '~/components/ui/OGDialogTemplate';
 import { useConversationTagMutation } from '~/data-provider';
-import { OGDialog, Button, Spinner } from '~/components';
+import { Button } from '~/components/ui/Button';
+import { Spinner } from '~/components';
+import { OGDialog } from '~/components/ui/OriginalDialog';
 import { NotificationSeverity } from '~/common';
 import { useToastContext } from '~/Providers';
 import BookmarkForm from './BookmarkForm';
 import { useLocalize } from '~/hooks';
 import { logger } from '~/utils';
+
+interface BookmarkVars {
+  addToConversation?: boolean;
+  tag?: string;
+}
 
 type BookmarkEditDialogProps = {
   open: boolean;
@@ -15,7 +21,7 @@ type BookmarkEditDialogProps = {
   tags?: string[];
   setTags?: (tags: string[]) => void;
   context: string;
-  bookmark?: TConversationTag;
+  bookmark?: any;
   conversationId?: string;
   children?: React.ReactNode;
   triggerRef?: React.RefObject<HTMLButtonElement>;
@@ -40,12 +46,12 @@ const BookmarkEditDialog = ({
     context,
     tag: bookmark?.tag,
     options: {
-      onSuccess: (_data, vars) => {
-        showToast({
-          message: bookmark
+      onSuccess: (_data: unknown, vars: BookmarkVars) => {
+        showToast(
+          bookmark
             ? localize('com_ui_bookmarks_update_success')
-            : localize('com_ui_bookmarks_create_success'),
-        });
+            : localize('com_ui_bookmarks_create_success')
+        );
         setOpen(false);
         logger.log('tag_mutation', 'tags before setting', tags);
 
@@ -71,12 +77,11 @@ const BookmarkEditDialog = ({
         }
       },
       onError: () => {
-        showToast({
-          message: bookmark
+        showToast(
+          bookmark
             ? localize('com_ui_bookmarks_update_error')
-            : localize('com_ui_bookmarks_create_error'),
-          severity: NotificationSeverity.ERROR,
-        });
+            : localize('com_ui_bookmarks_create_error')
+        );
       },
     },
   });

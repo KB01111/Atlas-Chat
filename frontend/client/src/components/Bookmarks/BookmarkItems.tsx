@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import { useBookmarkContext } from '~/Providers/BookmarkContext';
+import { useBookmarkContext } from '../../shared/Providers/BookmarkContext';
 import BookmarkItem from './BookmarkItem';
 interface BookmarkItemsProps {
   tags: string[];

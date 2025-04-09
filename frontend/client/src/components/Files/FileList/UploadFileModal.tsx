@@ -1,5 +1,5 @@
 import React, { useState, ChangeEvent } from 'react';
-import AttachFile from '~/components/Chat/Input/Files/AttachFile';
+import AttachFile from '~/features/chat/components/Chat/Input/Files/AttachFile';
 import { Button, Dialog, DialogContent, DialogHeader, DialogTitle, Input } from '~/components/ui';
 import { useLocalize } from '~/hooks';
 import { cn } from '~/utils';

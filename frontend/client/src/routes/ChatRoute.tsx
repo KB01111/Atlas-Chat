@@ -1,3 +1,4 @@
+import React from 'react';
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Constants, EModelEndpoint } from 'librechat-data-provider';
@@ -12,7 +13,7 @@ import {
 import { useNewConvo, useAppStartup, useAssistantListMap } from '~/hooks';
 import { getDefaultModelSpec, getModelSpecIconURL } from '~/utils';
 import { ToolCallsMapProvider } from '~/Providers';
-import ChatView from '~/components/Chat/ChatView';
+import ChatView from '~/features/chat/components/Chat/ChatView';
 import useAuthRedirect from './useAuthRedirect';
 import temporaryStore from '~/store/temporary';
 import { Spinner } from '~/components/svg';

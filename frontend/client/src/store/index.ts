@@ -1,31 +1,17 @@
-import * as artifacts from './artifacts';
-import families from './families';
-import endpoints from './endpoints';
-import user from './user';
-import text from './text';
-import toast from './toast';
-import submission from './submission';
-import search from './search';
-import preset from './preset';
-import prompts from './prompts';
-import lang from './language';
-import settings from './settings';
-import misc from './misc';
-import isTemporary from './temporary';
+import { atom } from 'recoil';
 
-export default {
-  ...artifacts,
-  ...families,
-  ...endpoints,
-  ...user,
-  ...text,
-  ...toast,
-  ...submission,
-  ...search,
-  ...prompts,
-  ...preset,
-  ...lang,
-  ...settings,
-  ...misc,
-  ...isTemporary,
+export const dummyState = atom({
+  key: 'dummyState',
+  default: null,
+});
+
+export const hideBannerHint = atom<string[]>({
+  key: 'hideBannerHint',
+  default: [],
+});
+
+const store = {
+  hideBannerHint,
 };
+
+export default store;

@@ -4,7 +4,7 @@ import {
   PromptForm,
   CreatePromptForm,
   EmptyPromptPreview,
-} from '~/components/Prompts';
+} from '~/features/prompts/components/Prompts';
 import DashboardRoute from './Layouts/Dashboard';
 
 const dashboardRoutes = {
