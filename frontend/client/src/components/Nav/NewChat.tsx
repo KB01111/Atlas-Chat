@@ -2,7 +2,7 @@ import { Search } from 'lucide-react';
 import { useRecoilValue } from 'recoil';
 import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
-import { QueryKeys, Constants } from 'librechat-data-provider';
+import { Constants } from 'librechat-data-provider';
 import type { TConversation, TMessage } from 'librechat-data-provider';
 import { getEndpointField, getIconEndpoint, getIconKey } from '~/utils';
 import ConvoIconURL from '~/components/Endpoints/ConvoIconURL';
@@ -84,7 +84,7 @@ export default function NewChat({
     if (event.button === 0 && !(event.ctrlKey || event.metaKey)) {
       event.preventDefault();
       queryClient.setQueryData<TMessage[]>(
-        [QueryKeys.messages, conversation?.conversationId ?? Constants.NEW_CONVO],
+        ["messages", conversation?.conversationId ?? Constants.NEW_CONVO],
         [],
       );
       newConvo();

@@ -1,13 +1,12 @@
 import { useState } from 'react';
 import type { FC } from 'react';
-import type { TConversationTag } from 'librechat-data-provider';
 import { TooltipAnchor, OGDialogTrigger } from '~/components/ui';
 import BookmarkEditDialog from './BookmarkEditDialog';
 import { EditIcon } from '~/components/svg';
 import { useLocalize } from '~/hooks';
 
 const EditBookmarkButton: FC<{
-  bookmark: TConversationTag;
+  bookmark: any;
   tabIndex?: number;
   onFocus?: () => void;
   onBlur?: () => void;

@@ -12,12 +12,18 @@ logger = setup_logging()
 
 # Sentry SDK initialization moved to startup_event
 
-app = FastAPI(title="AtlasChat Backend")
+app = FastAPI(
+    title="AtlasChat Backend",
+    docs_url=None if os.getenv("ENVIRONMENT") == "production" else "/docs",
+    redoc_url=None if os.getenv("ENVIRONMENT") == "production" else "/redoc",
+    openapi_url=None if os.getenv("ENVIRONMENT") == "production" else "/openapi.json",
+)
 
 
-@app.get("/sentry-debug")
-async def trigger_error():
-    division_by_zero = 1 / 0
+if os.getenv("ENVIRONMENT") != "production":
+    @app.get("/sentry-debug")
+    async def trigger_error():
+        division_by_zero = 1 / 0
 
 
 # Configure CORS
@@ -44,17 +50,9 @@ async def startup_event():
     logger.info("AtlasChat backend starting up")
     # Initialize Sentry SDK here for async compatibility
     sentry_sdk.init(
-        dsn="https://564d495992853763135956f1cda59187@o4508916501970944.ingest.de.sentry.io/4509068803178576",
-        # Set traces_sample_rate to 1.0 to capture 100%
-        # of transactions for performance monitoring.
-        # We recommend adjusting this value in production.
+        dsn=os.getenv("SENTRY_DSN", ""),
         traces_sample_rate=1.0,
-        # Enable PII data collection (be careful with GDPR/privacy regulations)
         send_default_pii=True,
-        # Enable profiling
-        # Set profiles_sample_rate to 1.0 to profile 100%
-        # of sampled transactions.
-        # We recommend adjusting this value in production.
         profiles_sample_rate=1.0,
     )
     logger.info("Sentry SDK initialized.")

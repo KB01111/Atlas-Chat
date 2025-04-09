@@ -1,7 +1,7 @@
 import React from 'react';
 import { useRecoilValue } from 'recoil';
 import { useQueryClient } from '@tanstack/react-query';
-import { QueryKeys, Constants } from 'librechat-data-provider';
+import { Constants } from 'librechat-data-provider';
 import type { TMessage } from 'librechat-data-provider';
 import type { Dispatch, SetStateAction } from 'react';
 import { useLocalize, useNewConvo } from '~/hooks';
@@ -58,7 +58,7 @@ export default function MobileNav({
         className="m-1 inline-flex size-10 items-center justify-center rounded-full hover:bg-surface-hover"
         onClick={() => {
           queryClient.setQueryData<TMessage[]>(
-            [QueryKeys.messages, conversation?.conversationId ?? Constants.NEW_CONVO],
+            ["messages", conversation?.conversationId ?? Constants.NEW_CONVO],
             [],
           );
           newConversation();

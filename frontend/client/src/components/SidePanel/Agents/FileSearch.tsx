@@ -9,7 +9,7 @@ import {
 } from 'librechat-data-provider';
 import type { ExtendedFile, AgentForm } from '~/common';
 import { useFileHandling, useLocalize, useLazyEffect } from '~/hooks';
-import FileRow from '~/components/Chat/Input/Files/FileRow';
+import FileRow from '~/features/chat/components/Chat/Input/Files/FileRow';
 import FileSearchCheckbox from './FileSearchCheckbox';
 import { useGetFileConfig } from '~/data-provider';
 import { AttachmentIcon } from '~/components/svg';

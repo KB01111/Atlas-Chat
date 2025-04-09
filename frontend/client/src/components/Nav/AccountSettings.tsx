@@ -4,7 +4,7 @@ import * as Select from '@ariakit/react/select';
 import { FileText, LogOut } from 'lucide-react';
 import { LinkIcon, GearIcon, DropdownMenuSeparator } from '~/components';
 import { useGetStartupConfig, useGetUserBalance } from '~/data-provider';
-import FilesView from '~/components/Chat/Input/Files/FilesView';
+import FilesView from '~/features/chat/components/Chat/Input/Files/FilesView';
 import { useAuthContext } from '~/hooks/AuthContext';
 import useAvatar from '~/hooks/Messages/useAvatar';
 import { UserIcon } from '~/components/svg';

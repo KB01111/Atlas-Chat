@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import type { FC } from 'react';
 import { Label, OGDialog, OGDialogTrigger, TooltipAnchor } from '~/components/ui';
-import { useDeleteConversationTagMutation } from '~/data-provider';
+import { useConversationTagMutation } from '~/data-provider';
 import OGDialogTemplate from '~/components/ui/OGDialogTemplate';
 import { NotificationSeverity } from '~/common';
 import { useToastContext } from '~/Providers';
@@ -18,11 +18,9 @@ const DeleteBookmarkButton: FC<{
   const { showToast } = useToastContext();
   const [open, setOpen] = useState(false);
 
-  const deleteBookmarkMutation = useDeleteConversationTagMutation({
+  const deleteBookmarkMutation = useConversationTagMutation({
     onSuccess: () => {
-      showToast({
-        message: localize('com_ui_bookmarks_delete_success'),
-      });
+      showToast(localize('com_ui_bookmarks_delete_success'));
     },
     onError: () => {
       showToast({

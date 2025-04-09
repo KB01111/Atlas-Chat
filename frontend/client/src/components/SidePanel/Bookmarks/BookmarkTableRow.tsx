@@ -1,6 +1,5 @@
 import React, { useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
-import type { TConversationTag } from 'librechat-data-provider';
 import { DeleteBookmarkButton, EditBookmarkButton } from '~/components/Bookmarks';
 import { useConversationTagMutation } from '~/data-provider';
 import { TableRow, TableCell } from '~/components/ui';
@@ -9,7 +8,7 @@ import { useToastContext } from '~/Providers';
 import { useLocalize } from '~/hooks';
 
 interface BookmarkTableRowProps {
-  row: TConversationTag;
+  row: any;
   moveRow: (dragIndex: number, hoverIndex: number) => void;
   position: number;
 }

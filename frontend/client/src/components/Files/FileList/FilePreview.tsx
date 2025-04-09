@@ -1,4 +1,4 @@
-import { TFile } from 'librechat-data-provider/dist/types';
+import type { TFile } from 'librechat-data-provider';
 import React, { useState } from 'react';
 import { TThread, TVectorStore } from '~/common';
 import { CheckMark, TrashIcon } from '~/components/svg';

@@ -142,6 +142,9 @@ services:
         REACT_APP_API_BASE_URL: "/api"
         # REACT_APP_E2B_CODEINTERPRETER_URL: ${E2B_CODEINTERPRETER_URL} # Removed: Frontend should not call E2B directly
         REACT_APP_SENTRY_DSN: ${SENTRY_DSN}
+        REACT_APP_SUPABASE_URL: ${SUPABASE_URL}
+        REACT_APP_SUPABASE_ANON_KEY: ${SUPABASE_KEY}
+        # REACT_APP_API_BASE_URL defaults to /api
         NODE_ENV: production
     container_name: atlas-chat-frontend
     restart: always

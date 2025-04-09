@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import { QueryKeys } from 'librechat-data-provider';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAuthContext, usePreviousLocation } from '~/hooks';
 import { DashboardContext } from '~/Providers';
@@ -18,7 +17,7 @@ export default function DashboardRoute() {
   }, [prevLocationRef]);
 
   useEffect(() => {
-    queryClient.removeQueries([QueryKeys.messages, 'new']);
+    queryClient.removeQueries(["messages", 'new']);
     clearConvoState();
   }, [queryClient, clearConvoState]);
 

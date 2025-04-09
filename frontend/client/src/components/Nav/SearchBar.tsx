@@ -2,7 +2,6 @@ import debounce from 'lodash/debounce';
 import { Search, X } from 'lucide-react';
 import { useSetRecoilState } from 'recoil';
 import { useLocation } from 'react-router-dom';
-import { QueryKeys } from 'librechat-data-provider';
 import { useQueryClient } from '@tanstack/react-query';
 import { forwardRef, useState, useCallback, useMemo, Ref } from 'react';
 import { useLocalize, useNewConvo } from '~/hooks';
@@ -55,7 +54,7 @@ const SearchBar = forwardRef((props: SearchBarProps, ref: Ref<HTMLDivElement>) =
       if (!value) {
         return;
       }
-      queryClient.invalidateQueries([QueryKeys.messages]);
+      queryClient.invalidateQueries(["messages"]);
       clearConvoState();
     },
     [queryClient, clearConvoState, setSearchQuery],

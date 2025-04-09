@@ -1,22 +1,23 @@
 {
   "compilerOptions": {
     "declaration": true,
+    "emitDeclarationOnly": true,
     "declarationDir": "./dist/types",
     "module": "esnext",
     "noImplicitAny": true,
-    "outDir": "./types",
+    "outDir": "./dist",
     "target": "es5",
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "lib": ["es2017", "dom", "ES2021.String"],
-    "allowJs": true,
+    "allowJs": false,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
+    "noEmit": false,
     "sourceMap": true,
     "baseUrl": ".",
     "paths": {
@@ -24,5 +25,5 @@
     }
   },
   "exclude": ["node_modules", "dist", "types"],
-  "include": ["src/**/*", "types/index.d.ts", "types/react-query/index.d.ts"]
+  "include": ["src/**/*"]
 }
