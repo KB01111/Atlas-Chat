@@ -21,7 +21,7 @@ type BookmarkEditDialogProps = {
   tags?: string[];
   setTags?: (tags: string[]) => void;
   context: string;
-  bookmark?: any;
+  bookmark?: Bookmark;
   conversationId?: string;
   children?: React.ReactNode;
   triggerRef?: React.RefObject<HTMLButtonElement>;
