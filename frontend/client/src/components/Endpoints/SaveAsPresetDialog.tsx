@@ -24,7 +24,7 @@ const SaveAsPresetDialog = ({ open, onOpenChange, preset }: any) => {
     };
 
     const toastTitle =
-      (_preset.title ?? '') ? `\`${_preset.title}\`` : localize('com_endpoint_preset_title');
+      _preset.title ?? '' ? `\`${_preset.title}\`` : localize('com_endpoint_preset_title');
 
     createPresetMutation.mutate(_preset, {
       onSuccess: () => {

@@ -1,9 +1,9 @@
 export const user = () => {
-  return '/api/user';
+  return "/api/user";
 };
 
 export const userPlugins = () => {
-  return '/api/user/plugins';
+  return "/api/user/plugins";
 };
 
 export const messages = (id: string) => {
@@ -23,11 +23,11 @@ export const conversationById = (id: string) => {
 };
 
 export const updateConversation = () => {
-  return '/api/convos/update';
+  return "/api/convos/update";
 };
 
 export const deleteConversation = () => {
-  return '/api/convos/clear';
+  return "/api/convos/clear";
 };
 
 export const search = (q: string, pageNumber: string) => {
@@ -35,61 +35,61 @@ export const search = (q: string, pageNumber: string) => {
 };
 
 export const searchEnabled = () => {
-  return '/api/search/enable';
+  return "/api/search/enable";
 };
 
 export const presets = () => {
-  return '/api/presets';
+  return "/api/presets";
 };
 
 export const deletePreset = () => {
-  return '/api/presets/delete';
+  return "/api/presets/delete";
 };
 
 export const aiEndpoints = () => {
-  return '/api/endpoints';
+  return "/api/endpoints";
 };
 
 export const tokenizer = () => {
-  return '/api/tokenizer';
+  return "/api/tokenizer";
 };
 
 export const login = () => {
-  return '/api/auth/login';
+  return "/api/auth/login";
 };
 
 export const logout = () => {
-  return '/api/auth/logout';
+  return "/api/auth/logout";
 };
 
 export const register = () => {
-  return '/api/auth/register';
+  return "/api/auth/register";
 };
 
 export const loginFacebook = () => {
-  return '/api/auth/facebook';
+  return "/api/auth/facebook";
 };
 
 export const loginGoogle = () => {
-  return '/api/auth/google';
+  return "/api/auth/google";
 };
 
 export const refreshToken = () => {
-  return '/api/auth/refresh';
+  return "/api/auth/refresh";
 };
 
 export const requestPasswordReset = () => {
-  return '/api/auth/requestPasswordReset';
+  return "/api/auth/requestPasswordReset";
 };
 
 export const resetPassword = () => {
-  return '/api/auth/resetPassword';
+  return "/api/auth/resetPassword";
 };
 
 export const plugins = () => {
-  return '/api/plugins';
+  return "/api/plugins";
 };
 
 export const config = () => {
-  return '/api/config';
+  return "/api/config";
 };

@@ -66,7 +66,7 @@ function DynamicCheckbox({
               htmlFor={`${settingKey}-dynamic-checkbox`}
               className="text-left text-sm font-medium"
             >
-              {labelCode ? (localize(label as TranslationKeys) ?? label) : label || settingKey}{' '}
+              {labelCode ? localize(label as TranslationKeys) ?? label : label || settingKey}{' '}
               {showDefault && (
                 <small className="opacity-40">
                   ({localize('com_endpoint_default')}:{' '}
@@ -87,7 +87,7 @@ function DynamicCheckbox({
           <OptionHover
             description={
               descriptionCode
-                ? (localize(description as TranslationKeys) ?? description)
+                ? localize(description as TranslationKeys) ?? description
                 : description
             }
             side={ESide.Left}

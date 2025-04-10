@@ -58,7 +58,7 @@ function DynamicTextarea({
               htmlFor={`${settingKey}-dynamic-textarea`}
               className="text-left text-sm font-medium"
             >
-              {labelCode ? (localize(label as TranslationKeys) ?? label) : label || settingKey}{' '}
+              {labelCode ? localize(label as TranslationKeys) ?? label : label || settingKey}{' '}
               {showDefault && (
                 <small className="opacity-40">
                   (
@@ -77,7 +77,7 @@ function DynamicTextarea({
             onChange={setInputValue}
             placeholder={
               placeholderCode
-                ? (localize(placeholder as TranslationKeys) ?? placeholder)
+                ? localize(placeholder as TranslationKeys) ?? placeholder
                 : placeholder
             }
             className={cn(
@@ -90,7 +90,7 @@ function DynamicTextarea({
           <OptionHover
             description={
               descriptionCode
-                ? (localize(description as TranslationKeys) ?? description)
+                ? localize(description as TranslationKeys) ?? description
                 : description
             }
             side={ESide.Left}

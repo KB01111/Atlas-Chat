@@ -17,14 +17,14 @@ export type TExample = {
 };
 
 export enum EModelEndpoint {
-  azureOpenAI = 'azureOpenAI',
-  openAI = 'openAI',
-  bingAI = 'bingAI',
-  chatGPT = 'chatGPT',
-  chatGPTBrowser = 'chatGPTBrowser',
-  google = 'google',
-  gptPlugins = 'gptPlugins',
-  anthropic = 'anthropic',
+  azureOpenAI = "azureOpenAI",
+  openAI = "openAI",
+  bingAI = "bingAI",
+  chatGPT = "chatGPT",
+  chatGPTBrowser = "chatGPTBrowser",
+  google = "google",
+  gptPlugins = "gptPlugins",
+  anthropic = "anthropic",
 }
 
 export type TSubmission = {
@@ -272,4 +272,4 @@ export type File = {
   name: string;
   date: number;
   size: number;
-}
+};

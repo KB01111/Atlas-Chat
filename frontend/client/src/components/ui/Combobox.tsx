@@ -93,7 +93,7 @@ export default function ComboboxComponent({
               style={{ userSelect: 'none' }}
             >
               {selectedValue
-                ? (displayValue ?? selectedValue)
+                ? displayValue ?? selectedValue
                 : selectPlaceholder && selectPlaceholder}
             </span>
           </SelectValue>

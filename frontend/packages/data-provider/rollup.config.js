@@ -1,18 +1,18 @@
-import typescript from 'rollup-plugin-typescript2';
-import resolve from '@rollup/plugin-node-resolve';
-import pkg from './package.json';
+import typescript from "rollup-plugin-typescript2";
+import resolve from "@rollup/plugin-node-resolve";
+import pkg from "./package.json";
 
 export default [
   {
-    input: 'src/index.ts',
+    input: "src/index.ts",
     output: [
       {
         file: pkg.main,
-        format: 'cjs',
+        format: "cjs",
       },
       {
         file: pkg.module,
-        format: 'esm',
+        format: "esm",
       },
     ],
     ...{
@@ -24,7 +24,10 @@ export default [
       preserveSymlinks: true,
       plugins: [
         resolve(),
-        typescript({ useTsconfigDeclarationDir: true, tsconfig: './tsconfig.json' }),
+        typescript({
+          useTsconfigDeclarationDir: true,
+          tsconfig: "./tsconfig.json",
+        }),
       ],
     },
   },

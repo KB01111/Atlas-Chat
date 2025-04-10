@@ -60,15 +60,13 @@ const ChatContainer: React.FC = () => {
     setNewMessage('');
     setSending(true);
     try {
-      const { error } = await supabase
-        .from('messages')
-        .insert([
-          {
-            content: optimisticMessage.content,
-            sender: optimisticMessage.sender,
-            agent_type: agentType,
-          },
-        ]);
+      const { error } = await supabase.from('messages').insert([
+        {
+          content: optimisticMessage.content,
+          sender: optimisticMessage.sender,
+          agent_type: agentType,
+        },
+      ]);
       if (error) {
         setError('Failed to send message.');
       }

@@ -53,7 +53,7 @@ export default function ProgressText({
   popover?: boolean;
   isExpanded?: boolean;
 }) {
-  const text = progress < 1 ? (authText ?? inProgressText) : finishedText;
+  const text = progress < 1 ? authText ?? inProgressText : finishedText;
   return (
     <Wrapper popover={popover}>
       <button

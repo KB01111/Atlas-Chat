@@ -126,7 +126,7 @@ function DynamicTags({
               htmlFor={`${settingKey}-dynamic-input`}
               className="text-left text-sm font-medium"
             >
-              {labelCode ? (localize(label as TranslationKeys) ?? label) : label || settingKey}{' '}
+              {labelCode ? localize(label as TranslationKeys) ?? label : label || settingKey}{' '}
               {showDefault && (
                 <small className="opacity-40">
                   (
@@ -176,7 +176,7 @@ function DynamicTags({
                 onChange={(e) => setTagText(e.target.value)}
                 placeholder={
                   placeholderCode
-                    ? (localize(placeholder as TranslationKeys) ?? placeholder)
+                    ? localize(placeholder as TranslationKeys) ?? placeholder
                     : placeholder
                 }
                 className={cn('flex h-10 max-h-10 border-none bg-surface-secondary px-3 py-2')}
@@ -188,7 +188,7 @@ function DynamicTags({
           <OptionHover
             description={
               descriptionCode
-                ? (localize(description as TranslationKeys) ?? description)
+                ? localize(description as TranslationKeys) ?? description
                 : description
             }
             side={descriptionSide as ESide}

@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig } from 'axios';
+import axios, { AxiosRequestConfig } from "axios";
 
 async function _get<T>(url: string, options?: AxiosRequestConfig): Promise<T> {
   const response = await axios.get(url, { ...options });
@@ -7,22 +7,26 @@ async function _get<T>(url: string, options?: AxiosRequestConfig): Promise<T> {
 
 async function _post(url: string, data?: any) {
   const response = await axios.post(url, JSON.stringify(data), {
-    headers: { 'Content-Type': 'application/json' },
+    headers: { "Content-Type": "application/json" },
   });
   return response.data;
 }
 
-async function _postMultiPart(url: string, formData: FormData, options?: AxiosRequestConfig) {
+async function _postMultiPart(
+  url: string,
+  formData: FormData,
+  options?: AxiosRequestConfig,
+) {
   const response = await axios.post(url, formData, {
     ...options,
-    headers: { 'Content-Type': 'multipart/form-data' },
+    headers: { "Content-Type": "multipart/form-data" },
   });
   return response.data;
 }
 
 async function _put(url: string, data?: any) {
   const response = await axios.put(url, JSON.stringify(data), {
-    headers: { 'Content-Type': 'application/json' },
+    headers: { "Content-Type": "application/json" },
   });
   return response.data;
 }
@@ -32,14 +36,17 @@ async function _delete<T>(url: string): Promise<T> {
   return response.data;
 }
 
-async function _deleteWithOptions<T>(url: string, options?: AxiosRequestConfig): Promise<T> {
+async function _deleteWithOptions<T>(
+  url: string,
+  options?: AxiosRequestConfig,
+): Promise<T> {
   const response = await axios.delete(url, { ...options });
   return response.data;
 }
 
 async function _patch(url: string, data?: any) {
   const response = await axios.patch(url, JSON.stringify(data), {
-    headers: { 'Content-Type': 'application/json' },
+    headers: { "Content-Type": "application/json" },
   });
   return response.data;
 }

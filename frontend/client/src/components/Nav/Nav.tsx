@@ -87,7 +87,7 @@ const Nav = ({
     hasNextPage: searchQuery ? searchQueryRes?.hasNextPage : hasNextPage,
     fetchNextPage: searchQuery ? searchQueryRes?.fetchNextPage : fetchNextPage,
     isFetchingNextPage: searchQuery
-      ? (searchQueryRes?.isFetchingNextPage ?? false)
+      ? searchQueryRes?.isFetchingNextPage ?? false
       : isFetchingNextPage,
   });
 

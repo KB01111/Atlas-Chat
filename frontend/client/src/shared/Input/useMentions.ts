@@ -183,7 +183,7 @@ export default function useMentions({
           size: 20,
         }),
       })),
-      ...(interfaceConfig.modelSelect === true ? (agentsList ?? []) : []),
+      ...(interfaceConfig.modelSelect === true ? agentsList ?? [] : []),
       ...(endpointsConfig?.[EModelEndpoint.assistants] &&
       includeAssistants &&
       interfaceConfig.modelSelect === true
