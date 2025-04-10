@@ -1,4 +1,5 @@
-import React, { memo, useState } from 'react';
+import * as React from 'react';
+import { memo, useState } from 'react';
 import { AlertCircle } from 'lucide-react';
 import { icons } from '~/hooks/Endpoint/Icons';
 
@@ -25,7 +26,7 @@ export const URLIcon = memo(
     };
 
     const DefaultIcon: React.ElementType =
-      endpoint && icons[endpoint] ? icons[endpoint]! : icons.unknown!;
+      (endpoint && icons[endpoint]) || icons.unknown || (() => null);
 
     if (imageError || !iconURL) {
       return (

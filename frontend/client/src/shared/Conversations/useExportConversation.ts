@@ -182,35 +182,35 @@ export default function useExportConversation({
       beforeTableEncode: (entries: ExportEntries | undefined) => [
         {
           fieldName: 'sender',
-          fieldValues: entries?.find((e) => e.fieldName == 'sender')?.fieldValues ?? [],
+          fieldValues: entries?.find((e) => e.fieldName === 'sender')?.fieldValues ?? [],
         },
         {
           fieldName: 'text',
-          fieldValues: entries?.find((e) => e.fieldName == 'text')?.fieldValues ?? [],
+          fieldValues: entries?.find((e) => e.fieldName === 'text')?.fieldValues ?? [],
         },
         {
           fieldName: 'isCreatedByUser',
-          fieldValues: entries?.find((e) => e.fieldName == 'isCreatedByUser')?.fieldValues ?? [],
+          fieldValues: entries?.find((e) => e.fieldName === 'isCreatedByUser')?.fieldValues ?? [],
         },
         {
           fieldName: 'error',
-          fieldValues: entries?.find((e) => e.fieldName == 'error')?.fieldValues ?? [],
+          fieldValues: entries?.find((e) => e.fieldName === 'error')?.fieldValues ?? [],
         },
         {
           fieldName: 'unfinished',
-          fieldValues: entries?.find((e) => e.fieldName == 'unfinished')?.fieldValues ?? [],
+          fieldValues: entries?.find((e) => e.fieldName === 'unfinished')?.fieldValues ?? [],
         },
         {
           fieldName: 'messageId',
-          fieldValues: entries?.find((e) => e.fieldName == 'messageId')?.fieldValues ?? [],
+          fieldValues: entries?.find((e) => e.fieldName === 'messageId')?.fieldValues ?? [],
         },
         {
           fieldName: 'parentMessageId',
-          fieldValues: entries?.find((e) => e.fieldName == 'parentMessageId')?.fieldValues ?? [],
+          fieldValues: entries?.find((e) => e.fieldName === 'parentMessageId')?.fieldValues ?? [],
         },
         {
           fieldName: 'createdAt',
-          fieldValues: entries?.find((e) => e.fieldName == 'createdAt')?.fieldValues ?? [],
+          fieldValues: entries?.find((e) => e.fieldName === 'createdAt')?.fieldValues ?? [],
         },
       ],
     });
@@ -366,13 +366,13 @@ export default function useExportConversation({
   const exportConversation = () => {
     if (type === 'json') {
       exportJSON();
-    } else if (type == 'text') {
+    } else if (type === 'text') {
       exportText();
-    } else if (type == 'markdown') {
+    } else if (type === 'markdown') {
       exportMarkdown();
-    } else if (type == 'csv') {
+    } else if (type === 'csv') {
       exportCSV();
-    } else if (type == 'screenshot') {
+    } else if (type === 'screenshot') {
       exportScreenshot();
     }
   };

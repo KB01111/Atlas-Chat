@@ -1,4 +1,3 @@
-import React from 'react';
 import { CrossIcon, TrashIcon } from '~/components/svg';
 import { Button } from '~/components/ui';
 

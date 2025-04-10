@@ -13,6 +13,7 @@ export default function FilesListView() {
     <div className="bg-[#f9f9f9] p-0 lg:p-7">
       <div className="m-4 flex w-full flex-row justify-between md:m-2">
         <FilesSectionSelector />
+        {/* Intentionally using != null to check for both null and undefined (see JS-0050) */}
         {params.fileId != null && params.fileId && (
           <Button
             className="block lg:hidden"

@@ -1,7 +1,8 @@
-import React, { useRef, Dispatch, SetStateAction } from 'react';
+import * as React from 'react';
+import { useRef } from 'react';
 import OGDialogTemplate from '~/components/ui/OGDialogTemplate';
-import { useConversationTagMutation } from '~/data-provider';
 import { Button } from '~/components/ui/Button';
+import { useConversationTagMutation } from 'librechat-data-provider';
 import { Spinner } from '~/components';
 import { OGDialog } from '~/components/ui/OriginalDialog';
 import { NotificationSeverity } from '~/common';
@@ -10,6 +11,8 @@ import BookmarkForm from './BookmarkForm';
 import { useLocalize } from '~/hooks';
 import { logger } from '~/utils';
 
+import type { Bookmark } from './types';
+
 interface BookmarkVars {
   addToConversation?: boolean;
   tag?: string;
@@ -17,7 +20,7 @@ interface BookmarkVars {
 
 type BookmarkEditDialogProps = {
   open: boolean;
-  setOpen: Dispatch<SetStateAction<boolean>>;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   tags?: string[];
   setTags?: (tags: string[]) => void;
   context: string;

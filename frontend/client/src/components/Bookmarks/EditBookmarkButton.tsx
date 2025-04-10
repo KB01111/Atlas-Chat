@@ -1,16 +1,27 @@
 import { useState } from 'react';
 import type { FC } from 'react';
+import type { Bookmark } from './types';
 import { TooltipAnchor, OGDialogTrigger } from '~/components/ui';
 import BookmarkEditDialog from './BookmarkEditDialog';
 import { EditIcon } from '~/components/svg';
 import { useLocalize } from '~/hooks';
 
 const EditBookmarkButton: FC<{
-  bookmark: any;
+  bookmark: Bookmark;
   tabIndex?: number;
   onFocus?: () => void;
   onBlur?: () => void;
-}> = ({ bookmark, tabIndex = 0, onFocus, onBlur }) => {
+}> = ({
+  bookmark,
+  tabIndex = 0,
+  onFocus,
+  onBlur,
+}: {
+  bookmark: Bookmark;
+  tabIndex?: number;
+  onFocus?: () => void;
+  onBlur?: () => void;
+}) => {
   const localize = useLocalize();
   const [open, setOpen] = useState(false);
 

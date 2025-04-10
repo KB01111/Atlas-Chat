@@ -16,6 +16,8 @@ export default function VectorStoreListItem({
   const navigate = useNavigate();
   return (
     <div
+      role="button"
+      tabIndex={0}
       onClick={() => {
         navigate('vs_id_abcdef');
       }}

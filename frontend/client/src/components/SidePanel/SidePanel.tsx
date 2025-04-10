@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo, memo } from 'react';
-import { useUserKeyQuery } from 'librechat-data-provider/react-query';
+import { useUserKeyQuery } from 'librechat-data-provider';
 import type { TEndpointsConfig, TInterfaceConfig } from 'librechat-data-provider';
 import type { ImperativePanelHandle } from 'react-resizable-panels';
 import { ResizableHandleAlt, ResizablePanel } from '~/components/ui/Resizable';

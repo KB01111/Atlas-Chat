@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useApi } from "../../data-provider/simplified-api.tsx"; // Corrected path
+import { useApi } from "librechat-data-provider";
 
 // Simplified registration component that works with our custom backend
 const Register = () => {

@@ -6,7 +6,7 @@ import { Constants } from 'librechat-data-provider';
 import type { TConversation, TMessage } from 'librechat-data-provider';
 import { getEndpointField, getIconEndpoint, getIconKey } from '~/utils';
 import ConvoIconURL from '~/components/Endpoints/ConvoIconURL';
-import { useGetEndpointsQuery } from '~/data-provider';
+import { useGetEndpointsQuery } from 'librechat-data-provider';
 import { useLocalize, useNewConvo } from '~/hooks';
 import { icons } from '~/hooks/Endpoint/Icons';
 import { NewChatIcon } from '~/components/svg';

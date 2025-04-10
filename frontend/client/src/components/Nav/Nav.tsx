@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState, useMemo, memo } from 'react';
 import { useRecoilValue } from 'recoil';
-import { PermissionTypes, Permissions } from 'librechat-data-provider';
-import type { ConversationListResponse } from 'librechat-data-provider';
+import { PermissionTypes, Permissions, type ConversationListResponse } from 'librechat-data-provider';
 import {
   useLocalize,
   useHasAccess,
@@ -10,7 +9,7 @@ import {
   useLocalStorage,
   useNavScrolling,
 } from '~/hooks';
-import { useConversationsInfiniteQuery } from '~/data-provider';
+import { useConversationsInfiniteQuery } from 'librechat-data-provider';
 import { Conversations } from '~/components/Conversations';
 import BookmarkNav from './Bookmarks/BookmarkNav';
 import AccountSettings from './AccountSettings';

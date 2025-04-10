@@ -10,7 +10,7 @@ type VectorStoreListProps = {
 export default function VectorStoreList({ vectorStores, deleteVectorStore }: VectorStoreListProps) {
   return (
     <div>
-      {vectorStores.map((vectorStore, index) => (
+      {vectorStores.map((vectorStore: TVectorStore, index: number) => (
         <VectorStoreListItem
           key={index}
           vectorStore={vectorStore}

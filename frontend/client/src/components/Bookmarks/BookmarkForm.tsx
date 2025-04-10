@@ -1,16 +1,19 @@
-import React, { useEffect } from 'react';
+import * as React from 'react';
+import { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useQueryClient } from '@tanstack/react-query';
 import { Checkbox, Label, TextareaAutosize, Input } from '~/components/ui';
 import { useBookmarkContext } from '../../shared/Providers/BookmarkContext';
-import { useConversationTagMutation } from '~/data-provider';
+import { useConversationTagMutation } from 'librechat-data-provider';
 import { useToastContext } from '~/Providers';
 import { useLocalize } from '~/hooks';
 import { cn, logger } from '~/utils';
 
+import type { Bookmark } from './types';
+
 type TBookmarkFormProps = {
   tags?: string[];
-  bookmark?: any;
+  bookmark?: Bookmark;
   conversationId?: string;
   formRef: React.RefObject<HTMLFormElement>;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -66,7 +69,7 @@ const BookmarkForm = ({
     }
     const allTags =
       queryClient.getQueryData<any[]>(["conversationTags"]) ?? [];
-    if (allTags.some((tag) => tag.tag === data.tag)) {
+    if (allTags.some((tag: { tag: string }) => tag.tag === data.tag)) {
       showToast(localize('com_ui_bookmarks_create_exists'));
       return;
     }
@@ -98,10 +101,10 @@ const BookmarkForm = ({
                 value: 128,
                 message: localize('com_auth_password_max_length'),
               },
-              validate: (value) => {
+              validate: (value: string) => {
                 return (
                   value === bookmark?.tag ||
-                  bookmarks.every((bookmark) => bookmark.tag !== value) ||
+                  bookmarks.every((bookmark: Bookmark) => bookmark.tag !== value) ||
                   'tag must be unique'
                 );
               },
@@ -137,7 +140,7 @@ const BookmarkForm = ({
             <Controller
               name="addToConversation"
               control={control}
-              render={({ field }) => (
+              render={({ field }: { field: any }) => (
                 <Checkbox
                   {...field}
                   checked={field.value}

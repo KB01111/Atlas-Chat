@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { XIcon } from 'lucide-react';
 import { useRecoilState } from 'recoil';
-import { useGetBannerQuery } from '~/data-provider';
+import { useGetBannerQuery } from 'librechat-data-provider';
 import store from '~/store';
 
 export const Banner = ({ onHeightChange }: { onHeightChange?: (height: number) => void }) => {

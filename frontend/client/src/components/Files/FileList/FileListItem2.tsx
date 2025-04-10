@@ -20,6 +20,8 @@ export default function FileListItem2({
 
   return (
     <div
+      role="button"
+      tabIndex={0}
       onClick={() => {
         navigate('file_id_abcdef');
       }}
