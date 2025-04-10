@@ -73,7 +73,7 @@ export default function useAddedHelpers({
       (element) => element.messageId == latestMessage.parentMessageId,
     );
 
-    if (parentMessage && parentMessage.isCreatedByUser) {
+    if (parentMessage?.isCreatedByUser) {
       ask({ ...parentMessage }, { isContinued: true, isRegenerate: true, isEdited: true });
     } else {
       console.error(

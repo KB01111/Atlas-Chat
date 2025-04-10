@@ -19,7 +19,7 @@ var SSE = function (url, options) {
   this.headers = options.headers || {};
   this.payload = options.payload !== undefined ? options.payload : "";
   this.method = options.method || (this.payload && "POST") || "GET";
-  this.withCredentials = !!options.withCredentials;
+  this.withCredentials = Boolean(options.withCredentials);
 
   this.FIELD_SEPARATOR = ":";
   this.listeners = {};
@@ -65,7 +65,7 @@ var SSE = function (url, options) {
     e.source = this;
 
     var onHandler = "on" + e.type;
-    if (this.hasOwnProperty(onHandler)) {
+    if (Object.prototype.hasOwnProperty.call(this, onHandler)) {
       this[onHandler].call(this, e);
       if (e.defaultPrevented) {
         return false;

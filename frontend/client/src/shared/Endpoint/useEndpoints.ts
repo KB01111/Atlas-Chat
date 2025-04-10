@@ -88,7 +88,7 @@ export const useEndpoints = ({
 
   const endpointRequiresUserKey = useCallback(
     (ep: string) => {
-      return !!getEndpointField(endpointsConfig, ep, 'userProvide');
+      return Boolean(getEndpointField(endpointsConfig, ep, 'userProvide'));
     },
     [endpointsConfig],
   );

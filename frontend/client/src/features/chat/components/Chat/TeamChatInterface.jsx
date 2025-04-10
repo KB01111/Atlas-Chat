@@ -283,7 +283,7 @@ const TeamChatInterface = ({
                     <CodeExecutionComponent
                       initialCode={selectedTask.metadata.initial_code || ''}
                       language={selectedTask.metadata.language}
-                      readOnly={true}
+                      readOnly
                       showControls={false}
                     />
                   </div>

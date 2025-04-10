@@ -150,7 +150,7 @@ export default function ChatRoute() {
     return null;
   }
 
-  const isTemporaryChat = conversation && conversation.expiredAt ? true : false;
+  const isTemporaryChat = conversation?.expiredAt ? true : false;
 
   if (conversationId !== Constants.NEW_CONVO && !isTemporaryChat) {
     setIsTemporary(false);

@@ -176,7 +176,7 @@ const AdminSettings = () => {
                 }
                 items={roleDropdownItems}
                 itemClassName="items-center justify-center"
-                sameWidth={true}
+                sameWidth
               />
             </div>
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -237,7 +237,7 @@ const AdminSettings = () => {
         }}
       >
         <OGDialogTemplate
-          showCloseButton={true}
+          showCloseButton
           title={localize('com_ui_confirm_change')}
           className="w-11/12 max-w-lg"
           main={<p className="mb-4">{localize('com_ui_confirm_admin_use_change')}</p>}

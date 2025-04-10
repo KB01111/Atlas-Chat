@@ -38,7 +38,7 @@ export default function ShareAgent({
   const { data: startupConfig = {} as TStartupConfig, isFetching } = useGetStartupConfig();
   const { instanceProjectId } = startupConfig;
   const agentIsGlobal = useMemo(
-    () => !!projectIds.includes(instanceProjectId),
+    () => Boolean(projectIds.includes(instanceProjectId)),
     [projectIds, instanceProjectId],
   );
 

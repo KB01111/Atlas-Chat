@@ -30,7 +30,7 @@ export default function usePresets() {
   const availableTools = useRecoilValue(store.plugins); // Renamed availableTools to plugins
   const setPresetModalVisible = useSetRecoilState(store.presetModalVisible);
   const [_defaultPreset, setDefaultPreset] = useRecoilState(store.defaultPreset);
-  const presetsQuery = useGetPresetsQuery({ enabled: !!user && isAuthenticated });
+  const presetsQuery = useGetPresetsQuery({ enabled: Boolean(user) && isAuthenticated });
   const { preset, conversation, index, setPreset } = useChatContext();
   // const { data: modelsData } = useGetModelsQuery(); // Removed as hook is missing
   const { newConversation } = useNewConvo(index);

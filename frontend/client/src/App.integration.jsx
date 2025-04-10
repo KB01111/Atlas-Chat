@@ -21,7 +21,7 @@ const AuthProvider = ({ children }) => {
     const checkAuth = async () => {
       try {
         const user = await api.getCurrentUser();
-        setIsAuthenticated(!!user);
+        setIsAuthenticated(Boolean(user));
       } catch (error) {
         console.error('Auth check failed:', error);
         setIsAuthenticated(false);

@@ -30,7 +30,7 @@ export const getEndpointsFilter = (endpointsConfig: t.TEndpointsConfig) => {
     return filter;
   }
   for (const key of Object.keys(endpointsConfig)) {
-    filter[key] = !!endpointsConfig[key];
+    filter[key] = Boolean(endpointsConfig[key]);
   }
   return filter;
 };
@@ -146,7 +146,7 @@ export function getConvoSwitchLogic(params: ConversationInitParams): InitiatedTe
     currentEndpoint === newEndpoint;
 
   const conversationId = conversation?.conversationId ?? '';
-  const isExistingConversation = !!(conversationId && conversationId !== 'new');
+  const isExistingConversation = Boolean(conversationId && conversationId !== 'new');
 
   const currentEndpointType =
     getEndpointField(endpointsConfig, currentEndpoint, 'type') ?? currentEndpoint;

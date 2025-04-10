@@ -252,7 +252,7 @@ const useNewConvo = (index = 0) => {
           )
           .map((file) => ({
             file_id: file.file_id,
-            embedded: !!(file.embedded ?? false),
+            embedded: Boolean(file.embedded ?? false),
             filepath: file.filepath as string,
             source: file.source as FileSources, // Ensure that the source is of type FileSources
           }));

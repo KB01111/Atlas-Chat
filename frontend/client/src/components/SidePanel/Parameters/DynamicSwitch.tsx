@@ -23,7 +23,7 @@ function DynamicSwitch({
 }: DynamicSettingProps) {
   const localize = useLocalize();
   const { preset } = useChatContext();
-  const [inputValue, setInputValue] = useState<boolean>(!!(defaultValue as boolean | undefined));
+  const [inputValue, setInputValue] = useState<boolean>(Boolean(defaultValue as boolean | undefined));
   useParameterEffects({
     preset,
     settingKey,

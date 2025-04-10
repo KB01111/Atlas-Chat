@@ -130,7 +130,7 @@ export default function Settings({ conversation, setOption, models, readonly }: 
           </HoverCardTrigger>
           <OptionHoverAlt
             description="com_endpoint_context_info"
-            langCode={true}
+            langCode
             side={ESide.Left}
           />
         </HoverCard>
@@ -180,7 +180,7 @@ export default function Settings({ conversation, setOption, models, readonly }: 
               <Label htmlFor="top-p-int" className="text-left text-sm font-medium">
                 {localize('com_endpoint_top_p')}{' '}
                 <small className="opacity-40">
-                  ({localize('com_endpoint_default_with_num', { 0: google.topP.default + '' })})
+                  ({localize('com_endpoint_default_with_num', { 0: String(google.topP.default) })})
                 </small>
               </Label>
               <InputNumber
@@ -221,7 +221,7 @@ export default function Settings({ conversation, setOption, models, readonly }: 
               <Label htmlFor="top-k-int" className="text-left text-sm font-medium">
                 {localize('com_endpoint_top_k')}{' '}
                 <small className="opacity-40">
-                  ({localize('com_endpoint_default_with_num', { 0: google.topK.default + '' })})
+                  ({localize('com_endpoint_default_with_num', { 0: String(google.topK.default) })})
                 </small>
               </Label>
               <InputNumber
@@ -263,7 +263,7 @@ export default function Settings({ conversation, setOption, models, readonly }: 
                 <small className="opacity-40">
                   (
                   {localize('com_endpoint_default_with_num', {
-                    0: google.maxOutputTokens.default + '',
+                    0: String(google.maxOutputTokens.default),
                   })}
                   )
                 </small>
