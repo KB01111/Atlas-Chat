@@ -107,12 +107,7 @@ const Register: React.FC = () => {
         Register with GitHub
       </button>
       {error && (
-        <p
-          ref={errorRef}
-          style={{ color: 'red' }}
-          role="alert"
-          tabIndex={-1}
-        >
+        <p ref={errorRef} style={{ color: 'red' }} role="alert" tabIndex={-1}>
           {error}
         </p>
       )}

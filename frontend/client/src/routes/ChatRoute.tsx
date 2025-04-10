@@ -65,12 +65,12 @@ export default function ChatRoute() {
         template: conversation ? conversation : undefined,
         ...(spec
           ? {
-            preset: {
-              ...spec.preset,
-              iconURL: getModelSpecIconURL(spec),
-              spec: spec.name,
-            },
-          }
+              preset: {
+                ...spec.preset,
+                iconURL: getModelSpecIconURL(spec),
+                spec: spec.name,
+              },
+            }
           : {}),
       });
 
@@ -95,12 +95,12 @@ export default function ChatRoute() {
         template: conversation ? conversation : undefined,
         ...(spec
           ? {
-            preset: {
-              ...spec.preset,
-              iconURL: getModelSpecIconURL(spec),
-              spec: spec.name,
-            },
-          }
+              preset: {
+                ...spec.preset,
+                iconURL: getModelSpecIconURL(spec),
+                spec: spec.name,
+              },
+            }
           : {}),
       });
       hasSetConversation.current = true;

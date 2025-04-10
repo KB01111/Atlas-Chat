@@ -1,4 +1,4 @@
-import type * as t from "librechat-data-provider";
+import type * as t from 'librechat-data-provider';
 import {
   defaultEndpoints,
   EModelEndpoint,
@@ -6,11 +6,11 @@ import {
   isAssistantsEndpoint,
   LocalStorageKeys,
   modularEndpoints,
-} from "librechat-data-provider";
-import type { IconsRecord, LocalizeFunction } from "~/common";
+} from 'librechat-data-provider';
+import type { IconsRecord, LocalizeFunction } from '~/common';
 
 export const getEntityName = ({
-  name = "",
+  name = '',
   localize,
   isAgent,
 }: {
@@ -21,9 +21,7 @@ export const getEntityName = ({
   if (name && name.length > 0) {
     return name;
   }
-  return isAgent === true
-    ? localize("com_ui_agent")
-    : localize("com_ui_assistant");
+  return isAgent === true ? localize('com_ui_agent') : localize('com_ui_assistant');
 };
 
 export const getEndpointsFilter = (endpointsConfig: t.TEndpointsConfig) => {
@@ -79,8 +77,7 @@ export function getEndpointField<K extends keyof t.TConfig>(
 export function mapEndpoints(endpointsConfig: t.TEndpointsConfig) {
   const filter = getEndpointsFilter(endpointsConfig);
   return getAvailableEndpoints(filter, endpointsConfig).sort(
-    (a, b) =>
-      (endpointsConfig?.[a]?.order ?? 0) - (endpointsConfig?.[b]?.order ?? 0),
+    (a, b) => (endpointsConfig?.[a]?.order ?? 0) - (endpointsConfig?.[b]?.order ?? 0),
   );
 }
 
@@ -91,7 +88,7 @@ const firstLocalConvoKey = `${LocalStorageKeys.LAST_CONVO_SETUP}_0`;
  * update without updating last convo setup when same endpoint */
 export function updateLastSelectedModel({
   endpoint,
-  model = "",
+  model = '',
 }: {
   endpoint: string;
   model?: string;
@@ -101,25 +98,19 @@ export function updateLastSelectedModel({
   }
   /* Note: an empty string value is possible */
   const lastConversationSetup = JSON.parse(
-    (localStorage.getItem(firstLocalConvoKey) ?? "{}") || "{}",
+    (localStorage.getItem(firstLocalConvoKey) ?? '{}') || '{}',
   );
 
   if (lastConversationSetup.endpoint === endpoint) {
     lastConversationSetup.model = model;
-    localStorage.setItem(
-      firstLocalConvoKey,
-      JSON.stringify(lastConversationSetup),
-    );
+    localStorage.setItem(firstLocalConvoKey, JSON.stringify(lastConversationSetup));
   }
 
   const lastSelectedModels = JSON.parse(
-    (localStorage.getItem(LocalStorageKeys.LAST_MODEL) ?? "{}") || "{}",
+    (localStorage.getItem(LocalStorageKeys.LAST_MODEL) ?? '{}') || '{}',
   );
   lastSelectedModels[endpoint] = model;
-  localStorage.setItem(
-    LocalStorageKeys.LAST_MODEL,
-    JSON.stringify(lastSelectedModels),
-  );
+  localStorage.setItem(LocalStorageKeys.LAST_MODEL, JSON.stringify(lastSelectedModels));
 }
 
 interface ConversationInitParams {
@@ -139,21 +130,14 @@ interface InitiatedTemplateResult {
 }
 
 /** Get the conditional logic for switching conversations */
-export function getConvoSwitchLogic(
-  params: ConversationInitParams,
-): InitiatedTemplateResult {
-  const {
-    conversation,
-    newEndpoint,
-    endpointsConfig,
-    modularChat = false,
-  } = params;
+export function getConvoSwitchLogic(params: ConversationInitParams): InitiatedTemplateResult {
+  const { conversation, newEndpoint, endpointsConfig, modularChat = false } = params;
 
   const currentEndpoint = conversation?.endpoint;
   const template: Partial<t.TPreset> = {
     ...conversation,
     endpoint: newEndpoint,
-    conversationId: "new",
+    conversationId: 'new',
   };
 
   const isAssistantSwitch =
@@ -161,27 +145,22 @@ export function getConvoSwitchLogic(
     isAssistantsEndpoint(currentEndpoint) &&
     currentEndpoint === newEndpoint;
 
-  const conversationId = conversation?.conversationId ?? "";
-  const isExistingConversation = !!(conversationId && conversationId !== "new");
+  const conversationId = conversation?.conversationId ?? '';
+  const isExistingConversation = !!(conversationId && conversationId !== 'new');
 
   const currentEndpointType =
-    getEndpointField(endpointsConfig, currentEndpoint, "type") ??
-    currentEndpoint;
+    getEndpointField(endpointsConfig, currentEndpoint, 'type') ?? currentEndpoint;
   const newEndpointType =
-    getEndpointField(endpointsConfig, newEndpoint, "type") ??
+    getEndpointField(endpointsConfig, newEndpoint, 'type') ??
     (newEndpoint as EModelEndpoint | undefined);
 
-  const hasEndpoint = modularEndpoints.has(currentEndpoint ?? "");
-  const hasCurrentEndpointType = modularEndpoints.has(
-    currentEndpointType ?? "",
-  );
-  const isCurrentModular =
-    hasEndpoint || hasCurrentEndpointType || isAssistantSwitch;
+  const hasEndpoint = modularEndpoints.has(currentEndpoint ?? '');
+  const hasCurrentEndpointType = modularEndpoints.has(currentEndpointType ?? '');
+  const isCurrentModular = hasEndpoint || hasCurrentEndpointType || isAssistantSwitch;
 
-  const hasNewEndpoint = modularEndpoints.has(newEndpoint ?? "");
-  const hasNewEndpointType = modularEndpoints.has(newEndpointType ?? "");
-  const isNewModular =
-    hasNewEndpoint || hasNewEndpointType || isAssistantSwitch;
+  const hasNewEndpoint = modularEndpoints.has(newEndpoint ?? '');
+  const hasNewEndpointType = modularEndpoints.has(newEndpointType ?? '');
+  const isNewModular = hasNewEndpoint || hasNewEndpointType || isAssistantSwitch;
 
   const endpointsMatch = currentEndpoint === newEndpoint;
   const shouldSwitch = endpointsMatch || modularChat || isAssistantSwitch;
@@ -208,19 +187,15 @@ export function getDefaultModelSpec(startupConfig?: t.TStartupConfig) {
   }
   const defaultSpec = list?.find((spec) => spec.default);
   if (prioritize === true || !interfaceConfig?.modelSelect) {
-    const lastSelectedSpecName = localStorage.getItem(
-      LocalStorageKeys.LAST_SPEC,
-    );
-    const lastSelectedSpec = list?.find(
-      (spec) => spec.name === lastSelectedSpecName,
-    );
+    const lastSelectedSpecName = localStorage.getItem(LocalStorageKeys.LAST_SPEC);
+    const lastSelectedSpec = list?.find((spec) => spec.name === lastSelectedSpecName);
     return defaultSpec || lastSelectedSpec || list?.[0];
   }
   if (defaultSpec) {
     return defaultSpec;
   }
   const lastConversationSetup = JSON.parse(
-    localStorage.getItem(`${LocalStorageKeys.LAST_CONVO_SETUP}_0`) ?? "{}",
+    localStorage.getItem(`${LocalStorageKeys.LAST_CONVO_SETUP}_0`) ?? '{}',
   );
   if (!lastConversationSetup.spec) {
     return;
@@ -233,12 +208,7 @@ export function getDefaultModelSpec(startupConfig?: t.TStartupConfig) {
  * First, the admin defined default, then last selected spec, followed by first spec
  */
 export function getModelSpecIconURL(modelSpec: t.TModelSpec) {
-  return (
-    modelSpec.iconURL ??
-    modelSpec.preset.iconURL ??
-    modelSpec.preset.endpoint ??
-    ""
-  );
+  return modelSpec.iconURL ?? modelSpec.preset.iconURL ?? modelSpec.preset.endpoint ?? '';
 }
 
 /** Gets the default frontend-facing endpoint, dependent on iconURL definition.
@@ -254,9 +224,7 @@ export function getIconEndpoint({
   iconURL?: string | null;
   endpoint?: string | null;
 }) {
-  return (
-    (endpointsConfig?.[iconURL ?? ""] ? iconURL ?? endpoint : endpoint) ?? ""
-  );
+  return (endpointsConfig?.[iconURL ?? ''] ? (iconURL ?? endpoint) : endpoint) ?? '';
 }
 
 /** Gets the key to use for the default endpoint iconURL, as defined by the custom config */
@@ -271,14 +239,12 @@ export function getIconKey({
   endpointType?: string | null;
   endpointIconURL?: string;
 }): keyof IconsRecord {
-  const endpointType =
-    _eType ?? getEndpointField(endpointsConfig, endpoint, "type") ?? "";
-  const endpointIconURL =
-    iconURL ?? getEndpointField(endpointsConfig, endpoint, "iconURL") ?? "";
+  const endpointType = _eType ?? getEndpointField(endpointsConfig, endpoint, 'type') ?? '';
+  const endpointIconURL = iconURL ?? getEndpointField(endpointsConfig, endpoint, 'iconURL') ?? '';
   if (endpointIconURL && EModelEndpoint[endpointIconURL] != null) {
     return endpointIconURL;
   }
-  return endpointType ? "unknown" : endpoint ?? "unknown";
+  return endpointType ? 'unknown' : (endpoint ?? 'unknown');
 }
 
 export const getEntity = ({
@@ -302,11 +268,11 @@ export const getEntity = ({
   const isAssistant = isAssistantsEndpoint(endpoint);
 
   if (isAgent) {
-    const agent = agentsMap?.[agent_id ?? ""];
+    const agent = agentsMap?.[agent_id ?? ''];
     return { entity: agent, isAgent, isAssistant };
   }
   if (isAssistant) {
-    const assistant = assistantMap?.[endpoint ?? ""]?.[assistant_id ?? ""];
+    const assistant = assistantMap?.[endpoint ?? '']?.[assistant_id ?? ''];
     return { entity: assistant, isAgent, isAssistant };
   }
   return { entity: null, isAgent, isAssistant };

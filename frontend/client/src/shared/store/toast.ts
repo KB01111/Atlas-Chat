@@ -6,7 +6,7 @@ const toastState = atom({
   default: {
     open: false,
     message: '',
-    severity: NotificationSeverity.SUCCESS,
+    severity: NotificationSeverity.Success,
     showIcon: true,
   },
 });

@@ -1,25 +1,21 @@
-import { useQueryClient } from "@tanstack/react-query";
-import type { TMessage } from "librechat-data-provider";
-import { useCallback, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
-import { globalAudioId } from "~/common";
-import { useAuthContext } from "~/hooks";
-import {
-  MediaSourceAppender,
-  useCustomAudioRef,
-  usePauseGlobalAudio,
-} from "~/hooks/Audio";
-import store from "~/store";
-import { getLatestText, logger } from "~/utils";
+import { useQueryClient } from '@tanstack/react-query';
+import type { TMessage } from 'librechat-data-provider';
+import { useCallback, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { globalAudioId } from '~/common';
+import { useAuthContext } from '~/hooks';
+import { MediaSourceAppender, useCustomAudioRef, usePauseGlobalAudio } from '~/hooks/Audio';
+import store from '~/store';
+import { getLatestText, logger } from '~/utils';
 
 function timeoutPromise(ms: number, message?: string) {
   return new Promise((_, reject) =>
-    setTimeout(() => reject(new Error(message ?? "Promise timed out")), ms),
+    setTimeout(() => reject(new Error(message ?? 'Promise timed out')), ms),
   );
 }
 
-const promiseTimeoutMessage = "Reader promise timed out";
+const promiseTimeoutMessage = 'Reader promise timed out';
 const maxPromiseTime = 15000;
 
 export default function StreamAudio({ index = 0 }) {
@@ -34,29 +30,19 @@ export default function StreamAudio({ index = 0 }) {
   const isSubmitting = useRecoilValue(store.isSubmittingFamily(index));
   const latestMessage = useRecoilValue(store.latestMessageFamily(index));
   const setIsPlaying = useSetRecoilState(store.globalAudioPlayingFamily(index));
-  const [audioRunId, setAudioRunId] = useRecoilState(
-    store.audioRunFamily(index),
-  );
-  const [isFetching, setIsFetching] = useRecoilState(
-    store.globalAudioFetchingFamily(index),
-  );
-  const [globalAudioURL, setGlobalAudioURL] = useRecoilState(
-    store.globalAudioURLFamily(index),
-  );
+  const [audioRunId, setAudioRunId] = useRecoilState(store.audioRunFamily(index));
+  const [isFetching, setIsFetching] = useRecoilState(store.globalAudioFetchingFamily(index));
+  const [globalAudioURL, setGlobalAudioURL] = useRecoilState(store.globalAudioURLFamily(index));
 
   const { audioRef } = useCustomAudioRef({ setIsPlaying });
   const { pauseGlobalAudio } = usePauseGlobalAudio();
 
   const { conversationId: paramId } = useParams();
-  const queryParam =
-    paramId === "new"
-      ? paramId
-      : latestMessage?.conversationId ?? paramId ?? "";
+  const queryParam = paramId === 'new' ? paramId : (latestMessage?.conversationId ?? paramId ?? '');
 
   const queryClient = useQueryClient();
   const getMessages = useCallback(
-    () =>
-      queryClient.getQueryData<TMessage[]>(["messages", queryParam]),
+    () => queryClient.getQueryData<TMessage[]>(['messages', queryParam]),
     [queryParam, queryClient],
   );
 
@@ -71,7 +57,7 @@ export default function StreamAudio({ index = 0 }) {
       !latestMessage.isCreatedByUser &&
       latestText &&
       latestMessage.messageId &&
-      !latestMessage.messageId.includes("_") &&
+      !latestMessage.messageId.includes('_') &&
       !isFetching &&
       activeRunId != null &&
       activeRunId !== audioRunId
@@ -91,13 +77,13 @@ export default function StreamAudio({ index = 0 }) {
           setGlobalAudioURL(null);
         }
 
-        let cacheKey = latestMessage?.text ?? "";
-        const cache = await caches.open("tts-responses");
+        let cacheKey = latestMessage?.text ?? '';
+        const cache = await caches.open('tts-responses');
         const cachedResponse = await cache.match(cacheKey);
 
         setAudioRunId(activeRunId);
         if (cachedResponse) {
-          logger.log("Audio found in cache");
+          logger.log('Audio found in cache');
           const audioBlob = await cachedResponse.blob();
           const blobUrl = URL.createObjectURL(audioBlob);
           setGlobalAudioURL(blobUrl);
@@ -105,11 +91,11 @@ export default function StreamAudio({ index = 0 }) {
           return;
         }
 
-        logger.log("Fetching audio...", navigator.userAgent);
-        const response = await fetch("/api/files/speech/tts", {
-          method: "POST",
+        logger.log('Fetching audio...', navigator.userAgent);
+        const response = await fetch('/api/files/speech/tts', {
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
@@ -120,18 +106,17 @@ export default function StreamAudio({ index = 0 }) {
         });
 
         if (!response.ok) {
-          throw new Error("Failed to fetch audio");
+          throw new Error('Failed to fetch audio');
         }
         if (!response.body) {
-          throw new Error("Null Response body");
+          throw new Error('Null Response body');
         }
 
         const reader = response.body.getReader();
 
-        const type = "audio/mpeg";
+        const type = 'audio/mpeg';
         const browserSupportsType =
-          typeof MediaSource !== "undefined" &&
-          MediaSource.isTypeSupported(type);
+          typeof MediaSource !== 'undefined' && MediaSource.isTypeSupported(type);
         let mediaSource: MediaSourceAppender | undefined;
         if (browserSupportsType) {
           mediaSource = new MediaSourceAppender(type);
@@ -158,14 +143,14 @@ export default function StreamAudio({ index = 0 }) {
         }
 
         if (chunks.length) {
-          logger.log("Adding audio to cache");
+          logger.log('Adding audio to cache');
           const latestMessages = getMessages() ?? [];
           const targetMessage = latestMessages.find(
             (msg) => msg.messageId === latestMessage?.messageId,
           );
-          cacheKey = targetMessage?.text ?? "";
+          cacheKey = targetMessage?.text ?? '';
           if (!cacheKey) {
-            throw new Error("Cache key not found");
+            throw new Error('Cache key not found');
           }
           const audioBlob = new Blob(chunks, { type });
           const cachedResponse = new Response(audioBlob);
@@ -173,7 +158,7 @@ export default function StreamAudio({ index = 0 }) {
           if (!browserSupportsType) {
             const unconsumedResponse = await cache.match(cacheKey);
             if (!unconsumedResponse) {
-              throw new Error("Failed to fetch audio from cache");
+              throw new Error('Failed to fetch audio from cache');
             }
             const audioBlob = await unconsumedResponse.blob();
             const blobUrl = URL.createObjectURL(audioBlob);
@@ -182,13 +167,13 @@ export default function StreamAudio({ index = 0 }) {
           setIsFetching(false);
         }
 
-        logger.log("Audio stream reading ended");
+        logger.log('Audio stream reading ended');
       } catch (error) {
         if (error?.message !== promiseTimeoutMessage) {
           logger.log(promiseTimeoutMessage);
           return;
         }
-        logger.error("Error fetching audio:", error);
+        logger.error('Error fetching audio:', error);
         setIsFetching(false);
         setGlobalAudioURL(null);
       } finally {
@@ -232,7 +217,7 @@ export default function StreamAudio({ index = 0 }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pauseGlobalAudio]);
 
-  logger.log("StreamAudio.tsx - globalAudioURL:", globalAudioURL);
+  logger.log('StreamAudio.tsx - globalAudioURL:', globalAudioURL);
   return (
     // eslint-disable-next-line jsx-a11y/media-has-caption
     <audio
@@ -240,11 +225,11 @@ export default function StreamAudio({ index = 0 }) {
       controls
       controlsList="nodownload nofullscreen noremoteplayback"
       style={{
-        position: "absolute",
-        overflow: "hidden",
-        display: "none",
-        height: "0px",
-        width: "0px",
+        position: 'absolute',
+        overflow: 'hidden',
+        display: 'none',
+        height: '0px',
+        width: '0px',
       }}
       src={globalAudioURL ?? undefined}
       id={globalAudioId}

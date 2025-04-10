@@ -1,9 +1,9 @@
-import axios from "axios";
+import axios from 'axios';
 
 export function setAcceptLanguageHeader(value: string): void {
-  axios.defaults.headers.common["Accept-Language"] = value;
+  axios.defaults.headers.common['Accept-Language'] = value;
 }
 
 export function setTokenHeader(token: string) {
-  axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+  axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
 }

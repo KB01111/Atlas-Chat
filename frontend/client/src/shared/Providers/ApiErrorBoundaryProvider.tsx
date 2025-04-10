@@ -19,7 +19,7 @@ class ApiErrorBoundaryProvider extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error("API Error Boundary caught an error", error, errorInfo);
+    console.error('API Error Boundary caught an error', error, errorInfo);
   }
 
   handleRetry = () => {

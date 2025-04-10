@@ -1,5 +1,5 @@
 export const useToastContext = () => {
   return {
-    showToast: (message: string) => {},
+    showToast: (arg: string | { message: string; severity: any }) => {},
   };
 };

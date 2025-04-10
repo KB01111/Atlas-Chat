@@ -178,7 +178,7 @@ const DeleteButton = memo(
     isDeleting: boolean;
     disabled: boolean;
     isSmallScreen: boolean;
-    localize:LocalizeFunction;
+    localize: LocalizeFunction;
   }) => {
     if (!onDelete) {
       return null;

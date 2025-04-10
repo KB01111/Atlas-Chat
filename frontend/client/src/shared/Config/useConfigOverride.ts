@@ -25,12 +25,12 @@ export default function useConfigOverride() {
       const { endpointsConfig, modelsConfig } = data as TempOverrideType;
       if (endpointsConfig) {
         setEndpointsQueryEnabled(false);
-        await queryClient.cancelQueries(["endpoints"]);
-        queryClient.setQueryData(["endpoints"], endpointsConfig);
+        await queryClient.cancelQueries(['endpoints']);
+        queryClient.setQueryData(['endpoints'], endpointsConfig);
       }
       if (modelsConfig) {
-        await queryClient.cancelQueries(["models"]);
-        queryClient.setQueryData(["models"], modelsConfig);
+        await queryClient.cancelQueries(['models']);
+        queryClient.setQueryData(['models'], modelsConfig);
       }
     },
     [queryClient, setEndpointsQueryEnabled],

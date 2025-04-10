@@ -21,7 +21,7 @@ export default function Search() {
   const messages = useMemo(() => {
     const msgs = searchQueryRes?.data?.pages.flatMap((page) => page.messages) || [];
     const dataTree = buildTree({ messages: msgs, fileMap });
-    return dataTree?.length === 0 ? null : dataTree ?? null;
+    return dataTree?.length === 0 ? null : (dataTree ?? null);
   }, [fileMap, searchQueryRes?.data?.pages]);
 
   if (!searchQuery || !searchQueryRes?.data) {

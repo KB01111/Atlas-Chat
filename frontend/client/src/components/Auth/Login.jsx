@@ -1,12 +1,12 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useApi } from "../../data-provider/simplified-api.tsx"; // Corrected path
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useApi } from '../../data-provider/simplified-api.tsx'; // Corrected path
 
 // Simplified login component that works with our custom backend
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
@@ -16,24 +16,24 @@ const Login = () => {
     e.preventDefault();
 
     if (!email || !password) {
-      setError("Email and password are required");
+      setError('Email and password are required');
       return;
     }
 
     try {
       setLoading(true);
-      setError("");
+      setError('');
 
       // Call the login method from our simplified API
       const response = await api.login(email, password);
 
       // If login successful, redirect to home page
       if (response?.access_token) {
-        navigate("/");
+        navigate('/');
       }
     } catch (err) {
-      console.error("Login error:", err);
-      setError("Invalid email or password. Please try again.");
+      console.error('Login error:', err);
+      setError('Invalid email or password. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -52,10 +52,7 @@ const Login = () => {
           {error && <div className="text-red-500 text-sm">{error}</div>}
 
           <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium leading-6 text-gray-900"
-            >
+            <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
               Email address
             </label>
             <div className="mt-2">
@@ -101,13 +98,13 @@ const Login = () => {
               disabled={loading}
               className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:bg-indigo-400"
             >
-              {loading ? "Signing in..." : "Sign in"}
+              {loading ? 'Signing in...' : 'Sign in'}
             </button>
           </div>
         </form>
 
         <p className="mt-10 text-center text-sm text-gray-500">
-          Don't have an account?{" "}
+          Don't have an account?{' '}
           <a
             href="/register"
             className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"

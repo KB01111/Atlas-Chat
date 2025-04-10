@@ -23,7 +23,7 @@ export default function useDeleteFilesFromTable(callback?: () => void) {
       console.log('Files deleted');
       const { filesToDeleteMap } = context as { filesToDeleteMap: Map<string, BatchFile> };
 
-      queryClient.setQueryData(["files"], (oldFiles: TFile[] | undefined) => {
+      queryClient.setQueryData(['files'], (oldFiles: TFile[] | undefined) => {
         const { files } = variables;
         return files.length
           ? oldFiles?.filter((file) => !filesToDeleteMap.has(file.file_id))

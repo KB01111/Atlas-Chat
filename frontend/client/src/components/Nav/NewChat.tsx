@@ -84,7 +84,7 @@ export default function NewChat({
     if (event.button === 0 && !(event.ctrlKey || event.metaKey)) {
       event.preventDefault();
       queryClient.setQueryData<TMessage[]>(
-        ["messages", conversation?.conversationId ?? Constants.NEW_CONVO],
+        ['messages', conversation?.conversationId ?? Constants.NEW_CONVO],
         [],
       );
       newConvo();

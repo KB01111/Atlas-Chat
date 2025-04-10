@@ -1,19 +1,19 @@
-import type { TPromptGroup } from "librechat-data-provider";
-import { Permissions, PermissionTypes } from "librechat-data-provider";
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { AutoSizer, List } from "react-virtualized";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import type { PromptOption } from "~/common";
-import CategoryIcon from "~/features/prompts/components/Prompts/Groups/CategoryIcon";
-import VariableDialog from "~/features/prompts/components/Prompts/Groups/VariableDialog";
-import { Spinner } from "~/components/svg";
-import { useGetAllPromptGroups } from "~/data-provider";
-import { useCombobox, useHasAccess, useLocalize } from "~/hooks";
-import store from "~/store";
-import { detectVariables, mapPromptGroups, removeCharIfLast } from "~/utils";
-import MentionItem from "./MentionItem";
+import type { TPromptGroup } from 'librechat-data-provider';
+import { Permissions, PermissionTypes } from 'librechat-data-provider';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { AutoSizer, List } from 'react-virtualized';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import type { PromptOption } from '~/common';
+import CategoryIcon from '~/features/prompts/components/Prompts/Groups/CategoryIcon';
+import VariableDialog from '~/features/prompts/components/Prompts/Groups/VariableDialog';
+import { Spinner } from '~/components/svg';
+import { useGetAllPromptGroups } from '~/data-provider';
+import { useCombobox, useHasAccess, useLocalize } from '~/hooks';
+import store from '~/store';
+import { detectVariables, mapPromptGroups, removeCharIfLast } from '~/utils';
+import MentionItem from './MentionItem';
 
-const commandChar = "/";
+const commandChar = '/';
 
 const PopoverContainer = memo(
   ({
@@ -29,9 +29,7 @@ const PopoverContainer = memo(
     variableGroup: TPromptGroup | null;
     setVariableDialogOpen: (isOpen: boolean) => void;
   }) => {
-    const showPromptsPopover = useRecoilValue(
-      store.showPromptsPopoverFamily(index),
-    );
+    const showPromptsPopover = useRecoilValue(store.showPromptsPopoverFamily(index));
     return (
       <>
         {showPromptsPopover ? children : null}
@@ -68,16 +66,14 @@ function PromptsCommand({
       const mappedArray = data.map((group) => ({
         id: group._id,
         value: group.command ?? group.name,
-        label: `${group.command != null && group.command ? `/${group.command} - ` : ""}${
+        label: `${group.command != null && group.command ? `/${group.command} - ` : ''}${
           group.name
         }: ${
           (group.oneliner?.length ?? 0) > 0
             ? group.oneliner
-            : group.productionPrompt?.prompt ?? ""
+            : (group.productionPrompt?.prompt ?? '')
         }`,
-        icon: (
-          <CategoryIcon category={group.category ?? ""} className="h-5 w-5" />
-        ),
+        icon: <CategoryIcon category={group.category ?? ''} className="h-5 w-5" />,
       }));
 
       const promptsMap = mapPromptGroups(data);
@@ -94,15 +90,13 @@ function PromptsCommand({
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [isVariableDialogOpen, setVariableDialogOpen] = useState(false);
   const [variableGroup, setVariableGroup] = useState<TPromptGroup | null>(null);
-  const setShowPromptsPopover = useSetRecoilState(
-    store.showPromptsPopoverFamily(index),
-  );
+  const setShowPromptsPopover = useSetRecoilState(store.showPromptsPopoverFamily(index));
 
   const prompts = useMemo(() => data?.promptGroups, [data]);
   const promptsMap = useMemo(() => data?.promptsMap, [data]);
 
   const { open, setOpen, searchValue, setSearchValue, matches } = useCombobox({
-    value: "",
+    value: '',
     options: prompts ?? [],
   });
 
@@ -112,7 +106,7 @@ function PromptsCommand({
         return;
       }
 
-      setSearchValue("");
+      setSearchValue('');
       setOpen(false);
       setShowPromptsPopover(false);
 
@@ -125,27 +119,18 @@ function PromptsCommand({
         return;
       }
 
-      const hasVariables = detectVariables(
-        group.productionPrompt?.prompt ?? "",
-      );
+      const hasVariables = detectVariables(group.productionPrompt?.prompt ?? '');
       if (hasVariables) {
-        if (e && e.key === "Tab") {
+        if (e && e.key === 'Tab') {
           e.preventDefault();
         }
         setVariableGroup(group);
         setVariableDialogOpen(true);
         return;
       }
-      submitPrompt(group.productionPrompt?.prompt ?? "");
+      submitPrompt(group.productionPrompt?.prompt ?? '');
     },
-    [
-      setSearchValue,
-      setOpen,
-      setShowPromptsPopover,
-      textAreaRef,
-      promptsMap,
-      submitPrompt,
-    ],
+    [setSearchValue, setOpen, setShowPromptsPopover, textAreaRef, promptsMap, submitPrompt],
   );
 
   useEffect(() => {
@@ -165,12 +150,10 @@ function PromptsCommand({
   }, []);
 
   useEffect(() => {
-    const currentActiveItem = document.getElementById(
-      `prompt-item-${activeIndex}`,
-    );
+    const currentActiveItem = document.getElementById(`prompt-item-${activeIndex}`);
     currentActiveItem?.scrollIntoView({
-      behavior: "instant",
-      block: "nearest",
+      behavior: 'instant',
+      block: 'nearest',
     });
   }, [activeIndex]);
 
@@ -201,7 +184,7 @@ function PromptsCommand({
           timeoutRef.current = null;
           handleSelect(mention);
         }}
-        name={mention.label ?? ""}
+        name={mention.label ?? ''}
         icon={mention.icon}
         description={mention.description}
         isActive={index === activeIndex}
@@ -220,32 +203,26 @@ function PromptsCommand({
         <div className="popover border-token-border-light rounded-2xl border bg-surface-tertiary-alt p-2 shadow-lg">
           <input
             ref={inputRef}
-            placeholder={localize("com_ui_command_usage_placeholder")}
+            placeholder={localize('com_ui_command_usage_placeholder')}
             className="mb-1 w-full border-0 bg-surface-tertiary-alt p-2 text-sm focus:outline-none dark:text-gray-200"
             autoComplete="off"
             value={searchValue}
             onKeyDown={(e) => {
-              if (e.key === "Escape") {
+              if (e.key === 'Escape') {
                 setOpen(false);
                 setShowPromptsPopover(false);
                 textAreaRef.current?.focus();
               }
-              if (e.key === "ArrowDown") {
+              if (e.key === 'ArrowDown') {
                 setActiveIndex((prevIndex) => (prevIndex + 1) % matches.length);
-              } else if (e.key === "ArrowUp") {
-                setActiveIndex(
-                  (prevIndex) =>
-                    (prevIndex - 1 + matches.length) % matches.length,
-                );
-              } else if (e.key === "Enter" || e.key === "Tab") {
-                if (e.key === "Enter") {
+              } else if (e.key === 'ArrowUp') {
+                setActiveIndex((prevIndex) => (prevIndex - 1 + matches.length) % matches.length);
+              } else if (e.key === 'Enter' || e.key === 'Tab') {
+                if (e.key === 'Enter') {
                   e.preventDefault();
                 }
-                handleSelect(
-                  matches[activeIndex] as PromptOption | undefined,
-                  e,
-                );
-              } else if (e.key === "Backspace" && searchValue === "") {
+                handleSelect(matches[activeIndex] as PromptOption | undefined, e);
+              } else if (e.key === 'Backspace' && searchValue === '') {
                 setOpen(false);
                 setShowPromptsPopover(false);
                 textAreaRef.current?.focus();

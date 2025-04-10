@@ -47,7 +47,11 @@ export default function Settings({ open, onOpenChange }: TDialogProps) {
     }
   };
 
-  const settingsTabs: { value: SettingsTabValues; icon:  React.JSX.Element; label: TranslationKeys }[] = [
+  const settingsTabs: {
+    value: SettingsTabValues;
+    icon: React.JSX.Element;
+    label: TranslationKeys;
+  }[] = [
     {
       value: SettingsTabValues.GENERAL,
       icon: <GearIcon />,

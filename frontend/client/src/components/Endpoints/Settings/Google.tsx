@@ -221,7 +221,7 @@ export default function Settings({ conversation, setOption, models, readonly }: 
               <Label htmlFor="top-k-int" className="text-left text-sm font-medium">
                 {localize('com_endpoint_top_k')}{' '}
                 <small className="opacity-40">
-                  ({localize('com_endpoint_default_with_num',{ 0: google.topK.default + '' })})
+                  ({localize('com_endpoint_default_with_num', { 0: google.topK.default + '' })})
                 </small>
               </Label>
               <InputNumber
@@ -261,7 +261,11 @@ export default function Settings({ conversation, setOption, models, readonly }: 
               <Label htmlFor="max-tokens-int" className="text-left text-sm font-medium">
                 {localize('com_endpoint_max_output_tokens')}{' '}
                 <small className="opacity-40">
-                  ({localize('com_endpoint_default_with_num', { 0: google.maxOutputTokens.default + '' })})
+                  (
+                  {localize('com_endpoint_default_with_num', {
+                    0: google.maxOutputTokens.default + '',
+                  })}
+                  )
                 </small>
               </Label>
               <InputNumber

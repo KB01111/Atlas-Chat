@@ -17,9 +17,7 @@ export const useSupabase = () => {
 };
 
 const SupabaseProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <SupabaseContext.Provider value={supabase}>
-    {children}
-  </SupabaseContext.Provider>
+  <SupabaseContext.Provider value={supabase}>{children}</SupabaseContext.Provider>
 );
 
 export default SupabaseProvider;

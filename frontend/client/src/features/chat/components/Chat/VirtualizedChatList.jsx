@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
-import AutoSizer from "react-virtualized-auto-sizer";
-import { FixedSizeList as List } from "react-window";
-import InfiniteLoader from "react-window-infinite-loader";
-import { useTheme } from "../hooks/useTheme";
+import React, { useEffect, useRef, useState } from 'react';
+import AutoSizer from 'react-virtualized-auto-sizer';
+import { FixedSizeList as List } from 'react-window';
+import InfiniteLoader from 'react-window-infinite-loader';
+import { useTheme } from '../hooks/useTheme';
 
 /**
  * VirtualizedChatList component for optimized rendering of long conversations
@@ -42,8 +42,7 @@ const VirtualizedChatList = ({
 
     // Calculate average message length
     const avgLength =
-      messages.reduce((sum, msg) => sum + (msg.content?.length || 0), 0) /
-      messages.length;
+      messages.reduce((sum, msg) => sum + (msg.content?.length || 0), 0) / messages.length;
 
     // Estimate number of lines
     const estimatedLines = Math.ceil(avgLength / charsPerLine);
@@ -84,7 +83,7 @@ const VirtualizedChatList = ({
   // Reset scroll position when scrollToIndex changes
   useEffect(() => {
     if (scrollToIndex !== null && listRef.current) {
-      listRef.current.scrollToItem(scrollToIndex, "end");
+      listRef.current.scrollToItem(scrollToIndex, 'end');
       setScrollToIndex(null);
     }
   }, [scrollToIndex]);
@@ -97,10 +96,10 @@ const VirtualizedChatList = ({
         <div
           style={{
             ...style,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "10px",
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '10px',
           }}
         >
           <div className="loading-spinner" />
@@ -116,9 +115,9 @@ const VirtualizedChatList = ({
   return (
     <div
       style={{
-        height: "100%",
-        width: "100%",
-        backgroundColor: theme === "dark" ? "#1a1a1a" : "#ffffff",
+        height: '100%',
+        width: '100%',
+        backgroundColor: theme === 'dark' ? '#1a1a1a' : '#ffffff',
       }}
     >
       <AutoSizer>

@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { useApi } from "../data-provider/simplified-api.tsx"; // Added .tsx extension
+import React, { useEffect, useState } from 'react';
+import { useApi } from '../data-provider/simplified-api.tsx'; // Added .tsx extension
 
 // Simple component for selecting an agent
 const AgentSelector = ({ onSelect }) => {
   const [agents, setAgents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [selectedAgentId, setSelectedAgentId] = useState("");
+  const [selectedAgentId, setSelectedAgentId] = useState('');
 
   const api = useApi();
 
@@ -26,8 +26,8 @@ const AgentSelector = ({ onSelect }) => {
 
         setError(null);
       } catch (err) {
-        console.error("Error fetching agents:", err);
-        setError("Failed to load agents. Please try again later.");
+        console.error('Error fetching agents:', err);
+        setError('Failed to load agents. Please try again later.');
       } finally {
         setLoading(false);
       }
@@ -46,7 +46,7 @@ const AgentSelector = ({ onSelect }) => {
       onSelect(agentDetails);
     } catch (err) {
       console.error(`Error fetching agent details for ${agentId}:`, err);
-      setError("Failed to load agent details. Please try again later.");
+      setError('Failed to load agent details. Please try again later.');
     }
   };
 
@@ -64,10 +64,7 @@ const AgentSelector = ({ onSelect }) => {
 
   return (
     <div className="agent-selector">
-      <label
-        htmlFor="agent-select"
-        className="block text-sm font-medium text-gray-700 mb-1"
-      >
+      <label htmlFor="agent-select" className="block text-sm font-medium text-gray-700 mb-1">
         Select Agent
       </label>
       <select
@@ -85,8 +82,7 @@ const AgentSelector = ({ onSelect }) => {
 
       {selectedAgentId && (
         <div className="mt-2 text-xs text-gray-500">
-          Using {agents.find((a) => a.agent_id === selectedAgentId)?.agent_type}{" "}
-          agent
+          Using {agents.find((a) => a.agent_id === selectedAgentId)?.agent_type} agent
         </div>
       )}
     </div>

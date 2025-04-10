@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import type { MouseEvent, FocusEvent, KeyboardEvent } from 'react';
-import { useArchiveConversationMutation } from '~/data-provider';
+// import { useArchiveConversationMutation } from '~/data-provider'; // TODO: Re-implement archive functionality
 import { NotificationSeverity } from '~/common';
 import { useToastContext } from '~/Providers';
 import useLocalize, { TranslationKeys } from '../useLocalize';
@@ -17,7 +17,7 @@ export default function useArchiveHandler(
   const { newConversation } = useNewConvo();
   const { conversationId: currentConvoId } = useParams();
 
-  const archiveConvoMutation = useArchiveConversationMutation(conversationId ?? '');
+  // const archiveConvoMutation = useArchiveConversationMutation(conversationId ?? ''); // TODO: Re-implement archive functionality
 
   return async (e?: MouseEvent | FocusEvent | KeyboardEvent) => {
     if (e) {
@@ -27,25 +27,28 @@ export default function useArchiveHandler(
     if (!convoId) {
       return;
     }
-    const label: TranslationKeys = shouldArchive ? 'com_ui_archive_error' : 'com_ui_unarchive_error';
-    archiveConvoMutation.mutate(
-      { conversationId: convoId, isArchived: shouldArchive },
-      {
-        onSuccess: () => {
-          if (currentConvoId === convoId || currentConvoId === 'new') {
-            newConversation();
-            navigate('/c/new', { replace: true });
-          }
-          retainView();
-        },
-        onError: () => {
-          showToast({
-            message: localize(label),
-            severity: NotificationSeverity.ERROR,
-            showIcon: true,
-          });
-        },
-      },
-    );
+    const label: TranslationKeys = shouldArchive
+      ? 'com_ui_archive_error'
+      : 'com_ui_unarchive_error';
+    // TODO: Re-implement archive functionality
+    // archiveConvoMutation.mutate(
+    //   { conversationId: convoId, isArchived: shouldArchive },
+    //   {
+    //     onSuccess: () => {
+    //       if (currentConvoId === convoId || currentConvoId === 'new') {
+    //         newConversation();
+    //         navigate('/c/new', { replace: true });
+    //       }
+    //       retainView();
+    //     },
+    //     onError: () => {
+    //       showToast({
+    //         message: localize(label),
+    //         severity: NotificationSeverity.Error,
+    //         showIcon: true,
+    //       });
+    //     },
+    //   },
+    // );
   };
 }

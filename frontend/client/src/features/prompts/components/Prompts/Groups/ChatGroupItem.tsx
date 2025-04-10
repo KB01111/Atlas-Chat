@@ -57,7 +57,7 @@ function ChatGroupItem({
         snippet={
           typeof group.oneliner === 'string' && group.oneliner.length > 0
             ? group.oneliner
-            : group.productionPrompt?.prompt ?? ''
+            : (group.productionPrompt?.prompt ?? '')
         }
       >
         <div className="flex flex-row items-center gap-2">

@@ -54,7 +54,7 @@ const SearchBar = forwardRef((props: SearchBarProps, ref: Ref<HTMLDivElement>) =
       if (!value) {
         return;
       }
-      queryClient.invalidateQueries(["messages"]);
+      queryClient.invalidateQueries(['messages']);
       clearConvoState();
     },
     [queryClient, clearConvoState, setSearchQuery],

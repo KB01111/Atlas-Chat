@@ -30,7 +30,7 @@ export default function usePromptGroupsNav() {
   useEffect(() => {
     maxPageNumberReached.current = 1;
     setPageNumber(1);
-    queryClient.resetQueries(["promptGroups", name, category, pageSize]);
+    queryClient.resetQueries(['promptGroups', name, category, pageSize]);
   }, [pageSize, name, category, setPageNumber]);
 
   const promptGroups = useMemo(() => {

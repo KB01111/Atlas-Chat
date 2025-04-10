@@ -22,7 +22,7 @@ export default function useChatHelpers(index = 0, paramId?: string) {
   const { conversation, setConversation } = useCreateConversationAtom(index);
   const { conversationId } = conversation ?? {};
 
-  const queryParam = paramId === 'new' ? paramId : conversationId ?? paramId ?? '';
+  const queryParam = paramId === 'new' ? paramId : (conversationId ?? paramId ?? '');
 
   /* Messages: here simply to fetch, don't export and use `getMessages()` instead */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -39,16 +39,16 @@ export default function useChatHelpers(index = 0, paramId?: string) {
 
   const setMessages = useCallback(
     (messages: TMessage[]) => {
-      queryClient.setQueryData<TMessage[]>(["messages", queryParam], messages);
+      queryClient.setQueryData<TMessage[]>(['messages', queryParam], messages);
       if (queryParam === 'new') {
-        queryClient.setQueryData<TMessage[]>(["messages", conversationId], messages);
+        queryClient.setQueryData<TMessage[]>(['messages', conversationId], messages);
       }
     },
     [queryParam, queryClient, conversationId],
   );
 
   const getMessages = useCallback(() => {
-    return queryClient.getQueryData<TMessage[]>(["messages", queryParam]);
+    return queryClient.getQueryData<TMessage[]>(['messages', queryParam]);
   }, [queryParam, queryClient]);
 
   /* Conversation */

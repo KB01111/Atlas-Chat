@@ -29,15 +29,15 @@ const useNavigateToConvo = (index = 0) => {
       clearAllLatestMessages();
     }
     if (invalidateMessages && conversation.conversationId != null && conversation.conversationId) {
-      queryClient.setQueryData(["messages", Constants.NEW_CONVO], []);
-      queryClient.invalidateQueries(["messages", conversation.conversationId]);
+      queryClient.setQueryData(['messages', Constants.NEW_CONVO], []);
+      queryClient.invalidateQueries(['messages', conversation.conversationId]);
     }
 
     let convo = { ...conversation };
-    const endpointsConfig = queryClient.getQueryData<TEndpointsConfig>(["endpoints"]);
+    const endpointsConfig = queryClient.getQueryData<TEndpointsConfig>(['endpoints']);
     if (!convo.endpoint || !endpointsConfig?.[convo.endpoint]) {
       /* undefined/removed endpoint edge case */
-      const modelsConfig = queryClient.getQueryData<TModelsConfig>(["models"]);
+      const modelsConfig = queryClient.getQueryData<TModelsConfig>(['models']);
       const defaultEndpoint = getDefaultEndpoint({
         convoSetup: conversation,
         endpointsConfig,
