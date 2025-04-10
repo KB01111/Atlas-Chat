@@ -1,36 +1,27 @@
-import type * as t from "./types";
-import { EndpointURLs } from "./config";
-import * as s from "./schemas";
+import type { TConversation, TSubmission, EModelEndpoint } from "./types";
 
-export default function createPayload(submission: t.TSubmission) {
-  const {
-    conversation,
-    userMessage,
-    endpointOption,
-    isEdited,
-    isContinued,
-    isTemporary,
-  } = submission;
-  const { conversationId } = s.tConvoUpdateSchema.parse(conversation);
-  const { endpoint, endpointType } = endpointOption as {
-    endpoint: s.EModelEndpoint;
-    endpointType?: s.EModelEndpoint;
+export default function createPayload(submission: TSubmission) {
+  const { conversation, message, endpointOption } = submission;
+  const { conversationId } = conversation as TConversation;
+  const { endpoint } = endpointOption as { endpoint: EModelEndpoint };
+
+  const endpointUrlMap = {
+    azureOpenAI: "/api/ask/azureOpenAI",
+    openAI: "/api/ask/openAI",
+    google: "/api/ask/google",
+    bingAI: "/api/ask/bingAI",
+    chatGPT: "/api/ask/chatGPT",
+    chatGPTBrowser: "/api/ask/chatGPTBrowser",
+    gptPlugins: "/api/ask/gptPlugins",
+    anthropic: "/api/ask/anthropic",
   };
 
-  let server = EndpointURLs[endpointType ?? endpoint];
+  const server = endpointUrlMap[endpoint];
 
-  if (isEdited && s.isAssistantsEndpoint(endpoint)) {
-    server += "/modify";
-  } else if (isEdited) {
-    server = server.replace("/ask/", "/edit/");
-  }
-
-  const payload: t.TPayload = {
-    ...userMessage,
+  const payload = {
+    ...message,
     ...endpointOption,
-    isContinued: !!(isEdited && isContinued),
     conversationId,
-    isTemporary,
   };
 
   return { server, payload };

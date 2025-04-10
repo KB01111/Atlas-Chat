@@ -60,20 +60,26 @@ function DynamicSlider({
 
   const enumToNumeric = useMemo(() => {
     if (isEnum && options) {
-      return options.reduce((acc, mapping, index) => {
-        acc[mapping] = index;
-        return acc;
-      }, {} as Record<string, number>);
+      return options.reduce(
+        (acc, mapping, index) => {
+          acc[mapping] = index;
+          return acc;
+        },
+        {} as Record<string, number>,
+      );
     }
     return {};
   }, [isEnum, options]);
 
   const valueToEnumOption = useMemo(() => {
     if (isEnum && options) {
-      return options.reduce((acc, option, index) => {
-        acc[index] = option;
-        return acc;
-      }, {} as Record<number, string>);
+      return options.reduce(
+        (acc, option, index) => {
+          acc[index] = option;
+          return acc;
+        },
+        {} as Record<number, string>,
+      );
     }
     return {};
   }, [isEnum, options]);
@@ -176,7 +182,11 @@ function DynamicSlider({
         </HoverCardTrigger>
         {description && (
           <OptionHover
-            description={descriptionCode ? localize(description as TranslationKeys) ?? description : description}
+            description={
+              descriptionCode
+                ? localize(description as TranslationKeys) ?? description
+                : description
+            }
             side={ESide.Left}
           />
         )}

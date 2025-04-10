@@ -1,12 +1,12 @@
-import type { Agent, TFile } from "librechat-data-provider";
+import type { Agent, TFile } from 'librechat-data-provider';
 import {
   alternateName,
   EModelEndpoint,
   EToolResources,
   FileSources,
-} from "librechat-data-provider";
-import { EarthIcon } from "lucide-react";
-import type { DropdownValueSetter, ExtendedFile, TAgentOption } from "~/common";
+} from 'librechat-data-provider';
+import { EarthIcon } from 'lucide-react';
+import type { DropdownValueSetter, ExtendedFile, TAgentOption } from '~/common';
 
 /**
  * Creates a Dropdown value setter that always passes a string value,
@@ -16,16 +16,14 @@ import type { DropdownValueSetter, ExtendedFile, TAgentOption } from "~/common";
  * Only necessary when the available values are objects with label/value fields
  * and the selected value is expected to be a string.
  **/
-export const createDropdownSetter = (
-  setValue: (value: string) => void,
-): DropdownValueSetter => {
+export const createDropdownSetter = (setValue: (value: string) => void): DropdownValueSetter => {
   return (value) => {
     if (!value) {
-      setValue("");
+      setValue('');
       return;
     }
 
-    if (typeof value === "string") {
+    if (typeof value === 'string') {
       setValue(value);
       return;
     }
@@ -54,13 +52,11 @@ export const processAgentOption = ({
   instanceProjectId?: string;
 }): TAgentOption => {
   const isGlobal =
-    (instanceProjectId != null &&
-      _agent?.projectIds?.includes(instanceProjectId)) ??
-    false;
+    (instanceProjectId != null && _agent?.projectIds?.includes(instanceProjectId)) ?? false;
   const agent: TAgentOption = {
     ...(_agent ?? ({} as Agent)),
-    label: _agent?.name ?? "",
-    value: _agent?.id ?? "",
+    label: _agent?.name ?? '',
+    value: _agent?.id ?? '',
     icon: isGlobal ? <EarthIcon className="icon-md text-green-400" /> : null,
     context_files: _agent?.tool_resources?.ocr?.file_ids
       ? ([] as Array<[string, ExtendedFile]>)
@@ -114,8 +110,8 @@ export const processAgentOption = ({
         file_id,
         {
           file_id,
-          type: "",
-          filename: "",
+          type: '',
+          filename: '',
           size: 1,
           progress: 1,
           filepath: EModelEndpoint.agents,

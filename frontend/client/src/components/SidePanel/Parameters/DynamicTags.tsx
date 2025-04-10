@@ -75,7 +75,7 @@ function DynamicTags({
 
       if (minTags != null && currentTags.length <= minTags) {
         showToast({
-          message: localize('com_ui_min_tags',{ 0: minTags + '' }),
+          message: localize('com_ui_min_tags', { 0: String(minTags) }),
           status: 'warning',
         });
         return;
@@ -94,7 +94,7 @@ function DynamicTags({
     let update = [...(currentTags ?? []), tagText];
     if (maxTags != null && update.length > maxTags) {
       showToast({
-        message: localize('com_ui_max_tags', { 0: maxTags + '' }),
+        message: localize('com_ui_max_tags', { 0: String(maxTags) }),
         status: 'warning',
       });
       update = update.slice(-maxTags);
@@ -174,7 +174,11 @@ function DynamicTags({
                   }
                 }}
                 onChange={(e) => setTagText(e.target.value)}
-                placeholder={placeholderCode ? localize(placeholder as TranslationKeys) ?? placeholder : placeholder}
+                placeholder={
+                  placeholderCode
+                    ? localize(placeholder as TranslationKeys) ?? placeholder
+                    : placeholder
+                }
                 className={cn('flex h-10 max-h-10 border-none bg-surface-secondary px-3 py-2')}
               />
             </div>
@@ -182,7 +186,11 @@ function DynamicTags({
         </HoverCardTrigger>
         {description && (
           <OptionHover
-            description={descriptionCode ? localize(description as TranslationKeys) ?? description : description}
+            description={
+              descriptionCode
+                ? localize(description as TranslationKeys) ?? description
+                : description
+            }
             side={descriptionSide as ESide}
           />
         )}

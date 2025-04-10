@@ -1,29 +1,27 @@
 {
   "compilerOptions": {
     "declaration": true,
-    "emitDeclarationOnly": true,
-    "declarationDir": "./dist/types",
+    "declarationDir": "./types",
     "module": "esnext",
     "noImplicitAny": true,
-    "outDir": "./dist",
+    "outDir": "./types",
     "target": "es5",
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
-    "lib": ["es2017", "dom", "ES2021.String"],
-    "allowJs": false,
+    "lib": ["es2017", "dom"],
+    "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": false,
-    "sourceMap": true,
-    "baseUrl": ".",
+    "noEmit": true,
+    "baseUrl": "src",
     "paths": {
-      "librechat-data-provider/react-query": ["./src/react-query/index.ts"]
+      "@src/*": ["./*"]
     }
   },
   "exclude": ["node_modules", "dist", "types"],
-  "include": ["src/**/*"]
+  "include": ["src/**/*", "types/index.d.ts"]
 }

@@ -34,20 +34,20 @@ const assistantMapFn =
     assistantMap: TAssistantsMap;
     endpointsConfig: TEndpointsConfig;
   }) =>
-    ({ id, name, description }) => ({
-      type: endpoint,
-      label: name ?? '',
-      value: id,
-      description: description ?? '',
-      icon: EndpointIcon({
-        conversation: { assistant_id: id, endpoint },
-        containerClassName: 'shadow-stroke overflow-hidden rounded-full',
-        endpointsConfig: endpointsConfig,
-        context: 'menu-item',
-        assistantMap,
-        size: 20,
-      }),
-    });
+  ({ id, name, description }) => ({
+    type: endpoint,
+    label: name ?? '',
+    value: id,
+    description: description ?? '',
+    icon: EndpointIcon({
+      conversation: { assistant_id: id, endpoint },
+      containerClassName: 'shadow-stroke overflow-hidden rounded-full',
+      endpointsConfig: endpointsConfig,
+      context: 'menu-item',
+      assistantMap,
+      size: 20,
+    }),
+  });
 
 export default function useMentions({
   assistantMap,
@@ -183,7 +183,7 @@ export default function useMentions({
           size: 20,
         }),
       })),
-      ...(interfaceConfig.modelSelect === true ? (agentsList ?? []) : []),
+      ...(interfaceConfig.modelSelect === true ? agentsList ?? [] : []),
       ...(endpointsConfig?.[EModelEndpoint.assistants] &&
       includeAssistants &&
       interfaceConfig.modelSelect === true

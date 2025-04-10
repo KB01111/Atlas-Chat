@@ -66,7 +66,7 @@ const AdminSettings = () => {
   const [confirmAdminUseChange, setConfirmAdminUseChange] = useState<{
     newValue: boolean;
     callback: (value: boolean) => void;
-      } | null>(null);
+  } | null>(null);
   const { mutate, isLoading } = useUpdatePromptPermissionsMutation({
     onSuccess: () => {
       showToast({ status: 'success', message: localize('com_ui_saved') });
@@ -176,7 +176,7 @@ const AdminSettings = () => {
                 }
                 items={roleDropdownItems}
                 itemClassName="items-center justify-center"
-                sameWidth={true}
+                sameWidth
               />
             </div>
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -191,11 +191,11 @@ const AdminSettings = () => {
                       setValue={setValue}
                       {...(selectedRole === SystemRoles.ADMIN && promptPerm === Permissions.USE
                         ? {
-                          confirmChange: (
-                            newValue: boolean,
-                            onChange: (value: boolean) => void,
-                          ) => setConfirmAdminUseChange({ newValue, callback: onChange }),
-                        }
+                            confirmChange: (
+                              newValue: boolean,
+                              onChange: (value: boolean) => void,
+                            ) => setConfirmAdminUseChange({ newValue, callback: onChange }),
+                          }
                         : {})}
                     />
                     {selectedRole === SystemRoles.ADMIN && promptPerm === Permissions.USE && (
@@ -237,7 +237,7 @@ const AdminSettings = () => {
         }}
       >
         <OGDialogTemplate
-          showCloseButton={true}
+          showCloseButton
           title={localize('com_ui_confirm_change')}
           className="w-11/12 max-w-lg"
           main={<p className="mb-4">{localize('com_ui_confirm_admin_use_change')}</p>}

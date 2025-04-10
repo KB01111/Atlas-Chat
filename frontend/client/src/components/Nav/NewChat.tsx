@@ -36,7 +36,7 @@ const NewChatButtonIcon = ({ conversation }: { conversation: TConversation | nul
 
   return (
     <div className="h-7 w-7 flex-shrink-0">
-      {iconURL && iconURL.includes('http') ? (
+      {iconURL?.includes('http') ? (
         <ConvoIconURL
           iconURL={iconURL}
           modelLabel={conversation?.chatGptLabel ?? conversation?.modelLabel ?? ''}
@@ -84,7 +84,7 @@ export default function NewChat({
     if (event.button === 0 && !(event.ctrlKey || event.metaKey)) {
       event.preventDefault();
       queryClient.setQueryData<TMessage[]>(
-        ["messages", conversation?.conversationId ?? Constants.NEW_CONVO],
+        ['messages', conversation?.conversationId ?? Constants.NEW_CONVO],
         [],
       );
       newConvo();

@@ -27,9 +27,7 @@ export const SupabaseProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   }, []);
 
   return (
-    <SupabaseContext.Provider value={{ supabase, session }}>
-      {children}
-    </SupabaseContext.Provider>
+    <SupabaseContext.Provider value={{ supabase, session }}>{children}</SupabaseContext.Provider>
   );
 };
 

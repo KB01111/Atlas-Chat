@@ -65,12 +65,12 @@ export default function ChatRoute() {
         template: conversation ? conversation : undefined,
         ...(spec
           ? {
-            preset: {
-              ...spec.preset,
-              iconURL: getModelSpecIconURL(spec),
-              spec: spec.name,
-            },
-          }
+              preset: {
+                ...spec.preset,
+                iconURL: getModelSpecIconURL(spec),
+                spec: spec.name,
+              },
+            }
           : {}),
       });
 
@@ -95,12 +95,12 @@ export default function ChatRoute() {
         template: conversation ? conversation : undefined,
         ...(spec
           ? {
-            preset: {
-              ...spec.preset,
-              iconURL: getModelSpecIconURL(spec),
-              spec: spec.name,
-            },
-          }
+              preset: {
+                ...spec.preset,
+                iconURL: getModelSpecIconURL(spec),
+                spec: spec.name,
+              },
+            }
           : {}),
       });
       hasSetConversation.current = true;
@@ -150,7 +150,7 @@ export default function ChatRoute() {
     return null;
   }
 
-  const isTemporaryChat = conversation && conversation.expiredAt ? true : false;
+  const isTemporaryChat = conversation?.expiredAt ? true : false;
 
   if (conversationId !== Constants.NEW_CONVO && !isTemporaryChat) {
     setIsTemporary(false);

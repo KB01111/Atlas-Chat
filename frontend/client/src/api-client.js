@@ -11,11 +11,7 @@ export * from '../../packages/data-provider/src/react-query';
 
 // Example: custom API call combining Supabase and data-provider
 export async function fetchUserProfile(userId) {
-  const { data, error } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', userId)
-    .single();
+  const { data, error } = await supabase.from('profiles').select('*').eq('id', userId).single();
 
   if (error) throw error;
   return data;

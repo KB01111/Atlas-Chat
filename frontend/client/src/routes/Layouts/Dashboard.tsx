@@ -17,7 +17,7 @@ export default function DashboardRoute() {
   }, [prevLocationRef]);
 
   useEffect(() => {
-    queryClient.removeQueries(["messages", 'new']);
+    queryClient.removeQueries(['messages', 'new']);
     clearConvoState();
   }, [queryClient, clearConvoState]);
 

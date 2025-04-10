@@ -63,13 +63,13 @@ export default function AgentFooter({
         />
         {(agent?.author === user?.id || user?.role === SystemRoles.ADMIN) &&
           hasAccessToShareAgents && (
-          <ShareAgent
-            agent_id={agent_id}
-            agentName={agent?.name ?? ''}
-            projectIds={agent?.projectIds ?? []}
-            isCollaborative={agent?.isCollaborative}
-          />
-        )}
+            <ShareAgent
+              agent_id={agent_id}
+              agentName={agent?.name ?? ''}
+              projectIds={agent?.projectIds ?? []}
+              isCollaborative={agent?.isCollaborative}
+            />
+          )}
         {agent && agent.author === user?.id && <DuplicateAgent agent_id={agent_id} />}
         {/* Submit Button */}
         <button

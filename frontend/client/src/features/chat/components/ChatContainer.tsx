@@ -36,7 +36,7 @@ const ChatContainer: React.FC = () => {
         { event: 'INSERT', schema: 'public', table: 'messages' },
         (payload) => {
           setMessages((prev) => [...prev, payload.new]);
-        }
+        },
       )
       .subscribe();
 
@@ -61,7 +61,11 @@ const ChatContainer: React.FC = () => {
     setSending(true);
     try {
       const { error } = await supabase.from('messages').insert([
-        { content: optimisticMessage.content, sender: optimisticMessage.sender, agent_type: agentType },
+        {
+          content: optimisticMessage.content,
+          sender: optimisticMessage.sender,
+          agent_type: agentType,
+        },
       ]);
       if (error) {
         setError('Failed to send message.');
@@ -92,10 +96,19 @@ const ChatContainer: React.FC = () => {
       ) : error ? (
         <div style={{ color: 'red' }}>{error}</div>
       ) : (
-        <div style={{ maxHeight: '400px', overflowY: 'auto', border: '1px solid #ccc', padding: '5px' }}>
+        <div
+          style={{
+            maxHeight: '400px',
+            overflowY: 'auto',
+            border: '1px solid #ccc',
+            padding: '5px',
+          }}
+        >
           {messages.map((msg) => (
             <div key={msg.id} style={{ marginBottom: '8px' }}>
-              <strong>{msg.sender || 'User'}</strong> [{new Date(msg.created_at).toLocaleTimeString()}] ({msg.agent_type || 'default'}):<br />
+              <strong>{msg.sender || 'User'}</strong> [
+              {new Date(msg.created_at).toLocaleTimeString()}] ({msg.agent_type || 'default'}):
+              <br />
               {msg.content}
             </div>
           ))}

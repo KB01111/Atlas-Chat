@@ -89,19 +89,27 @@ function DynamicDropdown({
           )}
           <SelectDropDown
             showLabel={false}
-            emptyTitle={true}
+            emptyTitle
             disabled={readonly}
             value={selectedValue}
             setValue={handleChange}
             availableValues={options}
             containerClassName="w-full"
             id={`${settingKey}-dynamic-dropdown`}
-            placeholder={placeholderCode ? localize(placeholder as TranslationKeys) ?? placeholder : placeholder}
+            placeholder={
+              placeholderCode
+                ? localize(placeholder as TranslationKeys) ?? placeholder
+                : placeholder
+            }
           />
         </HoverCardTrigger>
         {description && (
           <OptionHover
-            description={descriptionCode ? localize(description as TranslationKeys) ?? description : description}
+            description={
+              descriptionCode
+                ? localize(description as TranslationKeys) ?? description
+                : description
+            }
             side={ESide.Left}
           />
         )}

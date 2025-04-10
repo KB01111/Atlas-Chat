@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { api } from "../../api-client";
-import ChatForm from "./Input/ChatForm.tsx"; // Corrected path and name
-import MessageRender from "./Messages/ui/MessageRender.tsx"; // Corrected path and name
-import VirtualizedChatList from "./VirtualizedChatList";
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { api } from '../../api-client';
+import ChatForm from './Input/ChatForm.tsx'; // Corrected path and name
+import MessageRender from './Messages/ui/MessageRender.tsx'; // Corrected path and name
+import VirtualizedChatList from './VirtualizedChatList';
 
 // import './ChatContainer.css'; // File seems missing, commenting out
 
@@ -42,8 +42,8 @@ const ChatContainer = () => {
         setOldestMessageId(conversation.messages[0].id);
       }
     } catch (err) {
-      setError("Failed to load conversation");
-      console.error("Error loading conversation:", err);
+      setError('Failed to load conversation');
+      console.error('Error loading conversation:', err);
     } finally {
       setIsLoading(false);
     }
@@ -56,10 +56,10 @@ const ChatContainer = () => {
     try {
       setIsLoadingMore(true);
 
-      const olderMessages = await api.chat.getConversationMessages(
-        conversationId,
-        { before_id: oldestMessageId, limit: 50 },
-      );
+      const olderMessages = await api.chat.getConversationMessages(conversationId, {
+        before_id: oldestMessageId,
+        limit: 50,
+      });
 
       if (olderMessages.messages && olderMessages.messages.length > 0) {
         setMessages((prev) => [...olderMessages.messages, ...prev]);
@@ -69,7 +69,7 @@ const ChatContainer = () => {
         setHasMoreMessages(false);
       }
     } catch (err) {
-      console.error("Error loading more messages:", err);
+      console.error('Error loading more messages:', err);
     } finally {
       setIsLoadingMore(false);
     }
@@ -81,9 +81,9 @@ const ChatContainer = () => {
       const newMessage = {
         id: `temp-${Date.now()}`,
         content,
-        sender: "user",
+        sender: 'user',
         timestamp: new Date().toISOString(),
-        status: "sending",
+        status: 'sending',
       };
 
       setMessages((prev) => [...prev, newMessage]);
@@ -93,29 +93,22 @@ const ChatContainer = () => {
       // Replace temp message with actual message
       setMessages((prev) =>
         prev.map((msg) =>
-          msg.id === newMessage.id
-            ? { ...response.message, status: "sent" }
-            : msg,
+          msg.id === newMessage.id ? { ...response.message, status: 'sent' } : msg,
         ),
       );
 
       // Add agent response
       if (response.reply) {
-        setMessages((prev) => [
-          ...prev,
-          { ...response.reply, status: "received" },
-        ]);
+        setMessages((prev) => [...prev, { ...response.reply, status: 'received' }]);
       }
     } catch (err) {
       // Mark message as failed
       setMessages((prev) =>
-        prev.map((msg) =>
-          msg.id === `temp-${Date.now()}` ? { ...msg, status: "failed" } : msg,
-        ),
+        prev.map((msg) => (msg.id === `temp-${Date.now()}` ? { ...msg, status: 'failed' } : msg)),
       );
 
-      setError("Failed to send message");
-      console.error("Error sending message:", err);
+      setError('Failed to send message');
+      console.error('Error sending message:', err);
     }
   };
 

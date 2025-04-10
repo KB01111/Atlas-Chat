@@ -36,7 +36,7 @@ const BookmarkForm = ({
     getValues,
     control,
     formState: { errors },
-  } = useForm<TConversationTagRequest>({
+  } = useForm<any>({
     defaultValues: {
       tag: bookmark?.tag ?? '',
       description: bookmark?.description ?? '',
@@ -46,7 +46,7 @@ const BookmarkForm = ({
   });
 
   useEffect(() => {
-    if (bookmark && bookmark.tag) {
+    if (bookmark?.tag) {
       setValue('tag', bookmark.tag);
       setValue('description', bookmark.description ?? '');
     }
@@ -64,8 +64,7 @@ const BookmarkForm = ({
       showToast(localize('com_ui_bookmarks_create_exists'));
       return;
     }
-    const allTags =
-      queryClient.getQueryData<any[]>(["conversationTags"]) ?? [];
+    const allTags = queryClient.getQueryData<any[]>(['conversationTags']) ?? [];
     if (allTags.some((tag) => tag.tag === data.tag)) {
       showToast(localize('com_ui_bookmarks_create_exists'));
       return;
@@ -106,12 +105,15 @@ const BookmarkForm = ({
                 );
               },
             })}
-            aria-invalid={!!errors.tag}
+            aria-invalid={Boolean(errors.tag)}
             placeholder="Bookmark"
           />
-          {typeof errors.tag === 'object' && errors.tag !== null && 'message' in errors.tag && typeof errors.tag.message === 'string' && (
-            <span className="text-sm text-red-500">{errors.tag.message}</span>
-          )}
+          {typeof errors.tag === 'object' &&
+            errors.tag !== null &&
+            'message' in errors.tag &&
+            typeof errors.tag.message === 'string' && (
+              <span className="text-sm text-red-500">{errors.tag.message}</span>
+            )}
         </div>
 
         <div className="mt-4 grid w-full items-center gap-2">

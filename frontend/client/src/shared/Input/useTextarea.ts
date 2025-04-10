@@ -96,13 +96,14 @@ export default function useTextarea({
         return localize('com_endpoint_message_not_appendable');
       }
 
-      const sender = isAssistant || isAgent
-        ? getEntityName({ name: entityName, isAgent, localize })
-        : getSender(conversation as TEndpointOption);
+      const sender =
+        isAssistant || isAgent
+          ? getEntityName({ name: entityName, isAgent, localize })
+          : getSender(conversation as TEndpointOption);
 
-      return `${localize(
-        'com_endpoint_message_new', { 0: sender ? sender : localize('com_endpoint_ai') },
-      )}`;
+      return `${localize('com_endpoint_message_new', {
+        0: sender ? sender : localize('com_endpoint_ai'),
+      })}`;
     };
 
     const placeholder = getPlaceholderText();
@@ -222,7 +223,7 @@ export default function useTextarea({
         setFilesLoading(true);
         const timestampedFiles: File[] = [];
         for (const file of clipboardData.files) {
-          const newFile = new File([file], `clipboard_${+new Date()}_${file.name}`, {
+          const newFile = new File([file], `clipboard_${Number(new Date())}_${file.name}`, {
             type: file.type,
           });
           timestampedFiles.push(newFile);

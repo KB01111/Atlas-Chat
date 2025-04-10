@@ -34,10 +34,7 @@ export default function useAddedHelpers({
 
   const setMessages = useCallback(
     (messages: TMessage[]) => {
-      queryClient.setQueryData<TMessage[]>(
-        ["messages", queryParam, currentIndex],
-        messages,
-      );
+      queryClient.setQueryData<TMessage[]>(['messages', queryParam, currentIndex], messages);
       const latestMultiMessage = messages[messages.length - 1];
       if (latestMultiMessage) {
         setLatestMultiMessage({ ...latestMultiMessage, depth: -1 });
@@ -47,7 +44,7 @@ export default function useAddedHelpers({
   );
 
   const getMessages = useCallback(() => {
-    return queryClient.getQueryData<TMessage[]>(["messages", queryParam, currentIndex]);
+    return queryClient.getQueryData<TMessage[]>(['messages', queryParam, currentIndex]);
   }, [queryParam, queryClient, currentIndex]);
 
   const setSubmission = useSetRecoilState(store.submissionByIndex(currentIndex));
@@ -76,7 +73,7 @@ export default function useAddedHelpers({
       (element) => element.messageId == latestMessage.parentMessageId,
     );
 
-    if (parentMessage && parentMessage.isCreatedByUser) {
+    if (parentMessage?.isCreatedByUser) {
       ask({ ...parentMessage }, { isContinued: true, isRegenerate: true, isEdited: true });
     } else {
       console.error(

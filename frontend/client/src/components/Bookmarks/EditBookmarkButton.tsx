@@ -28,10 +28,9 @@ const EditBookmarkButton: FC<{
       setOpen={setOpen}
     >
       <OGDialogTrigger asChild>
-        <TooltipAnchor
+        <button
           role="button"
           aria-label={localize('com_ui_bookmarks_edit')}
-          description={localize('com_ui_edit')}
           tabIndex={tabIndex}
           onFocus={onFocus}
           onBlur={onBlur}
@@ -39,8 +38,10 @@ const EditBookmarkButton: FC<{
           className="flex size-7 items-center justify-center rounded-lg transition-colors duration-200 hover:bg-surface-hover"
           onKeyDown={handleKeyDown}
         >
-          <EditIcon />
-        </TooltipAnchor>
+          <TooltipAnchor description={localize('com_ui_edit')}>
+            <EditIcon />
+          </TooltipAnchor>
+        </button>
       </OGDialogTrigger>
     </BookmarkEditDialog>
   );

@@ -22,7 +22,7 @@ export default function useToast(showDelay = 100) {
 
   const showToast = ({
     message,
-    severity = NotificationSeverity.SUCCESS,
+    severity = NotificationSeverity.Success,
     showIcon = true,
     duration = 3000, // default duration for the toast to be visible
     status,
@@ -45,7 +45,7 @@ export default function useToast(showDelay = 100) {
       });
       // Hides the toast after the specified duration
       hideTimerRef.current = window.setTimeout(() => {
-        setToast((prevToast) => ({ ...prevToast, open: false }));
+        setToast((prevToast: any) => ({ ...prevToast, open: false }));
       }, duration);
     }, showDelay);
   };

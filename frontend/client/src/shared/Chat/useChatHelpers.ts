@@ -39,16 +39,16 @@ export default function useChatHelpers(index = 0, paramId?: string) {
 
   const setMessages = useCallback(
     (messages: TMessage[]) => {
-      queryClient.setQueryData<TMessage[]>(["messages", queryParam], messages);
+      queryClient.setQueryData<TMessage[]>(['messages', queryParam], messages);
       if (queryParam === 'new') {
-        queryClient.setQueryData<TMessage[]>(["messages", conversationId], messages);
+        queryClient.setQueryData<TMessage[]>(['messages', conversationId], messages);
       }
     },
     [queryParam, queryClient, conversationId],
   );
 
   const getMessages = useCallback(() => {
-    return queryClient.getQueryData<TMessage[]>(["messages", queryParam]);
+    return queryClient.getQueryData<TMessage[]>(['messages', queryParam]);
   }, [queryParam, queryClient]);
 
   /* Conversation */
@@ -97,7 +97,7 @@ export default function useChatHelpers(index = 0, paramId?: string) {
       (element) => element.messageId == latestMessage.parentMessageId,
     );
 
-    if (parentMessage && parentMessage.isCreatedByUser) {
+    if (parentMessage?.isCreatedByUser) {
       ask({ ...parentMessage }, { isContinued: true, isRegenerate: true, isEdited: true });
     } else {
       console.error(

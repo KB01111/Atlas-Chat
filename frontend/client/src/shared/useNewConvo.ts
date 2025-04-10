@@ -26,7 +26,11 @@ import {
   getModelSpecIconURL,
   updateLastSelectedModel,
 } from '~shared/utils';
-import { useDeleteFilesMutation, useGetEndpointsQuery, useGetStartupConfig } from '~shared/data-provider';
+import {
+  useDeleteFilesMutation,
+  useGetEndpointsQuery,
+  useGetStartupConfig,
+} from '~shared/data-provider';
 import useAssistantListMap from './Assistants/useAssistantListMap';
 import { useResetChatBadges } from './useChatBadges';
 import { usePauseGlobalAudio } from './Audio';
@@ -248,7 +252,7 @@ const useNewConvo = (index = 0) => {
           )
           .map((file) => ({
             file_id: file.file_id,
-            embedded: !!(file.embedded ?? false),
+            embedded: Boolean(file.embedded ?? false),
             filepath: file.filepath as string,
             source: file.source as FileSources, // Ensure that the source is of type FileSources
           }));

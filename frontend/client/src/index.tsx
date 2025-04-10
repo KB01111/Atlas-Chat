@@ -1,5 +1,5 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
+import React from 'react';
+import ReactDOM from 'react-dom/client';
 import * as Sentry from '@sentry/react';
 import { BrowserTracing } from '@sentry/tracing';
 import { QueryClient, QueryClientProvider } from 'react-query';
@@ -12,15 +12,19 @@ import App from './components/App';
 import './styles/global.css';
 
 Sentry.init({
-  dsn: 'https://33edc136c49f638f27ba5912df6e0482@o4508916501970944.ingest.de.sentry.io/4509068742033488',
+  dsn: process.env.REACT_APP_SENTRY_DSN,
   integrations: [new BrowserTracing()],
   tracesSampleRate: 1.0,
-  tracePropagationTargets: ["localhost", /\/api\//],
+  environment: process.env.REACT_APP_SENTRY_ENVIRONMENT || 'development',
+  tracePropagationTargets: ['localhost', /\/api\//],
 });
+
+// Trigger a test error to verify Sentry integration
+Sentry.captureException(new Error('Sentry test error - integration verification'));
 
 const queryClient = new QueryClient();
 
-const root = ReactDOM.createRoot(document.getElementById("root")!);
+const root = ReactDOM.createRoot(document.getElementById('root')!);
 root.render(
   <QueryClientProvider client={queryClient}>
     <RecoilRoot>
@@ -32,5 +36,5 @@ root.render(
         </ThemeProvider>
       </SupabaseProvider>
     </RecoilRoot>
-  </QueryClientProvider>
+  </QueryClientProvider>,
 );

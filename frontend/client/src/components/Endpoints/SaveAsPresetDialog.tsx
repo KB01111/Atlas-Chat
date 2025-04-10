@@ -1,26 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { useCreatePresetMutation } from 'librechat-data-provider/react-query';
-import type { TEditPresetProps } from '~/common';
-import { cn, removeFocusOutlines, cleanupPreset, defaultTextProps } from '~/utils/';
+// import type { TEditPresetProps } from '~/common'; // TODO: Re-implement missing type
+import { cn } from '~/utils/'; // Removed missing utils // TODO: Re-implement missing utils
+// import { removeFocusOutlines, cleanupPreset, defaultTextProps } from '~/utils/';
 import OGDialogTemplate from '~/components/ui/OGDialogTemplate';
 import { OGDialog, Input, Label } from '~/components/ui/';
 import { NotificationSeverity } from '~/common';
 import { useToastContext } from '~/Providers';
 import { useLocalize } from '~/hooks';
 
-const SaveAsPresetDialog = ({ open, onOpenChange, preset }: TEditPresetProps) => {
+const SaveAsPresetDialog = ({ open, onOpenChange, preset }: any) => {
+  // TODO: Re-implement missing type TEditPresetProps
   const [title, setTitle] = useState<string>(preset.title ?? 'My Preset');
   const createPresetMutation = useCreatePresetMutation();
   const { showToast } = useToastContext();
   const localize = useLocalize();
 
   const submitPreset = () => {
-    const _preset = cleanupPreset({
-      preset: {
-        ...preset,
-        title,
-      },
-    });
+    const _preset = {
+      // TODO: Re-implement cleanupPreset
+      ...preset,
+      title,
+    };
 
     const toastTitle =
       _preset.title ?? '' ? `\`${_preset.title}\`` : localize('com_endpoint_preset_title');
@@ -29,13 +30,14 @@ const SaveAsPresetDialog = ({ open, onOpenChange, preset }: TEditPresetProps) =>
       onSuccess: () => {
         showToast({
           message: `${toastTitle} ${localize('com_ui_saved')}`,
+          severity: NotificationSeverity.Success,
         });
         onOpenChange(false); // Close the dialog on success
       },
       onError: () => {
         showToast({
           message: localize('com_endpoint_preset_save_error'),
-          severity: NotificationSeverity.ERROR,
+          severity: NotificationSeverity.Error,
         });
       },
     });
@@ -75,9 +77,8 @@ const SaveAsPresetDialog = ({ open, onOpenChange, preset }: TEditPresetProps) =>
                 placeholder={localize('com_endpoint_preset_custom_name_placeholder')}
                 aria-label={localize('com_endpoint_preset_name')}
                 className={cn(
-                  defaultTextProps,
+                  // Removed missing utils defaultTextProps, removeFocusOutlines
                   'flex h-10 max-h-10 w-full resize-none border-border-medium px-3 py-2 ',
-                  removeFocusOutlines,
                 )}
               />
             </div>

@@ -21,7 +21,7 @@ type BookmarkEditDialogProps = {
   tags?: string[];
   setTags?: (tags: string[]) => void;
   context: string;
-  bookmark?: Bookmark;
+  bookmark?: any;
   conversationId?: string;
   children?: React.ReactNode;
   triggerRef?: React.RefObject<HTMLButtonElement>;
@@ -50,7 +50,7 @@ const BookmarkEditDialog = ({
         showToast(
           bookmark
             ? localize('com_ui_bookmarks_update_success')
-            : localize('com_ui_bookmarks_create_success')
+            : localize('com_ui_bookmarks_create_success'),
         );
         setOpen(false);
         logger.log('tag_mutation', 'tags before setting', tags);
@@ -80,7 +80,7 @@ const BookmarkEditDialog = ({
         showToast(
           bookmark
             ? localize('com_ui_bookmarks_update_error')
-            : localize('com_ui_bookmarks_create_error')
+            : localize('com_ui_bookmarks_create_error'),
         );
       },
     },

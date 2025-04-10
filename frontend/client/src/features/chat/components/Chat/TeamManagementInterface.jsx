@@ -1,13 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
-import {
-  FiSettings,
-  FiUserCheck,
-  FiUserPlus,
-  FiUsers,
-  FiUserX,
-} from "react-icons/fi";
-import TeamChatInterface from "./TeamChatInterface";
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { FiSettings, FiUserCheck, FiUserPlus, FiUsers, FiUserX } from 'react-icons/fi';
+import TeamChatInterface from './TeamChatInterface';
 
 const TeamManagementInterface = ({
   teams = [],
@@ -25,21 +19,21 @@ const TeamManagementInterface = ({
   const [selectedTeam, setSelectedTeam] = useState(null);
   const [showCreateTeamModal, setShowCreateTeamModal] = useState(false);
   const [showAddAgentModal, setShowAddAgentModal] = useState(false);
-  const [teamName, setTeamName] = useState("");
-  const [supervisorName, setSupervisorName] = useState("");
-  const [agentName, setAgentName] = useState("");
-  const [agentRole, setAgentRole] = useState("coder");
-  const [agentLanguages, setAgentLanguages] = useState(["python"]);
+  const [teamName, setTeamName] = useState('');
+  const [supervisorName, setSupervisorName] = useState('');
+  const [agentName, setAgentName] = useState('');
+  const [agentRole, setAgentRole] = useState('coder');
+  const [agentLanguages, setAgentLanguages] = useState(['python']);
   const [availableLanguages, setAvailableLanguages] = useState([
-    { value: "python", label: "Python" },
-    { value: "javascript", label: "JavaScript" },
-    { value: "typescript", label: "TypeScript" },
-    { value: "java", label: "Java" },
-    { value: "cpp", label: "C++" },
-    { value: "csharp", label: "C#" },
-    { value: "go", label: "Go" },
-    { value: "rust", label: "Rust" },
-    { value: "ruby", label: "Ruby" },
+    { value: 'python', label: 'Python' },
+    { value: 'javascript', label: 'JavaScript' },
+    { value: 'typescript', label: 'TypeScript' },
+    { value: 'java', label: 'Java' },
+    { value: 'cpp', label: 'C++' },
+    { value: 'csharp', label: 'C#' },
+    { value: 'go', label: 'Go' },
+    { value: 'rust', label: 'Rust' },
+    { value: 'ruby', label: 'Ruby' },
   ]);
 
   useEffect(() => {
@@ -63,8 +57,8 @@ const TeamManagementInterface = ({
       supervisorName: supervisorName,
     });
 
-    setTeamName("");
-    setSupervisorName("");
+    setTeamName('');
+    setSupervisorName('');
     setShowCreateTeamModal(false);
   };
 
@@ -79,9 +73,9 @@ const TeamManagementInterface = ({
       languages: agentLanguages,
     });
 
-    setAgentName("");
-    setAgentRole("coder");
-    setAgentLanguages(["python"]);
+    setAgentName('');
+    setAgentRole('coder');
+    setAgentLanguages(['python']);
     setShowAddAgentModal(false);
   };
 
@@ -106,11 +100,11 @@ const TeamManagementInterface = ({
     <div className="team-management-interface">
       <div className="teams-sidebar">
         <div className="teams-header">
-          <h2>{t("Teams")}</h2>
+          <h2>{t('Teams')}</h2>
           <button
             className="icon-button"
             onClick={() => setShowCreateTeamModal(true)}
-            title={t("Create Team")}
+            title={t('Create Team')}
           >
             <FiUserPlus />
           </button>
@@ -120,7 +114,7 @@ const TeamManagementInterface = ({
           {teams.map((team) => (
             <div
               key={team.id}
-              className={`team-item ${selectedTeam?.id === team.id ? "selected" : ""}`}
+              className={`team-item ${selectedTeam?.id === team.id ? 'selected' : ''}`}
               onClick={() => handleTeamSelect(team)}
             >
               <div className="team-icon">
@@ -129,7 +123,7 @@ const TeamManagementInterface = ({
               <div className="team-info">
                 <div className="team-name">{team.name}</div>
                 <div className="team-members-count">
-                  {Object.keys(team.agents).length} {t("members")}
+                  {Object.keys(team.agents).length} {t('members')}
                 </div>
               </div>
             </div>
@@ -146,11 +140,11 @@ const TeamManagementInterface = ({
                 <button
                   className="icon-button"
                   onClick={() => setShowAddAgentModal(true)}
-                  title={t("Add Agent")}
+                  title={t('Add Agent')}
                 >
                   <FiUserPlus />
                 </button>
-                <button className="icon-button" title={t("Team Settings")}>
+                <button className="icon-button" title={t('Team Settings')}>
                   <FiSettings />
                 </button>
               </div>
@@ -172,12 +166,9 @@ const TeamManagementInterface = ({
         ) : (
           <div className="no-team-selected">
             <FiUsers className="icon" />
-            <h2>{t("Select a team or create a new one")}</h2>
-            <button
-              className="primary-button"
-              onClick={() => setShowCreateTeamModal(true)}
-            >
-              {t("Create Team")}
+            <h2>{t('Select a team or create a new one')}</h2>
+            <button className="primary-button" onClick={() => setShowCreateTeamModal(true)}>
+              {t('Create Team')}
             </button>
           </div>
         )}
@@ -187,34 +178,31 @@ const TeamManagementInterface = ({
         <div className="modal">
           <div className="modal-content">
             <div className="modal-header">
-              <h2>{t("Create New Team")}</h2>
-              <button
-                className="close-button"
-                onClick={() => setShowCreateTeamModal(false)}
-              >
+              <h2>{t('Create New Team')}</h2>
+              <button className="close-button" onClick={() => setShowCreateTeamModal(false)}>
                 &times;
               </button>
             </div>
             <form onSubmit={handleCreateTeam}>
               <div className="form-group">
-                <label htmlFor="team-name">{t("Team Name")}</label>
+                <label htmlFor="team-name">{t('Team Name')}</label>
                 <input
                   id="team-name"
                   type="text"
                   value={teamName}
                   onChange={(e) => setTeamName(e.target.value)}
-                  placeholder={t("Enter team name")}
+                  placeholder={t('Enter team name')}
                   required
                 />
               </div>
               <div className="form-group">
-                <label htmlFor="supervisor-name">{t("Supervisor Name")}</label>
+                <label htmlFor="supervisor-name">{t('Supervisor Name')}</label>
                 <input
                   id="supervisor-name"
                   type="text"
                   value={supervisorName}
                   onChange={(e) => setSupervisorName(e.target.value)}
-                  placeholder={t("Enter supervisor name")}
+                  placeholder={t('Enter supervisor name')}
                   required
                 />
               </div>
@@ -224,14 +212,14 @@ const TeamManagementInterface = ({
                   className="secondary-button"
                   onClick={() => setShowCreateTeamModal(false)}
                 >
-                  {t("Cancel")}
+                  {t('Cancel')}
                 </button>
                 <button
                   type="submit"
                   className="primary-button"
                   disabled={!teamName.trim() || !supervisorName.trim()}
                 >
-                  {t("Create")}
+                  {t('Create')}
                 </button>
               </div>
             </form>
@@ -243,43 +231,40 @@ const TeamManagementInterface = ({
         <div className="modal">
           <div className="modal-content">
             <div className="modal-header">
-              <h2>{t("Add Agent to Team")}</h2>
-              <button
-                className="close-button"
-                onClick={() => setShowAddAgentModal(false)}
-              >
+              <h2>{t('Add Agent to Team')}</h2>
+              <button className="close-button" onClick={() => setShowAddAgentModal(false)}>
                 &times;
               </button>
             </div>
             <form onSubmit={handleAddAgent}>
               <div className="form-group">
-                <label htmlFor="agent-name">{t("Agent Name")}</label>
+                <label htmlFor="agent-name">{t('Agent Name')}</label>
                 <input
                   id="agent-name"
                   type="text"
                   value={agentName}
                   onChange={(e) => setAgentName(e.target.value)}
-                  placeholder={t("Enter agent name")}
+                  placeholder={t('Enter agent name')}
                   required
                 />
               </div>
               <div className="form-group">
-                <label htmlFor="agent-role">{t("Agent Role")}</label>
+                <label htmlFor="agent-role">{t('Agent Role')}</label>
                 <select
                   id="agent-role"
                   value={agentRole}
                   onChange={(e) => setAgentRole(e.target.value)}
                 >
-                  <option value="coder">{t("Coder")}</option>
-                  <option value="reviewer">{t("Reviewer")}</option>
-                  <option value="tester">{t("Tester")}</option>
-                  <option value="researcher">{t("Researcher")}</option>
-                  <option value="documenter">{t("Documenter")}</option>
+                  <option value="coder">{t('Coder')}</option>
+                  <option value="reviewer">{t('Reviewer')}</option>
+                  <option value="tester">{t('Tester')}</option>
+                  <option value="researcher">{t('Researcher')}</option>
+                  <option value="documenter">{t('Documenter')}</option>
                 </select>
               </div>
-              {agentRole === "coder" && (
+              {agentRole === 'coder' && (
                 <div className="form-group">
-                  <label>{t("Programming Languages")}</label>
+                  <label>{t('Programming Languages')}</label>
                   <div className="language-checkboxes">
                     {availableLanguages.map((lang) => (
                       <div key={lang.value} className="language-checkbox">
@@ -289,9 +274,7 @@ const TeamManagementInterface = ({
                           checked={agentLanguages.includes(lang.value)}
                           onChange={() => toggleLanguage(lang.value)}
                         />
-                        <label htmlFor={`lang-${lang.value}`}>
-                          {lang.label}
-                        </label>
+                        <label htmlFor={`lang-${lang.value}`}>{lang.label}</label>
                       </div>
                     ))}
                   </div>
@@ -303,17 +286,16 @@ const TeamManagementInterface = ({
                   className="secondary-button"
                   onClick={() => setShowAddAgentModal(false)}
                 >
-                  {t("Cancel")}
+                  {t('Cancel')}
                 </button>
                 <button
                   type="submit"
                   className="primary-button"
                   disabled={
-                    !agentName.trim() ||
-                    (agentRole === "coder" && agentLanguages.length === 0)
+                    !agentName.trim() || (agentRole === 'coder' && agentLanguages.length === 0)
                   }
                 >
-                  {t("Add")}
+                  {t('Add')}
                 </button>
               </div>
             </form>

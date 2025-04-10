@@ -17,7 +17,7 @@ export default function useSelectAgent() {
   );
 
   const agentQuery = useGetAgentByIdQuery(selectedAgentId ?? '', {
-    enabled: !!(selectedAgentId ?? ''),
+    enabled: Boolean(selectedAgentId ?? ''),
   });
 
   const updateConversation = useCallback(
@@ -63,7 +63,7 @@ export default function useSelectAgent() {
       try {
         await queryClient.invalidateQueries(
           {
-            queryKey: ["agent", agent.id],
+            queryKey: ['agent', agent.id],
             exact: true,
             refetchType: 'active',
           },

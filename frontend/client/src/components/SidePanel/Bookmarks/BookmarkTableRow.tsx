@@ -26,24 +26,16 @@ const BookmarkTableRow: React.FC<BookmarkTableRowProps> = ({ row, moveRow, posit
   const { showToast } = useToastContext();
 
   const handleDrop = (item: DragItem) => {
-    mutation.mutate(
-      { ...row, position: item.index },
-      {
-        onError: () => {
-          showToast({
-            message: localize('com_ui_bookmarks_update_error'),
-            severity: NotificationSeverity.ERROR,
-          });
-        },
-      },
-    );
+    mutation.mutate({ ...row, position: item.index }); // Removed options object as second argument
   };
 
   const [, drop] = useDrop({
     accept: 'bookmark',
     drop: handleDrop,
     hover(item: DragItem) {
-      if (!ref.current || item.index === position) {return;}
+      if (!ref.current || item.index === position) {
+        return;
+      }
       moveRow(item.index, position);
       item.index = position;
     },
