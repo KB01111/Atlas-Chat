@@ -117,7 +117,7 @@ export default function AgentSelect({
 
   const onSelect = useCallback(
     (selectedId: string) => {
-      const agentExists = !!(selectedId
+      const agentExists = Boolean(selectedId
         ? (agents ?? []).find((agent) => agent.id === selectedId)
         : undefined);
 
@@ -177,7 +177,7 @@ export default function AgentSelect({
       render={({ field }) => (
         <ControlCombobox
           containerClassName="px-0"
-          selectedValue={(field?.value?.value ?? '') + ''}
+          selectedValue={String(field?.value?.value ?? '')}
           displayValue={field?.value?.label ?? ''}
           selectPlaceholder={createAgent}
           iconSide="right"
@@ -201,7 +201,7 @@ export default function AgentSelect({
           )}
           ariaLabel={localize('com_ui_agent')}
           isCollapsed={false}
-          showCarat={true}
+          showCarat
         />
       )}
     />

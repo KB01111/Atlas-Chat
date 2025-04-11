@@ -133,12 +133,10 @@ function Avatar({
      * This prevents the avatar from being uploaded multiple times before the user selects a new assistant
      * while allowing the user to upload to prime the avatar and other values before the assistant is created.
      */
-    const sharedUploadCondition = !!(
-      createMutation.isSuccess &&
+    const sharedUploadCondition = Boolean(createMutation.isSuccess &&
       input &&
       previewUrl &&
-      previewUrl.includes('base64')
-    );
+      previewUrl.includes('base64'));
     if (sharedUploadCondition && lastSeenCreatedId.current === createMutation.data.id) {
       return;
     }
@@ -202,7 +200,7 @@ function Avatar({
     } else {
       const megabytes = fileConfig.avatarSizeLimit ? formatBytes(fileConfig.avatarSizeLimit) : 2;
       showToast({
-        message: localize('com_ui_upload_invalid_var', { 0: megabytes + '' }),
+        message: localize('com_ui_upload_invalid_var', { 0: String(megabytes) }),
         status: 'error',
       });
     }

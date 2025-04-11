@@ -54,7 +54,7 @@ describe('DialogTemplate', () => {
           onOpenChange={() => {
             return;
           }}
-        ></Dialog>
+         />
       </RecoilRoot>,
     );
 

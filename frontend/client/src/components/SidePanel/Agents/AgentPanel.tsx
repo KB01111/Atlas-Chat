@@ -47,7 +47,7 @@ export default function AgentPanel({
 
   const modelsQuery = useGetModelsQuery();
   const agentQuery = useGetAgentByIdQuery(current_agent_id ?? '', {
-    enabled: !!(current_agent_id ?? ''),
+    enabled: Boolean(current_agent_id ?? ''),
   });
 
   const models = useMemo(() => modelsQuery.data ?? {}, [modelsQuery.data]);

@@ -140,7 +140,7 @@ const useSetIndexOptions: TUseSetOptions = (preset = false) => {
           }
           return tool;
         })
-        .filter((el) => !!el) || [];
+        .filter((el) => Boolean(el)) || [];
     const isSelected = checkPluginSelection(newValue);
     const tool = availableTools[newValue];
     if (isSelected || remove) {

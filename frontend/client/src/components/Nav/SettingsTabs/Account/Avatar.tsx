@@ -71,7 +71,7 @@ function Avatar() {
       const megabytes =
         fileConfig.avatarSizeLimit != null ? formatBytes(fileConfig.avatarSizeLimit) : 2;
       showToast({
-        message: localize('com_ui_upload_invalid_var', { 0: megabytes + '' }),
+        message: localize('com_ui_upload_invalid_var', { 0: String(megabytes) }),
         status: 'error',
       });
     }

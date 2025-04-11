@@ -84,7 +84,7 @@ export default function useMessageProcess({ message }: { message?: TMessage | nu
   const showSibling = useMemo(
     () =>
       (hasNoChildren && latestMultiMessage && (latestMultiMessage.children?.length ?? 0) === 0) ||
-      !!siblingMessage,
+      Boolean(siblingMessage),
     [hasNoChildren, latestMultiMessage, siblingMessage],
   );
 

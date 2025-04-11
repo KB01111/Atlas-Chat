@@ -76,7 +76,7 @@ const dashboardRoutes = {
     },
     {
       path: '*',
-      element: <Navigate to="/d/files" replace={true} />,
+      element: <Navigate to="/d/files" replace />,
     },
   ],
 };

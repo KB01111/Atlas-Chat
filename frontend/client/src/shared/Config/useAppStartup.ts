@@ -28,7 +28,7 @@ export default function useAppStartup({
   const setAvailableTools = useSetRecoilState(store.availableTools);
   const [defaultPreset, setDefaultPreset] = useRecoilState(store.defaultPreset);
   const { data: allPlugins } = useAvailablePluginsQuery({
-    enabled: !!user?.plugins,
+    enabled: Boolean(user?.plugins),
     select: selectPlugins,
   });
 
@@ -98,7 +98,7 @@ export default function useAppStartup({
       .filter((tool: TPlugin) =>
         tools.some((existingTool) => existingTool.pluginKey === tool.pluginKey),
       )
-      .filter((tool: TPlugin | undefined) => !!tool);
+      .filter((tool: TPlugin | undefined) => Boolean(tool));
     localStorage.setItem(LocalStorageKeys.LAST_TOOLS, JSON.stringify(filteredTools));
 
     setAvailableTools({ pluginStore, ...mapPlugins(tools) });

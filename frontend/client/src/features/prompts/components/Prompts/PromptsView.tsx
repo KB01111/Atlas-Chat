@@ -13,7 +13,7 @@ export default function PromptsView() {
   const params = useParams();
   const navigate = useNavigate();
   const groupsNav = usePromptGroupsNav();
-  const isDetailView = useMemo(() => !!(params.promptId || params['*'] === 'new'), [params]);
+  const isDetailView = useMemo(() => Boolean(params.promptId || params['*'] === 'new'), [params]);
   const hasAccess = useHasAccess({
     permissionType: PermissionTypes.PROMPTS,
     permission: Permissions.USE,

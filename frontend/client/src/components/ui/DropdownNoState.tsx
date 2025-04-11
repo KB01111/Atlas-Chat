@@ -76,7 +76,7 @@ const Dropdown: FC<DropdownProps> = ({
                 stroke="currentColor"
                 className="h-4 w-5 rotate-0 transform text-black transition-transform duration-300 ease-in-out dark:text-gray-50"
               >
-                <polyline points="6 9 12 15 18 9"></polyline>
+                <polyline points="6 9 12 15 18 9" />
               </svg>
             </span>
           </ListboxButton>

@@ -55,7 +55,7 @@ const parseFieldConfig = (variable: string): FieldConfig => {
   const content = variable.trim();
   if (content.includes(':')) {
     const [name, options] = content.split(':');
-    if (options && options.includes('|')) {
+    if (options?.includes('|')) {
       return {
         variable: name.trim(),
         type: 'select',
@@ -144,15 +144,15 @@ export default function VariableForm({
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="mb-6 max-h-screen max-w-[90vw] overflow-auto rounded-md bg-gray-100 p-4 text-text-secondary dark:bg-gray-700/50 sm:max-w-full md:max-h-80">
           <ReactMarkdown
-            /** @ts-ignore */
+            /** @ts-expect-error */
             remarkPlugins={[supersub, remarkGfm, [remarkMath, { singleDollarTextMath: true }]]}
             rehypePlugins={[
-              /** @ts-ignore */
+              /** @ts-expect-error */
               [rehypeKatex, { output: 'mathml' }],
-              /** @ts-ignore */
+              /** @ts-expect-error */
               [rehypeHighlight, { ignoreMissing: true }],
             ]}
-            /** @ts-ignore */
+            /** @ts-expect-error */
             components={{ code: codeNoExecution }}
             className="prose dark:prose-invert light dark:text-gray-70 my-1 max-h-[50vh] break-words"
           >

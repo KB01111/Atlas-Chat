@@ -81,7 +81,7 @@ export default function Retrieval({ retrievalModels }: { retrievalModels: Set<st
             side={ESide.Top}
             disabled={!isDisabled}
             description="com_assistants_non_retrieval_model"
-            langCode={true}
+            langCode
             sideOffset={20}
             className="ml-16"
           />

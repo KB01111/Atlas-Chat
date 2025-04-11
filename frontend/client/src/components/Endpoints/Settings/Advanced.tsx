@@ -289,7 +289,7 @@ export default function Settings({
             </label>
             <Input
               id="image-detail-value"
-              disabled={true}
+              disabled
               value={imageDetail ?? ImageDetail.auto}
               className={cn(
                 defaultTextProps,

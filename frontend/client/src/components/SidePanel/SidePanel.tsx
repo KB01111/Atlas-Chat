@@ -67,11 +67,11 @@ const SidePanel = ({
   const agents = useMemo(() => endpointsConfig?.[endpoint ?? ''], [endpoint, endpointsConfig]);
 
   const userProvidesKey = useMemo(
-    () => !!(endpointsConfig?.[endpoint ?? '']?.userProvide ?? false),
+    () => Boolean(endpointsConfig?.[endpoint ?? '']?.userProvide ?? false),
     [endpointsConfig, endpoint],
   );
   const keyProvided = useMemo(
-    () => (userProvidesKey ? !!(keyExpiry.expiresAt ?? '') : true),
+    () => (userProvidesKey ? Boolean(keyExpiry.expiresAt ?? '') : true),
     [keyExpiry.expiresAt, userProvidesKey],
   );
 
@@ -148,7 +148,7 @@ const SidePanel = ({
         role="navigation"
         collapsedSize={collapsedSize}
         defaultSize={defaultSize}
-        collapsible={true}
+        collapsible
         minSize={minSize}
         maxSize={40}
         ref={panelRef}

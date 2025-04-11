@@ -50,7 +50,7 @@ export default function useMessageActions(props: TMessageActions) {
   const edit = useMemo(() => messageId === currentEditId, [messageId, currentEditId]);
 
   const enterEdit = useCallback(
-    (cancel?: boolean) => setCurrentEditId && setCurrentEditId(cancel === true ? -1 : messageId),
+    (cancel?: boolean) => setCurrentEditId?.(cancel === true ? -1 : messageId),
     [messageId, setCurrentEditId],
   );
 

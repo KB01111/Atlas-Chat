@@ -105,7 +105,7 @@ function Avatar({
   }, [input]);
 
   useEffect(() => {
-    if (avatar && avatar.filepath) {
+    if (avatar?.filepath) {
       setPreviewUrl(avatar.filepath);
     } else {
       setPreviewUrl('');
@@ -122,12 +122,10 @@ function Avatar({
      * This prevents the avatar from being uploaded multiple times before the user selects a new agent
      * while allowing the user to upload to prime the avatar and other values before the agent is created.
      */
-    const sharedUploadCondition = !!(
-      createMutation.isSuccess &&
+    const sharedUploadCondition = Boolean(createMutation.isSuccess &&
       input &&
       previewUrl &&
-      previewUrl.includes('base64')
-    );
+      previewUrl.includes('base64'));
     if (sharedUploadCondition && lastSeenCreatedId.current === createMutation.data.id) {
       return;
     }
@@ -173,7 +171,7 @@ function Avatar({
     } else {
       const megabytes = sizeLimit ? formatBytes(sizeLimit) : 2;
       showToast({
-        message: localize('com_ui_upload_invalid_var', { 0: megabytes + '' }),
+        message: localize('com_ui_upload_invalid_var', { 0: String(megabytes) }),
         status: 'error',
       });
     }

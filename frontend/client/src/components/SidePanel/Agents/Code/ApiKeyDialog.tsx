@@ -78,7 +78,7 @@ export default function ApiKeyDialog({
                 type="password"
                 placeholder={localize('com_ui_enter_api_key')}
                 autoComplete="one-time-code"
-                readOnly={true}
+                readOnly
                 onFocus={(e) => (e.target.readOnly = false)}
                 {...register('apiKey', { required: true })}
               />
@@ -101,7 +101,7 @@ export default function ApiKeyDialog({
             </Button>
           )
         }
-        showCancelButton={true}
+        showCancelButton
       />
     </OGDialog>
   );

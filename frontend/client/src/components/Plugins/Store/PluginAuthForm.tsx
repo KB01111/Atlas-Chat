@@ -54,7 +54,7 @@ function PluginAuthForm({ plugin, onSubmit, isEntityTool }: TPluginAuthFormProps
                       type="text"
                       autoComplete="off"
                       id={authField}
-                      aria-invalid={!!errors[authField]}
+                      aria-invalid={Boolean(errors[authField])}
                       aria-describedby={`${authField}-error`}
                       aria-label={config.label}
                       aria-required="true"

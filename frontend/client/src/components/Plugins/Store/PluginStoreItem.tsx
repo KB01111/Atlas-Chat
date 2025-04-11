@@ -31,7 +31,7 @@ function PluginStoreItem({ plugin, onInstall, onUninstall, isInstalled }: TPlugi
                 alt={`${plugin.name} logo`}
                 className="h-full w-full rounded-[5px]"
               />
-              <div className="absolute inset-0 rounded-[5px] ring-1 ring-inset ring-black/10"></div>
+              <div className="absolute inset-0 rounded-[5px] ring-1 ring-inset ring-black/10" />
             </div>
           </div>
           <div className="flex min-w-0 flex-col items-start justify-between">

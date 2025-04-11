@@ -70,7 +70,7 @@ const PromptForm = () => {
   const { data: group, isLoading: isLoadingGroup } = useGetPromptGroup(promptId);
   const { data: prompts = [], isLoading: isLoadingPrompts } = useGetPrompts(
     { groupId: promptId },
-    { enabled: !!promptId },
+    { enabled: Boolean(promptId) },
   );
 
   const isOwner = useMemo(() => (user && group ? user.id === group.author : false), [user, group]);

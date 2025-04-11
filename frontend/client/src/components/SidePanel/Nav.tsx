@@ -13,7 +13,7 @@ export default function Nav({ links, isCollapsed, resize, defaultActive }: NavPr
   const getVariant = (link: NavLink) => (link.id === active ? 'default' : 'ghost');
 
   const setActive = (id: string) => {
-    localStorage.setItem('side:active-panel', id + '');
+    localStorage.setItem('side:active-panel', String(id));
     _setActive(id);
   };
 
@@ -45,7 +45,7 @@ export default function Nav({ links, isCollapsed, resize, defaultActive }: NavPr
                               return;
                             }
                             setActive(link.id);
-                            resize && resize(25);
+                            resize?.(25);
                           }}
                         >
                           <link.icon className="h-4 w-4 text-text-secondary" />

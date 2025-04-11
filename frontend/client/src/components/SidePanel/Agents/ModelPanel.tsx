@@ -135,7 +135,7 @@ export default function ModelPanel({
                     className={cn(error ? 'border-2 border-red-500' : '')}
                     ariaLabel={localize('com_ui_provider')}
                     isCollapsed={false}
-                    showCarat={true}
+                    showCarat
                   />
                   {error && (
                     <span className="model-panel-error text-sm text-red-500 transition duration-300 ease-in-out">
@@ -183,7 +183,7 @@ export default function ModelPanel({
                     className={cn('disabled:opacity-50', error ? 'border-2 border-red-500' : '')}
                     ariaLabel={localize('com_ui_model')}
                     isCollapsed={false}
-                    showCarat={true}
+                    showCarat
                   />
                   {provider && error && (
                     <span className="text-sm text-red-500 transition duration-300 ease-in-out">

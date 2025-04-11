@@ -97,7 +97,7 @@ export default function FileSearch({
             <div className="flex w-full items-center justify-center gap-1">
               <AttachmentIcon className="text-token-text-primary h-4 w-4" />
               <input
-                multiple={true}
+                multiple
                 type="file"
                 style={{ display: 'none' }}
                 tabIndex={-1}

@@ -92,7 +92,7 @@ export default function Files({
           >
             <div className="flex w-full items-center justify-center gap-1">
               <input
-                multiple={true}
+                multiple
                 type="file"
                 style={{ display: 'none' }}
                 tabIndex={-1}

@@ -20,7 +20,7 @@ export const fileTableColumns: ColumnDef<TFile>[] = [
             table.getIsAllPageRowsSelected() ||
             (table.getIsSomePageRowsSelected() && 'indeterminate')
           }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(Boolean(value))}
           aria-label="Select all"
           className="flex"
         />
@@ -30,7 +30,7 @@ export const fileTableColumns: ColumnDef<TFile>[] = [
       return (
         <Checkbox
           checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          onCheckedChange={(value) => row.toggleSelected(Boolean(value))}
           aria-label="Select row"
           className="flex"
         />

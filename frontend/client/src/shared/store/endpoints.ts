@@ -40,7 +40,7 @@ const endpointsFilter = selector({
 
     const filter = {};
     for (const key of Object.keys(config)) {
-      filter[key] = !!config[key];
+      filter[key] = Boolean(config[key]);
     }
     return filter;
   },

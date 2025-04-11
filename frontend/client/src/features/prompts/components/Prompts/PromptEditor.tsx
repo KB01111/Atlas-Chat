@@ -107,7 +107,7 @@ const PromptEditor: React.FC<Props> = ({ name, isEditing, setIsEditing }) => {
             isEditing ? (
               <TextareaAutosize
                 {...field}
-                autoFocus
+                
                 className="w-full resize-none overflow-y-auto rounded bg-transparent text-sm text-text-primary focus:outline-none sm:text-base"
                 minRows={3}
                 maxRows={14}
@@ -125,15 +125,15 @@ const PromptEditor: React.FC<Props> = ({ name, isEditing, setIsEditing }) => {
                 style={{ minHeight: '4.5em', maxHeight: '21em', overflow: 'auto' }}
               >
                 <ReactMarkdown
-                  /** @ts-ignore */
+                  /** @ts-expect-error */
                   remarkPlugins={[
                     supersub,
                     remarkGfm,
                     [remarkMath, { singleDollarTextMath: true }],
                   ]}
-                  /** @ts-ignore */
+                  /** @ts-expect-error */
                   rehypePlugins={rehypePlugins}
-                  /** @ts-ignore */
+                  /** @ts-expect-error */
                   components={{ p: PromptVariableGfm, code: codeNoExecution }}
                   className="markdown prose dark:prose-invert light my-1 w-full break-words text-text-primary"
                 >

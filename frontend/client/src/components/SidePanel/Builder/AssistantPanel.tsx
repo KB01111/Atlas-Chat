@@ -363,7 +363,7 @@ export default function AssistantPanel({
               render={({ field, fieldState: { error } }) => (
                 <>
                   <SelectDropDown
-                    emptyTitle={true}
+                    emptyTitle
                     value={field.value}
                     setValue={field.onChange}
                     availableValues={modelsQuery.data?.[endpoint] ?? []}

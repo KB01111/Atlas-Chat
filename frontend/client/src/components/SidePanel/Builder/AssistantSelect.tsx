@@ -211,7 +211,7 @@ export default function AssistantSelect({
         }
 
         if (name === 'append_current_datetime') {
-          formValues[name] = !!value;
+          formValues[name] = Boolean(value);
           return;
         }
 
@@ -280,7 +280,7 @@ export default function AssistantSelect({
       iconSide="left"
       showAbove={false}
       showLabel={false}
-      emptyTitle={true}
+      emptyTitle
       containerClassName="flex-grow"
       searchClassName="dark:from-gray-850"
       searchPlaceholder={localize('com_assistants_search_name')}

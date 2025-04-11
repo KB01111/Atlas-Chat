@@ -29,7 +29,7 @@ export default function useSearchMessages({ isAuthenticated }: { isAuthenticated
   const searchEnabledQuery = useGetSearchEnabledQuery({ enabled: isAuthenticated });
   const searchQueryRes = useSearchInfiniteQuery(
     { pageNumber: pageNumber.toString(), searchQuery: searchQuery, isArchived: false },
-    { enabled: isAuthenticated && !!searchQuery.length },
+    { enabled: isAuthenticated && Boolean(searchQuery.length) },
   ) as UseInfiniteQueryResult<ConversationListResponse, unknown> | undefined;
 
   useEffect(() => {
@@ -38,7 +38,7 @@ export default function useSearchMessages({ isAuthenticated }: { isAuthenticated
       return;
     }
 
-    if (location.pathname && location.pathname.includes('/c/')) {
+    if (location.pathname?.includes('/c/')) {
       return;
     }
     navigate('/c/new', { replace: true });

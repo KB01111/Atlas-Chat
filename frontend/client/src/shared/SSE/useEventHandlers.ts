@@ -121,7 +121,7 @@ const createErrorMessage = ({
       ...submission,
       ...submission.initialResponse,
       text: errorText,
-      unfinished: !!text.length,
+      unfinished: Boolean(text.length),
       error: true,
     };
   }

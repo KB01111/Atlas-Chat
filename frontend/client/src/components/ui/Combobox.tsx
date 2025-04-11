@@ -133,7 +133,7 @@ export default function ComboboxComponent({
                   }}
                 />
                 <ComboboxCancel
-                  hideWhenEmpty={true}
+                  hideWhenEmpty
                   className="relative flex h-5 w-5 items-center justify-end text-gray-500 transition-colors duration-300 dark:group-focus-within:text-gray-300 dark:group-hover:text-gray-300"
                 />
               </div>

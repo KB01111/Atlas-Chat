@@ -54,18 +54,18 @@ const PromptDetails = ({ group }: { group?: TPromptGroup }) => {
             <div className="group relative min-h-32 rounded-b-lg border border-border-light p-4 transition-all duration-150">
               <ReactMarkdown
                 remarkPlugins={[
-                  /** @ts-ignore */
+                  /** @ts-expect-error */
                   supersub,
                   remarkGfm,
                   [remarkMath, { singleDollarTextMath: true }],
                 ]}
                 rehypePlugins={[
-                  /** @ts-ignore */
+                  /** @ts-expect-error */
                   [rehypeKatex, { output: 'mathml' }],
-                  /** @ts-ignore */
+                  /** @ts-expect-error */
                   [rehypeHighlight, { ignoreMissing: true }],
                 ]}
-                /** @ts-ignore */
+                /** @ts-expect-error */
                 components={{ p: PromptVariableGfm, code: codeNoExecution }}
                 className="prose dark:prose-invert light dark:text-gray-70 my-1"
               >
@@ -74,8 +74,8 @@ const PromptDetails = ({ group }: { group?: TPromptGroup }) => {
             </div>
           </div>
           <PromptVariables promptText={mainText} showInfo={false} />
-          <Description initialValue={group.oneliner} disabled={true} />
-          <Command initialValue={group.command} disabled={true} />
+          <Description initialValue={group.oneliner} disabled />
+          <Command initialValue={group.command} disabled />
         </div>
       </div>
     </div>

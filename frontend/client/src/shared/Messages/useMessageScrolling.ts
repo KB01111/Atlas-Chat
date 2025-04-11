@@ -87,7 +87,7 @@ export default function useMessageScrolling(messagesTree?: TMessage[] | null) {
 
     return () => {
       if (abortScroll === true) {
-        scrollToBottom && scrollToBottom.cancel();
+        scrollToBottom?.cancel();
       }
     };
   }, [isSubmitting, messagesTree, scrollToBottom, abortScroll]);

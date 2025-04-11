@@ -99,7 +99,7 @@ function PluginStoreDialog({ isOpen, setIsOpen }: TPluginStoreDialogProps) {
   );
 
   useEffect(() => {
-    if (user && user.plugins) {
+    if (user?.plugins) {
       setUserPlugins(user.plugins);
     }
 
@@ -221,7 +221,7 @@ function PluginStoreDialog({ isOpen, setIsOpen }: TPluginStoreDialogProps) {
                   onChangePage={handleChangePage}
                 />
               ) : (
-                <div style={{ height: '21px' }}></div>
+                <div style={{ height: '21px' }} />
               )}
               {/* API not yet implemented: */}
               {/* <div className="flex flex-col items-center gap-2 sm:flex-row">

@@ -104,7 +104,7 @@ export default function ActionsPanel({
               </button>
             </div>
 
-            {!!action && (
+            {Boolean(action) && (
               <OGDialog>
                 <OGDialogTrigger asChild>
                   <div className="absolute right-0 top-6">

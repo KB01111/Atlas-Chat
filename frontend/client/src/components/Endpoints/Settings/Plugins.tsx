@@ -218,7 +218,7 @@ export default function Settings({
           </HoverCardTrigger>
           <OptionHoverAlt
             description="com_endpoint_context_info"
-            langCode={true}
+            langCode
             side={ESide.Left}
           />
         </HoverCard>

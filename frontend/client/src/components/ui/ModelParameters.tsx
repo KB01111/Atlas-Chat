@@ -37,11 +37,11 @@ const ModelParameters: React.FC<ModelParametersProps> = ({
   const displayLabel = label.startsWith('com_') ? localize(label as TranslationKeys) : label;
 
   const getDecimalPlaces = (num: number) => {
-    const match = ('' + num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
+    const match = (String(num)).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
     if (!match) {
       return 0;
     }
-    return Math.max(0, (match[1] ? match[1].length : 0) - (match[2] ? +match[2] : 0));
+    return Math.max(0, (match[1] ? match[1].length : 0) - (match[2] ? Number(match[2]) : 0));
   };
 
   const decimalPlaces = getDecimalPlaces(step);
@@ -176,7 +176,7 @@ const ModelParameters: React.FC<ModelParametersProps> = ({
             <span className="text-xs text-gray-500">{max}</span>
           </div>
         ) : (
-          <div className="mt-1" style={{ height: '1rem' }}></div>
+          <div className="mt-1" style={{ height: '1rem' }} />
         )}
       </div>
     </div>

@@ -145,7 +145,7 @@ const usePresetIndexOptions: TUsePresetOptions = (_preset) => {
           }
           return tool;
         })
-        .filter((el) => !!el) || [];
+        .filter((el) => Boolean(el)) || [];
     const isSelected = checkPluginSelection(newValue);
     const tool = availableTools[newValue];
     if (isSelected || remove) {

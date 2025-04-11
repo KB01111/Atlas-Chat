@@ -202,7 +202,7 @@ function ToolSelectDialog({
               <PluginAuthForm
                 plugin={selectedPlugin}
                 onSubmit={(installActionData: TPluginAction) => handleInstall(installActionData)}
-                isEntityTool={true}
+                isEntityTool
               />
             </div>
           )}
@@ -245,7 +245,7 @@ function ToolSelectDialog({
                   onChangePage={handleChangePage}
                 />
               ) : (
-                <div style={{ height: '21px' }}></div>
+                <div style={{ height: '21px' }} />
               )}
             </div>
           </div>

@@ -36,7 +36,7 @@ function ToolItem({ tool, onAddTool, onRemoveTool, isInstalled = false }: ToolIt
                 <Wrench className="h-8 w-8 text-text-secondary" />
               </div>
             )}
-            <div className="absolute inset-0 rounded-[5px] ring-1 ring-inset ring-black/10"></div>
+            <div className="absolute inset-0 rounded-[5px] ring-1 ring-inset ring-black/10" />
           </div>
         </div>
         <div className="flex min-w-0 flex-col items-start justify-between">

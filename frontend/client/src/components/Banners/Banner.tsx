@@ -35,7 +35,7 @@ export const Banner = ({ onHeightChange }: { onHeightChange?: (height: number) =
       <div
         className="w-full truncate px-4 text-center text-sm"
         dangerouslySetInnerHTML={{ __html: banner.message }}
-      ></div>
+       />
       <button
         type="button"
         aria-label="Dismiss banner"

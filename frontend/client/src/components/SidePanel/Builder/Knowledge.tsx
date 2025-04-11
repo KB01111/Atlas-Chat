@@ -114,7 +114,7 @@ export default function Knowledge({
           >
             <div className="flex w-full items-center justify-center gap-2">
               <input
-                multiple={true}
+                multiple
                 type="file"
                 style={{ display: 'none' }}
                 tabIndex={-1}

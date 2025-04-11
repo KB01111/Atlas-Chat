@@ -140,22 +140,22 @@ const setup = ({
 } = {}) => {
   const mockUseAvailablePluginsQuery = jest
     .spyOn(mockDataProvider, 'useAvailablePluginsQuery')
-    //@ts-ignore - we don't need all parameters of the QueryObserverSuccessResult
+    //@ts-expect-error - we don't need all parameters of the QueryObserverSuccessResult
     .mockReturnValue(useAvailablePluginsQueryReturnValue);
   const mockUseUpdateUserPluginsMutation = jest
     .spyOn(mockDataProvider, 'useUpdateUserPluginsMutation')
-    //@ts-ignore - we don't need all parameters of the QueryObserverSuccessResult
+    //@ts-expect-error - we don't need all parameters of the QueryObserverSuccessResult
     .mockReturnValue(useUpdateUserPluginsMutationReturnValue);
   const mockUseGetUserQuery = jest
     .spyOn(authQueries, 'useGetUserQuery')
-    //@ts-ignore - we don't need all parameters of the QueryObserverSuccessResult
+    //@ts-expect-error - we don't need all parameters of the QueryObserverSuccessResult
     .mockReturnValue(useGetUserQueryReturnValue);
   const mockUseRefreshTokenMutation = jest
     .spyOn(authMutations, 'useRefreshTokenMutation')
-    //@ts-ignore - we don't need all parameters of the QueryObserverSuccessResult
+    //@ts-expect-error - we don't need all parameters of the QueryObserverSuccessResult
     .mockReturnValue(useRefreshTokenMutationReturnValue);
   const mockSetIsOpen = jest.fn();
-  const renderResult = render(<PluginStoreDialog isOpen={true} setIsOpen={mockSetIsOpen} />);
+  const renderResult = render(<PluginStoreDialog isOpen setIsOpen={mockSetIsOpen} />);
 
   return {
     ...renderResult,

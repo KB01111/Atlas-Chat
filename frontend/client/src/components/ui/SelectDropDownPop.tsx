@@ -100,7 +100,7 @@ function SelectDropDownPop({
                   xmlns="http://www.w3.org/2000/svg"
                   style={showAbove ? { transform: 'scaleY(-1)' } : {}}
                 >
-                  <polyline points="6 9 12 15 18 9"></polyline>
+                  <polyline points="6 9 12 15 18 9" />
                 </svg>
               </span>
             </button>
@@ -121,7 +121,7 @@ function SelectDropDownPop({
                     key={option}
                     title={option}
                     value={option}
-                    selected={!!(value && value === option)}
+                    selected={Boolean(value && value === option)}
                     onClick={() => setValue(option)}
                   />
                 );

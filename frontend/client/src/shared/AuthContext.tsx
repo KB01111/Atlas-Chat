@@ -41,10 +41,10 @@ const AuthContextProvider = ({
   const logoutRedirectRef = useRef<string | undefined>(undefined);
 
   const { data: userRole = null } = useGetRole(SystemRoles.USER, {
-    enabled: !!(isAuthenticated && (user?.role ?? '')),
+    enabled: Boolean(isAuthenticated && (user?.role ?? '')),
   });
   const { data: adminRole = null } = useGetRole(SystemRoles.ADMIN, {
-    enabled: !!(isAuthenticated && user?.role === SystemRoles.ADMIN),
+    enabled: Boolean(isAuthenticated && user?.role === SystemRoles.ADMIN),
   });
 
   const navigate = useNavigate();
@@ -54,7 +54,7 @@ const AuthContextProvider = ({
       const { token, isAuthenticated, user, redirect } = userContext;
       setUser(user);
       setToken(token);
-      //@ts-ignore - ok for token to be undefined initially
+      //@ts-expect-error - ok for token to be undefined initially
       setTokenHeader(token);
       setIsAuthenticated(isAuthenticated);
       // Use a custom redirect if set
@@ -122,7 +122,7 @@ const AuthContextProvider = ({
     [logoutUser],
   );
 
-  const userQuery = useGetUserQuery({ enabled: !!(token ?? '') });
+  const userQuery = useGetUserQuery({ enabled: Boolean(token ?? '') });
 
   const login = (data: t.TLoginUser) => {
     loginUser.mutate(data);

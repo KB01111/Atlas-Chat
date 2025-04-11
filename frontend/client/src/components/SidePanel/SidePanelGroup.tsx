@@ -13,7 +13,7 @@ import { normalizeLayout } from '~/utils';
 import SidePanel from './SidePanel';
 
 interface SidePanelProps {
-  defaultLayout?: number[] | undefined;
+  defaultLayout?: number[];
   defaultCollapsed?: boolean;
   navCollapsedSize?: number;
   fullPanelCollapse?: boolean;

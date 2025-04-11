@@ -175,7 +175,7 @@ const AdminSettings = () => {
               }
               items={roleDropdownItems}
               itemClassName="items-center justify-center"
-              sameWidth={true}
+              sameWidth
             />
           </div>
           {/* Permissions form */}

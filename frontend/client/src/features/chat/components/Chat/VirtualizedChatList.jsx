@@ -78,8 +78,7 @@ const VirtualizedChatList = ({
       // Check if we're at the bottom before scrolling
       // Using list._outerRef which might be unstable, check react-window docs for stable API
       if (
-        list &&
-        list._outerRef &&
+        list?._outerRef &&
         list._outerRef.scrollTop + list._outerRef.clientHeight >= list._outerRef.scrollHeight - 200
       ) {
         setScrollToIndex(messages.length - 1);

@@ -201,7 +201,7 @@ const TwoFactorAuthentication: React.FC = () => {
       }}
     >
       <DisableTwoFactorToggle
-        enabled={!!user?.twoFactorEnabled}
+        enabled={Boolean(user?.twoFactorEnabled)}
         onChange={() => setDialogOpen(true)}
         disabled={isVerifying || isDisabling || isGenerating}
       />

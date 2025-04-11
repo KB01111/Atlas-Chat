@@ -1,7 +1,7 @@
 import {
   request,
   Constants,
-  /* @ts-ignore */
+  /* @ts-expect-error */
   createPayload,
   isAgentsEndpoint,
   LocalStorageKeys,
@@ -90,7 +90,7 @@ export default function useSSE(
 
   const { data: startupConfig } = useGetStartupConfig();
   const balanceQuery = useGetUserBalance({
-    enabled: !!isAuthenticated && startupConfig?.balance?.enabled,
+    enabled: Boolean(isAuthenticated) && startupConfig?.balance?.enabled,
   });
 
   useEffect(() => {
@@ -202,7 +202,7 @@ export default function useSSE(
     });
 
     sse.addEventListener('error', async (e: MessageEvent) => {
-      /* @ts-ignore */
+      /* @ts-expect-error */
       if (e.responseCode === 401) {
         /* token expired, refresh and retry */
         try {
@@ -248,7 +248,7 @@ export default function useSSE(
       sse.close();
       if (isCancelled) {
         const e = new Event('cancel');
-        /* @ts-ignore */
+        /* @ts-expect-error */
         sse.dispatchEvent(e);
       }
     };

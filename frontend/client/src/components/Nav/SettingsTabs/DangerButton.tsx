@@ -29,7 +29,7 @@ const DangerButton = (props: TDangerButtonProps, ref: ForwardedRef<HTMLButtonEle
   const localize = useLocalize();
 
   const renderMutation = (node: React.ReactNode | string) => {
-    if (mutation && mutation.isLoading) {
+    if (mutation?.isLoading) {
       return <Spinner className="h-5 w-5" />;
     }
     return node;
@@ -60,7 +60,7 @@ const DangerButton = (props: TDangerButtonProps, ref: ForwardedRef<HTMLButtonEle
             data-testid={dataTestIdConfirm}
           >
             {renderMutation(<CheckIcon className="h-5 w-5" />)}
-            {mutation && mutation.isLoading ? null : localize(confirmActionTextCode)}
+            {mutation?.isLoading ? null : localize(confirmActionTextCode)}
           </div>
         ) : (
           <div

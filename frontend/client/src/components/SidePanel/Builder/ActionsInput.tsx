@@ -261,7 +261,7 @@ export default function ActionsInput({
           )}
         </div>
       </div>
-      {!!data && (
+      {Boolean(data) && (
         <div className="my-2">
           <div className="flex items-center">
             <label className="text-token-text-primary block font-medium">

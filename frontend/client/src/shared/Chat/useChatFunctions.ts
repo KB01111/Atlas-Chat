@@ -98,7 +98,7 @@ export default function useChatFunctions({
   ) => {
     setShowStopButton(false);
     resetLatestMultiMessage();
-    if (!!isSubmitting || text === '') {
+    if (Boolean(isSubmitting) || text === '') {
       return;
     }
 
@@ -317,7 +317,7 @@ export default function useChatFunctions({
     const messages = getMessages();
     const parentMessage = messages?.find((element) => element.messageId == parentMessageId);
 
-    if (parentMessage && parentMessage.isCreatedByUser) {
+    if (parentMessage?.isCreatedByUser) {
       ask({ ...parentMessage }, { isRegenerate: true });
     } else {
       console.error(

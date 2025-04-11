@@ -79,7 +79,7 @@ function MultiSelectDropDown({
     <div className={cn('flex items-center justify-center gap-2', containerClassName ?? '')}>
       <div className="relative w-full">
         {/* the function typing is correct but there's still an issue here */}
-        {/* @ts-ignore */}
+        {/* @ts-expect-error */}
         <Listbox value={value} onChange={handleSelect} disabled={disabled}>
           {() => (
             <>
@@ -150,7 +150,7 @@ function MultiSelectDropDown({
                     xmlns="http://www.w3.org/2000/svg"
                     style={showAbove ? { transform: 'scaleY(-1)' } : {}}
                   >
-                    <polyline points="6 9 12 15 18 9"></polyline>
+                    <polyline points="6 9 12 15 18 9" />
                   </svg>
                 </span>
               </ListboxButton>
@@ -194,7 +194,7 @@ function MultiSelectDropDown({
                                 ) : (
                                   <Wrench className="h-full w-full rounded-sm bg-white" />
                                 )}
-                                <div className="absolute inset-0 rounded-sm ring-1 ring-inset ring-black/10"></div>
+                                <div className="absolute inset-0 rounded-sm ring-1 ring-inset ring-black/10" />
                               </div>
                             </span>
                           )}

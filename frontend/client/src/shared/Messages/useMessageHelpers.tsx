@@ -64,7 +64,7 @@ export default function useMessageHelpers(props: TMessageProps) {
   }, [isLast, message, setLatestMessage, conversation?.conversationId]);
 
   const enterEdit = useCallback(
-    (cancel?: boolean) => setCurrentEditId && setCurrentEditId(cancel === true ? -1 : messageId),
+    (cancel?: boolean) => setCurrentEditId?.(cancel === true ? -1 : messageId),
     [messageId, setCurrentEditId],
   );
 
