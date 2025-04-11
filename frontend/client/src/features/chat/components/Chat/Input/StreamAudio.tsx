@@ -61,7 +61,7 @@ export default function StreamAudio({ index = 0 }) {
         !latestMessage.messageId.includes('_') &&
         !isFetching &&
         activeRunId != null &&
-        activeRunId !== audioRunId
+        activeRunId !== audioRunId,
     );
 
     if (!shouldFetch) {

@@ -32,7 +32,7 @@ export async function fetchUserProfile(userId) {
     console.error('Supabase client not initialized.');
     return null;
   }
-  
+
   const { data, error } = await supabase.from('profiles').select('*').eq('id', userId).single();
 
   if (error) {

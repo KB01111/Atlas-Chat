@@ -28,12 +28,12 @@ export default function usePresets() {
   const { user, isAuthenticated } = useAuthContext();
 
   const modularChat = useRecoilValue(store.modularChat);
-  const availableTools = useRecoilValue(store.plugins); 
+  const availableTools = useRecoilValue(store.plugins);
   const setPresetModalVisible = useSetRecoilState(store.presetModalVisible);
   const [_defaultPreset, setDefaultPreset] = useRecoilState(store.defaultPreset);
   const presetsQuery = useGetPresetsQuery({ enabled: Boolean(user) && isAuthenticated });
   const { preset, conversation, index, setPreset } = useChatContext();
-  const { data: modelsData } = useGetModelsQuery(); 
+  const { data: modelsData } = useGetModelsQuery();
   const { newConversation } = useNewConvo(index);
 
   useEffect(() => {
@@ -54,11 +54,11 @@ export default function usePresets() {
     }
     setDefaultPreset(defaultPreset);
     if (!conversation?.conversationId || conversation.conversationId === 'new') {
-      newConversation({ preset: defaultPreset, modelsData }); 
+      newConversation({ preset: defaultPreset, modelsData });
     }
     hasLoaded.current = true;
     // dependencies are stable and only needed once
-  }, [presetsQuery.data, user, modelsData]); 
+  }, [presetsQuery.data, user, modelsData]);
 
   const setPresets = useCallback(
     (presets: TPreset[]) => {
@@ -143,7 +143,7 @@ export default function usePresets() {
   };
 
   const onFileSelected = (jsonData: Record<string, unknown>) => {
-    const jsonPreset = { ...jsonData, presetId: null }; 
+    const jsonPreset = { ...jsonData, presetId: null };
     importPreset(jsonPreset);
   };
 
@@ -152,7 +152,7 @@ export default function usePresets() {
       return;
     }
 
-    const newPreset = _newPreset; 
+    const newPreset = _newPreset;
 
     const toastTitle = newPreset.title
       ? `"${newPreset.title}"`
@@ -178,7 +178,7 @@ export default function usePresets() {
     newPreset.modelLabel = newPreset.modelLabel ?? null;
     const isModular = isCurrentModular && isNewModular && shouldSwitch;
     if (isExistingConversation && isModular) {
-      const currentConvo = getDefaultConversation(); 
+      const currentConvo = getDefaultConversation();
 
       /* We don't reset the latest message, only when changing settings mid-converstion */
       newConversation({
