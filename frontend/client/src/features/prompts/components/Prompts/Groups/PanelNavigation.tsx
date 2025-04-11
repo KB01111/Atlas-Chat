@@ -21,9 +21,7 @@ function PanelNavigation({
   const localize = useLocalize();
   return (
     <div className="my-1 flex justify-between">
-      <div className="mb-2 flex gap-2">
-        {!isChatRoute && <ThemeSelector returnThemeOnly />}
-      </div>
+      <div className="mb-2 flex gap-2">{!isChatRoute && <ThemeSelector returnThemeOnly />}</div>
       <div className="mb-2 flex gap-2">
         <Button variant="outline" size="sm" onClick={() => prevPage()} disabled={!hasPreviousPage}>
           {localize('com_ui_prev')}

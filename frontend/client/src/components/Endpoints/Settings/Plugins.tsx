@@ -216,11 +216,7 @@ export default function Settings({
               />
             </div>
           </HoverCardTrigger>
-          <OptionHoverAlt
-            description="com_endpoint_context_info"
-            langCode
-            side={ESide.Left}
-          />
+          <OptionHoverAlt description="com_endpoint_context_info" langCode side={ESide.Left} />
         </HoverCard>
         <HoverCard openDelay={300}>
           <HoverCardTrigger className="grid w-full items-center gap-2">

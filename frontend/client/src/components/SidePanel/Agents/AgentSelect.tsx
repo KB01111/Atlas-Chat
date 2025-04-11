@@ -117,9 +117,9 @@ export default function AgentSelect({
 
   const onSelect = useCallback(
     (selectedId: string) => {
-      const agentExists = Boolean(selectedId
-        ? (agents ?? []).find((agent) => agent.id === selectedId)
-        : undefined);
+      const agentExists = Boolean(
+        selectedId ? (agents ?? []).find((agent) => agent.id === selectedId) : undefined,
+      );
 
       createMutation.reset();
       if (!agentExists) {

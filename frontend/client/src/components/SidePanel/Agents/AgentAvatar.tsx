@@ -122,10 +122,9 @@ function Avatar({
      * This prevents the avatar from being uploaded multiple times before the user selects a new agent
      * while allowing the user to upload to prime the avatar and other values before the agent is created.
      */
-    const sharedUploadCondition = Boolean(createMutation.isSuccess &&
-      input &&
-      previewUrl &&
-      previewUrl.includes('base64'));
+    const sharedUploadCondition = Boolean(
+      createMutation.isSuccess && input && previewUrl && previewUrl.includes('base64'),
+    );
     if (sharedUploadCondition && lastSeenCreatedId.current === createMutation.data.id) {
       return;
     }

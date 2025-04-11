@@ -16,7 +16,7 @@ const CombinedStatusIcon = ({ description }: { description: string }) => (
         <Crown className="h-4 w-4 text-amber-500" />
       </div>
     }
-   />
+  />
 );
 
 const VersionTags = ({ tags }: { tags: string[] }) => {
@@ -75,7 +75,7 @@ const VersionTags = ({ tags }: { tags: string[] }) => {
               })()}
             />
           }
-         />
+        />
       ))}
     </span>
   );

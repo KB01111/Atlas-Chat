@@ -59,9 +59,7 @@ function useTextToSpeechExternal({
     const playPromise = () => newAudio.play().then(() => setIsSpeaking(true));
 
     playPromise().catch((error: Error) => {
-      if (
-        error.message?.includes('The play() request was interrupted by a call to pause()')
-      ) {
+      if (error.message?.includes('The play() request was interrupted by a call to pause()')) {
         console.log('Play request was interrupted by a call to pause()');
         initializeAudio();
         return playPromise().catch(console.error);

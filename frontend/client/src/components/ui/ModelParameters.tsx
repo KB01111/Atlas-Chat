@@ -37,7 +37,7 @@ const ModelParameters: React.FC<ModelParametersProps> = ({
   const displayLabel = label.startsWith('com_') ? localize(label as TranslationKeys) : label;
 
   const getDecimalPlaces = (num: number) => {
-    const match = (String(num)).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
+    const match = String(num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
     if (!match) {
       return 0;
     }

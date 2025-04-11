@@ -35,7 +35,7 @@ export default function MultiMessage({
     }
   }, [siblingIdx, messagesTree?.length, setSiblingIdx]);
 
-  if (!(messagesTree?.length)) {
+  if (!messagesTree?.length) {
     return null;
   }
 
