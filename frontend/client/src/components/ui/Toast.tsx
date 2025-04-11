@@ -1,22 +1,10 @@
+import React from 'react';
 import * as RadixToast from '@radix-ui/react-toast';
-// import { NotificationSeverity } from '~/common/types'; // TODO: Re-implement missing type
-import { NotificationSeverity } from '~/common'; // Assuming it's in common/index.ts
-// import { useToast } from '~/hooks'; // TODO: Re-implement missing hook
+import { NotificationSeverity } from '~/common';
+import { useToast } from '~/shared';
 
 export default function Toast() {
-  // const { toast, onOpenChange } = useToast(); // TODO: Re-implement missing hook
-  const toast: {
-    open: boolean;
-    message: string;
-    severity: NotificationSeverity;
-    showIcon: boolean;
-  } = {
-    open: false,
-    message: '',
-    severity: NotificationSeverity.Info,
-    showIcon: true,
-  }; // Placeholder
-  const onOpenChange = () => {}; // Placeholder
+  const { toast, onOpenChange } = useToast();
   const severityClassName = {
     [NotificationSeverity.Info]: 'border-gray-500 bg-gray-500',
     [NotificationSeverity.Success]: 'border-green-500 bg-green-500',
