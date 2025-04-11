@@ -183,3 +183,141 @@ temp/
 # Ignore Roo-related files and folders
 .roo/
 *roo*
+
+# TypeScript compilation
+tsconfig.tsbuildinfo
+*.tsbuildinfo
+
+# Supabase
+.supabase/
+.supabaseconfig
+
+# React Query devtools
+.react-query-devtools/
+
+# Next.js (if used in future)
+.next/
+next-env.d.ts
+
+# Code coverage reports
+frontend/coverage/
+backend/coverage/
+
+# Redis dumps
+*.rdb
+dump.rdb
+
+# Logs from code executions
+code-executions/
+
+# Deployment config 
+.netlify/
+.vercel/
+netlify.toml
+vercel.json
+
+# Temp files from editors
+*~
+*#
+.#*#
+\#*#
+
+# Storybook
+storybook-static/
+.storybook-out/
+
+# Dependency directories for monorepo setups
+packages/*/node_modules/
+packages/*/dist/
+
+# Cypress
+cypress/videos/
+cypress/screenshots/
+
+# Playwright
+playwright-report/
+test-results/
+
+# Turborepo
+.turbo/
+
+# esbuild
+.esbuild/
+
+# Netlify CLI
+.netlify/
+
+# Credential files from various services
+**/*credentials*.json
+**/*token*.json
+
+# Additional junk folders and files
+_junk/
+_unused/
+_old/
+_archive/
+_bak/
+**/_legacy/
+**/_deprecated/
+**/_ignore/
+**/_scratch/
+**/junk/
+**/unused/
+**/backup/
+**/*.backup
+**/*.backup.*
+**/*copy.*
+**/*Copy.*
+**/*COPY.*
+**/*.old
+**/*.OLD
+**/*.original
+**/*.ORIGINAL
+**/*.orig
+**/*.ORIG
+**/*.previous
+**/*.temp
+**/*.TMP
+**/*~
+
+# Common log files
+error_log
+access_log
+**/logs/
+*.log.[0-9]*
+
+# Misc bundler and dependency manager artifacts
+.pnpm-store/
+.bundle/
+
+# Profiling data and benchmarks
+**/profiling/
+**/benchmarks/results/
+flamegraph.svg
+*.flamegraph
+*.heapsnapshot
+*.cpuprofile
+*.memprofile
+
+# Local development configs and overrides
+**/.overrides/
+**/.local/
+local.settings.json
+local.config.js
+local.config.ts
+
+# OS generated thumbnails beyond .DS_Store
+._*
+.Spotlight-V100
+.Trashes
+
+# Auto-generated API docs
+api-docs/
+swagger-ui/
+api-spec/
+swagger/
+redoc-static.html
+
+# Unnecessary lock files when using multiple package managers
+# Keep only the lock file for your preferred package manager (e.g., package-lock.json, yarn.lock, or bun.lock)
+# Uncomment the ones you don't use
