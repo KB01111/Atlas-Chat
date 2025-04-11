@@ -1,6 +1,14 @@
+import {
+  PermissionTypes,
+  Permissions,
+  type ConversationListResponse,
+} from 'librechat-data-provider';
+import { useConversationsInfiniteQuery } from 'librechat-data-provider';
 import { useCallback, useEffect, useState, useMemo, memo } from 'react';
 import { useRecoilValue } from 'recoil';
-import { PermissionTypes, Permissions, type ConversationListResponse } from 'librechat-data-provider';
+
+import { Conversations } from '~/components/Conversations';
+import { Spinner } from '~/components/svg';
 import {
   useLocalize,
   useHasAccess,
@@ -9,17 +17,15 @@ import {
   useLocalStorage,
   useNavScrolling,
 } from '~/hooks';
-import { useConversationsInfiniteQuery } from 'librechat-data-provider';
-import { Conversations } from '~/components/Conversations';
-import BookmarkNav from './Bookmarks/BookmarkNav';
-import AccountSettings from './AccountSettings';
 import { useSearchContext } from '~/Providers';
-import { Spinner } from '~/components/svg';
-import SearchBar from './SearchBar';
+import store from '~/store';
+import { cn } from '~/utils';
+
+import AccountSettings from './AccountSettings';
+import BookmarkNav from './Bookmarks/BookmarkNav';
 import NavToggle from './NavToggle';
 import NewChat from './NewChat';
-import { cn } from '~/utils';
-import store from '~/store';
+import SearchBar from './SearchBar';
 
 const Nav = ({
   navVisible,
@@ -86,7 +92,7 @@ const Nav = ({
     hasNextPage: searchQuery ? searchQueryRes?.hasNextPage : hasNextPage,
     fetchNextPage: searchQuery ? searchQueryRes?.fetchNextPage : fetchNextPage,
     isFetchingNextPage: searchQuery
-      ? searchQueryRes?.isFetchingNextPage ?? false
+      ? (searchQueryRes?.isFetchingNextPage ?? false)
       : isFetchingNextPage,
   });
 

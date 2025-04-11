@@ -1,7 +1,3 @@
-import { useState, useMemo } from 'react';
-import { useDrop } from 'react-dnd';
-import { useRecoilValue } from 'recoil';
-import { NativeTypes } from 'react-dnd-html5-backend';
 import { useQueryClient } from '@tanstack/react-query';
 import {
   isAgentsEndpoint,
@@ -10,9 +6,15 @@ import {
   QueryKeys,
 } from 'librechat-data-provider';
 import type * as t from 'librechat-data-provider';
+import { useState, useMemo } from 'react';
+import { useDrop } from 'react-dnd';
 import type { DropTargetMonitor } from 'react-dnd';
-import useFileHandling from './useFileHandling';
+import { NativeTypes } from 'react-dnd-html5-backend';
+import { useRecoilValue } from 'recoil';
+
 import store from '~/store';
+
+import useFileHandling from './useFileHandling';
 
 export default function useDragHelpers() {
   const queryClient = useQueryClient();

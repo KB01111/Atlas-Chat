@@ -1,5 +1,7 @@
 import { LockIcon, Trash } from 'lucide-react';
 import React, { useState, useCallback } from 'react';
+
+import { LocalizeFunction } from '~/common';
 import {
   Input,
   Button,
@@ -11,10 +13,9 @@ import {
   OGDialogTitle,
 } from '~/components';
 import { useDeleteUserMutation } from '~/data-provider';
-import { useAuthContext } from '~/hooks/AuthContext';
 import { useLocalize } from '~/hooks';
+import { useAuthContext } from '~/hooks/AuthContext';
 import { cn } from '~/utils';
-import { LocalizeFunction } from '~/common';
 
 const DeleteAccount = ({ disabled = false }: { title?: string; disabled?: boolean }) => {
   const localize = useLocalize();

@@ -1,4 +1,3 @@
-import { v4 } from 'uuid';
 import { useQueryClient } from '@tanstack/react-query';
 import {
   Constants,
@@ -8,7 +7,6 @@ import {
   parseCompactConvo,
   isAssistantsEndpoint,
 } from 'librechat-data-provider';
-import { useSetRecoilState, useResetRecoilState, useRecoilValue } from 'recoil';
 import type {
   TMessage,
   TSubmission,
@@ -16,14 +14,17 @@ import type {
   TEndpointOption,
   TEndpointsConfig,
 } from 'librechat-data-provider';
+import { useSetRecoilState, useResetRecoilState, useRecoilValue } from 'recoil';
 import type { SetterOrUpdater } from 'recoil';
+import { v4 } from 'uuid';
+
 import type { TAskFunction, ExtendedFile } from '~/common';
-import useSetFilesToDelete from '~/hooks/Files/useSetFilesToDelete';
 import useGetSender from '~/hooks/Conversations/useGetSender';
-import { getArtifactsMode } from '~/utils/artifacts';
-import { getEndpointField, logger } from '~/utils';
+import useSetFilesToDelete from '~/hooks/Files/useSetFilesToDelete';
 import useUserKey from '~/hooks/Input/useUserKey';
 import store from '~/store';
+import { getEndpointField, logger } from '~/utils';
+import { getArtifactsMode } from '~/utils/artifacts';
 
 const logChatRequest = (request: Record<string, unknown>) => {
   logger.log('=====================================\nAsk function called with:');

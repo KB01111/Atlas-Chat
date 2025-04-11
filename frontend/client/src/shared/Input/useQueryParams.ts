@@ -1,6 +1,3 @@
-import { useEffect, useCallback, useRef } from 'react';
-import { useRecoilValue } from 'recoil';
-import { useSearchParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import {
   QueryKeys,
@@ -10,12 +7,16 @@ import {
   isAssistantsEndpoint,
 } from 'librechat-data-provider';
 import type { TPreset, TEndpointsConfig, TStartupConfig } from 'librechat-data-provider';
+import { useEffect, useCallback, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { useRecoilValue } from 'recoil';
 import type { ZodAny } from 'zod';
-import { getConvoSwitchLogic, getModelSpecIconURL, removeUnavailableTools } from '~/utils';
+
 import useDefaultConvo from '~/hooks/Conversations/useDefaultConvo';
-import { useChatContext, useChatFormContext } from '~/Providers';
 import useSubmitMessage from '~/hooks/Messages/useSubmitMessage';
+import { useChatContext, useChatFormContext } from '~/Providers';
 import store from '~/store';
+import { getConvoSwitchLogic, getModelSpecIconURL, removeUnavailableTools } from '~/utils';
 
 const parseQueryValue = (value: string) => {
   if (value === 'true') {

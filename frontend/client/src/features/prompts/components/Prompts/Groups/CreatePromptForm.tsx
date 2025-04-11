@@ -1,14 +1,15 @@
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useForm, Controller, FormProvider } from 'react-hook-form';
 import { LocalStorageKeys, PermissionTypes, Permissions } from 'librechat-data-provider';
+import { useEffect } from 'react';
+import { useForm, Controller, FormProvider } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+
+import { Button, TextareaAutosize, Input } from '~/components/ui';
+import { useCreatePrompt } from '~/data-provider';
+import Command from '~/features/prompts/components/Prompts/Command';
+import Description from '~/features/prompts/components/Prompts/Description';
 import CategorySelector from '~/features/prompts/components/Prompts/Groups/CategorySelector';
 import PromptVariables from '~/features/prompts/components/Prompts/PromptVariables';
-import { Button, TextareaAutosize, Input } from '~/components/ui';
-import Description from '~/features/prompts/components/Prompts/Description';
 import { useLocalize, useHasAccess } from '~/hooks';
-import Command from '~/features/prompts/components/Prompts/Command';
-import { useCreatePrompt } from '~/data-provider';
 import { cn } from '~/utils';
 
 type CreateFormValues = {

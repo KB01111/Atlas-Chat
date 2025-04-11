@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react';
 import { useCreatePresetMutation } from 'librechat-data-provider/react-query';
+import React, { useEffect, useState } from 'react';
+
 import type { TEditPresetProps } from '~/common';
-import { cn, removeFocusOutlines, cleanupPreset, defaultTextProps } from '~/utils/';
-import OGDialogTemplate from '~/components/ui/OGDialogTemplate';
-import { OGDialog, Input, Label } from '~/components/ui/';
 import { NotificationSeverity } from '~/common';
-import { useToastContext } from '~/Providers';
+import { OGDialog, Input, Label } from '~/components/ui/';
+import OGDialogTemplate from '~/components/ui/OGDialogTemplate';
 import { useLocalize } from '~/hooks';
+import { useToastContext } from '~/Providers';
+import { cn, removeFocusOutlines, cleanupPreset, defaultTextProps } from '~/utils/';
 
 const SaveAsPresetDialog = ({ open, onOpenChange, preset }: TEditPresetProps) => {
   const [title, setTitle] = useState<string>(preset.title ?? 'My Preset');
@@ -23,7 +24,7 @@ const SaveAsPresetDialog = ({ open, onOpenChange, preset }: TEditPresetProps) =>
     });
 
     const toastTitle =
-      _preset.title ?? '' ? `\`${_preset.title}\`` : localize('com_endpoint_preset_title');
+      (_preset.title ?? '') ? `\`${_preset.title}\`` : localize('com_endpoint_preset_title');
 
     createPresetMutation.mutate(_preset, {
       onSuccess: () => {

@@ -1,4 +1,3 @@
-import React, { FC } from 'react';
 import {
   Listbox,
   ListboxButton,
@@ -7,6 +6,8 @@ import {
   Transition,
 } from '@headlessui/react';
 import { AnchorPropsWithSelection } from '@headlessui/react/dist/internal/floating';
+import React, { FC } from 'react';
+
 import type { Option } from '~/common';
 import { cn } from '~/utils/';
 
@@ -39,7 +40,7 @@ const Dropdown: FC<DropdownProps> = ({
     typeof option === 'string' ? option : option?.value;
 
   const getDisplay = (option?: string | Option) =>
-    typeof option === 'string' ? option : option?.label ?? option?.value;
+    typeof option === 'string' ? option : (option?.label ?? option?.value);
 
   const isEqual = (a: string | Option, b: string | Option): boolean => getValue(a) === getValue(b);
 

@@ -1,13 +1,15 @@
-import React, { useState, useRef } from 'react';
-import * as Tabs from '@radix-ui/react-tabs';
-import { MessageSquare, Command } from 'lucide-react';
-import { SettingsTabValues } from 'librechat-data-provider';
-import type { TDialogProps } from '~/common';
 import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from '@headlessui/react';
+import * as Tabs from '@radix-ui/react-tabs';
+import { SettingsTabValues } from 'librechat-data-provider';
+import { MessageSquare, Command } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+
+import type { TDialogProps } from '~/common';
 import { GearIcon, DataIcon, SpeechIcon, UserIcon, ExperimentIcon } from '~/components/svg';
-import { General, Chat, Speech, Beta, Commands, Data, Account } from './SettingsTabs';
 import { useMediaQuery, useLocalize, TranslationKeys } from '~/hooks';
 import { cn } from '~/utils';
+
+import { General, Chat, Speech, Beta, Commands, Data, Account } from './SettingsTabs';
 
 export default function Settings({ open, onOpenChange }: TDialogProps) {
   const isSmallScreen = useMediaQuery('(max-width: 767px)');
@@ -47,7 +49,11 @@ export default function Settings({ open, onOpenChange }: TDialogProps) {
     }
   };
 
-  const settingsTabs: { value: SettingsTabValues; icon:  React.JSX.Element; label: TranslationKeys }[] = [
+  const settingsTabs: {
+    value: SettingsTabValues;
+    icon: React.JSX.Element;
+    label: TranslationKeys;
+  }[] = [
     {
       value: SettingsTabValues.GENERAL,
       icon: <GearIcon />,

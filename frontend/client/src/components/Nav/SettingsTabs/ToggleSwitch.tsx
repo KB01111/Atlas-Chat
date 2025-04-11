@@ -1,8 +1,9 @@
-import { useRecoilState } from 'recoil';
-import HoverCardSettings from './HoverCardSettings';
-import useLocalize from '~/hooks/useLocalize';
+import { useRecoilState, RecoilState } from 'recoil';
+
 import { Switch } from '~/components/ui';
-import { RecoilState } from 'recoil';
+import useLocalize from '~/hooks/useLocalize';
+
+import HoverCardSettings from './HoverCardSettings';
 
 interface ToggleSwitchProps {
   stateAtom: RecoilState<boolean>;

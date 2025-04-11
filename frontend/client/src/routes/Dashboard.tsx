@@ -1,10 +1,12 @@
 import { Navigate } from 'react-router-dom';
+
 import {
   PromptsView,
   PromptForm,
   CreatePromptForm,
   EmptyPromptPreview,
 } from '~/features/prompts/components/Prompts';
+
 import DashboardRoute from './Layouts/Dashboard';
 
 const dashboardRoutes = {

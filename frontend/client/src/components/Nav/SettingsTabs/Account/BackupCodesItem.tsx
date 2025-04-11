@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
-import { RefreshCcw, ShieldX } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TBackupCode, TRegenerateBackupCodesResponse, type TUser } from 'librechat-data-provider';
+import { RefreshCcw, ShieldX } from 'lucide-react';
+import React, { useState } from 'react';
+import { useSetRecoilState } from 'recoil';
+
 import {
   OGDialog,
   OGDialogContent,
@@ -15,7 +17,6 @@ import {
 import { useRegenerateBackupCodesMutation } from '~/data-provider';
 import { useAuthContext, useLocalize } from '~/hooks';
 import { useToastContext } from '~/Providers';
-import { useSetRecoilState } from 'recoil';
 import store from '~/store';
 
 const BackupCodesItem: React.FC = () => {
@@ -27,7 +28,7 @@ const BackupCodesItem: React.FC = () => {
 
   const { mutate: regenerateBackupCodes, isLoading } = useRegenerateBackupCodesMutation();
 
-  const fetchBackupCodes = (auto: boolean = false) => {
+  const fetchBackupCodes = (auto = false) => {
     regenerateBackupCodes(undefined, {
       onSuccess: (data: TRegenerateBackupCodesResponse) => {
         const newBackupCodes: TBackupCode[] = data.backupCodesHash.map((codeHash) => ({

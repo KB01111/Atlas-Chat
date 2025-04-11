@@ -1,5 +1,6 @@
-import { useSetRecoilState } from 'recoil';
 import type { TAttachment, EventSubmission } from 'librechat-data-provider';
+import { useSetRecoilState } from 'recoil';
+
 import store from '~/store';
 
 export default function useAttachmentHandler() {

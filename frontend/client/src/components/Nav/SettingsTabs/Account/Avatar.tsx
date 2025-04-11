@@ -1,9 +1,10 @@
-import React, { useState, useRef, useCallback } from 'react';
-import { useSetRecoilState } from 'recoil';
-import AvatarEditor from 'react-avatar-editor';
-import { FileImage, RotateCw, Upload } from 'lucide-react';
 import { fileConfig as defaultFileConfig, mergeFileConfig } from 'librechat-data-provider';
 import type { TUser } from 'librechat-data-provider';
+import { FileImage, RotateCw, Upload } from 'lucide-react';
+import React, { useState, useRef, useCallback } from 'react';
+import AvatarEditor from 'react-avatar-editor';
+import { useSetRecoilState } from 'recoil';
+
 import {
   Slider,
   Button,
@@ -15,10 +16,10 @@ import {
   OGDialogTrigger,
 } from '~/components';
 import { useUploadAvatarMutation, useGetFileConfig } from '~/data-provider';
-import { useToastContext } from '~/Providers';
-import { cn, formatBytes } from '~/utils';
 import { useLocalize } from '~/hooks';
+import { useToastContext } from '~/Providers';
 import store from '~/store';
+import { cn, formatBytes } from '~/utils';
 
 interface AvatarEditorRef {
   getImageScaledToCanvas: () => HTMLCanvasElement;

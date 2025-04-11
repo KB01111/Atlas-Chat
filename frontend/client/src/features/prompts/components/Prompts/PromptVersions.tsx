@@ -1,7 +1,8 @@
-import React from 'react';
 import { format } from 'date-fns';
-import { Layers3, Crown, Zap } from 'lucide-react';
 import type { TPrompt, TPromptGroup } from 'librechat-data-provider';
+import { Layers3, Crown, Zap } from 'lucide-react';
+import React from 'react';
+
 import { Tag, TooltipAnchor, Label } from '~/components/ui';
 import { useLocalize } from '~/hooks';
 import { cn } from '~/utils';

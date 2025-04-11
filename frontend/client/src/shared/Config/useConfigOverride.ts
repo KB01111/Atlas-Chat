@@ -1,7 +1,8 @@
-import { useSetRecoilState } from 'recoil';
-import { useEffect, useCallback } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import type { TEndpointsConfig, TModelsConfig } from 'librechat-data-provider';
+import { useEffect, useCallback } from 'react';
+import { useSetRecoilState } from 'recoil';
+
 import { useGetEndpointsConfigOverride } from '~/data-provider';
 import store from '~/store';
 
@@ -25,12 +26,12 @@ export default function useConfigOverride() {
       const { endpointsConfig, modelsConfig } = data as TempOverrideType;
       if (endpointsConfig) {
         setEndpointsQueryEnabled(false);
-        await queryClient.cancelQueries(["endpoints"]);
-        queryClient.setQueryData(["endpoints"], endpointsConfig);
+        await queryClient.cancelQueries(['endpoints']);
+        queryClient.setQueryData(['endpoints'], endpointsConfig);
       }
       if (modelsConfig) {
-        await queryClient.cancelQueries(["models"]);
-        queryClient.setQueryData(["models"], modelsConfig);
+        await queryClient.cancelQueries(['models']);
+        queryClient.setQueryData(['models'], modelsConfig);
       }
     },
     [queryClient, setEndpointsQueryEnabled],

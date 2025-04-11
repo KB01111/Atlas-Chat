@@ -1,5 +1,5 @@
-import React, { createContext, useContext } from 'react';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import React, { createContext, useContext } from 'react';
 
 const supabaseUrl = process.env.REACT_APP_SUPABASE_URL || '';
 const supabaseAnonKey = process.env.REACT_APP_SUPABASE_ANON_KEY || '';
@@ -17,9 +17,7 @@ export const useSupabase = () => {
 };
 
 const SupabaseProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <SupabaseContext.Provider value={supabase}>
-    {children}
-  </SupabaseContext.Provider>
+  <SupabaseContext.Provider value={supabase}>{children}</SupabaseContext.Provider>
 );
 
 export default SupabaseProvider;

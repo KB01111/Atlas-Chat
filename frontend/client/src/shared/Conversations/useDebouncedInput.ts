@@ -1,6 +1,7 @@
 import debounce from 'lodash/debounce';
 import React, { useState, useCallback } from 'react';
 import type { SetterOrUpdater } from 'recoil';
+
 import type { TSetOption } from '~/common';
 import { defaultDebouncedDelay } from '~/common';
 
@@ -42,7 +43,7 @@ function useDebouncedInput<T = unknown>({
         typeof e !== 'object'
           ? e
           : ((e as React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>).target
-            .value as unknown as T);
+              .value as unknown as T);
       if (numeric === true) {
         newValue = Number(newValue) as unknown as T;
       }

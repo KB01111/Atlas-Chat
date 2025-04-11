@@ -1,9 +1,11 @@
-import * as React from 'react';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
-import { Button } from '../ui/Button';
 import { X } from 'lucide-react';
-import { cn } from '~/utils';
+import * as React from 'react';
+
 import { useMediaQuery } from '~/hooks';
+import { cn } from '~/utils';
+
+import { Button } from '../ui/Button';
 
 const Dialog = DialogPrimitive.Root;
 

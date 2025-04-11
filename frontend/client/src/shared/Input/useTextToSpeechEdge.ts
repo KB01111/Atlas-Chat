@@ -1,9 +1,10 @@
-import { useRecoilValue } from 'recoil';
 import { MsEdgeTTS, OUTPUT_FORMAT } from 'msedge-tts';
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
+import { useRecoilValue } from 'recoil';
+
 import type { VoiceOption } from '~/common';
-import { useToastContext } from '~/Providers/ToastContext';
 import useLocalize from '~/hooks/useLocalize';
+import { useToastContext } from '~/Providers/ToastContext';
 import store from '~/store';
 
 interface UseTextToSpeechEdgeReturn {

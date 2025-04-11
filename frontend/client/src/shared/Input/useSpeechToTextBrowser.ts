@@ -1,9 +1,11 @@
 import { useEffect, useRef, useMemo } from 'react';
-import { useRecoilState } from 'recoil';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
-import useGetAudioSettings from './useGetAudioSettings';
+import { useRecoilState } from 'recoil';
+
 import { useToastContext } from '~/Providers';
 import store from '~/store';
+
+import useGetAudioSettings from './useGetAudioSettings';
 
 const useSpeechToTextBrowser = (
   setText: (text: string) => void,

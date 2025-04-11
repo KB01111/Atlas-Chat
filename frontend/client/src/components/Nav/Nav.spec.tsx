@@ -2,15 +2,16 @@ import 'test/resizeObserver.mock';
 import 'test/matchMedia.mock';
 import 'test/localStorage.mock';
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { render } from '@testing-library/react';
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { RecoilRoot } from 'recoil';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { render } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 
 import { AuthContextProvider } from '~/hooks/AuthContext';
 import { SearchContext } from '~/Providers';
+
 import Nav from './Nav';
 
 const renderNav = ({ search, navVisible, setNavVisible }) => {

@@ -1,8 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
-import AutoSizer from "react-virtualized-auto-sizer";
-import { FixedSizeList as List } from "react-window";
-import InfiniteLoader from "react-window-infinite-loader";
-import { useTheme } from "../hooks/useTheme";
+import React, { useEffect, useRef, useState } from 'react';
+import AutoSizer from 'react-virtualized-auto-sizer';
+import { FixedSizeList as List } from 'react-window';
+import InfiniteLoader from 'react-window-infinite-loader';
+
+import { useTheme } from '../hooks/useTheme';
 
 /**
  * VirtualizedChatList component for optimized rendering of long conversations
@@ -42,8 +43,7 @@ const VirtualizedChatList = ({
 
     // Calculate average message length
     const avgLength =
-      messages.reduce((sum, msg) => sum + (msg.content?.length || 0), 0) /
-      messages.length;
+      messages.reduce((sum, msg) => sum + (msg.content?.length || 0), 0) / messages.length;
 
     // Estimate number of lines
     const estimatedLines = Math.ceil(avgLength / charsPerLine);
@@ -63,7 +63,11 @@ const VirtualizedChatList = ({
   };
 
   // Load more items when scrolling to the top
-  const loadMoreItems = isLoadingMore ? () => {} : loadMoreMessages;
+  const loadMoreItems = isLoadingMore
+    ? () => {
+        console.warn('Already loading more messages');
+      }
+    : loadMoreMessages;
 
   // Scroll to bottom on new messages
   useEffect(() => {
@@ -72,9 +76,11 @@ const VirtualizedChatList = ({
       const list = listRef.current;
 
       // Check if we're at the bottom before scrolling
+      // Using list._outerRef which might be unstable, check react-window docs for stable API
       if (
-        list._outerRef.scrollTop + list._outerRef.clientHeight >=
-        list._outerRef.scrollHeight - 200
+        list &&
+        list._outerRef &&
+        list._outerRef.scrollTop + list._outerRef.clientHeight >= list._outerRef.scrollHeight - 200
       ) {
         setScrollToIndex(messages.length - 1);
       }
@@ -84,7 +90,7 @@ const VirtualizedChatList = ({
   // Reset scroll position when scrollToIndex changes
   useEffect(() => {
     if (scrollToIndex !== null && listRef.current) {
-      listRef.current.scrollToItem(scrollToIndex, "end");
+      listRef.current.scrollToItem(scrollToIndex, 'end');
       setScrollToIndex(null);
     }
   }, [scrollToIndex]);
@@ -97,13 +103,13 @@ const VirtualizedChatList = ({
         <div
           style={{
             ...style,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "10px",
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '10px',
           }}
         >
-          <div className="loading-spinner" />
+          <div className="loading-spinner" /> {/* Define loading-spinner CSS */}
         </div>
       );
     }
@@ -116,9 +122,9 @@ const VirtualizedChatList = ({
   return (
     <div
       style={{
-        height: "100%",
-        width: "100%",
-        backgroundColor: theme === "dark" ? "#1a1a1a" : "#ffffff",
+        height: '100%',
+        width: '100%',
+        backgroundColor: theme === 'dark' ? '#1a1a1a' : '#ffffff',
       }}
     >
       <AutoSizer>
@@ -139,11 +145,9 @@ const VirtualizedChatList = ({
                 height={height}
                 width={width}
                 itemCount={itemCount}
-                itemSize={estimatedItemSize}
+                itemSize={estimatedItemSize} // Use estimatedItemSize
                 onItemsRendered={onItemsRendered}
                 overscanCount={5}
-                // Invert the list to have newest messages at the bottom
-                // and enable infinite scrolling upward
                 style={{
                   paddingTop: 10,
                   paddingBottom: 10,

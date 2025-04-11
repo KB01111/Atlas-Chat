@@ -1,12 +1,13 @@
-import type { Assistant, AssistantCreateParams, AssistantsEndpoint } from 'librechat-data-provider';
 import type { UseMutationResult } from '@tanstack/react-query';
-import { Dialog, DialogTrigger, Label } from '~/components/ui';
-import { useChatContext, useToastContext } from '~/Providers';
-import { useDeleteAssistantMutation } from '~/data-provider';
-import DialogTemplate from '~/components/ui/DialogTemplate';
-import { useLocalize, useSetIndexOptions } from '~/hooks';
-import { cn, removeFocusOutlines } from '~/utils/';
+import type { Assistant, AssistantCreateParams, AssistantsEndpoint } from 'librechat-data-provider';
+
 import { TrashIcon } from '~/components/svg';
+import { Dialog, DialogTrigger, Label } from '~/components/ui';
+import DialogTemplate from '~/components/ui/DialogTemplate';
+import { useDeleteAssistantMutation } from '~/data-provider';
+import { useLocalize, useSetIndexOptions } from '~/hooks';
+import { useChatContext, useToastContext } from '~/Providers';
+import { cn, removeFocusOutlines } from '~/utils/';
 
 export default function ContextButton({
   activeModel,

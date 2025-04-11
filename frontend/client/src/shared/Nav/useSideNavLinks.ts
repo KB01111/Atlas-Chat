@@ -1,5 +1,3 @@
-import { useMemo } from 'react';
-import { MessageSquareQuote, ArrowRightToLine, Settings2, Bookmark } from 'lucide-react';
 import {
   isAssistantsEndpoint,
   isAgentsEndpoint,
@@ -9,14 +7,17 @@ import {
   Permissions,
 } from 'librechat-data-provider';
 import type { TConfig, TInterfaceConfig, TEndpointsConfig } from 'librechat-data-provider';
+import { MessageSquareQuote, ArrowRightToLine, Settings2, Bookmark } from 'lucide-react';
+import { useMemo } from 'react';
+
 import type { NavLink } from '~/common';
 import AgentPanelSwitch from '~/components/SidePanel/Agents/AgentPanelSwitch';
 import BookmarkPanel from '~/components/SidePanel/Bookmarks/BookmarkPanel';
 import PanelSwitch from '~/components/SidePanel/Builder/PanelSwitch';
-import PromptsAccordion from '~/features/prompts/components/Prompts/PromptsAccordion';
-import Parameters from '~/components/SidePanel/Parameters/Panel';
 import FilesPanel from '~/components/SidePanel/Files/Panel';
+import Parameters from '~/components/SidePanel/Parameters/Panel';
 import { Blocks, AttachmentIcon } from '~/components/svg';
+import PromptsAccordion from '~/features/prompts/components/Prompts/PromptsAccordion';
 import { useHasAccess } from '~/hooks';
 
 export default function useSideNavLinks({

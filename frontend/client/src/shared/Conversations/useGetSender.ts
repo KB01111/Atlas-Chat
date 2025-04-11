@@ -1,6 +1,7 @@
-import { useCallback } from 'react';
 import { getResponseSender } from 'librechat-data-provider';
 import type { TEndpointOption, TEndpointsConfig } from 'librechat-data-provider';
+import { useCallback } from 'react';
+
 import { useGetEndpointsQuery } from '~/data-provider';
 
 export default function useGetSender() {

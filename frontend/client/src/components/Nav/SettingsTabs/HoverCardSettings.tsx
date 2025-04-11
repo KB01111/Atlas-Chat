@@ -1,6 +1,7 @@
 import React from 'react';
-import { HoverCard, HoverCardTrigger, HoverCardPortal, HoverCardContent } from '~/components/ui';
+
 import { CircleHelpIcon } from '~/components/svg';
+import { HoverCard, HoverCardTrigger, HoverCardPortal, HoverCardContent } from '~/components/ui';
 import { useLocalize } from '~/hooks';
 
 const HoverCardSettings = ({ side, text }) => {

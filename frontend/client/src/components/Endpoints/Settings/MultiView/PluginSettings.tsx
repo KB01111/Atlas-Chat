@@ -1,7 +1,8 @@
-import Settings from '../Plugins';
-import AgentSettings from '../AgentSettings';
 import { useSetIndexOptions } from '~/hooks';
 import { useChatContext } from '~/Providers';
+
+import AgentSettings from '../AgentSettings';
+import Settings from '../Plugins';
 
 export default function PluginsView({ conversation, models, isPreset = false }) {
   const { showAgentSettings } = useChatContext();

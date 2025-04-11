@@ -1,7 +1,3 @@
-import { useEffect, useState } from 'react';
-import { v4 } from 'uuid';
-import { SSE } from 'sse.js';
-import { useSetRecoilState } from 'recoil';
 import {
   request,
   Constants,
@@ -13,12 +9,18 @@ import {
   isAssistantsEndpoint,
 } from 'librechat-data-provider';
 import type { EventSubmission, TMessage, TPayload, TSubmission } from 'librechat-data-provider';
-import type { EventHandlerParams } from './useEventHandlers';
+import { useEffect, useState } from 'react';
+import { useSetRecoilState } from 'recoil';
+import { SSE } from 'sse.js';
+import { v4 } from 'uuid';
+
 import type { TResData } from '~/common';
 import { useGenTitleMutation, useGetStartupConfig, useGetUserBalance } from '~/data-provider';
 import { useAuthContext } from '~/hooks/AuthContext';
-import useEventHandlers from './useEventHandlers';
 import store from '~/store';
+
+import useEventHandlers from './useEventHandlers';
+import type { EventHandlerParams } from './useEventHandlers';
 
 const clearDraft = (conversationId?: string | null) => {
   if (conversationId) {

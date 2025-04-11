@@ -1,24 +1,25 @@
-import React from 'react';
-import { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
 import { Constants, EModelEndpoint } from 'librechat-data-provider';
-import { useGetModelsQuery } from 'librechat-data-provider/react-query';
 import type { TPreset } from 'librechat-data-provider';
+import { useGetModelsQuery } from 'librechat-data-provider/react-query';
+import React, { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import { useRecoilCallback } from 'recoil';
+
+import { Spinner } from '~/components/svg';
 import {
   useGetConvoIdQuery,
   useHealthCheck,
   useGetEndpointsQuery,
   useGetStartupConfig,
 } from '~/data-provider';
-import { useNewConvo, useAppStartup, useAssistantListMap } from '~/hooks';
-import { getDefaultModelSpec, getModelSpecIconURL } from '~/utils';
-import { ToolCallsMapProvider } from '~/Providers';
 import ChatView from '~/features/chat/components/Chat/ChatView';
-import useAuthRedirect from './useAuthRedirect';
-import temporaryStore from '~/store/temporary';
-import { Spinner } from '~/components/svg';
-import { useRecoilCallback } from 'recoil';
+import { useNewConvo, useAppStartup, useAssistantListMap } from '~/hooks';
+import { ToolCallsMapProvider } from '~/Providers';
 import store from '~/store';
+import temporaryStore from '~/store/temporary';
+import { getDefaultModelSpec, getModelSpecIconURL } from '~/utils';
+
+import useAuthRedirect from './useAuthRedirect';
 
 export default function ChatRoute() {
   useHealthCheck();
@@ -65,12 +66,12 @@ export default function ChatRoute() {
         template: conversation ? conversation : undefined,
         ...(spec
           ? {
-            preset: {
-              ...spec.preset,
-              iconURL: getModelSpecIconURL(spec),
-              spec: spec.name,
-            },
-          }
+              preset: {
+                ...spec.preset,
+                iconURL: getModelSpecIconURL(spec),
+                spec: spec.name,
+              },
+            }
           : {}),
       });
 
@@ -95,12 +96,12 @@ export default function ChatRoute() {
         template: conversation ? conversation : undefined,
         ...(spec
           ? {
-            preset: {
-              ...spec.preset,
-              iconURL: getModelSpecIconURL(spec),
-              spec: spec.name,
-            },
-          }
+              preset: {
+                ...spec.preset,
+                iconURL: getModelSpecIconURL(spec),
+                spec: spec.name,
+              },
+            }
           : {}),
       });
       hasSetConversation.current = true;

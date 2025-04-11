@@ -1,3 +1,5 @@
+import { LocalStorageKeys, Constants } from 'librechat-data-provider';
+import type { TMessage, TPreset, TConversation, TSubmission } from 'librechat-data-provider';
 import { useEffect } from 'react';
 import {
   atom,
@@ -10,8 +12,7 @@ import {
   useSetRecoilState,
   useRecoilCallback,
 } from 'recoil';
-import { LocalStorageKeys, Constants } from 'librechat-data-provider';
-import type { TMessage, TPreset, TConversation, TSubmission } from 'librechat-data-provider';
+
 import type { TOptionSettings, ExtendedFile } from '~/common';
 import { useSetConvoContext } from '~/Providers/SetConvoContext';
 import { storeEndpointSettings, logger } from '~/utils';
@@ -286,10 +287,10 @@ const conversationByKeySelector = selectorFamily({
   key: 'conversationByKeySelector',
   get:
     (index: string | number) =>
-      ({ get }) => {
-        const conversation = get(conversationByIndex(index));
-        return conversation;
-      },
+    ({ get }) => {
+      const conversation = get(conversationByIndex(index));
+      return conversation;
+    },
 });
 
 function useClearSubmissionState() {
@@ -348,24 +349,24 @@ const updateConversationSelector = selectorFamily({
   get: () => () => null as Partial<TConversation> | null,
   set:
     (conversationId: string) =>
-      ({ set, get }, newPartialConversation) => {
-        if (newPartialConversation instanceof DefaultValue) {
-          return;
-        }
+    ({ set, get }, newPartialConversation) => {
+      if (newPartialConversation instanceof DefaultValue) {
+        return;
+      }
 
-        const keys = get(conversationKeysAtom);
-        keys.forEach((key) => {
-          set(conversationByIndex(key), (prevConversation) => {
-            if (prevConversation && prevConversation.conversationId === conversationId) {
-              return {
-                ...prevConversation,
-                ...newPartialConversation,
-              };
-            }
-            return prevConversation;
-          });
+      const keys = get(conversationKeysAtom);
+      keys.forEach((key) => {
+        set(conversationByIndex(key), (prevConversation) => {
+          if (prevConversation && prevConversation.conversationId === conversationId) {
+            return {
+              ...prevConversation,
+              ...newPartialConversation,
+            };
+          }
+          return prevConversation;
         });
-      },
+      });
+    },
 });
 
 export default {

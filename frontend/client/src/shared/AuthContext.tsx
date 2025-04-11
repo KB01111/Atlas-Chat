@@ -1,5 +1,6 @@
-import React from 'react';
-import {
+import { setTokenHeader, SystemRoles } from 'librechat-data-provider';
+import type * as t from 'librechat-data-provider';
+import React, {
   useMemo,
   useState,
   useEffect,
@@ -11,8 +12,8 @@ import {
 } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
-import { setTokenHeader, SystemRoles } from 'librechat-data-provider';
-import type * as t from 'librechat-data-provider';
+
+import { TAuthConfig, TUserContext, TAuthContext, TResError } from '~/common';
 import {
   useGetRole,
   useGetUserQuery,
@@ -20,9 +21,9 @@ import {
   useLogoutUserMutation,
   useRefreshTokenMutation,
 } from '~/data-provider';
-import { TAuthConfig, TUserContext, TAuthContext, TResError } from '~/common';
-import useTimeout from './useTimeout';
 import store from '~/store';
+
+import useTimeout from './useTimeout';
 
 const AuthContext = createContext<TAuthContext | undefined>(undefined);
 

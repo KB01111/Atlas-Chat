@@ -1,6 +1,8 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { BookmarkPlusIcon } from 'lucide-react';
 import type { ConversationTagsResponse } from 'librechat-data-provider';
+import { BookmarkPlusIcon } from 'lucide-react';
+import React, { useCallback, useEffect, useState } from 'react';
+
+import { BookmarkEditDialog } from '~/components/Bookmarks';
 import {
   Table,
   Input,
@@ -12,10 +14,10 @@ import {
   TableHeader,
   OGDialogTrigger,
 } from '~/components/ui';
-import { BookmarkContext, useBookmarkContext } from '~/Providers/BookmarkContext';
-import { BookmarkEditDialog } from '~/components/Bookmarks';
-import BookmarkTableRow from './BookmarkTableRow';
 import { useLocalize } from '~/hooks';
+import { BookmarkContext, useBookmarkContext } from '~/Providers/BookmarkContext';
+
+import BookmarkTableRow from './BookmarkTableRow';
 
 const removeDuplicates = (bookmarks: any[]) => {
   const seen = new Set();

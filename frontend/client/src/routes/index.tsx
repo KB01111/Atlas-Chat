@@ -1,4 +1,5 @@
 import { createBrowserRouter, Navigate, Outlet } from 'react-router-dom';
+
 import {
   Login,
   Registration,
@@ -9,14 +10,15 @@ import {
   TwoFactorScreen,
 } from '~/components/Auth';
 import { AuthContextProvider } from '~/hooks/AuthContext';
-import RouteErrorBoundary from './RouteErrorBoundary';
-import StartupLayout from './Layouts/Startup';
-import LoginLayout from './Layouts/Login';
-import dashboardRoutes from './Dashboard';
-import ShareRoute from './ShareRoute';
+
 import ChatRoute from './ChatRoute';
-import Search from './Search';
+import dashboardRoutes from './Dashboard';
+import LoginLayout from './Layouts/Login';
+import StartupLayout from './Layouts/Startup';
 import Root from './Root';
+import RouteErrorBoundary from './RouteErrorBoundary';
+import Search from './Search';
+import ShareRoute from './ShareRoute';
 
 const AuthLayout = () => (
   <AuthContextProvider>

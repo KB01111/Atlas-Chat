@@ -1,7 +1,8 @@
-import React from 'react';
 import { motion } from 'framer-motion';
-import { Button, InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from '~/components';
 import { REGEXP_ONLY_DIGITS } from 'input-otp';
+import React from 'react';
+
+import { Button, InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from '~/components';
 import { useLocalize } from '~/hooks';
 
 const fadeAnimation = {

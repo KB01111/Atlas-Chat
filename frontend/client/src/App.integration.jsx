@@ -1,20 +1,16 @@
 // This file integrates the pruned frontend with the AtlasChat backend
 // It serves as the main integration point between the frontend and backend
 
-import React, { useEffect, useState } from "react";
-import {
-  Navigate,
-  Route,
-  BrowserRouter as Router,
-  Routes,
-} from "react-router-dom";
-import AgentSelector from "./components/AgentSelector";
+import React, { useEffect, useState } from 'react';
+import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+
+import AgentSelector from './components/AgentSelector';
 // Import components
-import Login from "./components/Auth/Login";
-import Register from "./components/Auth/Register";
-import ChatContainer from "./components/Chat/ChatContainer"; // Corrected import path
-import { ApiProvider } from "./data-provider/simplified-api.tsx"; // Added .tsx extension
-import { useApi } from "./data-provider/simplified-api.tsx"; // Added .tsx extension
+import Login from './components/Auth/Login';
+import Register from './components/Auth/Register';
+import ChatContainer from './components/Chat/ChatContainer'; // Corrected import path
+import { ApiProvider } from './data-provider/simplified-api.tsx'; // Added .tsx extension
+import { useApi } from './data-provider/simplified-api.tsx'; // Added .tsx extension
 
 // Auth provider to handle authentication state
 const AuthProvider = ({ children }) => {
@@ -28,7 +24,7 @@ const AuthProvider = ({ children }) => {
         const user = await api.getCurrentUser();
         setIsAuthenticated(!!user);
       } catch (error) {
-        console.error("Auth check failed:", error);
+        console.error('Auth check failed:', error);
         setIsAuthenticated(false);
       } finally {
         setIsLoading(false);
@@ -49,9 +45,7 @@ const AuthProvider = ({ children }) => {
 const PrivateRoute = ({ element }) => {
   return (
     <AuthProvider>
-      {({ isAuthenticated }) =>
-        isAuthenticated ? element : <Navigate to="/login" />
-      }
+      {({ isAuthenticated }) => (isAuthenticated ? element : <Navigate to="/login" />)}
     </AuthProvider>
   );
 };

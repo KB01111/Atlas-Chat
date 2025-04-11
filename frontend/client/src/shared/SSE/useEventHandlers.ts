@@ -1,7 +1,3 @@
-import { v4 } from 'uuid';
-import { useCallback, useRef } from 'react';
-import { useSetRecoilState } from 'recoil';
-import { useParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import {
   QueryKeys,
@@ -18,9 +14,21 @@ import type {
   EventSubmission,
   ConversationData,
 } from 'librechat-data-provider';
+import { useCallback, useRef } from 'react';
+import { useParams } from 'react-router-dom';
+import { useSetRecoilState } from 'recoil';
 import type { SetterOrUpdater, Resetter } from 'recoil';
+import { v4 } from 'uuid';
+
 import type { TResData, TFinalResData, ConvoGenerator } from '~/common';
+import { MESSAGE_UPDATE_INTERVAL } from '~/common';
 import type { TGenTitleMutation } from '~/data-provider';
+import { useAuthContext } from '~/hooks/AuthContext';
+import useAttachmentHandler from '~/hooks/SSE/useAttachmentHandler';
+import useContentHandler from '~/hooks/SSE/useContentHandler';
+import useStepHandler from '~/hooks/SSE/useStepHandler';
+import { useLiveAnnouncer } from '~/Providers';
+import store from '~/store';
 import {
   scrollToEnd,
   addConversation,
@@ -29,13 +37,6 @@ import {
   updateConversation,
   getConversationById,
 } from '~/utils';
-import useAttachmentHandler from '~/hooks/SSE/useAttachmentHandler';
-import useContentHandler from '~/hooks/SSE/useContentHandler';
-import useStepHandler from '~/hooks/SSE/useStepHandler';
-import { useAuthContext } from '~/hooks/AuthContext';
-import { MESSAGE_UPDATE_INTERVAL } from '~/common';
-import { useLiveAnnouncer } from '~/Providers';
-import store from '~/store';
 
 type TSyncData = {
   sync: boolean;

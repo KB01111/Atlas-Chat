@@ -1,12 +1,16 @@
+import type { TPromptGroup } from 'librechat-data-provider';
 import { useMemo } from 'react';
+import { useForm, useFieldArray, Controller, useWatch } from 'react-hook-form';
+import ReactMarkdown from 'react-markdown';
+import rehypeHighlight from 'rehype-highlight';
+import rehypeKatex from 'rehype-katex';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import supersub from 'remark-supersub';
-import rehypeKatex from 'rehype-katex';
-import ReactMarkdown from 'react-markdown';
-import rehypeHighlight from 'rehype-highlight';
-import { useForm, useFieldArray, Controller, useWatch } from 'react-hook-form';
-import type { TPromptGroup } from 'librechat-data-provider';
+
+import { TextareaAutosize, InputCombobox, Button } from '~/components/ui';
+import { codeNoExecution } from '~/features/chat/components/Chat/Messages/Content/Markdown';
+import { useAuthContext, useLocalize, useSubmitMessage } from '~/hooks';
 import {
   cn,
   wrapVariable,
@@ -14,9 +18,6 @@ import {
   replaceSpecialVars,
   extractVariableInfo,
 } from '~/utils';
-import { codeNoExecution } from '~/features/chat/components/Chat/Messages/Content/Markdown';
-import { TextareaAutosize, InputCombobox, Button } from '~/components/ui';
-import { useAuthContext, useLocalize, useSubmitMessage } from '~/hooks';
 
 type FieldType = 'text' | 'select';
 

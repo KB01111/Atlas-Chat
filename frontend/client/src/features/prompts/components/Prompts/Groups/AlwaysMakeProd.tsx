@@ -1,8 +1,9 @@
 import { useRecoilState } from 'recoil';
+
 import { Switch } from '~/components/ui';
 import { useLocalize } from '~/hooks';
-import { cn } from '~/utils';
 import store from '~/store';
+import { cn } from '~/utils';
 
 export default function AlwaysMakeProd({
   onCheckedChange,

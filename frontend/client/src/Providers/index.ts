@@ -1,5 +1,8 @@
 export const useToastContext = () => {
   return {
-    showToast: (message: string) => {},
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    showToast: (message: string) => {
+      console.warn('showToast not implemented', message);
+    },
   };
 };

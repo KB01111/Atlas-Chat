@@ -1,11 +1,12 @@
-import React from 'react';
-import { Plus, Minus } from 'lucide-react';
-import TextareaAutosize from 'react-textarea-autosize';
 import type { TExample } from 'librechat-data-provider';
+import { Plus, Minus } from 'lucide-react';
+import React from 'react';
+import TextareaAutosize from 'react-textarea-autosize';
+
 import type { TSetExample } from '~/common';
 import { Button, Label } from '~/components/ui';
-import { cn, defaultTextProps } from '~/utils/';
 import { useLocalize } from '~/hooks';
+import { cn, defaultTextProps } from '~/utils/';
 
 type TExamplesProps = {
   readonly?: boolean;

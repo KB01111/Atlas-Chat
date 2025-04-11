@@ -1,6 +1,7 @@
 import React from 'react';
-import CategoryIcon from '~/features/prompts/components/Prompts/Groups/CategoryIcon';
+
 import { Label } from '~/components/ui';
+import CategoryIcon from '~/features/prompts/components/Prompts/Groups/CategoryIcon';
 
 export default function ListCard({
   category,

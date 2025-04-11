@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
-import useGenerateConvo from '~/hooks/Conversations/useGenerateConvo';
+
 import useAddedHelpers from '~/hooks/Chat/useAddedHelpers';
+import useGenerateConvo from '~/hooks/Conversations/useGenerateConvo';
 
 export default function useAddedResponse({ rootIndex }: { rootIndex: number }) {
   const currentIndex = useMemo(() => rootIndex + 1, [rootIndex]);

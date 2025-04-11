@@ -1,9 +1,10 @@
 import 'test/matchMedia.mock';
-import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react';
+import React from 'react';
 import '@testing-library/jest-dom/extend-expect';
-import { LangSelector } from './General';
 import { RecoilRoot } from 'recoil';
+
+import { LangSelector } from './General';
 
 describe('LangSelector', () => {
   let mockOnChange;

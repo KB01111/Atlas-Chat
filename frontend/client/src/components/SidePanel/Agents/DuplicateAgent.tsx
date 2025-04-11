@@ -1,8 +1,9 @@
 import { CopyIcon } from 'lucide-react';
+
 import { useDuplicateAgentMutation } from '~/data-provider';
-import { cn, removeFocusOutlines } from '~/utils';
-import { useToastContext } from '~/Providers';
 import { useLocalize } from '~/hooks';
+import { useToastContext } from '~/Providers';
+import { cn, removeFocusOutlines } from '~/utils';
 
 export default function DuplicateAgent({ agent_id }: { agent_id: string }) {
   const localize = useLocalize();

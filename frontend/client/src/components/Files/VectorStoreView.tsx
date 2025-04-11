@@ -1,8 +1,9 @@
 import React from 'react';
-import VectorStoreSidePanel from './VectorStore/VectorStoreSidePanel';
+import { Outlet, useNavigate, useParams } from 'react-router-dom';
+
 import FilesSectionSelector from './FilesSectionSelector';
 import { Button } from '../ui';
-import { Outlet, useNavigate, useParams } from 'react-router-dom';
+import VectorStoreSidePanel from './VectorStore/VectorStoreSidePanel';
 
 export default function VectorStoreView() {
   const params = useParams();

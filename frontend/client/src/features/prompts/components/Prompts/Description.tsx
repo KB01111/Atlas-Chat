@@ -1,7 +1,8 @@
+import { Info } from 'lucide-react';
 import { useState, useEffect } from 'react';
+
 import { Input } from '~/components/ui';
 import { useLocalize } from '~/hooks';
-import { Info } from 'lucide-react';
 
 const MAX_LENGTH = 120;
 

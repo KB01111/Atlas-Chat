@@ -1,7 +1,8 @@
-import { useCallback } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import type { TMessage } from 'librechat-data-provider';
+import { useCallback } from 'react';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+
 import useChatFunctions from '~/hooks/Chat/useChatFunctions';
 import store from '~/store';
 
@@ -30,14 +31,11 @@ export default function useAddedHelpers({
     store.messagesSiblingIdxFamily(latestMessage?.parentMessageId ?? null),
   );
 
-  const queryParam = paramId === 'new' ? paramId : conversation?.conversationId ?? paramId ?? '';
+  const queryParam = paramId === 'new' ? paramId : (conversation?.conversationId ?? paramId ?? '');
 
   const setMessages = useCallback(
     (messages: TMessage[]) => {
-      queryClient.setQueryData<TMessage[]>(
-        ["messages", queryParam, currentIndex],
-        messages,
-      );
+      queryClient.setQueryData<TMessage[]>(['messages', queryParam, currentIndex], messages);
       const latestMultiMessage = messages[messages.length - 1];
       if (latestMultiMessage) {
         setLatestMultiMessage({ ...latestMultiMessage, depth: -1 });
@@ -47,7 +45,7 @@ export default function useAddedHelpers({
   );
 
   const getMessages = useCallback(() => {
-    return queryClient.getQueryData<TMessage[]>(["messages", queryParam, currentIndex]);
+    return queryClient.getQueryData<TMessage[]>(['messages', queryParam, currentIndex]);
   }, [queryParam, queryClient, currentIndex]);
 
   const setSubmission = useSetRecoilState(store.submissionByIndex(currentIndex));

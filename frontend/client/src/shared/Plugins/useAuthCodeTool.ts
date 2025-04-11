@@ -1,7 +1,7 @@
-import { useCallback } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { AuthType, Tools } from 'librechat-data-provider';
 import { useUpdateUserPluginsMutation } from 'librechat-data-provider/react-query';
+import { useCallback } from 'react';
 // import { useToastContext } from '~/Providers';
 
 const useAuthCodeTool = (options?: { isEntityTool: boolean }) => {
@@ -10,16 +10,16 @@ const useAuthCodeTool = (options?: { isEntityTool: boolean }) => {
   const isEntityTool = options?.isEntityTool ?? true;
   const updateUserPlugins = useUpdateUserPluginsMutation({
     onMutate: (vars) => {
-      queryClient.setQueryData(["toolAuth", Tools.execute_code], () => ({
+      queryClient.setQueryData(['toolAuth', Tools.execute_code], () => ({
         authenticated: vars.action === 'install',
         message: AuthType.USER_PROVIDED,
       }));
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(["toolAuth", Tools.execute_code]);
+      queryClient.invalidateQueries(['toolAuth', Tools.execute_code]);
     },
     onError: () => {
-      queryClient.invalidateQueries(["toolAuth", Tools.execute_code]);
+      queryClient.invalidateQueries(['toolAuth', Tools.execute_code]);
     },
   });
 

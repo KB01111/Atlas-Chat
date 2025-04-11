@@ -1,7 +1,8 @@
-import { useRecoilValue } from 'recoil';
 import { forwardRef, useLayoutEffect, useState } from 'react';
 import ReactTextareaAutosize from 'react-textarea-autosize';
 import type { TextareaAutosizeProps } from 'react-textarea-autosize';
+import { useRecoilValue } from 'recoil';
+
 import store from '~/store';
 
 export const TextareaAutosize = forwardRef<HTMLTextAreaElement, TextareaAutosizeProps>(

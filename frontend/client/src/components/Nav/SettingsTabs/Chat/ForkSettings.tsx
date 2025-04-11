@@ -1,9 +1,11 @@
-import { useRecoilState } from 'recoil';
-import HoverCardSettings from '../HoverCardSettings';
 import { ForkOptions } from 'librechat-data-provider';
+import { useRecoilState } from 'recoil';
+
 import { Dropdown, Switch } from '~/components/ui';
 import { useLocalize } from '~/hooks';
 import store from '~/store';
+
+import HoverCardSettings from '../HoverCardSettings';
 
 export const ForkSettings = () => {
   const localize = useLocalize();

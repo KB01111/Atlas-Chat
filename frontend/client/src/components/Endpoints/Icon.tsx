@@ -1,12 +1,14 @@
-import React, { memo, useState } from 'react';
 import type { TUser } from 'librechat-data-provider';
+import React, { memo, useState } from 'react';
+
 import type { IconProps } from '~/common';
-import MessageEndpointIcon from './MessageEndpointIcon';
+import { UserIcon } from '~/components/svg';
 import { useAuthContext } from '~/hooks/AuthContext';
 import useAvatar from '~/hooks/Messages/useAvatar';
 import useLocalize from '~/hooks/useLocalize';
-import { UserIcon } from '~/components/svg';
 import { cn } from '~/utils';
+
+import MessageEndpointIcon from './MessageEndpointIcon';
 
 type UserAvatarProps = {
   size: number;
@@ -48,15 +50,15 @@ const UserAvatar = memo(({ size, user, avatarSrc, username, className }: UserAva
     >
       {(!(user?.avatar ?? '') && (!(user?.username ?? '') || user?.username.trim() === '')) ||
       imageError ? (
-          renderDefaultAvatar()
-        ) : (
-          <img
-            className="rounded-full"
-            src={(user?.avatar ?? '') || avatarSrc}
-            alt="avatar"
-            onError={handleImageError}
-          />
-        )}
+        renderDefaultAvatar()
+      ) : (
+        <img
+          className="rounded-full"
+          src={(user?.avatar ?? '') || avatarSrc}
+          alt="avatar"
+          onError={handleImageError}
+        />
+      )}
     </div>
   );
 });

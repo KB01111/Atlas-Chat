@@ -1,24 +1,26 @@
 import * as Popover from '@radix-ui/react-popover';
-import { useState, useEffect, useRef } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
+import type { UseMutationResult } from '@tanstack/react-query';
 import {
   fileConfig as defaultFileConfig,
   QueryKeys,
   defaultOrderQuery,
   mergeFileConfig,
 } from 'librechat-data-provider';
-import type { UseMutationResult } from '@tanstack/react-query';
 import type {
   Agent,
   AgentAvatar,
   AgentCreateParams,
   AgentListResponse,
 } from 'librechat-data-provider';
+import { useState, useEffect, useRef } from 'react';
+
 import { useUploadAgentAvatarMutation, useGetFileConfig } from '~/data-provider';
-import { AgentAvatarRender, NoImage, AvatarMenu } from './Images';
-import { useToastContext } from '~/Providers';
 import { useLocalize } from '~/hooks';
+import { useToastContext } from '~/Providers';
 import { formatBytes } from '~/utils';
+
+import { AgentAvatarRender, NoImage, AvatarMenu } from './Images';
 
 function Avatar({
   agent_id = '',

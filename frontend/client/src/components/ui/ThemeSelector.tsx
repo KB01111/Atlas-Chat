@@ -1,5 +1,6 @@
-import React, { useContext, useCallback, useEffect, useState } from 'react';
 import { Sun, Moon, Monitor } from 'lucide-react';
+import React, { useContext, useCallback, useEffect, useState } from 'react';
+
 import { ThemeContext } from '~/hooks';
 
 declare global {

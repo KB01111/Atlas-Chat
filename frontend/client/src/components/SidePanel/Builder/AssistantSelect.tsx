@@ -1,5 +1,4 @@
-import { Plus } from 'lucide-react';
-import { useMemo, useCallback, useEffect, useRef } from 'react';
+import type { UseMutationResult } from '@tanstack/react-query';
 import {
   Tools,
   FileSources,
@@ -9,8 +8,6 @@ import {
   isImageVisionTool,
   defaultAssistantFormValues,
 } from 'librechat-data-provider';
-import type { UseFormReset } from 'react-hook-form';
-import type { UseMutationResult } from '@tanstack/react-query';
 import type {
   TPlugin,
   Assistant,
@@ -18,6 +15,10 @@ import type {
   AssistantsEndpoint,
   AssistantCreateParams,
 } from 'librechat-data-provider';
+import { Plus } from 'lucide-react';
+import { useMemo, useCallback, useEffect, useRef } from 'react';
+import type { UseFormReset } from 'react-hook-form';
+
 import type {
   Actions,
   ExtendedFile,
@@ -28,8 +29,8 @@ import type {
 import SelectDropDown from '~/components/ui/SelectDropDown';
 import { useListAssistantsQuery } from '~/data-provider';
 import { useLocalize, useLocalStorage } from '~/hooks';
-import { cn, createDropdownSetter } from '~/utils';
 import { useFileMapContext } from '~/Providers';
+import { cn, createDropdownSetter } from '~/utils';
 
 const keys = new Set([
   'name',

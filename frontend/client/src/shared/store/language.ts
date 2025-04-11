@@ -1,4 +1,5 @@
 import Cookies from 'js-cookie';
+
 import { atomWithLocalStorage } from './utils';
 
 const defaultLang = () => {

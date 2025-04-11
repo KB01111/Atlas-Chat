@@ -1,8 +1,9 @@
-import React from 'react';
 import { Settings2 } from 'lucide-react';
+import React from 'react';
+
+import { Panel } from '~/common';
 import { Button } from '~/components/ui';
 import { useLocalize } from '~/hooks';
-import { Panel } from '~/common';
 
 interface AdvancedButtonProps {
   setActivePanel: (panel: Panel) => void;

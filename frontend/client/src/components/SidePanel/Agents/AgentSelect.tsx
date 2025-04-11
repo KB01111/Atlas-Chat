@@ -1,14 +1,15 @@
+import type { UseMutationResult, QueryObserverResult } from '@tanstack/react-query';
+import { AgentCapabilities, defaultAgentFormValues } from 'librechat-data-provider';
+import type { Agent, AgentCreateParams } from 'librechat-data-provider';
 import { EarthIcon } from 'lucide-react';
 import { useCallback, useEffect, useRef } from 'react';
 import { useFormContext, Controller } from 'react-hook-form';
-import { AgentCapabilities, defaultAgentFormValues } from 'librechat-data-provider';
-import type { UseMutationResult, QueryObserverResult } from '@tanstack/react-query';
-import type { Agent, AgentCreateParams } from 'librechat-data-provider';
+
 import type { TAgentCapabilities, AgentForm } from '~/common';
-import { useListAgentsQuery, useGetStartupConfig } from '~/data-provider';
-import { cn, createProviderOption, processAgentOption } from '~/utils';
 import ControlCombobox from '~/components/ui/ControlCombobox';
+import { useListAgentsQuery, useGetStartupConfig } from '~/data-provider';
 import { useLocalize } from '~/hooks';
+import { cn, createProviderOption, processAgentOption } from '~/utils';
 
 const keys = new Set(Object.keys(defaultAgentFormValues));
 

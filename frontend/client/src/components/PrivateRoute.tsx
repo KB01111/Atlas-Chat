@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { useSupabase } from '../Providers/SupabaseProvider';
 
 interface Props {

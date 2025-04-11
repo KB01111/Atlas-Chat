@@ -1,5 +1,6 @@
-import React from 'react';
 import * as Select from '@ariakit/react/select';
+import React from 'react';
+
 import type { Option } from '~/common';
 import { cn } from '~/utils/';
 

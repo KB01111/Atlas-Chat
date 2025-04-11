@@ -1,5 +1,3 @@
-import React, { useCallback, useEffect, useRef, useState, memo, useMemo } from 'react';
-import { useVirtualizer } from '@tanstack/react-virtual';
 import {
   Row,
   ColumnDef,
@@ -13,6 +11,14 @@ import {
   getFilteredRowModel,
 } from '@tanstack/react-table';
 import type { Table as TTable } from '@tanstack/react-table';
+import { useVirtualizer } from '@tanstack/react-virtual';
+import React, { useCallback, useEffect, useRef, useState, memo, useMemo } from 'react';
+
+import { LocalizeFunction } from '~/common';
+import { TrashIcon, Spinner } from '~/components/svg';
+import { useLocalize, useMediaQuery } from '~/hooks';
+import { cn } from '~/utils';
+
 import {
   Button,
   Table,
@@ -24,10 +30,6 @@ import {
   TableHeader,
   AnimatedSearchInput,
 } from './';
-import { TrashIcon, Spinner } from '~/components/svg';
-import { useLocalize, useMediaQuery } from '~/hooks';
-import { cn } from '~/utils';
-import { LocalizeFunction } from '~/common';
 
 type TableColumn<TData, TValue> = ColumnDef<TData, TValue> & {
   meta?: {
@@ -178,7 +180,7 @@ const DeleteButton = memo(
     isDeleting: boolean;
     disabled: boolean;
     isSmallScreen: boolean;
-    localize:LocalizeFunction;
+    localize: LocalizeFunction;
   }) => {
     if (!onDelete) {
       return null;

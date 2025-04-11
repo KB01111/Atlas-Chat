@@ -1,5 +1,3 @@
-import { useMemo } from 'react';
-import { useGetModelsQuery } from 'librechat-data-provider/react-query';
 import {
   Permissions,
   alternateName,
@@ -10,7 +8,11 @@ import {
   isAssistantsEndpoint,
 } from 'librechat-data-provider';
 import type { TAssistantsMap, TEndpointsConfig } from 'librechat-data-provider';
+import { useGetModelsQuery } from 'librechat-data-provider/react-query';
+import { useMemo } from 'react';
+
 import type { MentionOption } from '~/common';
+import { EndpointIcon } from '~/components/Endpoints';
 import {
   useGetPresetsQuery,
   useGetEndpointsQuery,
@@ -18,9 +20,8 @@ import {
   useGetStartupConfig,
 } from '~/data-provider';
 import useAssistantListMap from '~/hooks/Assistants/useAssistantListMap';
-import { mapEndpoints, getPresetTitle } from '~/utils';
-import { EndpointIcon } from '~/components/Endpoints';
 import useHasAccess from '~/hooks/Roles/useHasAccess';
+import { mapEndpoints, getPresetTitle } from '~/utils';
 
 const defaultInterface = getConfigDefaults().interface;
 
@@ -34,20 +35,20 @@ const assistantMapFn =
     assistantMap: TAssistantsMap;
     endpointsConfig: TEndpointsConfig;
   }) =>
-    ({ id, name, description }) => ({
-      type: endpoint,
-      label: name ?? '',
-      value: id,
-      description: description ?? '',
-      icon: EndpointIcon({
-        conversation: { assistant_id: id, endpoint },
-        containerClassName: 'shadow-stroke overflow-hidden rounded-full',
-        endpointsConfig: endpointsConfig,
-        context: 'menu-item',
-        assistantMap,
-        size: 20,
-      }),
-    });
+  ({ id, name, description }) => ({
+    type: endpoint,
+    label: name ?? '',
+    value: id,
+    description: description ?? '',
+    icon: EndpointIcon({
+      conversation: { assistant_id: id, endpoint },
+      containerClassName: 'shadow-stroke overflow-hidden rounded-full',
+      endpointsConfig: endpointsConfig,
+      context: 'menu-item',
+      assistantMap,
+      size: 20,
+    }),
+  });
 
 export default function useMentions({
   assistantMap,

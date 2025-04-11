@@ -1,11 +1,12 @@
 import React, { useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
-import { DeleteBookmarkButton, EditBookmarkButton } from '~/components/Bookmarks';
-import { useConversationTagMutation } from '~/data-provider';
-import { TableRow, TableCell } from '~/components/ui';
+
 import { NotificationSeverity } from '~/common';
-import { useToastContext } from '~/Providers';
+import { DeleteBookmarkButton, EditBookmarkButton } from '~/components/Bookmarks';
+import { TableRow, TableCell } from '~/components/ui';
+import { useConversationTagMutation } from '~/data-provider';
 import { useLocalize } from '~/hooks';
+import { useToastContext } from '~/Providers';
 
 interface BookmarkTableRowProps {
   row: any;
@@ -43,7 +44,9 @@ const BookmarkTableRow: React.FC<BookmarkTableRowProps> = ({ row, moveRow, posit
     accept: 'bookmark',
     drop: handleDrop,
     hover(item: DragItem) {
-      if (!ref.current || item.index === position) {return;}
+      if (!ref.current || item.index === position) {
+        return;
+      }
       moveRow(item.index, position);
       item.index = position;
     },

@@ -1,8 +1,9 @@
-import { useState } from 'react';
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
+import { useState } from 'react';
+
 import type { NavLink, NavProps } from '~/common';
-import { Accordion, AccordionItem, AccordionContent } from '~/components/ui/Accordion';
 import { TooltipAnchor, Button } from '~/components';
+import { Accordion, AccordionItem, AccordionContent } from '~/components/ui/Accordion';
 import { useLocalize } from '~/hooks';
 import { cn } from '~/utils';
 

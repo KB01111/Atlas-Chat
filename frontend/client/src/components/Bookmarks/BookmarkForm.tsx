@@ -1,15 +1,16 @@
+import { useQueryClient } from '@tanstack/react-query';
+import { useConversationTagMutation } from 'librechat-data-provider';
 import * as React from 'react';
 import { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { useQueryClient } from '@tanstack/react-query';
+
 import { Checkbox, Label, TextareaAutosize, Input } from '~/components/ui';
-import { useBookmarkContext } from '../../shared/Providers/BookmarkContext';
-import { useConversationTagMutation } from 'librechat-data-provider';
-import { useToastContext } from '~/Providers';
 import { useLocalize } from '~/hooks';
+import { useToastContext } from '~/Providers';
 import { cn, logger } from '~/utils';
 
 import type { Bookmark } from './types';
+import { useBookmarkContext } from '../../shared/Providers/BookmarkContext';
 
 type TBookmarkFormProps = {
   tags?: string[];
@@ -67,8 +68,7 @@ const BookmarkForm = ({
       showToast(localize('com_ui_bookmarks_create_exists'));
       return;
     }
-    const allTags =
-      queryClient.getQueryData<any[]>(["conversationTags"]) ?? [];
+    const allTags = queryClient.getQueryData<any[]>(['conversationTags']) ?? [];
     if (allTags.some((tag: { tag: string }) => tag.tag === data.tag)) {
       showToast(localize('com_ui_bookmarks_create_exists'));
       return;
@@ -112,9 +112,12 @@ const BookmarkForm = ({
             aria-invalid={!!errors.tag}
             placeholder="Bookmark"
           />
-          {typeof errors.tag === 'object' && errors.tag !== null && 'message' in errors.tag && typeof errors.tag.message === 'string' && (
-            <span className="text-sm text-red-500">{errors.tag.message}</span>
-          )}
+          {typeof errors.tag === 'object' &&
+            errors.tag !== null &&
+            'message' in errors.tag &&
+            typeof errors.tag.message === 'string' && (
+              <span className="text-sm text-red-500">{errors.tag.message}</span>
+            )}
         </div>
 
         <div className="mt-4 grid w-full items-center gap-2">

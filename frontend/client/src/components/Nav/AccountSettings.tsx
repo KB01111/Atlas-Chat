@@ -1,16 +1,18 @@
-import { useState, memo } from 'react';
-import { useRecoilState } from 'recoil';
 import * as Select from '@ariakit/react/select';
 import { FileText, LogOut } from 'lucide-react';
+import { useState, memo } from 'react';
+import { useRecoilState } from 'recoil';
+
 import { LinkIcon, GearIcon, DropdownMenuSeparator } from '~/components';
+import { UserIcon } from '~/components/svg';
 import { useGetStartupConfig, useGetUserBalance } from '~/data-provider';
 import FilesView from '~/features/chat/components/Chat/Input/Files/FilesView';
+import { useLocalize } from '~/hooks';
 import { useAuthContext } from '~/hooks/AuthContext';
 import useAvatar from '~/hooks/Messages/useAvatar';
-import { UserIcon } from '~/components/svg';
-import { useLocalize } from '~/hooks';
-import Settings from './Settings';
 import store from '~/store';
+
+import Settings from './Settings';
 
 function AccountSettings() {
   const localize = useLocalize();
@@ -78,13 +80,13 @@ function AccountSettings() {
         {startupConfig?.balance?.enabled === true &&
           balanceQuery.data != null &&
           !isNaN(parseFloat(balanceQuery.data)) && (
-          <>
-            <div className="text-token-text-secondary ml-3 mr-2 py-2 text-sm" role="note">
-              {localize('com_nav_balance')}: {parseFloat(balanceQuery.data).toFixed(2)}
-            </div>
-            <DropdownMenuSeparator />
-          </>
-        )}
+            <>
+              <div className="text-token-text-secondary ml-3 mr-2 py-2 text-sm" role="note">
+                {localize('com_nav_balance')}: {parseFloat(balanceQuery.data).toFixed(2)}
+              </div>
+              <DropdownMenuSeparator />
+            </>
+          )}
         <Select.SelectItem
           value=""
           onClick={() => setShowFiles(true)}

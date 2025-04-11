@@ -1,7 +1,8 @@
-import { useEffect } from 'react';
 import { TOptions } from 'i18next';
-import { useRecoilValue } from 'recoil';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useRecoilValue } from 'recoil';
+
 import { resources } from '~/locales/i18n';
 import store from '~/store';
 

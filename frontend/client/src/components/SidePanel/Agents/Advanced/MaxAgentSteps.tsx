@@ -1,5 +1,8 @@
 import { useFormContext, Controller } from 'react-hook-form';
+
 import type { AgentForm } from '~/common';
+import { ESide } from '~/common';
+import { CircleHelpIcon } from '~/components/svg';
 import {
   HoverCard,
   FormInput,
@@ -7,9 +10,7 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from '~/components/ui';
-import { CircleHelpIcon } from '~/components/svg';
 import { useLocalize } from '~/hooks';
-import { ESide } from '~/common';
 
 export default function AdvancedPanel() {
   const localize = useLocalize();

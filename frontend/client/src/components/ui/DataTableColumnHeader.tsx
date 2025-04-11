@@ -2,6 +2,7 @@ import { ArrowDownIcon, ArrowUpIcon, CaretSortIcon, EyeNoneIcon } from '@radix-u
 import { Column } from '@tanstack/react-table';
 
 import { cn } from '~/utils';
+
 import { Button } from './Button';
 import {
   DropdownMenu,

@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
-import { useSupabase } from '../Providers/SupabaseProvider';
 import { useNavigate } from 'react-router-dom';
+
+import { useSupabase } from '../Providers/SupabaseProvider';
 
 const Register: React.FC = () => {
   const { supabase } = useSupabase();
@@ -107,12 +108,7 @@ const Register: React.FC = () => {
         Register with GitHub
       </button>
       {error && (
-        <p
-          ref={errorRef}
-          style={{ color: 'red' }}
-          role="alert"
-          tabIndex={-1}
-        >
+        <p ref={errorRef} style={{ color: 'red' }} role="alert" tabIndex={-1}>
           {error}
         </p>
       )}

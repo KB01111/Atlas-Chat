@@ -1,11 +1,12 @@
-import { useMemo } from 'react';
 import type { TTermsOfService } from 'librechat-data-provider';
+import { useMemo } from 'react';
+
 import MarkdownLite from '~/components/Chat/Messages/Content/MarkdownLite';
+import { OGDialog } from '~/components/ui';
 import DialogTemplate from '~/components/ui/DialogTemplate';
 import { useAcceptTermsMutation } from '~/data-provider';
-import { useToastContext } from '~/Providers';
-import { OGDialog } from '~/components/ui';
 import { useLocalize } from '~/hooks';
+import { useToastContext } from '~/Providers';
 
 const TermsAndConditionsModal = ({
   open,

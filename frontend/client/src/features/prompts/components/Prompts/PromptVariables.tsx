@@ -1,10 +1,12 @@
-import React, { useMemo } from 'react';
 import { Variable } from 'lucide-react';
+import React, { useMemo } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { cn, extractUniqueVariables } from '~/utils';
-import { CodeVariableGfm } from './Markdown';
+
 import { Separator } from '~/components/ui';
 import { useLocalize } from '~/hooks';
+import { cn, extractUniqueVariables } from '~/utils';
+
+import { CodeVariableGfm } from './Markdown';
 
 const specialVariables = {
   current_date: true,

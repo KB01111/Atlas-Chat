@@ -1,10 +1,14 @@
+import type { TMessage } from 'librechat-data-provider';
 import { useEffect } from 'react';
 import { useRecoilState } from 'recoil';
-import type { TMessage } from 'librechat-data-provider';
+
 import type { TMessageProps } from '~/common';
+
 // eslint-disable-next-line import/no-cycle
-import Message from './Message';
+
 import store from '~/store';
+
+import Message from './Message';
 
 export default function MultiMessage({
   // messageId is used recursively here

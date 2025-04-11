@@ -1,8 +1,9 @@
-import React, { useEffect, useMemo } from 'react';
-import { Share2Icon } from 'lucide-react';
-import { useForm, Controller } from 'react-hook-form';
 import { Permissions } from 'librechat-data-provider';
 import type { TStartupConfig, AgentUpdateParams } from 'librechat-data-provider';
+import { Share2Icon } from 'lucide-react';
+import React, { useEffect, useMemo } from 'react';
+import { useForm, Controller } from 'react-hook-form';
+
 import {
   Button,
   Switch,
@@ -13,9 +14,9 @@ import {
   OGDialogTrigger,
 } from '~/components/ui';
 import { useUpdateAgentMutation, useGetStartupConfig } from '~/data-provider';
-import { cn, removeFocusOutlines } from '~/utils';
-import { useToastContext } from '~/Providers';
 import { useLocalize } from '~/hooks';
+import { useToastContext } from '~/Providers';
+import { cn, removeFocusOutlines } from '~/utils';
 
 type FormValues = {
   [Permissions.SHARED_GLOBAL]: boolean;
@@ -135,10 +136,9 @@ export default function ShareAgent({
             'btn btn-neutral border-token-border-light relative h-9 rounded-lg font-medium',
             removeFocusOutlines,
           )}
-          aria-label={localize(
-            'com_ui_share_var',
-            { 0: agentName != null && agentName !== '' ? `"${agentName}"` : localize('com_ui_agent') },
-          )}
+          aria-label={localize('com_ui_share_var', {
+            0: agentName != null && agentName !== '' ? `"${agentName}"` : localize('com_ui_agent'),
+          })}
           type="button"
         >
           <div className="flex items-center justify-center gap-2 text-blue-500">
@@ -148,10 +148,9 @@ export default function ShareAgent({
       </OGDialogTrigger>
       <OGDialogContent className="w-11/12 md:max-w-xl">
         <OGDialogTitle>
-          {localize(
-            'com_ui_share_var',
-            { 0: agentName != null && agentName !== '' ? `"${agentName}"` : localize('com_ui_agent') },
-          )}
+          {localize('com_ui_share_var', {
+            0: agentName != null && agentName !== '' ? `"${agentName}"` : localize('com_ui_agent'),
+          })}
         </OGDialogTitle>
         <form
           className="p-2"

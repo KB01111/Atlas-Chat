@@ -1,4 +1,3 @@
-import React, { useRef } from 'react';
 import {
   Label,
   Listbox,
@@ -7,11 +6,14 @@ import {
   ListboxOption,
   ListboxOptions,
 } from '@headlessui/react';
+import React, { useRef } from 'react';
+
 import type { Option, OptionWithIcon, DropdownValueSetter } from '~/common';
 import CheckMark from '~/components/svg/CheckMark';
-import { useMultiSearch } from './MultiSearch';
 import { useLocalize } from '~/hooks';
 import { cn } from '~/utils/';
+
+import { useMultiSearch } from './MultiSearch';
 
 type SelectDropDownProps = {
   id?: string;

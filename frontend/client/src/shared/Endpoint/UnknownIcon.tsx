@@ -1,7 +1,8 @@
-import { memo } from 'react';
 import { EModelEndpoint, KnownEndpoints } from 'librechat-data-provider';
-import { CustomMinimalIcon } from '~/components/svg';
+import { memo } from 'react';
+
 import { IconContext } from '~/common';
+import { CustomMinimalIcon } from '~/components/svg';
 import { cn } from '~/utils';
 
 const knownEndpointAssets = {

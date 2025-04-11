@@ -1,16 +1,18 @@
+import { SystemRoles, Permissions, PermissionTypes } from 'librechat-data-provider';
 import React from 'react';
 import { useWatch, useFormContext } from 'react-hook-form';
-import { SystemRoles, Permissions, PermissionTypes } from 'librechat-data-provider';
+
 import type { AgentForm, AgentPanelProps } from '~/common';
-import { useLocalize, useAuthContext, useHasAccess } from '~/hooks';
-import { useUpdateAgentMutation } from '~/data-provider';
-import AdvancedButton from './Advanced/AdvancedButton';
-import DuplicateAgent from './DuplicateAgent';
-import AdminSettings from './AdminSettings';
-import DeleteButton from './DeleteButton';
-import { Spinner } from '~/components';
-import ShareAgent from './ShareAgent';
 import { Panel } from '~/common';
+import { Spinner } from '~/components';
+import { useUpdateAgentMutation } from '~/data-provider';
+import { useLocalize, useAuthContext, useHasAccess } from '~/hooks';
+
+import AdminSettings from './AdminSettings';
+import AdvancedButton from './Advanced/AdvancedButton';
+import DeleteButton from './DeleteButton';
+import DuplicateAgent from './DuplicateAgent';
+import ShareAgent from './ShareAgent';
 
 export default function AgentFooter({
   activePanel,
@@ -63,13 +65,13 @@ export default function AgentFooter({
         />
         {(agent?.author === user?.id || user?.role === SystemRoles.ADMIN) &&
           hasAccessToShareAgents && (
-          <ShareAgent
-            agent_id={agent_id}
-            agentName={agent?.name ?? ''}
-            projectIds={agent?.projectIds ?? []}
-            isCollaborative={agent?.isCollaborative}
-          />
-        )}
+            <ShareAgent
+              agent_id={agent_id}
+              agentName={agent?.name ?? ''}
+              projectIds={agent?.projectIds ?? []}
+              isCollaborative={agent?.isCollaborative}
+            />
+          )}
         {agent && agent.author === user?.id && <DuplicateAgent agent_id={agent_id} />}
         {/* Submit Button */}
         <button

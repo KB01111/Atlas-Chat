@@ -1,14 +1,14 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useApi } from "librechat-data-provider";
+import { useApi } from 'librechat-data-provider';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // Simplified registration component that works with our custom backend
 const Register = () => {
-  const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState("");
+  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
@@ -19,18 +19,18 @@ const Register = () => {
 
     // Basic validation
     if (!email || !username || !password) {
-      setError("All fields are required");
+      setError('All fields are required');
       return;
     }
 
     if (password !== confirmPassword) {
-      setError("Passwords do not match");
+      setError('Passwords do not match');
       return;
     }
 
     try {
       setLoading(true);
-      setError("");
+      setError('');
 
       // Call the register method from our simplified API
       const response = await api.register({
@@ -41,11 +41,11 @@ const Register = () => {
 
       // If registration successful, redirect to login page
       if (response?.user_id) {
-        navigate("/login");
+        navigate('/login');
       }
     } catch (err) {
-      console.error("Registration error:", err);
-      setError("Registration failed. Please try again.");
+      console.error('Registration error:', err);
+      setError('Registration failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -64,10 +64,7 @@ const Register = () => {
           {error && <div className="text-red-500 text-sm">{error}</div>}
 
           <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium leading-6 text-gray-900"
-            >
+            <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
               Email address
             </label>
             <div className="mt-2">
@@ -85,10 +82,7 @@ const Register = () => {
           </div>
 
           <div>
-            <label
-              htmlFor="username"
-              className="block text-sm font-medium leading-6 text-gray-900"
-            >
+            <label htmlFor="username" className="block text-sm font-medium leading-6 text-gray-900">
               Username
             </label>
             <div className="mt-2">
@@ -106,10 +100,7 @@ const Register = () => {
           </div>
 
           <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium leading-6 text-gray-900"
-            >
+            <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
               Password
             </label>
             <div className="mt-2">
@@ -153,13 +144,13 @@ const Register = () => {
               disabled={loading}
               className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:bg-indigo-400"
             >
-              {loading ? "Creating account..." : "Register"}
+              {loading ? 'Creating account...' : 'Register'}
             </button>
           </div>
         </form>
 
         <p className="mt-10 text-center text-sm text-gray-500">
-          Already have an account?{" "}
+          Already have an account?{' '}
           <a
             href="/login"
             className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"

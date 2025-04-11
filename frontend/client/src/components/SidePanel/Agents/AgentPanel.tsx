@@ -1,7 +1,3 @@
-import { Plus } from 'lucide-react';
-import React, { useMemo, useCallback } from 'react';
-import { useWatch, useForm, FormProvider } from 'react-hook-form';
-import { useGetModelsQuery } from 'librechat-data-provider/react-query';
 import {
   Tools,
   SystemRoles,
@@ -9,23 +5,29 @@ import {
   isAssistantsEndpoint,
   defaultAgentFormValues,
 } from 'librechat-data-provider';
+import { useGetModelsQuery } from 'librechat-data-provider/react-query';
+import { Plus } from 'lucide-react';
+import React, { useMemo, useCallback } from 'react';
+import { useWatch, useForm, FormProvider } from 'react-hook-form';
+
 import type { AgentForm, AgentPanelProps, StringOption } from '~/common';
+import { Panel } from '~/common';
+import { Button } from '~/components';
 import {
   useCreateAgentMutation,
   useUpdateAgentMutation,
   useGetAgentByIdQuery,
 } from '~/data-provider';
 import { useSelectAgent, useLocalize, useAuthContext } from '~/hooks';
-import AgentPanelSkeleton from './AgentPanelSkeleton';
-import { createProviderOption } from '~/utils';
 import { useToastContext } from '~/Providers';
+import { createProviderOption } from '~/utils';
+
 import AdvancedPanel from './Advanced/AdvancedPanel';
 import AgentConfig from './AgentConfig';
-import AgentSelect from './AgentSelect';
 import AgentFooter from './AgentFooter';
-import { Button } from '~/components';
+import AgentPanelSkeleton from './AgentPanelSkeleton';
+import AgentSelect from './AgentSelect';
 import ModelPanel from './ModelPanel';
-import { Panel } from '~/common';
 
 export default function AgentPanel({
   setAction,

@@ -1,4 +1,8 @@
 import { forwardRef, ReactNode, Ref } from 'react';
+
+import { useLocalize } from '~/hooks';
+import { cn } from '~/utils/';
+
 import {
   OGDialogTitle,
   OGDialogClose,
@@ -7,9 +11,7 @@ import {
   OGDialogContent,
   OGDialogDescription,
 } from './OriginalDialog';
-import { useLocalize } from '~/hooks';
 import { Spinner } from '../svg';
-import { cn } from '~/utils/';
 
 type SelectionProps = {
   selectHandler?: () => void;

@@ -1,5 +1,5 @@
-import { RefObject, useCallback } from 'react';
 import throttle from 'lodash/throttle';
+import { RefObject, useCallback } from 'react';
 
 type TUseScrollToRef = {
   targetRef: RefObject<HTMLDivElement>;

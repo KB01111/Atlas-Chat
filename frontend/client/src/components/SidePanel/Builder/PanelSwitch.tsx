@@ -1,16 +1,18 @@
-import { useState, useEffect, useMemo } from 'react';
 import { defaultAssistantsVersion } from 'librechat-data-provider';
 import type { Action, TEndpointsConfig, AssistantsEndpoint } from 'librechat-data-provider';
+import { useState, useEffect, useMemo } from 'react';
+
 import type { ActionsEndpoint } from '~/common';
+import { Panel } from '~/common';
 import {
   useGetActionsQuery,
   useGetEndpointsQuery,
   useGetAssistantDocsQuery,
 } from '~/data-provider';
-import AssistantPanel from './AssistantPanel';
 import { useChatContext } from '~/Providers';
+
 import ActionsPanel from './ActionsPanel';
-import { Panel } from '~/common';
+import AssistantPanel from './AssistantPanel';
 
 export default function PanelSwitch() {
   const { conversation, index } = useChatContext();

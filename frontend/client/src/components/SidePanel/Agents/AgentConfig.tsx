@@ -1,23 +1,31 @@
-import React, { useState, useMemo, useCallback } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { Controller, useWatch, useFormContext } from 'react-hook-form';
 import { EModelEndpoint, AgentCapabilities } from 'librechat-data-provider';
 import type { TPlugin } from 'librechat-data-provider';
+import React, { useState, useMemo, useCallback } from 'react';
+import { Controller, useWatch, useFormContext } from 'react-hook-form';
+
 import type { AgentForm, AgentPanelProps, IconComponentTypes } from '~/common';
-import { cn, defaultTextProps, removeFocusOutlines, getEndpointField, getIconKey } from '~/utils';
-import { useToastContext, useFileMapContext } from '~/Providers';
+import { Panel } from '~/common';
 import Action from '~/components/SidePanel/Builder/Action';
 import { ToolSelectDialog } from '~/components/Tools';
-import { icons } from '~/hooks/Endpoint/Icons';
-import { processAgentOption } from '~/utils';
-import AgentAvatar from './AgentAvatar';
-import FileContext from './FileContext';
 import { useLocalize } from '~/hooks';
-import FileSearch from './FileSearch';
-import Artifacts from './Artifacts';
+import { icons } from '~/hooks/Endpoint/Icons';
+import { useToastContext, useFileMapContext } from '~/Providers';
+import {
+  processAgentOption,
+  cn,
+  defaultTextProps,
+  removeFocusOutlines,
+  getEndpointField,
+  getIconKey,
+} from '~/utils';
+
+import AgentAvatar from './AgentAvatar';
 import AgentTool from './AgentTool';
+import Artifacts from './Artifacts';
 import CodeForm from './Code/Form';
-import { Panel } from '~/common';
+import FileContext from './FileContext';
+import FileSearch from './FileSearch';
 
 const labelClass = 'mb-2 text-token-text-primary block font-medium';
 const inputClass = cn(
@@ -37,7 +45,7 @@ export default function AgentConfig({
   const fileMap = useFileMapContext();
   const queryClient = useQueryClient();
 
-  const allTools = queryClient.getQueryData<TPlugin[]>(["tools"]) ?? [];
+  const allTools = queryClient.getQueryData<TPlugin[]>(['tools']) ?? [];
   const { showToast } = useToastContext();
   const localize = useLocalize();
 

@@ -1,8 +1,9 @@
 import { useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
+
+import List from '~/features/prompts/components/Prompts/Groups/List';
 import PanelNavigation from '~/features/prompts/components/Prompts/Groups/PanelNavigation';
 import { useMediaQuery, usePromptGroupsNav } from '~/hooks';
-import List from '~/features/prompts/components/Prompts/Groups/List';
 import { cn } from '~/utils';
 
 export default function GroupSidePanel({

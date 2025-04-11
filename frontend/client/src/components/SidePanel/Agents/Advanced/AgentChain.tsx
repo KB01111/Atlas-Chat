@@ -1,16 +1,17 @@
-import { X, Link2, PlusCircle } from 'lucide-react';
 import { EModelEndpoint } from 'librechat-data-provider';
+import type { TMessage } from 'librechat-data-provider';
+import { X, Link2, PlusCircle } from 'lucide-react';
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import type { ControllerRenderProps } from 'react-hook-form';
-import type { TMessage } from 'librechat-data-provider';
+
 import type { AgentForm, OptionWithIcon } from '~/common';
-import ControlCombobox from '~/components/ui/ControlCombobox';
-import { HoverCard, HoverCardPortal, HoverCardContent, HoverCardTrigger } from '~/components/ui';
+import { ESide } from '~/common';
 import MessageIcon from '~/components/Share/MessageIcon';
 import { CircleHelpIcon } from '~/components/svg';
-import { useAgentsMapContext } from '~/Providers';
+import { HoverCard, HoverCardPortal, HoverCardContent, HoverCardTrigger } from '~/components/ui';
+import ControlCombobox from '~/components/ui/ControlCombobox';
 import { useLocalize } from '~/hooks';
-import { ESide } from '~/common';
+import { useAgentsMapContext } from '~/Providers';
 
 interface AgentChainProps {
   field: ControllerRenderProps<AgentForm, 'agent_ids'>;

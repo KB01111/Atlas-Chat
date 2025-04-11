@@ -1,4 +1,5 @@
 import { atom } from 'recoil';
+
 import { NotificationSeverity } from '~/common';
 
 const toastState = atom({

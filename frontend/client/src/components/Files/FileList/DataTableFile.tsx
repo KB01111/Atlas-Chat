@@ -1,5 +1,3 @@
-import * as React from 'react';
-import { ListFilter } from 'lucide-react';
 import {
   flexRender,
   getCoreRowModel,
@@ -15,8 +13,12 @@ import type {
   ColumnFiltersState,
 } from '@tanstack/react-table';
 import { FileContext } from 'librechat-data-provider';
-import type { AugmentedColumnDef } from '~/common';
 import type { TFile } from 'librechat-data-provider';
+import { ListFilter } from 'lucide-react';
+import * as React from 'react';
+
+import type { AugmentedColumnDef } from '~/common';
+import { TrashIcon, Spinner } from '~/components/svg';
 import {
   Button,
   Input,
@@ -32,10 +34,10 @@ import {
   DropdownMenuTrigger,
 } from '~/components/ui';
 import { useDeleteFilesFromTable } from '~/hooks/Files';
-import { TrashIcon, Spinner } from '~/components/svg';
 import useLocalize from '~/hooks/useLocalize';
-import ActionButton from '../ActionButton';
+
 import UploadFileButton from './UploadFileButton';
+import ActionButton from '../ActionButton';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -243,12 +245,10 @@ export default function DataTableFile<TData, TValue>({
       </div>
       <div className="ml-4 mr-4 mt-4 flex h-auto items-center justify-end space-x-2 py-4 sm:ml-0 sm:mr-0 sm:h-0">
         <div className="text-muted-foreground ml-2 flex-1 text-sm">
-          {localize(
-            'com_files_number_selected', {
-              0: `${table.getFilteredSelectedRowModel().rows.length}`,
-              1: `${table.getFilteredRowModel().rows.length}`,
-            },
-          )}
+          {localize('com_files_number_selected', {
+            0: `${table.getFilteredSelectedRowModel().rows.length}`,
+            1: `${table.getFilteredRowModel().rows.length}`,
+          })}
         </div>
         <Button
           className="dark:border-gray-500 dark:hover:bg-gray-600"

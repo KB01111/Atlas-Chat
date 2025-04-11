@@ -1,14 +1,16 @@
-import { useRecoilState } from 'recoil';
 import Cookies from 'js-cookie';
 import React, { useContext, useCallback } from 'react';
-import UserMsgMarkdownSwitch from './UserMsgMarkdownSwitch';
-import HideSidePanelSwitch from './HideSidePanelSwitch';
-import { ThemeContext, useLocalize } from '~/hooks';
-import AutoScrollSwitch from './AutoScrollSwitch';
-import ArchivedChats from './ArchivedChats';
-import ToggleSwitch from '../ToggleSwitch';
+import { useRecoilState } from 'recoil';
+
 import { Dropdown } from '~/components';
+import { ThemeContext, useLocalize } from '~/hooks';
 import store from '~/store';
+
+import ArchivedChats from './ArchivedChats';
+import AutoScrollSwitch from './AutoScrollSwitch';
+import HideSidePanelSwitch from './HideSidePanelSwitch';
+import UserMsgMarkdownSwitch from './UserMsgMarkdownSwitch';
+import ToggleSwitch from '../ToggleSwitch';
 
 const toggleSwitchConfigs = [
   {

@@ -1,23 +1,25 @@
-import { useMemo, memo } from 'react';
-import { useRecoilValue } from 'recoil';
 import { EditIcon } from 'lucide-react';
-import type { PluggableList } from 'unified';
-import rehypeHighlight from 'rehype-highlight';
+import { useMemo, memo } from 'react';
 import { Controller, useFormContext, useFormState } from 'react-hook-form';
-import remarkGfm from 'remark-gfm';
+import ReactMarkdown from 'react-markdown';
+import { useRecoilValue } from 'recoil';
+import rehypeHighlight from 'rehype-highlight';
 import rehypeKatex from 'rehype-katex';
+import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import supersub from 'remark-supersub';
-import ReactMarkdown from 'react-markdown';
-import { codeNoExecution } from '~/features/chat/components/Chat/Messages/Content/Markdown';
-import AlwaysMakeProd from '~/features/prompts/components/Prompts/Groups/AlwaysMakeProd';
+import type { PluggableList } from 'unified';
+
+import { PromptsEditorMode } from '~/common';
 import { SaveIcon, CrossIcon } from '~/components/svg';
 import { TextareaAutosize } from '~/components/ui';
-import { PromptVariableGfm } from './Markdown';
-import { PromptsEditorMode } from '~/common';
-import { cn, langSubset } from '~/utils';
+import { codeNoExecution } from '~/features/chat/components/Chat/Messages/Content/Markdown';
+import AlwaysMakeProd from '~/features/prompts/components/Prompts/Groups/AlwaysMakeProd';
 import { useLocalize } from '~/hooks';
 import store from '~/store';
+import { cn, langSubset } from '~/utils';
+
+import { PromptVariableGfm } from './Markdown';
 
 const { promptsEditorMode } = store;
 

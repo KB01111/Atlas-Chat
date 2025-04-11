@@ -1,5 +1,6 @@
-import React from 'react';
 import * as Ariakit from '@ariakit/react';
+import React from 'react';
+
 import type { OptionWithIcon } from '~/common';
 import { cn } from '~/utils';
 

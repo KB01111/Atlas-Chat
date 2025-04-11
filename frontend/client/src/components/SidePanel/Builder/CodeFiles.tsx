@@ -1,13 +1,14 @@
-import { useState, useRef, useEffect } from 'react';
 import {
   EToolResources,
   mergeFileConfig,
   fileConfig as defaultFileConfig,
 } from 'librechat-data-provider';
 import type { AssistantsEndpoint, EndpointFileConfig } from 'librechat-data-provider';
+import { useState, useRef, useEffect } from 'react';
+
 import type { ExtendedFile } from '~/common';
-import FileRow from '~/features/chat/components/Chat/Input/Files/FileRow';
 import { useGetFileConfig } from '~/data-provider';
+import FileRow from '~/features/chat/components/Chat/Input/Files/FileRow';
 import { useFileHandling } from '~/hooks/Files';
 import useLocalize from '~/hooks/useLocalize';
 import { useChatContext } from '~/Providers';

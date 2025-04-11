@@ -1,9 +1,9 @@
-import React from 'react';
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
+
 import MinimalMessagesWrapper from '~/features/chat/components/Chat/Messages/MinimalMessages';
 import SearchMessage from '~/features/chat/components/Chat/Messages/SearchMessage';
-import { useSearchContext, useFileMapContext } from '~/Providers';
 import { useNavScrolling, useLocalize } from '~/hooks';
+import { useSearchContext, useFileMapContext } from '~/Providers';
 import { buildTree } from '~/utils';
 
 export default function Search() {
@@ -21,7 +21,7 @@ export default function Search() {
   const messages = useMemo(() => {
     const msgs = searchQueryRes?.data?.pages.flatMap((page) => page.messages) || [];
     const dataTree = buildTree({ messages: msgs, fileMap });
-    return dataTree?.length === 0 ? null : dataTree ?? null;
+    return dataTree?.length === 0 ? null : (dataTree ?? null);
   }, [fileMap, searchQueryRes?.data?.pages]);
 
   if (!searchQuery || !searchQueryRes?.data) {

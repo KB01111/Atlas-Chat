@@ -1,17 +1,19 @@
-import { useRecoilValue } from 'recoil';
-import { useCallback, useMemo } from 'react';
 import { isAssistantsEndpoint, isAgentsEndpoint } from 'librechat-data-provider';
+import { useCallback, useMemo } from 'react';
+import { useRecoilValue } from 'recoil';
+
 import type { TMessageProps } from '~/common';
+import { useAuthContext } from '~/hooks/AuthContext';
+import useLocalize from '~/hooks/useLocalize';
 import {
   useChatContext,
   useAddedChatContext,
   useAssistantsMapContext,
   useAgentsMapContext,
 } from '~/Providers';
-import useCopyToClipboard from './useCopyToClipboard';
-import { useAuthContext } from '~/hooks/AuthContext';
-import useLocalize from '~/hooks/useLocalize';
 import store from '~/store';
+
+import useCopyToClipboard from './useCopyToClipboard';
 
 export type TMessageActions = Pick<
   TMessageProps,

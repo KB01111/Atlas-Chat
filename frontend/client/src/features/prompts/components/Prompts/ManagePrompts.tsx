@@ -1,9 +1,10 @@
 import { useCallback } from 'react';
 import { useSetRecoilState } from 'recoil';
-import { useLocalize, useCustomLink } from '~/hooks';
+
 import { Button } from '~/components/ui';
-import { cn } from '~/utils';
+import { useLocalize, useCustomLink } from '~/hooks';
 import store from '~/store';
+import { cn } from '~/utils';
 
 export default function ManagePrompts({ className }: { className?: string }) {
   const localize = useLocalize();

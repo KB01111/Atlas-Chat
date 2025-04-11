@@ -1,10 +1,11 @@
-import debounce from 'lodash/debounce';
-import { SetterOrUpdater, useRecoilValue } from 'recoil';
-import { useState, useEffect, useMemo, useCallback } from 'react';
 import { LocalStorageKeys, TFile } from 'librechat-data-provider';
+import debounce from 'lodash/debounce';
+import { useState, useEffect, useMemo, useCallback } from 'react';
+import { SetterOrUpdater, useRecoilValue } from 'recoil';
+
 import type { ExtendedFile } from '~/common';
-import { useChatFormContext } from '~/Providers';
 import { useGetFiles } from '~/data-provider';
+import { useChatFormContext } from '~/Providers';
 import store from '~/store';
 
 const clearDraft = debounce((id?: string | null) => {
@@ -71,9 +72,9 @@ export const useAutoSave = ({
         const { fileToRecover, fileIdToRecover } = fileData
           ? { fileToRecover: fileData, fileIdToRecover: fileId }
           : {
-            fileToRecover: tempFileData,
-            fileIdToRecover: (tempFileData?.temp_file_id ?? '') || fileId,
-          };
+              fileToRecover: tempFileData,
+              fileIdToRecover: (tempFileData?.temp_file_id ?? '') || fileId,
+            };
 
         if (fileToRecover) {
           setFiles((currentFiles) => {

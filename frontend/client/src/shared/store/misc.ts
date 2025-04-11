@@ -1,7 +1,9 @@
-import { atom } from 'recoil';
 import { TAttachment } from 'librechat-data-provider';
-import { atomWithLocalStorage } from './utils';
+import { atom } from 'recoil';
+
 import { BadgeItem } from '~/common';
+
+import { atomWithLocalStorage } from './utils';
 
 const hideBannerHint = atomWithLocalStorage('hideBannerHint', [] as string[]);
 

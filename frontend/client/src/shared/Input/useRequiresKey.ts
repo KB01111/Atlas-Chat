@@ -1,6 +1,7 @@
-import { useChatContext } from '~/Providers/ChatContext';
 import { useGetEndpointsQuery } from '~/data-provider';
+import { useChatContext } from '~/Providers/ChatContext';
 import { getEndpointField } from '~/utils';
+
 import useUserKey from './useUserKey';
 
 export default function useRequiresKey() {

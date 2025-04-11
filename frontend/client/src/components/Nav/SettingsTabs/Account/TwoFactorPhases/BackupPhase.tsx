@@ -1,6 +1,7 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { Download } from 'lucide-react';
+import React from 'react';
+
 import { Button, Label } from '~/components';
 import { useLocalize } from '~/hooks';
 

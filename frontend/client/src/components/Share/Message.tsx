@@ -1,18 +1,20 @@
 import { useRecoilValue } from 'recoil';
+
 import type { TMessageProps } from '~/common';
-import MinimalHoverButtons from '~/features/chat/components/Chat/Messages/MinimalHoverButtons';
+import { Plugin } from '~/components/Messages/Content';
 import MessageContent from '~/features/chat/components/Chat/Messages/Content/MessageContent';
 import SearchContent from '~/features/chat/components/Chat/Messages/Content/SearchContent';
+import MinimalHoverButtons from '~/features/chat/components/Chat/Messages/MinimalHoverButtons';
 import SiblingSwitch from '~/features/chat/components/Chat/Messages/SiblingSwitch';
-import { Plugin } from '~/components/Messages/Content';
 import SubRow from '~/features/chat/components/Chat/Messages/SubRow';
 import { MessageContext } from '~/Providers';
 // eslint-disable-next-line import/no-cycle
-import MultiMessage from './MultiMessage';
-import { cn } from '~/utils';
 import store from '~/store';
+import { cn } from '~/utils';
 
 import Icon from './MessageIcon';
+import MultiMessage from './MultiMessage';
+
 export default function Message(props: TMessageProps) {
   const fontSize = useRecoilValue(store.fontSize);
   const {

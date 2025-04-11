@@ -1,6 +1,7 @@
 import { EModelEndpoint } from 'librechat-data-provider';
-import type { IconMapProps, AgentIconMapProps, IconsRecord } from '~/common';
 import { Feather } from 'lucide-react';
+
+import type { IconMapProps, AgentIconMapProps, IconsRecord } from '~/common';
 import {
   MinimalPlugin,
   GPTIcon,
@@ -13,8 +14,9 @@ import {
   BedrockIcon,
   Sparkles,
 } from '~/components/svg';
-import UnknownIcon from './UnknownIcon';
 import { cn } from '~/utils';
+
+import UnknownIcon from './UnknownIcon';
 
 const AssistantAvatar = ({
   className = '',

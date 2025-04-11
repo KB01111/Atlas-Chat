@@ -1,9 +1,10 @@
 import React from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { cn, defaultTextProps, optionText } from '~/utils/';
+
 import { Slider, InputNumber } from '~/components/ui';
 import { useLocalize } from '~/hooks';
 import store from '~/store';
+import { cn, defaultTextProps, optionText } from '~/utils/';
 
 export default function AutoSendTextSelector() {
   const localize = useLocalize();

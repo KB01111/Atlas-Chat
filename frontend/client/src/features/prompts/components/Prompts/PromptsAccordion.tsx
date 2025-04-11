@@ -1,6 +1,6 @@
-import PromptSidePanel from '~/features/prompts/components/Prompts/Groups/GroupSidePanel';
 import AutoSendPrompt from '~/features/prompts/components/Prompts/Groups/AutoSendPrompt';
 import FilterPrompts from '~/features/prompts/components/Prompts/Groups/FilterPrompts';
+import PromptSidePanel from '~/features/prompts/components/Prompts/Groups/GroupSidePanel';
 import ManagePrompts from '~/features/prompts/components/Prompts/ManagePrompts';
 import { usePromptGroupsNav } from '~/hooks';
 

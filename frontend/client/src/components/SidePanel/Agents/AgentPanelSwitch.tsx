@@ -1,12 +1,14 @@
-import { useState, useEffect, useMemo } from 'react';
 import { EModelEndpoint } from 'librechat-data-provider';
-import type { ActionsEndpoint } from '~/common';
 import type { Action, TConfig, TEndpointsConfig } from 'librechat-data-provider';
+import { useState, useEffect, useMemo } from 'react';
+
+import type { ActionsEndpoint } from '~/common';
+import { Panel } from '~/common';
 import { useGetActionsQuery, useGetEndpointsQuery } from '~/data-provider';
 import { useChatContext } from '~/Providers';
+
 import ActionsPanel from './ActionsPanel';
 import AgentPanel from './AgentPanel';
-import { Panel } from '~/common';
 
 export default function AgentPanelSwitch() {
   const { conversation, index } = useChatContext();

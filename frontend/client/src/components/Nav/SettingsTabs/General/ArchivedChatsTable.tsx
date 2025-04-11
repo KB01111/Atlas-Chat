@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
+import type { TConversation } from 'librechat-data-provider';
 import {
   Search,
   TrashIcon,
@@ -9,7 +9,8 @@ import {
   MessageCircle,
   ArchiveRestore,
 } from 'lucide-react';
-import type { TConversation } from 'librechat-data-provider';
+import { useState, useCallback, useMemo } from 'react';
+
 import {
   Table,
   Input,
@@ -25,8 +26,8 @@ import {
   TooltipAnchor,
   OGDialogTrigger,
 } from '~/components';
-import { useConversationsInfiniteQuery, useArchiveConvoMutation } from '~/data-provider';
 import { DeleteConversationDialog } from '~/components/Conversations/ConvoOptions';
+import { useConversationsInfiniteQuery, useArchiveConvoMutation } from '~/data-provider';
 import { useAuthContext, useLocalize, useMediaQuery } from '~/hooks';
 import { cn } from '~/utils';
 

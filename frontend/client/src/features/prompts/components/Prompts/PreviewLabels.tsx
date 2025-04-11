@@ -1,8 +1,9 @@
-import { useState } from 'react';
 import { Cross1Icon } from '@radix-ui/react-icons';
 import type { TPrompt } from 'librechat-data-provider';
-import { useUpdatePromptLabels } from '~/data-provider';
+import { useState } from 'react';
+
 import { Input } from '~/components/ui';
+import { useUpdatePromptLabels } from '~/data-provider';
 
 const PromptForm = ({ selectedPrompt }: { selectedPrompt?: TPrompt }) => {
   const [labelInput, setLabelInput] = useState<string>('');

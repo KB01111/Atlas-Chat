@@ -1,16 +1,17 @@
-import React, { useMemo, useEffect } from 'react';
-import { ChevronLeft, RotateCcw } from 'lucide-react';
-import { useFormContext, useWatch, Controller } from 'react-hook-form';
 import { getSettingsKeys, alternateName } from 'librechat-data-provider';
 import type * as t from 'librechat-data-provider';
+import { ChevronLeft, RotateCcw } from 'lucide-react';
+import React, { useMemo, useEffect } from 'react';
+import { useFormContext, useWatch, Controller } from 'react-hook-form';
+
 import type { AgentForm, AgentModelPanelProps, StringOption } from '~/common';
+import { Panel } from '~/common';
 import { componentMapping } from '~/components/SidePanel/Parameters/components';
 import { agentSettings } from '~/components/SidePanel/Parameters/settings';
 import ControlCombobox from '~/components/ui/ControlCombobox';
 import { useGetEndpointsQuery } from '~/data-provider';
-import { getEndpointField, cn } from '~/utils';
 import { useLocalize } from '~/hooks';
-import { Panel } from '~/common';
+import { getEndpointField, cn } from '~/utils';
 
 export default function ModelPanel({
   setActivePanel,

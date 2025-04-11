@@ -1,6 +1,3 @@
-import { useState, useMemo } from 'react';
-import { useForm, FormProvider, Controller, useWatch } from 'react-hook-form';
-import { useGetModelsQuery } from 'librechat-data-provider/react-query';
 import {
   Tools,
   Capabilities,
@@ -9,28 +6,33 @@ import {
   defaultAssistantFormValues,
 } from 'librechat-data-provider';
 import type { FunctionTool, TConfig } from 'librechat-data-provider';
+import { useGetModelsQuery } from 'librechat-data-provider/react-query';
+import { useState, useMemo } from 'react';
+import { useForm, FormProvider, Controller, useWatch } from 'react-hook-form';
+
 import type { AssistantForm, AssistantPanelProps } from '~/common';
+import { Panel } from '~/common';
+import { Spinner } from '~/components/svg';
+import { ToolSelectDialog } from '~/components/Tools';
+import { SelectDropDown } from '~/components/ui';
 import {
   useCreateAssistantMutation,
   useUpdateAssistantMutation,
   useAvailableAgentToolsQuery,
 } from '~/data-provider';
-import { cn, cardStyle, defaultTextProps, removeFocusOutlines } from '~/utils';
-import AssistantConversationStarters from './AssistantConversationStarters';
-import { useAssistantsMapContext, useToastContext } from '~/Providers';
 import { useSelectAssistant, useLocalize } from '~/hooks';
-import { ToolSelectDialog } from '~/components/Tools';
-import AppendDateCheckbox from './AppendDateCheckbox';
-import CapabilitiesForm from './CapabilitiesForm';
-import { SelectDropDown } from '~/components/ui';
-import AssistantAvatar from './AssistantAvatar';
-import AssistantSelect from './AssistantSelect';
-import ContextButton from './ContextButton';
-import AssistantTool from './AssistantTool';
-import { Spinner } from '~/components/svg';
-import Knowledge from './Knowledge';
-import { Panel } from '~/common';
+import { useAssistantsMapContext, useToastContext } from '~/Providers';
+import { cn, cardStyle, defaultTextProps, removeFocusOutlines } from '~/utils';
+
 import Action from './Action';
+import AppendDateCheckbox from './AppendDateCheckbox';
+import AssistantAvatar from './AssistantAvatar';
+import AssistantConversationStarters from './AssistantConversationStarters';
+import AssistantSelect from './AssistantSelect';
+import AssistantTool from './AssistantTool';
+import CapabilitiesForm from './CapabilitiesForm';
+import ContextButton from './ContextButton';
+import Knowledge from './Knowledge';
 
 const labelClass = 'mb-2 text-token-text-primary block font-medium';
 const inputClass = cn(

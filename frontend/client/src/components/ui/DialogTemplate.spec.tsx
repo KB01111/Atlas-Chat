@@ -1,10 +1,12 @@
 import 'test/matchMedia.mock';
-import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
+import React from 'react';
 import '@testing-library/jest-dom/extend-expect';
-import DialogTemplate from './DialogTemplate';
-import { Dialog } from '@radix-ui/react-dialog';
 import { RecoilRoot } from 'recoil';
+
+import DialogTemplate from './DialogTemplate';
+
+import { Dialog } from '@radix-ui/react-dialog';
 
 describe('DialogTemplate', () => {
   let mockSelectHandler;

@@ -1,12 +1,14 @@
-import { useMemo } from 'react';
-import { ChevronLeft } from 'lucide-react';
 import { AgentCapabilities } from 'librechat-data-provider';
+import { ChevronLeft } from 'lucide-react';
+import { useMemo } from 'react';
 import { useFormContext, Controller } from 'react-hook-form';
+
 import type { AgentForm, AgentPanelProps } from '~/common';
-import MaxAgentSteps from './MaxAgentSteps';
-import AgentChain from './AgentChain';
-import { useLocalize } from '~/hooks';
 import { Panel } from '~/common';
+import { useLocalize } from '~/hooks';
+
+import AgentChain from './AgentChain';
+import MaxAgentSteps from './MaxAgentSteps';
 
 export default function AdvancedPanel({
   agentsConfig,

@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+
 import { useSupabase } from '../Providers/SupabaseProvider';
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
@@ -18,7 +19,7 @@ const FileUpload: React.FC = () => {
       setError('File size exceeds 10MB limit.');
       return false;
     }
-    if (!ALLOWED_TYPES.some(type => file.type.startsWith(type))) {
+    if (!ALLOWED_TYPES.some((type) => file.type.startsWith(type))) {
       setError('Unsupported file type.');
       return false;
     }
@@ -114,7 +115,10 @@ const FileUpload: React.FC = () => {
       {error && <p style={{ color: 'red' }}>{error}</p>}
       {url && (
         <p>
-          File URL: <a href={url} target="_blank" rel="noopener noreferrer">{url}</a>
+          File URL:{' '}
+          <a href={url} target="_blank" rel="noopener noreferrer">
+            {url}
+          </a>
         </p>
       )}
     </div>

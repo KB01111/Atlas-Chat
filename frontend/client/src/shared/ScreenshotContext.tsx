@@ -1,5 +1,6 @@
-import { createContext, useRef, useContext, RefObject } from 'react';
 import { toCanvas } from 'html-to-image';
+import { createContext, useRef, useContext, RefObject } from 'react';
+
 import { ThemeContext } from '~/hooks/ThemeContext';
 
 type ScreenshotContextType = {

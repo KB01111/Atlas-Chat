@@ -1,12 +1,13 @@
+import { useQueryClient } from '@tanstack/react-query';
 import debounce from 'lodash/debounce';
 import { Search, X } from 'lucide-react';
-import { useSetRecoilState } from 'recoil';
-import { useLocation } from 'react-router-dom';
-import { useQueryClient } from '@tanstack/react-query';
 import { forwardRef, useState, useCallback, useMemo, Ref } from 'react';
+import { useLocation } from 'react-router-dom';
+import { useSetRecoilState } from 'recoil';
+
 import { useLocalize, useNewConvo } from '~/hooks';
-import { cn } from '~/utils';
 import store from '~/store';
+import { cn } from '~/utils';
 
 type SearchBarProps = {
   isSmallScreen?: boolean;
@@ -54,7 +55,7 @@ const SearchBar = forwardRef((props: SearchBarProps, ref: Ref<HTMLDivElement>) =
       if (!value) {
         return;
       }
-      queryClient.invalidateQueries(["messages"]);
+      queryClient.invalidateQueries(['messages']);
       clearConvoState();
     },
     [queryClient, clearConvoState, setSearchQuery],

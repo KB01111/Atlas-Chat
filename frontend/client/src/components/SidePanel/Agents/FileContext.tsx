@@ -1,18 +1,19 @@
-import { useState, useRef } from 'react';
 import {
   EModelEndpoint,
   EToolResources,
   mergeFileConfig,
   fileConfig as defaultFileConfig,
 } from 'librechat-data-provider';
+import { useState, useRef } from 'react';
+
 import type { ExtendedFile } from '~/common';
-import { useFileHandling, useLocalize, useLazyEffect } from '~/hooks';
-import FileRow from '~/features/chat/components/Chat/Input/Files/FileRow';
-import { useGetFileConfig } from '~/data-provider';
-import { HoverCard, HoverCardContent, HoverCardPortal, HoverCardTrigger } from '~/components/ui';
-import { AttachmentIcon, CircleHelpIcon } from '~/components/svg';
-import { useChatContext } from '~/Providers';
 import { ESide } from '~/common';
+import { AttachmentIcon, CircleHelpIcon } from '~/components/svg';
+import { HoverCard, HoverCardContent, HoverCardPortal, HoverCardTrigger } from '~/components/ui';
+import { useGetFileConfig } from '~/data-provider';
+import FileRow from '~/features/chat/components/Chat/Input/Files/FileRow';
+import { useFileHandling, useLocalize, useLazyEffect } from '~/hooks';
+import { useChatContext } from '~/Providers';
 
 export default function FileContext({
   agent_id,

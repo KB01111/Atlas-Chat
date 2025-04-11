@@ -1,5 +1,7 @@
-import { Feather } from 'lucide-react';
 import { EModelEndpoint, alternateName } from 'librechat-data-provider';
+import { Feather } from 'lucide-react';
+
+import { IconProps } from '~/common';
 import {
   AzureMinimalIcon,
   OpenAIMinimalIcon,
@@ -12,7 +14,6 @@ import {
   Sparkles,
 } from '~/components/svg';
 import UnknownIcon from '~/hooks/Endpoint/UnknownIcon';
-import { IconProps } from '~/common';
 import { cn } from '~/utils';
 
 const MinimalIcon: React.FC<IconProps> = (props) => {

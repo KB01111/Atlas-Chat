@@ -1,6 +1,7 @@
-import React from 'react';
-import { QrCode } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { QrCode } from 'lucide-react';
+import React from 'react';
+
 import { Button, Spinner } from '~/components';
 import { useLocalize } from '~/hooks';
 

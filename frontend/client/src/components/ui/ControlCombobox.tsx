@@ -1,8 +1,9 @@
 import * as Ariakit from '@ariakit/react';
-import { matchSorter } from 'match-sorter';
-import { Search, ChevronDown } from 'lucide-react';
-import { useMemo, useState, useRef, memo, useEffect } from 'react';
 import { SelectRenderer } from '@ariakit/react-core/select/select-renderer';
+import { Search, ChevronDown } from 'lucide-react';
+import { matchSorter } from 'match-sorter';
+import { useMemo, useState, useRef, memo, useEffect } from 'react';
+
 import type { OptionWithIcon } from '~/common';
 import { cn } from '~/utils';
 

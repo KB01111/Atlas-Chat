@@ -1,13 +1,14 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { FileSources, FileContext } from 'librechat-data-provider';
 import type { ColumnDef } from '@tanstack/react-table';
+import { FileSources, FileContext } from 'librechat-data-provider';
 import type { TFile } from 'librechat-data-provider';
-import { CrossIcon, DotsIcon } from '~/components/svg';
-import { Button, Checkbox } from '~/components/ui';
-import { formatDate, getFileType } from '~/utils';
-import useLocalize from '~/hooks/useLocalize';
-import FileIcon from '~/components/svg/Files/FileIcon';
 import { PlusIcon } from 'lucide-react';
+
+import { CrossIcon, DotsIcon } from '~/components/svg';
+import FileIcon from '~/components/svg/Files/FileIcon';
+import { Button, Checkbox } from '~/components/ui';
+import useLocalize from '~/hooks/useLocalize';
+import { formatDate, getFileType } from '~/utils';
 
 export const fileTableColumns: ColumnDef<TFile>[] = [
   {

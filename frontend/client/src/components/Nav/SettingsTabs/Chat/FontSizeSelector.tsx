@@ -1,8 +1,9 @@
 import { useRecoilState } from 'recoil';
+
 import { Dropdown } from '~/components/ui';
-import { applyFontSize } from '~/utils';
 import { useLocalize } from '~/hooks';
 import store from '~/store';
+import { applyFontSize } from '~/utils';
 
 export default function FontSizeSelector() {
   const [fontSize, setFontSize] = useRecoilState(store.fontSize);

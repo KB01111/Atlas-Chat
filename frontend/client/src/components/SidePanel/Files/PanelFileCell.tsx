@@ -1,7 +1,8 @@
 import type { Row } from '@tanstack/react-table';
 import type { TFile } from 'librechat-data-provider';
-import ImagePreview from '~/features/chat/components/Chat/Input/Files/ImagePreview';
+
 import FilePreview from '~/features/chat/components/Chat/Input/Files/FilePreview';
+import ImagePreview from '~/features/chat/components/Chat/Input/Files/ImagePreview';
 import { getFileType } from '~/utils';
 
 export default function PanelFileCell({ row }: { row: Row<TFile | undefined> }) {

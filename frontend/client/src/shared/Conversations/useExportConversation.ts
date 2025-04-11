@@ -1,7 +1,6 @@
-import download from 'downloadjs';
-import { useCallback } from 'react';
-import exportFromJSON from 'export-from-json';
 import { useQueryClient } from '@tanstack/react-query';
+import download from 'downloadjs';
+import exportFromJSON from 'export-from-json';
 import {
   QueryKeys,
   ContentTypes,
@@ -15,10 +14,12 @@ import type {
   TConversation,
   TMessageContentParts,
 } from 'librechat-data-provider';
+import { useCallback } from 'react';
+import { useParams } from 'react-router-dom';
+
 import useBuildMessageTree from '~/hooks/Messages/useBuildMessageTree';
 import { useScreenshot } from '~/hooks/ScreenshotContext';
 import { cleanupPreset, buildTree } from '~/utils';
-import { useParams } from 'react-router-dom';
 
 type ExportValues = {
   fieldName: string;
@@ -48,10 +49,11 @@ export default function useExportConversation({
   const { conversationId: paramId } = useParams();
 
   const getMessageTree = useCallback(() => {
-    const queryParam = paramId === 'new' ? paramId : conversation?.conversationId ?? paramId ?? '';
+    const queryParam =
+      paramId === 'new' ? paramId : (conversation?.conversationId ?? paramId ?? '');
     const messages = queryClient.getQueryData<TMessage[]>([QueryKeys.messages, queryParam]) ?? [];
     const dataTree = buildTree({ messages });
-    return dataTree?.length === 0 ? null : dataTree ?? null;
+    return dataTree?.length === 0 ? null : (dataTree ?? null);
   }, [paramId, conversation?.conversationId, queryClient]);
 
   const getMessageText = (message: TMessage | undefined, format = 'text') => {

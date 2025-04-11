@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
-import api from "./api-client";
+import React, { createContext, useContext, useEffect, useState } from 'react';
+
+import api from './api-client';
 
 // Create context
 const ApiContext = createContext(null);
@@ -16,7 +17,7 @@ export const ApiProvider = ({ children }) => {
   useEffect(() => {
     const initializeAuth = async () => {
       try {
-        const token = localStorage.getItem("atlaschat_token");
+        const token = localStorage.getItem('atlaschat_token');
         if (token) {
           const userData = await api.auth.getCurrentUser();
           setUser(userData);
@@ -35,8 +36,8 @@ export const ApiProvider = ({ children }) => {
           setConversations(conversationsData);
         }
       } catch (error) {
-        console.error("Initialization error:", error);
-        localStorage.removeItem("atlaschat_token");
+        console.error('Initialization error:', error);
+        localStorage.removeItem('atlaschat_token');
       } finally {
         setLoading(false);
       }
@@ -67,7 +68,7 @@ export const ApiProvider = ({ children }) => {
 
       return { success: true };
     } catch (error) {
-      return { success: false, error: error.detail || "Login failed" };
+      return { success: false, error: error.detail || 'Login failed' };
     } finally {
       setLoading(false);
     }
@@ -79,7 +80,7 @@ export const ApiProvider = ({ children }) => {
       await api.auth.register(name, email, password);
       return { success: true };
     } catch (error) {
-      return { success: false, error: error.detail || "Registration failed" };
+      return { success: false, error: error.detail || 'Registration failed' };
     } finally {
       setLoading(false);
     }
@@ -96,20 +97,16 @@ export const ApiProvider = ({ children }) => {
   // Chat methods
   const sendMessage = async (message, history) => {
     if (!selectedAgent) {
-      return { success: false, error: "No agent selected" };
+      return { success: false, error: 'No agent selected' };
     }
 
     try {
-      const response = await api.chat.sendMessage(
-        selectedAgent,
-        message,
-        history,
-      );
+      const response = await api.chat.sendMessage(selectedAgent, message, history);
       return { success: true, data: response };
     } catch (error) {
       return {
         success: false,
-        error: error.detail || "Failed to send message",
+        error: error.detail || 'Failed to send message',
       };
     }
   };
@@ -127,7 +124,7 @@ export const ApiProvider = ({ children }) => {
     } catch (error) {
       return {
         success: false,
-        error: error.detail || "Failed to refresh agents",
+        error: error.detail || 'Failed to refresh agents',
       };
     }
   };
@@ -135,77 +132,58 @@ export const ApiProvider = ({ children }) => {
   // Code execution methods
   const executeCode = async (code, language, threadId) => {
     if (!selectedAgent) {
-      return { success: false, error: "No agent selected" };
+      return { success: false, error: 'No agent selected' };
     }
 
     try {
-      const response = await api.code.executeCode(
-        code,
-        language,
-        threadId,
-        selectedAgent,
-      );
+      const response = await api.code.executeCode(code, language, threadId, selectedAgent);
       return response;
     } catch (error) {
       return {
         success: false,
-        error: error.detail || "Failed to execute code",
+        error: error.detail || 'Failed to execute code',
       };
     }
   };
 
   const writeFile = async (filePath, content, threadId) => {
     if (!selectedAgent) {
-      return { success: false, error: "No agent selected" };
+      return { success: false, error: 'No agent selected' };
     }
 
     try {
-      const response = await api.code.writeFile(
-        filePath,
-        content,
-        threadId,
-        selectedAgent,
-      );
+      const response = await api.code.writeFile(filePath, content, threadId, selectedAgent);
       return response;
     } catch (error) {
-      return { success: false, error: error.detail || "Failed to write file" };
+      return { success: false, error: error.detail || 'Failed to write file' };
     }
   };
 
   const readFile = async (filePath, threadId) => {
     if (!selectedAgent) {
-      return { success: false, error: "No agent selected" };
+      return { success: false, error: 'No agent selected' };
     }
 
     try {
-      const response = await api.code.readFile(
-        filePath,
-        threadId,
-        selectedAgent,
-      );
+      const response = await api.code.readFile(filePath, threadId, selectedAgent);
       return response;
     } catch (error) {
-      return { success: false, error: error.detail || "Failed to read file" };
+      return { success: false, error: error.detail || 'Failed to read file' };
     }
   };
 
   const installPackages = async (packages, language, threadId) => {
     if (!selectedAgent) {
-      return { success: false, error: "No agent selected" };
+      return { success: false, error: 'No agent selected' };
     }
 
     try {
-      const response = await api.code.installPackages(
-        packages,
-        language,
-        threadId,
-        selectedAgent,
-      );
+      const response = await api.code.installPackages(packages, language, threadId, selectedAgent);
       return response;
     } catch (error) {
       return {
         success: false,
-        error: error.detail || "Failed to install packages",
+        error: error.detail || 'Failed to install packages',
       };
     }
   };
@@ -245,7 +223,7 @@ export const ApiProvider = ({ children }) => {
 export const useApi = () => {
   const context = useContext(ApiContext);
   if (!context) {
-    throw new Error("useApi must be used within an ApiProvider");
+    throw new Error('useApi must be used within an ApiProvider');
   }
   return context;
 };

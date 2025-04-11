@@ -1,5 +1,3 @@
-import { useState, useRef } from 'react';
-import { useFormContext } from 'react-hook-form';
 import {
   EModelEndpoint,
   EToolResources,
@@ -7,13 +5,17 @@ import {
   AgentCapabilities,
   fileConfig as defaultFileConfig,
 } from 'librechat-data-provider';
+import { useState, useRef } from 'react';
+import { useFormContext } from 'react-hook-form';
+
 import type { ExtendedFile, AgentForm } from '~/common';
-import { useFileHandling, useLocalize, useLazyEffect } from '~/hooks';
-import FileRow from '~/features/chat/components/Chat/Input/Files/FileRow';
-import FileSearchCheckbox from './FileSearchCheckbox';
-import { useGetFileConfig } from '~/data-provider';
 import { AttachmentIcon } from '~/components/svg';
+import { useGetFileConfig } from '~/data-provider';
+import FileRow from '~/features/chat/components/Chat/Input/Files/FileRow';
+import { useFileHandling, useLocalize, useLazyEffect } from '~/hooks';
 import { useChatContext } from '~/Providers';
+
+import FileSearchCheckbox from './FileSearchCheckbox';
 
 export default function FileSearch({
   agent_id,

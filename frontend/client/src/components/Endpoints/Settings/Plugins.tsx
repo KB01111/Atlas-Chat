@@ -1,9 +1,12 @@
-import { useMemo } from 'react';
-import { useRecoilValue } from 'recoil';
-import TextareaAutosize from 'react-textarea-autosize';
-import { useAvailablePluginsQuery } from 'librechat-data-provider/react-query';
 import type { TPlugin } from 'librechat-data-provider';
+import { useAvailablePluginsQuery } from 'librechat-data-provider/react-query';
+import { useMemo } from 'react';
+import TextareaAutosize from 'react-textarea-autosize';
+import { useRecoilValue } from 'recoil';
+
 import type { TModelSelectProps, OnInputNumberChange } from '~/common';
+import { ESide } from '~/common';
+import OptionHoverAlt from '~/components/SidePanel/Parameters/OptionHover';
 import {
   Input,
   Label,
@@ -14,6 +17,8 @@ import {
   HoverCardTrigger,
   MultiSelectDropDown,
 } from '~/components/ui';
+import { useLocalize, useDebouncedInput } from '~/hooks';
+import store from '~/store';
 import {
   removeFocusOutlines,
   defaultTextProps,
@@ -23,11 +28,8 @@ import {
   optionText,
   cn,
 } from '~/utils';
-import OptionHoverAlt from '~/components/SidePanel/Parameters/OptionHover';
-import { useLocalize, useDebouncedInput } from '~/hooks';
+
 import OptionHover from './OptionHover';
-import { ESide } from '~/common';
-import store from '~/store';
 
 export default function Settings({
   conversation,

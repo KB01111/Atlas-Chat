@@ -1,10 +1,12 @@
+import { Constants, isAssistantsEndpoint, isAgentsEndpoint } from 'librechat-data-provider';
 import throttle from 'lodash/throttle';
 import { useEffect, useRef, useCallback, useMemo } from 'react';
-import { Constants, isAssistantsEndpoint, isAgentsEndpoint } from 'librechat-data-provider';
+
 import type { TMessageProps } from '~/common';
 import { useChatContext, useAssistantsMapContext, useAgentsMapContext } from '~/Providers';
-import useCopyToClipboard from './useCopyToClipboard';
 import { getTextKey, logger } from '~/utils';
+
+import useCopyToClipboard from './useCopyToClipboard';
 
 export default function useMessageHelpers(props: TMessageProps) {
   const latestText = useRef<string | number>('');

@@ -1,8 +1,18 @@
+import type { TEndpointOption } from 'librechat-data-provider';
 import debounce from 'lodash/debounce';
 import { useEffect, useRef, useCallback } from 'react';
-import { useRecoilValue, useRecoilState } from 'recoil';
-import type { TEndpointOption } from 'librechat-data-provider';
 import type { KeyboardEvent } from 'react';
+import { useRecoilValue, useRecoilState } from 'recoil';
+
+import { globalAudioId } from '~/common';
+import { useInteractionHealthCheck } from '~/data-provider';
+import useGetSender from '~/hooks/Conversations/useGetSender';
+import useFileHandling from '~/hooks/Files/useFileHandling';
+import useLocalize from '~/hooks/useLocalize';
+import { useAgentsMapContext } from '~/Providers/AgentsMapContext';
+import { useAssistantsMapContext } from '~/Providers/AssistantsMapContext';
+import { useChatContext } from '~/Providers/ChatContext';
+import store from '~/store';
 import {
   forceResize,
   insertTextAtCursor,
@@ -10,15 +20,6 @@ import {
   getEntity,
   checkIfScrollable,
 } from '~/utils';
-import { useAssistantsMapContext } from '~/Providers/AssistantsMapContext';
-import { useAgentsMapContext } from '~/Providers/AgentsMapContext';
-import useGetSender from '~/hooks/Conversations/useGetSender';
-import useFileHandling from '~/hooks/Files/useFileHandling';
-import { useInteractionHealthCheck } from '~/data-provider';
-import { useChatContext } from '~/Providers/ChatContext';
-import useLocalize from '~/hooks/useLocalize';
-import { globalAudioId } from '~/common';
-import store from '~/store';
 
 type KeyEvent = KeyboardEvent<HTMLTextAreaElement>;
 
@@ -96,13 +97,14 @@ export default function useTextarea({
         return localize('com_endpoint_message_not_appendable');
       }
 
-      const sender = isAssistant || isAgent
-        ? getEntityName({ name: entityName, isAgent, localize })
-        : getSender(conversation as TEndpointOption);
+      const sender =
+        isAssistant || isAgent
+          ? getEntityName({ name: entityName, isAgent, localize })
+          : getSender(conversation as TEndpointOption);
 
-      return `${localize(
-        'com_endpoint_message_new', { 0: sender ? sender : localize('com_endpoint_ai') },
-      )}`;
+      return `${localize('com_endpoint_message_new', {
+        0: sender ? sender : localize('com_endpoint_ai'),
+      })}`;
     };
 
     const placeholder = getPlaceholderText();

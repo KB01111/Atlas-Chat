@@ -1,5 +1,7 @@
 import React from 'react';
+
 import ApiErrorBoundaryProvider from '~shared/Providers/ApiErrorBoundaryProvider';
+
 import SupabaseProvider from '../Providers/SupabaseProvider';
 import ThemeProvider from '../Providers/ThemeProvider';
 

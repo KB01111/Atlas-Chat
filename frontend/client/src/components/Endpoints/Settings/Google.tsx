@@ -1,6 +1,9 @@
-import TextareaAutosize from 'react-textarea-autosize';
 import { EModelEndpoint, endpointSettings } from 'librechat-data-provider';
+import TextareaAutosize from 'react-textarea-autosize';
+
 import type { TModelSelectProps, OnInputNumberChange } from '~/common';
+import { ESide } from '~/common';
+import OptionHoverAlt from '~/components/SidePanel/Parameters/OptionHover';
 import {
   Input,
   Label,
@@ -10,11 +13,10 @@ import {
   SelectDropDown,
   HoverCardTrigger,
 } from '~/components/ui';
-import { cn, defaultTextProps, optionText, removeFocusOutlines, removeFocusRings } from '~/utils';
-import OptionHoverAlt from '~/components/SidePanel/Parameters/OptionHover';
 import { useLocalize, useDebouncedInput } from '~/hooks';
+import { cn, defaultTextProps, optionText, removeFocusOutlines, removeFocusRings } from '~/utils';
+
 import OptionHover from './OptionHover';
-import { ESide } from '~/common';
 
 export default function Settings({ conversation, setOption, models, readonly }: TModelSelectProps) {
   const localize = useLocalize();
@@ -221,7 +223,7 @@ export default function Settings({ conversation, setOption, models, readonly }: 
               <Label htmlFor="top-k-int" className="text-left text-sm font-medium">
                 {localize('com_endpoint_top_k')}{' '}
                 <small className="opacity-40">
-                  ({localize('com_endpoint_default_with_num',{ 0: google.topK.default + '' })})
+                  ({localize('com_endpoint_default_with_num', { 0: google.topK.default + '' })})
                 </small>
               </Label>
               <InputNumber
@@ -261,7 +263,11 @@ export default function Settings({ conversation, setOption, models, readonly }: 
               <Label htmlFor="max-tokens-int" className="text-left text-sm font-medium">
                 {localize('com_endpoint_max_output_tokens')}{' '}
                 <small className="opacity-40">
-                  ({localize('com_endpoint_default_with_num', { 0: google.maxOutputTokens.default + '' })})
+                  (
+                  {localize('com_endpoint_default_with_num', {
+                    0: google.maxOutputTokens.default + '',
+                  })}
+                  )
                 </small>
               </Label>
               <InputNumber

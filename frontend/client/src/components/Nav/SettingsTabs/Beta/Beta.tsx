@@ -1,6 +1,7 @@
 import { memo } from 'react';
-import CodeArtifacts from './CodeArtifacts';
+
 import ChatBadges from './ChatBadges';
+import CodeArtifacts from './CodeArtifacts';
 
 function Beta() {
   return (

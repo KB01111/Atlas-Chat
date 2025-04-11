@@ -1,6 +1,8 @@
 import React from 'react';
-import VectorStoreListItem from './VectorStoreListItem';
+
 import { TVectorStore } from '~/common';
+
+import VectorStoreListItem from './VectorStoreListItem';
 
 type VectorStoreListProps = {
   vectorStores: TVectorStore[];

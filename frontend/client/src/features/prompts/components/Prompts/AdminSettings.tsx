@@ -1,10 +1,10 @@
 import * as Ariakit from '@ariakit/react';
-import { ExternalLink } from 'lucide-react';
-import { useMemo, useEffect, useState } from 'react';
-import { ShieldEllipsis } from 'lucide-react';
-import { useForm, Controller } from 'react-hook-form';
 import { Permissions, SystemRoles, roleDefaults, PermissionTypes } from 'librechat-data-provider';
+import { ExternalLink, ShieldEllipsis } from 'lucide-react';
+import { useMemo, useEffect, useState } from 'react';
+import { useForm, Controller } from 'react-hook-form';
 import type { Control, UseFormSetValue, UseFormGetValues } from 'react-hook-form';
+
 import {
   OGDialog,
   OGDialogTitle,
@@ -14,8 +14,8 @@ import {
   Switch,
   DropdownPopup,
 } from '~/components/ui';
-import { useUpdatePromptPermissionsMutation } from '~/data-provider';
 import OGDialogTemplate from '~/components/ui/OGDialogTemplate';
+import { useUpdatePromptPermissionsMutation } from '~/data-provider';
 import { useLocalize, useAuthContext } from '~/hooks';
 import { useToastContext } from '~/Providers';
 
@@ -66,7 +66,7 @@ const AdminSettings = () => {
   const [confirmAdminUseChange, setConfirmAdminUseChange] = useState<{
     newValue: boolean;
     callback: (value: boolean) => void;
-      } | null>(null);
+  } | null>(null);
   const { mutate, isLoading } = useUpdatePromptPermissionsMutation({
     onSuccess: () => {
       showToast({ status: 'success', message: localize('com_ui_saved') });
@@ -191,11 +191,11 @@ const AdminSettings = () => {
                       setValue={setValue}
                       {...(selectedRole === SystemRoles.ADMIN && promptPerm === Permissions.USE
                         ? {
-                          confirmChange: (
-                            newValue: boolean,
-                            onChange: (value: boolean) => void,
-                          ) => setConfirmAdminUseChange({ newValue, callback: onChange }),
-                        }
+                            confirmChange: (
+                              newValue: boolean,
+                              onChange: (value: boolean) => void,
+                            ) => setConfirmAdminUseChange({ newValue, callback: onChange }),
+                          }
                         : {})}
                     />
                     {selectedRole === SystemRoles.ADMIN && promptPerm === Permissions.USE && (

@@ -1,7 +1,4 @@
-import { v4 } from 'uuid';
-import debounce from 'lodash/debounce';
 import { useQueryClient } from '@tanstack/react-query';
-import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import {
   QueryKeys,
   EModelEndpoint,
@@ -12,13 +9,18 @@ import {
   fileConfig as defaultFileConfig,
 } from 'librechat-data-provider';
 import type { TEndpointsConfig, TError } from 'librechat-data-provider';
+import debounce from 'lodash/debounce';
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { v4 } from 'uuid';
+
 import type { ExtendedFile, FileSetter } from '~/common';
 import { useUploadFileMutation, useGetFileConfig } from '~/data-provider';
 import useLocalize, { TranslationKeys } from '~/hooks/useLocalize';
-import { useDelayedUploadToast } from './useDelayedUploadToast';
-import { useToastContext } from '~/Providers/ToastContext';
 import { useChatContext } from '~/Providers/ChatContext';
+import { useToastContext } from '~/Providers/ToastContext';
 import { logger, validateFiles } from '~/utils';
+
+import { useDelayedUploadToast } from './useDelayedUploadToast';
 import useUpdateFiles from './useUpdateFiles';
 
 type UseFileHandling = {

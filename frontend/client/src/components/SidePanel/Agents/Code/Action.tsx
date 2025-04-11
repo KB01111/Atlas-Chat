@@ -1,7 +1,10 @@
-import { KeyRoundIcon } from 'lucide-react';
 import { AuthType, AgentCapabilities } from 'librechat-data-provider';
+import { KeyRoundIcon } from 'lucide-react';
 import { useFormContext, Controller, useWatch } from 'react-hook-form';
+
 import type { AgentForm } from '~/common';
+import { ESide } from '~/common';
+import { CircleHelpIcon } from '~/components/svg';
 import {
   Checkbox,
   HoverCard,
@@ -10,9 +13,8 @@ import {
   HoverCardTrigger,
 } from '~/components/ui';
 import { useLocalize, useCodeApiKeyForm } from '~/hooks';
-import { CircleHelpIcon } from '~/components/svg';
+
 import ApiKeyDialog from './ApiKeyDialog';
-import { ESide } from '~/common';
 
 export default function Action({ authType = '', isToolAuthenticated = false }) {
   const localize = useLocalize();

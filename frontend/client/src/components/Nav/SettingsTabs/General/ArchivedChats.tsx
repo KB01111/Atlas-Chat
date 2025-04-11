@@ -1,6 +1,7 @@
-import { useLocalize } from '~/hooks';
-import OGDialogTemplate from '~/components/ui/OGDialogTemplate';
 import { OGDialog, OGDialogTrigger, Button } from '~/components';
+import OGDialogTemplate from '~/components/ui/OGDialogTemplate';
+import { useLocalize } from '~/hooks';
+
 import ArchivedChatsTable from './ArchivedChatsTable';
 
 export default function ArchivedChats() {

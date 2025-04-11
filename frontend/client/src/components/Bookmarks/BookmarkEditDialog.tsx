@@ -1,16 +1,17 @@
+import { useConversationTagMutation } from 'librechat-data-provider';
 import * as React from 'react';
 import { useRef } from 'react';
-import OGDialogTemplate from '~/components/ui/OGDialogTemplate';
-import { Button } from '~/components/ui/Button';
-import { useConversationTagMutation } from 'librechat-data-provider';
-import { Spinner } from '~/components';
-import { OGDialog } from '~/components/ui/OriginalDialog';
+
 import { NotificationSeverity } from '~/common';
-import { useToastContext } from '~/Providers';
-import BookmarkForm from './BookmarkForm';
+import { Spinner } from '~/components';
+import { Button } from '~/components/ui/Button';
+import OGDialogTemplate from '~/components/ui/OGDialogTemplate';
+import { OGDialog } from '~/components/ui/OriginalDialog';
 import { useLocalize } from '~/hooks';
+import { useToastContext } from '~/Providers';
 import { logger } from '~/utils';
 
+import BookmarkForm from './BookmarkForm';
 import type { Bookmark } from './types';
 
 interface BookmarkVars {
@@ -53,7 +54,7 @@ const BookmarkEditDialog = ({
         showToast(
           bookmark
             ? localize('com_ui_bookmarks_update_success')
-            : localize('com_ui_bookmarks_create_success')
+            : localize('com_ui_bookmarks_create_success'),
         );
         setOpen(false);
         logger.log('tag_mutation', 'tags before setting', tags);
@@ -83,7 +84,7 @@ const BookmarkEditDialog = ({
         showToast(
           bookmark
             ? localize('com_ui_bookmarks_update_error')
-            : localize('com_ui_bookmarks_create_error')
+            : localize('com_ui_bookmarks_create_error'),
         );
       },
     },

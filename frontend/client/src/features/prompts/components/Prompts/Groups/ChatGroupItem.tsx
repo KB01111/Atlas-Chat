@@ -1,6 +1,7 @@
-import { useState, useMemo, memo } from 'react';
-import { Menu as MenuIcon, Edit as EditIcon, Earth, Search } from 'lucide-react';
 import type { TPromptGroup } from 'librechat-data-provider';
+import { Menu as MenuIcon, Edit as EditIcon, Earth, Search } from 'lucide-react';
+import { useState, useMemo, memo } from 'react';
+
 import {
   DropdownMenu,
   DropdownMenuItem,
@@ -8,10 +9,10 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from '~/components/ui';
-import { useLocalize, useSubmitMessage, useCustomLink, useAuthContext } from '~/hooks';
+import ListCard from '~/features/prompts/components/Prompts/Groups/ListCard';
 import VariableDialog from '~/features/prompts/components/Prompts/Groups/VariableDialog';
 import PreviewPrompt from '~/features/prompts/components/Prompts/PreviewPrompt';
-import ListCard from '~/features/prompts/components/Prompts/Groups/ListCard';
+import { useLocalize, useSubmitMessage, useCustomLink, useAuthContext } from '~/hooks';
 import { detectVariables } from '~/utils';
 
 function ChatGroupItem({
@@ -57,7 +58,7 @@ function ChatGroupItem({
         snippet={
           typeof group.oneliner === 'string' && group.oneliner.length > 0
             ? group.oneliner
-            : group.productionPrompt?.prompt ?? ''
+            : (group.productionPrompt?.prompt ?? '')
         }
       >
         <div className="flex flex-row items-center gap-2">

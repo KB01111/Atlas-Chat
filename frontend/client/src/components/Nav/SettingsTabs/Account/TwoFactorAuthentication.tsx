@@ -1,20 +1,22 @@
-import React, { useCallback, useState } from 'react';
-import { useSetRecoilState } from 'recoil';
-import { SmartphoneIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { TUser, TVerify2FARequest } from 'librechat-data-provider';
+import { SmartphoneIcon } from 'lucide-react';
+import React, { useCallback, useState } from 'react';
+import { useSetRecoilState } from 'recoil';
+
 import { OGDialog, OGDialogContent, OGDialogHeader, OGDialogTitle, Progress } from '~/components';
-import { SetupPhase, QRPhase, VerifyPhase, BackupPhase, DisablePhase } from './TwoFactorPhases';
-import { DisableTwoFactorToggle } from './DisableTwoFactorToggle';
-import { useAuthContext, useLocalize } from '~/hooks';
-import { useToastContext } from '~/Providers';
-import store from '~/store';
 import {
   useConfirmTwoFactorMutation,
   useDisableTwoFactorMutation,
   useEnableTwoFactorMutation,
   useVerifyTwoFactorMutation,
 } from '~/data-provider';
+import { useAuthContext, useLocalize } from '~/hooks';
+import { useToastContext } from '~/Providers';
+import store from '~/store';
+
+import { DisableTwoFactorToggle } from './DisableTwoFactorToggle';
+import { SetupPhase, QRPhase, VerifyPhase, BackupPhase, DisablePhase } from './TwoFactorPhases';
 
 export type Phase = 'setup' | 'qr' | 'verify' | 'backup' | 'disable';
 

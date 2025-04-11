@@ -1,17 +1,16 @@
-import { Search } from 'lucide-react';
-import { useRecoilValue } from 'recoil';
-import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
-import { Constants } from 'librechat-data-provider';
 import type { TConversation, TMessage } from 'librechat-data-provider';
-import { getEndpointField, getIconEndpoint, getIconKey } from '~/utils';
+import { Constants, useGetEndpointsQuery } from 'librechat-data-provider';
+import { Search } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useRecoilValue } from 'recoil';
+
 import ConvoIconURL from '~/components/Endpoints/ConvoIconURL';
-import { useGetEndpointsQuery } from 'librechat-data-provider';
+import { NewChatIcon } from '~/components/svg';
 import { useLocalize, useNewConvo } from '~/hooks';
 import { icons } from '~/hooks/Endpoint/Icons';
-import { NewChatIcon } from '~/components/svg';
-import { cn } from '~/utils';
 import store from '~/store';
+import { getEndpointField, getIconEndpoint, getIconKey, cn } from '~/utils';
 
 const NewChatButtonIcon = ({ conversation }: { conversation: TConversation | null }) => {
   const searchQuery = useRecoilValue(store.searchQuery);
@@ -84,7 +83,7 @@ export default function NewChat({
     if (event.button === 0 && !(event.ctrlKey || event.metaKey)) {
       event.preventDefault();
       queryClient.setQueryData<TMessage[]>(
-        ["messages", conversation?.conversationId ?? Constants.NEW_CONVO],
+        ['messages', conversation?.conversationId ?? Constants.NEW_CONVO],
         [],
       );
       newConvo();

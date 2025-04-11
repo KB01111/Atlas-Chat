@@ -1,10 +1,12 @@
-import { memo } from 'react';
 import { PermissionTypes, Permissions } from 'librechat-data-provider';
+import { memo } from 'react';
+
 import HoverCardSettings from '~/components/Nav/SettingsTabs/HoverCardSettings';
 import { useLocalize, useHasAccess } from '~/hooks';
-import SlashCommandSwitch from './SlashCommandSwitch';
-import PlusCommandSwitch from './PlusCommandSwitch';
+
 import AtCommandSwitch from './AtCommandSwitch';
+import PlusCommandSwitch from './PlusCommandSwitch';
+import SlashCommandSwitch from './SlashCommandSwitch';
 
 function Commands() {
   const localize = useLocalize();

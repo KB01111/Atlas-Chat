@@ -1,6 +1,6 @@
+import useGetAudioSettings from './useGetAudioSettings';
 import useSpeechToTextBrowser from './useSpeechToTextBrowser';
 import useSpeechToTextExternal from './useSpeechToTextExternal';
-import useGetAudioSettings from './useGetAudioSettings';
 
 const useSpeechToText = (
   setText: (text: string) => void,

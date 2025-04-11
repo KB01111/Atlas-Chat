@@ -1,12 +1,20 @@
 import * as Ariakit from '@ariakit/react';
-import { useMemo, useEffect, useState } from 'react';
-import { ShieldEllipsis } from 'lucide-react';
-import { useForm, Controller } from 'react-hook-form';
 import { Permissions, SystemRoles, roleDefaults, PermissionTypes } from 'librechat-data-provider';
+import { ShieldEllipsis } from 'lucide-react';
+import { useMemo, useEffect, useState } from 'react';
+import { useForm, Controller } from 'react-hook-form';
 import type { Control, UseFormSetValue, UseFormGetValues } from 'react-hook-form';
-import { OGDialog, OGDialogTitle, OGDialogContent, OGDialogTrigger } from '~/components/ui';
+
+import {
+  OGDialog,
+  OGDialogTitle,
+  OGDialogContent,
+  OGDialogTrigger,
+  Button,
+  Switch,
+  DropdownPopup,
+} from '~/components/ui';
 import { useUpdateAgentPermissionsMutation } from '~/data-provider';
-import { Button, Switch, DropdownPopup } from '~/components/ui';
 import { useLocalize, useAuthContext } from '~/hooks';
 import { useToastContext } from '~/Providers';
 

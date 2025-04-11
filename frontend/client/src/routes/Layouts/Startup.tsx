@@ -1,8 +1,9 @@
+import type { TStartupConfig } from 'librechat-data-provider';
 import { useEffect, useState } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import type { TStartupConfig } from 'librechat-data-provider';
-import { useGetStartupConfig } from '~/data-provider';
+
 import AuthLayout from '~/components/Auth/AuthLayout';
+import { useGetStartupConfig } from '~/data-provider';
 import { TranslationKeys, useLocalize } from '~/hooks';
 
 const headerMap: Record<string, TranslationKeys> = {

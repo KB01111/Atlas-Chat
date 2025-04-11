@@ -1,7 +1,5 @@
-import { useCallback, useMemo } from 'react';
-import { ContentTypes } from 'librechat-data-provider';
 import { useQueryClient } from '@tanstack/react-query';
-
+import { ContentTypes } from 'librechat-data-provider';
 import type {
   Text,
   TMessage,
@@ -12,6 +10,8 @@ import type {
   EventSubmission,
   TMessageContentParts,
 } from 'librechat-data-provider';
+import { useCallback, useMemo } from 'react';
+
 import { addFileToCache } from '~/utils';
 
 type TUseContentHandler = {
@@ -33,9 +33,8 @@ export default function useContentHandler({ setMessages, getMessages }: TUseCont
 
       const _messages = getMessages();
       const messages =
-        _messages
-          ?.filter((m) => m.messageId !== messageId)
-          .map((msg) => ({ ...msg, thread_id })) ?? [];
+        _messages?.filter((m) => m.messageId !== messageId).map((msg) => ({ ...msg, thread_id })) ??
+        [];
       const userMessage = messages[messages.length - 1] as TMessage | undefined;
 
       const { initialResponse } = submission;

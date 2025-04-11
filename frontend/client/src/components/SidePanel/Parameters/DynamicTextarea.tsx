@@ -1,11 +1,13 @@
 import { OptionTypes } from 'librechat-data-provider';
 import type { DynamicSettingProps } from 'librechat-data-provider';
+
+import { ESide } from '~/common';
 import { Label, TextareaAutosize, HoverCard, HoverCardTrigger } from '~/components/ui';
 import { useLocalize, useDebouncedInput, useParameterEffects, TranslationKeys } from '~/hooks';
-import { cn, defaultTextProps } from '~/utils';
 import { useChatContext } from '~/Providers';
+import { cn, defaultTextProps } from '~/utils';
+
 import OptionHover from './OptionHover';
-import { ESide } from '~/common';
 
 function DynamicTextarea({
   label = '',
@@ -58,7 +60,7 @@ function DynamicTextarea({
               htmlFor={`${settingKey}-dynamic-textarea`}
               className="text-left text-sm font-medium"
             >
-              {labelCode ? localize(label as TranslationKeys) ?? label : label || settingKey}{' '}
+              {labelCode ? (localize(label as TranslationKeys) ?? label) : label || settingKey}{' '}
               {showDefault && (
                 <small className="opacity-40">
                   (
@@ -75,7 +77,11 @@ function DynamicTextarea({
             disabled={readonly}
             value={inputValue ?? ''}
             onChange={setInputValue}
-            placeholder={placeholderCode ? localize(placeholder as TranslationKeys) ?? placeholder : placeholder}
+            placeholder={
+              placeholderCode
+                ? (localize(placeholder as TranslationKeys) ?? placeholder)
+                : placeholder
+            }
             className={cn(
               // TODO: configurable max height
               'flex max-h-[138px] min-h-[100px] w-full resize-none rounded-lg bg-surface-secondary px-3 py-2 focus:outline-none',
@@ -84,7 +90,11 @@ function DynamicTextarea({
         </HoverCardTrigger>
         {description && (
           <OptionHover
-            description={descriptionCode ? localize(description as TranslationKeys) ?? description : description}
+            description={
+              descriptionCode
+                ? (localize(description as TranslationKeys) ?? description)
+                : description
+            }
             side={ESide.Left}
           />
         )}

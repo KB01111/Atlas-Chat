@@ -1,7 +1,8 @@
 import 'test/matchMedia.mock';
+import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { render, screen } from 'test/layout-test-utils';
-import userEvent from '@testing-library/user-event';
+
 import PluginPagination from '../PluginPagination';
 
 describe('PluginPagination', () => {

@@ -1,6 +1,11 @@
-import { useEffect, useMemo } from 'react';
 import { Capabilities } from 'librechat-data-provider';
+import { useEffect, useMemo } from 'react';
 import { useFormContext, Controller, useWatch } from 'react-hook-form';
+
+import type { AgentForm } from '~/common';
+import { ESide } from '~/common';
+import OptionHover from '~/components/SidePanel/Parameters/OptionHover';
+import { CircleHelpIcon } from '~/components/svg';
 import {
   Checkbox,
   HoverCard,
@@ -8,11 +13,7 @@ import {
   HoverCardPortal,
   HoverCardTrigger,
 } from '~/components/ui';
-import OptionHover from '~/components/SidePanel/Parameters/OptionHover';
-import { CircleHelpIcon } from '~/components/svg';
-import type { AgentForm } from '~/common';
 import { useLocalize } from '~/hooks';
-import { ESide } from '~/common';
 import { cn } from '~/utils/';
 
 export default function Retrieval({ retrievalModels }: { retrievalModels: Set<string> }) {

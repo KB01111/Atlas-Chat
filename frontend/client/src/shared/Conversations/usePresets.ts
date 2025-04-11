@@ -1,23 +1,24 @@
-import filenamify from 'filenamify';
-import exportFromJSON from 'export-from-json';
-import { useCallback, useEffect, useRef } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { useRecoilState, useSetRecoilState, useRecoilValue } from 'recoil';
-import { useCreatePresetMutation, useGetModelsQuery } from 'librechat-data-provider/react-query';
+import exportFromJSON from 'export-from-json';
+import filenamify from 'filenamify';
 import type { TPreset, TEndpointsConfig } from 'librechat-data-provider';
+import { useCreatePresetMutation, useGetModelsQuery } from 'librechat-data-provider/react-query';
+import { useCallback, useEffect, useRef } from 'react';
+import { useRecoilState, useSetRecoilState, useRecoilValue } from 'recoil';
+
+import { NotificationSeverity } from '~/common';
 import {
   useUpdatePresetMutation,
   useDeletePresetMutation,
   useGetPresetsQuery,
 } from '~/data-provider';
-import { cleanupPreset, removeUnavailableTools, getConvoSwitchLogic } from '~/utils';
-import useDefaultConvo from '~/hooks/Conversations/useDefaultConvo';
-import { useChatContext, useToastContext } from '~/Providers';
 import { useAuthContext } from '~/hooks/AuthContext';
-import { NotificationSeverity } from '~/common';
+import useDefaultConvo from '~/hooks/Conversations/useDefaultConvo';
 import useLocalize from '~/hooks/useLocalize';
 import useNewConvo from '~/hooks/useNewConvo';
+import { useChatContext, useToastContext } from '~/Providers';
 import store from '~/store';
+import { cleanupPreset, removeUnavailableTools, getConvoSwitchLogic } from '~/utils';
 
 export default function usePresets() {
   const localize = useLocalize();
@@ -65,7 +66,7 @@ export default function usePresets() {
 
   const setPresets = useCallback(
     (presets: TPreset[]) => {
-      queryClient.setQueryData<TPreset[]>(["presets"], presets);
+      queryClient.setQueryData<TPreset[]>(['presets'], presets);
     },
     [queryClient],
   );
@@ -82,10 +83,10 @@ export default function usePresets() {
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(["presets"]);
+      queryClient.invalidateQueries(['presets']);
     },
     onError: (error) => {
-      queryClient.invalidateQueries(["presets"]);
+      queryClient.invalidateQueries(['presets']);
       console.error('Error deleting the preset:', error);
       showToast({
         message: localize('com_endpoint_preset_delete_error'),
@@ -109,7 +110,7 @@ export default function usePresets() {
       showToast({
         message,
       });
-      queryClient.invalidateQueries(["presets"]);
+      queryClient.invalidateQueries(['presets']);
     },
     onError: (error) => {
       console.error('Error updating the preset:', error);
@@ -130,7 +131,7 @@ export default function usePresets() {
           showToast({
             message: localize('com_endpoint_preset_import'),
           });
-          queryClient.invalidateQueries(["presets"]);
+          queryClient.invalidateQueries(['presets']);
         },
         onError: (error) => {
           console.error('Error uploading the preset:', error);
@@ -165,7 +166,7 @@ export default function usePresets() {
       duration: 750,
     });
 
-    const endpointsConfig = queryClient.getQueryData<TEndpointsConfig>(["endpoints"]);
+    const endpointsConfig = queryClient.getQueryData<TEndpointsConfig>(['endpoints']);
 
     const {
       shouldSwitch,

@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { handleDoubleClick } from '~/utils';
 
 export const CodeVariableGfm = ({ children }: { children: React.ReactNode }) => {

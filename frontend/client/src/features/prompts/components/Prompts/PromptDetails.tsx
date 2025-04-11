@@ -1,20 +1,22 @@
+import type { TPromptGroup } from 'librechat-data-provider';
 import React, { useMemo } from 'react';
 import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
+import rehypeHighlight from 'rehype-highlight';
 import rehypeKatex from 'rehype-katex';
+import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import supersub from 'remark-supersub';
-import rehypeHighlight from 'rehype-highlight';
-import type { TPromptGroup } from 'librechat-data-provider';
+
+import { Label } from '~/components/ui';
 import { codeNoExecution } from '~/features/chat/components/Chat/Messages/Content/Markdown';
 import { useLocalize, useAuthContext } from '~/hooks';
-import CategoryIcon from './Groups/CategoryIcon';
-import PromptVariables from './PromptVariables';
-import { PromptVariableGfm } from './Markdown';
 import { replaceSpecialVars } from '~/utils';
-import { Label } from '~/components/ui';
-import Description from './Description';
+
 import Command from './Command';
+import Description from './Description';
+import CategoryIcon from './Groups/CategoryIcon';
+import { PromptVariableGfm } from './Markdown';
+import PromptVariables from './PromptVariables';
 
 const PromptDetails = ({ group }: { group?: TPromptGroup }) => {
   const localize = useLocalize();

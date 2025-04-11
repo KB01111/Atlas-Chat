@@ -1,5 +1,5 @@
-import { useLocalize } from '~/hooks';
 import { TooltipAnchor } from '~/components/ui';
+import { useLocalize } from '~/hooks';
 import { cn } from '~/utils';
 
 export default function NavToggle({

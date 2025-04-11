@@ -1,8 +1,10 @@
-import { useParams, useNavigate } from 'react-router-dom';
 import type { MouseEvent, FocusEvent, KeyboardEvent } from 'react';
-import { useArchiveConversationMutation } from '~/data-provider';
+import { useParams, useNavigate } from 'react-router-dom';
+
 import { NotificationSeverity } from '~/common';
+import { useArchiveConversationMutation } from '~/data-provider';
 import { useToastContext } from '~/Providers';
+
 import useLocalize, { TranslationKeys } from '../useLocalize';
 import useNewConvo from '../useNewConvo';
 
@@ -27,7 +29,9 @@ export default function useArchiveHandler(
     if (!convoId) {
       return;
     }
-    const label: TranslationKeys = shouldArchive ? 'com_ui_archive_error' : 'com_ui_unarchive_error';
+    const label: TranslationKeys = shouldArchive
+      ? 'com_ui_archive_error'
+      : 'com_ui_unarchive_error';
     archiveConvoMutation.mutate(
       { conversationId: convoId, isArchived: shouldArchive },
       {

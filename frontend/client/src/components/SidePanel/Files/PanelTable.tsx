@@ -1,6 +1,3 @@
-import { useState, useCallback, useMemo } from 'react';
-import { ArrowUpLeft } from 'lucide-react';
-import { useSetRecoilState } from 'recoil';
 import {
   flexRender,
   getCoreRowModel,
@@ -21,6 +18,9 @@ import {
   isAssistantsEndpoint,
   type TFile,
 } from 'librechat-data-provider';
+import { ArrowUpLeft } from 'lucide-react';
+import { useState, useCallback, useMemo } from 'react';
+import { useSetRecoilState } from 'recoil';
 
 import {
   Button,
@@ -32,9 +32,9 @@ import {
   TableHeader,
   TableRow,
 } from '~/components/ui';
-import { useFileMapContext, useChatContext, useToastContext } from '~/Providers';
-import { useLocalize, useUpdateFiles } from '~/hooks';
 import { useGetFileConfig } from '~/data-provider';
+import { useLocalize, useUpdateFiles } from '~/hooks';
+import { useFileMapContext, useChatContext, useToastContext } from '~/Providers';
 import store from '~/store';
 
 interface DataTableProps<TData, TValue> {

@@ -1,27 +1,24 @@
-import type { TMessage } from "librechat-data-provider";
-import { useGetMessagesByConvoId } from "librechat-data-provider/react-query";
-import { memo, useCallback } from "react";
-import { useForm } from "react-hook-form";
-import { useParams } from "react-router-dom";
-import { useRecoilValue } from "recoil";
-import type { ChatFormValues } from "~/common";
-import { Spinner } from "~/components/svg";
-import { useAddedResponse, useChatHelpers, useSSE } from "~/hooks";
-import {
-  AddedChatContext,
-  ChatContext,
-  ChatFormProvider,
-  useFileMapContext,
-} from "~/Providers";
-import store from "~/store";
-import { buildTree } from "~/utils";
-import Footer from "./Footer";
-import Header from "./Header";
-import ChatForm from "./Input/ChatForm";
-import ConversationStarters from "./Input/ConversationStarters";
-import Landing from "./Landing";
-import MessagesView from "./Messages/MessagesView";
-import Presentation from "./Presentation";
+import type { TMessage } from 'librechat-data-provider';
+import { useGetMessagesByConvoId } from 'librechat-data-provider/react-query';
+import { memo, useCallback } from 'react';
+import { useForm } from 'react-hook-form';
+import { useParams } from 'react-router-dom';
+import { useRecoilValue } from 'recoil';
+
+import type { ChatFormValues } from '~/common';
+import { Spinner } from '~/components/svg';
+import { useAddedResponse, useChatHelpers, useSSE } from '~/hooks';
+import { AddedChatContext, ChatContext, ChatFormProvider, useFileMapContext } from '~/Providers';
+import store from '~/store';
+import { buildTree } from '~/utils';
+
+import Footer from './Footer';
+import Header from './Header';
+import ChatForm from './Input/ChatForm';
+import ConversationStarters from './Input/ConversationStarters';
+import Landing from './Landing';
+import MessagesView from './Messages/MessagesView';
+import Presentation from './Presentation';
 
 function ChatView({ index = 0 }: { index?: number }) {
   const { conversationId } = useParams();
@@ -31,19 +28,16 @@ function ChatView({ index = 0 }: { index?: number }) {
 
   const fileMap = useFileMapContext();
 
-  const { data: messagesTree = null, isLoading } = useGetMessagesByConvoId(
-    conversationId ?? "",
-    {
-      select: useCallback(
-        (data: TMessage[]) => {
-          const dataTree = buildTree({ messages: data, fileMap });
-          return dataTree?.length === 0 ? null : dataTree ?? null;
-        },
-        [fileMap],
-      ),
-      enabled: !!fileMap,
-    },
-  );
+  const { data: messagesTree = null, isLoading } = useGetMessagesByConvoId(conversationId ?? '', {
+    select: useCallback(
+      (data: TMessage[]) => {
+        const dataTree = buildTree({ messages: data, fileMap });
+        return dataTree?.length === 0 ? null : (dataTree ?? null);
+      },
+      [fileMap],
+    ),
+    enabled: !!fileMap,
+  });
 
   const chatHelpers = useChatHelpers(index, conversationId);
   const addedChatHelpers = useAddedResponse({ rootIndex: index });
@@ -52,13 +46,13 @@ function ChatView({ index = 0 }: { index?: number }) {
   useSSE(addedSubmission, addedChatHelpers, true);
 
   const methods = useForm<ChatFormValues>({
-    defaultValues: { text: "" },
+    defaultValues: { text: '' },
   });
 
   let content: JSX.Element | null | undefined;
   const isLandingPage = !messagesTree || messagesTree.length === 0;
 
-  if (isLoading && conversationId !== "new") {
+  if (isLoading && conversationId !== 'new') {
     content = (
       <div className="relative flex-1 overflow-hidden overflow-y-auto">
         <div className="relative flex h-full items-center justify-center">

@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import type { FC } from 'react';
-import type { Bookmark } from './types';
-import { TooltipAnchor, OGDialogTrigger } from '~/components/ui';
-import BookmarkEditDialog from './BookmarkEditDialog';
+
 import { EditIcon } from '~/components/svg';
+import { TooltipAnchor, OGDialogTrigger } from '~/components/ui';
 import { useLocalize } from '~/hooks';
+
+import BookmarkEditDialog from './BookmarkEditDialog';
+import type { Bookmark } from './types';
 
 const EditBookmarkButton: FC<{
   bookmark: Bookmark;

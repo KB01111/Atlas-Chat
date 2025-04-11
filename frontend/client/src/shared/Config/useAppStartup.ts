@@ -1,11 +1,12 @@
+import { LocalStorageKeys } from 'librechat-data-provider';
+import type { TStartupConfig, TPlugin, TUser } from 'librechat-data-provider';
+import { useAvailablePluginsQuery } from 'librechat-data-provider/react-query';
 import { useEffect } from 'react';
 import TagManager from 'react-gtm-module';
 import { useRecoilState, useSetRecoilState } from 'recoil';
-import { LocalStorageKeys } from 'librechat-data-provider';
-import { useAvailablePluginsQuery } from 'librechat-data-provider/react-query';
-import type { TStartupConfig, TPlugin, TUser } from 'librechat-data-provider';
-import { mapPlugins, selectPlugins, processPlugins } from '~/utils';
+
 import store from '~/store';
+import { mapPlugins, selectPlugins, processPlugins } from '~/utils';
 
 const pluginStore: TPlugin = {
   name: 'Plugin store',

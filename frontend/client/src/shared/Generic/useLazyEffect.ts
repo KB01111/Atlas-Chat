@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 // https://stackoverflow.com/a/67504622/51500
-import { DependencyList, EffectCallback, useCallback, useEffect, useRef } from 'react';
 import debounce from 'lodash/debounce';
+import { DependencyList, EffectCallback, useCallback, useEffect, useRef } from 'react';
 
 export function useLazyEffect(effect: EffectCallback, deps: DependencyList = [], wait = 300) {
   const cleanUp = useRef<void | (() => void)>();

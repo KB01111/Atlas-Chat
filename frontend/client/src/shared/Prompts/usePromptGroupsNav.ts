@@ -1,9 +1,10 @@
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { useMemo, useRef, useEffect, useCallback } from 'react';
-import { usePromptGroupsInfiniteQuery } from '~/data-provider';
-import debounce from 'lodash/debounce';
-import store from '~/store';
 import { useQueryClient } from '@tanstack/react-query';
+import debounce from 'lodash/debounce';
+import { useMemo, useRef, useEffect, useCallback } from 'react';
+import { useRecoilState, useRecoilValue } from 'recoil';
+
+import { usePromptGroupsInfiniteQuery } from '~/data-provider';
+import store from '~/store';
 
 export default function usePromptGroupsNav() {
   const queryClient = useQueryClient();
@@ -30,7 +31,7 @@ export default function usePromptGroupsNav() {
   useEffect(() => {
     maxPageNumberReached.current = 1;
     setPageNumber(1);
-    queryClient.resetQueries(["promptGroups", name, category, pageSize]);
+    queryClient.resetQueries(['promptGroups', name, category, pageSize]);
   }, [pageSize, name, category, setPageNumber]);
 
   const promptGroups = useMemo(() => {

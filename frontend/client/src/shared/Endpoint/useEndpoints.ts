@@ -1,5 +1,3 @@
-import React, { useMemo, useCallback } from 'react';
-import { useGetModelsQuery } from 'librechat-data-provider/react-query';
 import {
   EModelEndpoint,
   PermissionTypes,
@@ -14,11 +12,15 @@ import type {
   TAssistantsMap,
   TStartupConfig,
 } from 'librechat-data-provider';
+import { useGetModelsQuery } from 'librechat-data-provider/react-query';
+import React, { useMemo, useCallback } from 'react';
+
 import type { Endpoint } from '~/common';
-import { mapEndpoints, getIconKey, getEndpointField } from '~/utils';
 import { useGetEndpointsQuery } from '~/data-provider';
-import { useChatContext } from '~/Providers';
 import { useHasAccess } from '~/hooks';
+import { useChatContext } from '~/Providers';
+import { mapEndpoints, getIconKey, getEndpointField } from '~/utils';
+
 import { icons } from './Icons';
 
 export const useEndpoints = ({
@@ -113,11 +115,11 @@ export const useEndpoints = ({
         hasModels,
         icon: Icon
           ? React.createElement(Icon, {
-            size: 20,
-            className: 'text-text-primary shrink-0 icon-md',
-            iconURL: endpointIconURL,
-            endpoint: ep,
-          })
+              size: 20,
+              className: 'text-text-primary shrink-0 icon-md',
+              iconURL: endpointIconURL,
+              endpoint: ep,
+            })
           : null,
       };
 

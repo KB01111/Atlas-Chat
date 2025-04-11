@@ -1,5 +1,3 @@
-import { useCallback } from 'react';
-import { useRecoilValue } from 'recoil';
 import { EModelEndpoint, isAgentsEndpoint, isAssistantsEndpoint } from 'librechat-data-provider';
 import type {
   TPreset,
@@ -8,11 +6,14 @@ import type {
   TAssistantsMap,
   TEndpointsConfig,
 } from 'librechat-data-provider';
+import { useCallback } from 'react';
+import { useRecoilValue } from 'recoil';
+
 import type { MentionOption, ConvoGenerator } from '~/common';
-import { getConvoSwitchLogic, getModelSpecIconURL, removeUnavailableTools } from '~/utils';
-import { useChatContext } from '~/Providers';
 import { useDefaultConvo } from '~/hooks';
+import { useChatContext } from '~/Providers';
 import store from '~/store';
+import { getConvoSwitchLogic, getModelSpecIconURL, removeUnavailableTools } from '~/utils';
 
 export default function useSelectMention({
   presets,

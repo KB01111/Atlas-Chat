@@ -1,5 +1,6 @@
 import { Search, X } from 'lucide-react';
 import React, { useState, useMemo, useCallback, useRef } from 'react';
+
 import { useLocalize } from '~/hooks';
 import { cn } from '~/utils';
 
@@ -53,7 +54,7 @@ export default function MultiSearch({
       <button
         className={cn(
           'relative flex h-5 w-5 items-center justify-end rounded-md text-text-secondary-alt',
-          value?.length ?? 0 ? 'cursor-pointer opacity-100' : 'hidden',
+          (value?.length ?? 0) ? 'cursor-pointer opacity-100' : 'hidden',
         )}
         aria-label={'Clear search'}
         onClick={clearSearch}
@@ -63,7 +64,7 @@ export default function MultiSearch({
           aria-hidden={'true'}
           className={cn(
             'text-text-secondary-alt',
-            value?.length ?? 0 ? 'cursor-pointer opacity-100' : 'opacity-0',
+            (value?.length ?? 0) ? 'cursor-pointer opacity-100' : 'opacity-0',
           )}
         />
       </button>

@@ -1,30 +1,54 @@
-import debounce from 'lodash/debounce';
-import { useRecoilValue } from 'recoil';
-import { Menu, Rocket } from 'lucide-react';
-import { useForm, FormProvider } from 'react-hook-form';
-import { useParams, useOutletContext } from 'react-router-dom';
-import { useEffect, useState, useMemo, useCallback, useRef } from 'react';
 import type { TCreatePrompt } from 'librechat-data-provider';
 import { SystemRoles, PermissionTypes, Permissions } from 'librechat-data-provider';
+import debounce from 'lodash/debounce';
+import { Menu, Rocket } from 'lucide-react';
+import { useEffect, useState, useMemo, useCallback, useRef } from 'react';
+import { useForm, FormProvider } from 'react-hook-form';
+import { useParams, useOutletContext } from 'react-router-dom';
+import { useRecoilValue } from 'recoil';
 
+import { PromptsEditorMode } from '~/common';
+import { Button, Skeleton } from '~/components/ui';
 import { useAuthContext, useLocalize } from '~/hooks';
+import { useToastContext } from '~/Providers';
+import store from '~/store';
+import { cn, findPromptGroup } from '~/utils';
+
+import Command from './Command';
+import DeleteConfirm from './DeleteVersion';
+import Description from './Description';
 import CategorySelector from './Groups/CategorySelector';
 import NoPromptGroup from './Groups/NoPromptGroup';
-import { Button, Skeleton } from '~/components/ui';
-import PromptVariables from './PromptVariables';
-import { cn, findPromptGroup } from '~/utils';
-import { useToastContext } from '~/Providers';
-import PromptVersions from './PromptVersions';
-import { PromptsEditorMode } from '~/common';
-import DeleteConfirm from './DeleteVersion';
 import PromptDetails from './PromptDetails';
 import PromptEditor from './PromptEditor';
-import SkeletonForm from './SkeletonForm';
-import Description from './Description';
-import SharePrompt from './SharePrompt';
 import PromptName from './PromptName';
-import Command from './Command';
-import store from '~/store';
+import PromptVariables from './PromptVariables';
+import PromptVersions from './PromptVersions';
+import SharePrompt from './SharePrompt';
+import SkeletonForm from './SkeletonForm';
+
+// Mock hooks (replace with actual implementations if available)
+const useGetPromptGroup = (promptId: string) => ({
+  data: {
+    _id: promptId,
+    name: 'Test Group',
+    category: 'General',
+    productionId: 'prod123',
+    oneliner: '',
+    command: '',
+    author: 'user1',
+  },
+  isLoading: false,
+});
+const useGetPrompts = (config: any, options: any) => ({
+  data: [
+    { _id: 'p1', prompt: 'Initial Prompt', type: 'text', groupId: 'g1', productionId: 'prod123' },
+  ],
+  isLoading: false,
+});
+const useUpdatePromptGroup = (options: any) => ({
+  mutate: (args: any) => console.log('Updating group:', args),
+});
 
 const PromptForm = () => {
   const params = useParams();
@@ -32,7 +56,7 @@ const PromptForm = () => {
   const { user } = useAuthContext();
   const alwaysMakeProd = useRecoilValue(store.alwaysMakeProd);
   const { showToast } = useToastContext();
-  const promptId = params.promptId || '';
+  const promptId = params.promptId || 'g1'; // Use a default for mock
 
   const [selectionIndex, setSelectionIndex] = useState<number>(0);
   const editorMode = useRecoilValue(store.promptsEditorMode);
@@ -73,26 +97,35 @@ const PromptForm = () => {
   );
 
   // const { groupsQuery } = useOutletContext<ReturnType<typeof usePromptGroupsNav>>();
+  const hasShareAccess = false; // Mock value
   // const hasShareAccess = useHasAccess({
   //   permissionType: PermissionTypes.PROMPTS,
   //   permission: Permissions.SHARED_GLOBAL,
   // });
 
-  // const updateGroupMutation = useUpdatePromptGroup({
-  //   onError: () => {
-  //     showToast({
-  //       status: 'error',
-  //       message: localize('com_ui_prompt_update_error'),
-  //     });
-    
-      const groupsQuery = { data: null };
-      const hasShareAccess = false;
-    },
+  const updateGroupMutation = useUpdatePromptGroup({
+    //   onError: () => {
+    //     showToast({
+    //       status: 'error',
+    //       message: localize('com_ui_prompt_update_error'),
+    //     });
+    // const groupsQuery = { data: null };
+    // const hasShareAccess = false;
+    // },
   });
 
-  const createPromptMutation = { mutate: (_arg?: any) => {}, isLoading: false };
-  const makeProductionMutation = { mutate: (_arg?: any) => {}, isLoading: false };
-  const deletePromptMutation = { mutate: (_arg?: any) => {}, isLoading: false };
+  const createPromptMutation = {
+    mutate: (arg?: any) => console.log('Creating prompt:', arg),
+    isLoading: false,
+  };
+  const makeProductionMutation = {
+    mutate: (arg?: any) => console.log('Making production:', arg),
+    isLoading: false,
+  };
+  const deletePromptMutation = {
+    mutate: (arg?: any) => console.log('Deleting prompt:', arg),
+    isLoading: false,
+  };
 
   // const makeProductionMutation = useMakePromptProduction();
   // const deletePromptMutation = useDeletePrompt();
@@ -170,8 +203,10 @@ const PromptForm = () => {
   }, [params.promptId, editorMode, group?.productionId, prompts, handleLoadingComplete]);
 
   useEffect(() => {
-    setValue('prompt', selectedPrompt ? selectedPrompt.prompt : '' as any, { shouldDirty: false });
-    setValue('category', group ? group.category : '' as any, { shouldDirty: false });
+    setValue('prompt', selectedPrompt ? selectedPrompt.prompt : ('' as any), {
+      shouldDirty: false,
+    });
+    setValue('category', group ? group.category : ('' as any), { shouldDirty: false });
   }, [selectedPrompt, group, setValue]);
 
   useEffect(() => {
@@ -209,6 +244,7 @@ const PromptForm = () => {
     return <SkeletonForm />;
   }
 
+  // Mocking logic that depends on groupsQuery and user role
   // if (!isOwner && groupsQuery.data && user?.role !== SystemRoles.ADMIN) {
   //   const fetchedPrompt = findPromptGroup(
   //     groupsQuery.data,
@@ -222,11 +258,11 @@ const PromptForm = () => {
   // }
 
   if (!group || group._id == null) {
-    return null;
+    // Return a placeholder or loading state if group is essential
+    return <NoPromptGroup />;
   }
 
   const groupId = group._id;
-
   const groupName = group.name;
   const groupCategory = group.category;
 
@@ -294,18 +330,18 @@ const PromptForm = () => {
       {editorMode === PromptsEditorMode.ADVANCED &&
         (isLoadingPrompts
           ? Array.from({ length: 6 }).map((_, index: number) => (
-            <div key={index} className="my-2">
-              <Skeleton className="h-[72px] w-full" />
-            </div>
-          ))
+              <div key={index} className="my-2">
+                <Skeleton className="h-[72px] w-full" />
+              </div>
+            ))
           : prompts.length > 0 && (
-            <PromptVersions
-              group={group}
-              prompts={prompts}
-              selectionIndex={selectionIndex}
-              setSelectionIndex={setSelectionIndex}
-            />
-          ))}
+              <PromptVersions
+                group={group}
+                prompts={prompts}
+                selectionIndex={selectionIndex}
+                setSelectionIndex={setSelectionIndex}
+              />
+            ))}
     </div>
   );
 

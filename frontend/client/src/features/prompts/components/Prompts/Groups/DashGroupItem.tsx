@@ -1,13 +1,14 @@
-import { memo, useState, useRef, useMemo, useCallback, KeyboardEvent } from 'react';
-import { Earth, Pen } from 'lucide-react';
-import { useNavigate, useParams } from 'react-router-dom';
 import { SystemRoles, type TPromptGroup } from 'librechat-data-provider';
-import { useDeletePromptGroup, useUpdatePromptGroup } from '~/data-provider';
-import { Input, Label, Button, OGDialog, OGDialogTrigger } from '~/components/ui';
-import CategoryIcon from '~/features/prompts/components/Prompts/Groups/CategoryIcon';
-import OGDialogTemplate from '~/components/ui/OGDialogTemplate';
-import { useLocalize, useAuthContext } from '~/hooks';
+import { Earth, Pen } from 'lucide-react';
+import { memo, useState, useRef, useMemo, useCallback, KeyboardEvent } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+
 import { TrashIcon } from '~/components/svg';
+import { Input, Label, Button, OGDialog, OGDialogTrigger } from '~/components/ui';
+import OGDialogTemplate from '~/components/ui/OGDialogTemplate';
+import { useDeletePromptGroup, useUpdatePromptGroup } from '~/data-provider';
+import CategoryIcon from '~/features/prompts/components/Prompts/Groups/CategoryIcon';
+import { useLocalize, useAuthContext } from '~/hooks';
 import { cn } from '~/utils/';
 
 interface DashGroupItemProps {

@@ -1,8 +1,22 @@
-import { useRecoilState } from 'recoil';
 import * as Tabs from '@radix-ui/react-tabs';
+import { useGetCustomConfigSpeechQuery } from 'librechat-data-provider/react-query';
 import { Lightbulb, Cog } from 'lucide-react';
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { useGetCustomConfigSpeechQuery } from 'librechat-data-provider/react-query';
+import { useRecoilState } from 'recoil';
+
+import { useOnClickOutside, useMediaQuery } from '~/hooks';
+import store from '~/store';
+import { cn, logger } from '~/utils';
+
+import ConversationModeSwitch from './ConversationModeSwitch';
+import {
+  AutoTranscribeAudioSwitch,
+  LanguageSTTDropdown,
+  SpeechToTextSwitch,
+  AutoSendTextSelector,
+  EngineSTTDropdown,
+  DecibelSelector,
+} from './STT';
 import {
   CloudBrowserVoicesSwitch,
   AutomaticPlaybackSwitch,
@@ -12,18 +26,6 @@ import {
   VoiceDropdown,
   PlaybackRate,
 } from './TTS';
-import {
-  AutoTranscribeAudioSwitch,
-  LanguageSTTDropdown,
-  SpeechToTextSwitch,
-  AutoSendTextSelector,
-  EngineSTTDropdown,
-  DecibelSelector,
-} from './STT';
-import ConversationModeSwitch from './ConversationModeSwitch';
-import { useOnClickOutside, useMediaQuery } from '~/hooks';
-import { cn, logger } from '~/utils';
-import store from '~/store';
 
 function Speech() {
   const [confirmClear, setConfirmClear] = useState(false);
