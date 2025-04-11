@@ -19,7 +19,7 @@ function AccountSettings() {
   const { user, isAuthenticated, logout } = useAuthContext();
   const { data: startupConfig } = useGetStartupConfig();
   const balanceQuery = useGetUserBalance({
-    enabled: !!isAuthenticated && startupConfig?.balance?.enabled,
+    enabled: Boolean(isAuthenticated) && startupConfig?.balance?.enabled,
   });
   const [showSettings, setShowSettings] = useState(false);
   const [showFiles, setShowFiles] = useRecoilState(store.showFiles);
@@ -115,7 +115,7 @@ function AccountSettings() {
         </Select.SelectItem>
         <DropdownMenuSeparator />
         <Select.SelectItem
-          aria-selected={true}
+          aria-selected
           onClick={() => logout()}
           value="logout"
           className="select-item text-sm"

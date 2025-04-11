@@ -5,10 +5,12 @@ import React, { useEffect, useState } from 'react';
 import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 
 import AgentSelector from './components/AgentSelector';
+
 // Import components
 import Login from './components/Auth/Login';
 import Register from './components/Auth/Register';
 import ChatContainer from './components/Chat/ChatContainer'; // Corrected import path
+
 import { ApiProvider } from './data-provider/simplified-api.tsx'; // Added .tsx extension
 import { useApi } from './data-provider/simplified-api.tsx'; // Added .tsx extension
 
@@ -22,7 +24,7 @@ const AuthProvider = ({ children }) => {
     const checkAuth = async () => {
       try {
         const user = await api.getCurrentUser();
-        setIsAuthenticated(!!user);
+        setIsAuthenticated(Boolean(user));
       } catch (error) {
         console.error('Auth check failed:', error);
         setIsAuthenticated(false);

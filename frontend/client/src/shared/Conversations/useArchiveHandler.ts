@@ -18,7 +18,6 @@ export default function useArchiveHandler(
   const { showToast } = useToastContext();
   const { newConversation } = useNewConvo();
   const { conversationId: currentConvoId } = useParams();
-
   const archiveConvoMutation = useArchiveConversationMutation(conversationId ?? '');
 
   return async (e?: MouseEvent | FocusEvent | KeyboardEvent) => {

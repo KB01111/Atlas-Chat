@@ -92,7 +92,7 @@ const conversationByIndex = atomFamily<TConversation | null, string | number>({
         if (newValue?.tools && Array.isArray(newValue.tools)) {
           localStorage.setItem(
             LocalStorageKeys.LAST_TOOLS,
-            JSON.stringify(newValue.tools.filter((el) => !!el)),
+            JSON.stringify(newValue.tools.filter((el) => Boolean(el))),
           );
         }
 

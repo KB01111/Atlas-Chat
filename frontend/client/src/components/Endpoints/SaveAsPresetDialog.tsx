@@ -16,12 +16,10 @@ const SaveAsPresetDialog = ({ open, onOpenChange, preset }: TEditPresetProps) =>
   const localize = useLocalize();
 
   const submitPreset = () => {
-    const _preset = cleanupPreset({
-      preset: {
-        ...preset,
-        title,
-      },
-    });
+    const _preset = {
+      ...cleanupPreset(preset),
+      title,
+    };
 
     const toastTitle =
       _preset.title ?? '' ? `\`${_preset.title}\`` : localize('com_endpoint_preset_title');
@@ -30,13 +28,14 @@ const SaveAsPresetDialog = ({ open, onOpenChange, preset }: TEditPresetProps) =>
       onSuccess: () => {
         showToast({
           message: `${toastTitle} ${localize('com_ui_saved')}`,
+          severity: NotificationSeverity.Success,
         });
         onOpenChange(false); // Close the dialog on success
       },
       onError: () => {
         showToast({
           message: localize('com_endpoint_preset_save_error'),
-          severity: NotificationSeverity.ERROR,
+          severity: NotificationSeverity.Error,
         });
       },
     });
@@ -76,9 +75,9 @@ const SaveAsPresetDialog = ({ open, onOpenChange, preset }: TEditPresetProps) =>
                 placeholder={localize('com_endpoint_preset_custom_name_placeholder')}
                 aria-label={localize('com_endpoint_preset_name')}
                 className={cn(
+                  removeFocusOutlines,
                   defaultTextProps,
                   'flex h-10 max-h-10 w-full resize-none border-border-medium px-3 py-2 ',
-                  removeFocusOutlines,
                 )}
               />
             </div>

@@ -130,11 +130,7 @@ export default function Settings({ conversation, setOption, models, readonly }: 
               />
             </div>
           </HoverCardTrigger>
-          <OptionHoverAlt
-            description="com_endpoint_context_info"
-            langCode={true}
-            side={ESide.Left}
-          />
+          <OptionHoverAlt description="com_endpoint_context_info" langCode side={ESide.Left} />
         </HoverCard>
         <HoverCard openDelay={300}>
           <HoverCardTrigger className="grid w-full items-center gap-2">
@@ -182,7 +178,7 @@ export default function Settings({ conversation, setOption, models, readonly }: 
               <Label htmlFor="top-p-int" className="text-left text-sm font-medium">
                 {localize('com_endpoint_top_p')}{' '}
                 <small className="opacity-40">
-                  ({localize('com_endpoint_default_with_num', { 0: google.topP.default + '' })})
+                  ({localize('com_endpoint_default_with_num', { 0: String(google.topP.default) })})
                 </small>
               </Label>
               <InputNumber
@@ -223,7 +219,7 @@ export default function Settings({ conversation, setOption, models, readonly }: 
               <Label htmlFor="top-k-int" className="text-left text-sm font-medium">
                 {localize('com_endpoint_top_k')}{' '}
                 <small className="opacity-40">
-                  ({localize('com_endpoint_default_with_num', { 0: google.topK.default + '' })})
+                  ({localize('com_endpoint_default_with_num', { 0: String(google.topK.default) })})
                 </small>
               </Label>
               <InputNumber
@@ -263,9 +259,8 @@ export default function Settings({ conversation, setOption, models, readonly }: 
               <Label htmlFor="max-tokens-int" className="text-left text-sm font-medium">
                 {localize('com_endpoint_max_output_tokens')}{' '}
                 <small className="opacity-40">
-                  (
-                  {localize('com_endpoint_default_with_num', {
-                    0: google.maxOutputTokens.default + '',
+                  ({localize('com_endpoint_default_with_num', {
+                    0: String(google.maxOutputTokens.default),
                   })}
                   )
                 </small>

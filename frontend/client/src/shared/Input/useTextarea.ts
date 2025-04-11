@@ -224,7 +224,7 @@ export default function useTextarea({
         setFilesLoading(true);
         const timestampedFiles: File[] = [];
         for (const file of clipboardData.files) {
-          const newFile = new File([file], `clipboard_${+new Date()}_${file.name}`, {
+          const newFile = new File([file], `clipboard_${Number(new Date())}_${file.name}`, {
             type: file.type,
           });
           timestampedFiles.push(newFile);

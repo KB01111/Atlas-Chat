@@ -91,7 +91,7 @@ function DynamicDropdown({
           )}
           <SelectDropDown
             showLabel={false}
-            emptyTitle={true}
+            emptyTitle
             disabled={readonly}
             value={selectedValue}
             setValue={handleChange}

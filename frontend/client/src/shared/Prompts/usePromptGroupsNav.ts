@@ -25,7 +25,7 @@ export default function usePromptGroupsNav() {
     name,
     pageSize,
     category,
-    pageNumber: pageNumber + '',
+    pageNumber: String(pageNumber),
   });
 
   useEffect(() => {
@@ -35,7 +35,7 @@ export default function usePromptGroupsNav() {
   }, [pageSize, name, category, setPageNumber]);
 
   const promptGroups = useMemo(() => {
-    return groupsQuery.data?.pages[pageNumber - 1 + '']?.promptGroups || [];
+    return groupsQuery.data?.pages[String(pageNumber - 1)]?.promptGroups || [];
   }, [groupsQuery.data, pageNumber]);
 
   const nextPage = () => {
@@ -49,8 +49,8 @@ export default function usePromptGroupsNav() {
   };
 
   const isFetching = groupsQuery.isFetchingNextPage;
-  const hasNextPage = !!groupsQuery.hasNextPage || maxPageNumberReached.current > pageNumber;
-  const hasPreviousPage = !!groupsQuery.hasPreviousPage || pageNumber > 1;
+  const hasNextPage = Boolean(groupsQuery.hasNextPage) || maxPageNumberReached.current > pageNumber;
+  const hasPreviousPage = Boolean(groupsQuery.hasPreviousPage) || pageNumber > 1;
 
   const debouncedSetName = useCallback(
     debounce((nextValue: string) => {

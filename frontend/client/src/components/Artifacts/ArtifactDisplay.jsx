@@ -234,8 +234,8 @@ const ArtifactDisplay = ({ artifact, onClose, onDownload, onShare, showMetadata 
               <SyntaxHighlighter
                 language={language}
                 style={vscDarkPlus}
-                showLineNumbers={true}
-                wrapLines={true}
+                showLineNumbers
+                wrapLines
                 className="code-highlighter"
               >
                 {content}

@@ -168,8 +168,8 @@ const CodeExecutionComponent = ({
             <SyntaxHighlighter
               language={selectedLanguage}
               style={vscDarkPlus}
-              showLineNumbers={true}
-              wrapLines={true}
+              showLineNumbers
+              wrapLines
               className="code-highlighter"
             >
               {code}

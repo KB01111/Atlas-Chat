@@ -35,7 +35,7 @@ const NewChatButtonIcon = ({ conversation }: { conversation: TConversation | nul
 
   return (
     <div className="h-7 w-7 flex-shrink-0">
-      {iconURL && iconURL.includes('http') ? (
+      {iconURL?.includes('http') ? (
         <ConvoIconURL
           iconURL={iconURL}
           modelLabel={conversation?.chatGptLabel ?? conversation?.modelLabel ?? ''}

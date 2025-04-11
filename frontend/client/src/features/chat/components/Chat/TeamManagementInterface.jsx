@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FiSettings, FiUserCheck, FiUserPlus, FiUsers, FiUserX } from 'react-icons/fi';
-
 import TeamChatInterface from './TeamChatInterface';
 
 const TeamManagementInterface = ({

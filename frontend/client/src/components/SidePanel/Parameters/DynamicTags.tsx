@@ -77,7 +77,7 @@ function DynamicTags({
 
       if (minTags != null && currentTags.length <= minTags) {
         showToast({
-          message: localize('com_ui_min_tags', { 0: minTags + '' }),
+          message: localize('com_ui_min_tags', { 0: String(minTags) }),
           status: 'warning',
         });
         return;
@@ -96,7 +96,7 @@ function DynamicTags({
     let update = [...(currentTags ?? []), tagText];
     if (maxTags != null && update.length > maxTags) {
       showToast({
-        message: localize('com_ui_max_tags', { 0: maxTags + '' }),
+        message: localize('com_ui_max_tags', { 0: String(maxTags) }),
         status: 'warning',
       });
       update = update.slice(-maxTags);

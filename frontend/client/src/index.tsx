@@ -14,11 +14,15 @@ import App from './components/App';
 import './styles/global.css';
 
 Sentry.init({
-  dsn: 'https://33edc136c49f638f27ba5912df6e0482@o4508916501970944.ingest.de.sentry.io/4509068742033488',
+  dsn: process.env.REACT_APP_SENTRY_DSN,
   integrations: [new BrowserTracing()],
   tracesSampleRate: 1.0,
+  environment: process.env.REACT_APP_SENTRY_ENVIRONMENT || 'development',
   tracePropagationTargets: ['localhost', /\/api\//],
 });
+
+// Trigger a test error to verify Sentry integration
+Sentry.captureException(new Error('Sentry test error - integration verification'));
 
 const queryClient = new QueryClient();
 

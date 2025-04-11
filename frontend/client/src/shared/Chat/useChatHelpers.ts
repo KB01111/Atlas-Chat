@@ -98,7 +98,7 @@ export default function useChatHelpers(index = 0, paramId?: string) {
       (element) => element.messageId == latestMessage.parentMessageId,
     );
 
-    if (parentMessage && parentMessage.isCreatedByUser) {
+    if (parentMessage?.isCreatedByUser) {
       ask({ ...parentMessage }, { isContinued: true, isRegenerate: true, isEdited: true });
     } else {
       console.error(

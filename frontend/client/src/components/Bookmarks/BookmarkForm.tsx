@@ -40,7 +40,7 @@ const BookmarkForm = ({
     getValues,
     control,
     formState: { errors },
-  } = useForm<TConversationTagRequest>({
+  } = useForm<any>({
     defaultValues: {
       tag: bookmark?.tag ?? '',
       description: bookmark?.description ?? '',
@@ -50,7 +50,7 @@ const BookmarkForm = ({
   });
 
   useEffect(() => {
-    if (bookmark && bookmark.tag) {
+    if (bookmark?.tag) {
       setValue('tag', bookmark.tag);
       setValue('description', bookmark.description ?? '');
     }
@@ -109,7 +109,7 @@ const BookmarkForm = ({
                 );
               },
             })}
-            aria-invalid={!!errors.tag}
+            aria-invalid={Boolean(errors.tag)}
             placeholder="Bookmark"
           />
           {typeof errors.tag === 'object' &&

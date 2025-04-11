@@ -50,18 +50,18 @@ export default function StreamAudio({ index = 0 }) {
   useEffect(() => {
     const latestText = getLatestText(latestMessage);
 
-    const shouldFetch = !!(
+    const shouldFetch = Boolean(
       token != null &&
-      automaticPlayback &&
-      !isSubmitting &&
-      latestMessage &&
-      !latestMessage.isCreatedByUser &&
-      latestText &&
-      latestMessage.messageId &&
-      !latestMessage.messageId.includes('_') &&
-      !isFetching &&
-      activeRunId != null &&
-      activeRunId !== audioRunId
+        automaticPlayback &&
+        !isSubmitting &&
+        latestMessage &&
+        !latestMessage.isCreatedByUser &&
+        latestText &&
+        latestMessage.messageId &&
+        !latestMessage.messageId.includes('_') &&
+        !isFetching &&
+        activeRunId != null &&
+        activeRunId !== audioRunId
     );
 
     if (!shouldFetch) {

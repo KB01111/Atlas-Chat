@@ -21,11 +21,6 @@ import { useRecoilState, useRecoilValue, useSetRecoilState, useRecoilCallback } 
 import type { AssistantListItem } from '~shared/common';
 import { mainTextareaId } from '~shared/common';
 import store from '~shared/store';
-
-import useAssistantListMap from './Assistants/useAssistantListMap';
-import { usePauseGlobalAudio } from './Audio';
-import { useResetChatBadges } from './useChatBadges';
-
 import {
   useDeleteFilesMutation,
   useGetEndpointsQuery,
@@ -39,6 +34,9 @@ import {
   getModelSpecIconURL,
   updateLastSelectedModel,
 } from '~shared/utils';
+import useAssistantListMap from './Assistants/useAssistantListMap';
+import { useResetChatBadges } from './useChatBadges';
+import { usePauseGlobalAudio } from './Audio';
 
 const useNewConvo = (index = 0) => {
   const navigate = useNavigate();
@@ -255,7 +253,7 @@ const useNewConvo = (index = 0) => {
           )
           .map((file) => ({
             file_id: file.file_id,
-            embedded: !!(file.embedded ?? false),
+            embedded: Boolean(file.embedded ?? false),
             filepath: file.filepath as string,
             source: file.source as FileSources, // Ensure that the source is of type FileSources
           }));

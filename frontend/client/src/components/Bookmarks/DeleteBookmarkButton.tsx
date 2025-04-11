@@ -26,13 +26,13 @@ const DeleteBookmarkButton: FC<{
     onError: () => {
       showToast({
         message: localize('com_ui_bookmarks_delete_error'),
-        severity: NotificationSeverity.ERROR,
+        severity: NotificationSeverity.Error,
       });
     },
   });
 
   const confirmDelete = useCallback(async () => {
-    await deleteBookmarkMutation.mutateAsync(bookmark);
+    deleteBookmarkMutation.mutate(bookmark);
   }, [bookmark, deleteBookmarkMutation]);
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -52,14 +52,7 @@ const DeleteBookmarkButton: FC<{
             aria-label={localize('com_ui_bookmarks_delete')}
             description={localize('com_ui_delete')}
             className="flex size-7 items-center justify-center rounded-lg transition-colors duration-200 hover:bg-surface-hover"
-            tabIndex={tabIndex}
-            onFocus={onFocus}
-            onBlur={onBlur}
-            onClick={() => setOpen(!open)}
-            onKeyDown={handleKeyDown}
-          >
-            <TrashIcon className="size-4" />
-          </TooltipAnchor>
+          />
         </OGDialogTrigger>
         <OGDialogTemplate
           showCloseButton={false}

@@ -147,8 +147,8 @@ export default function Settings({ open, onOpenChange }: TDialogProps) {
                     strokeLinejoin="round"
                     className="h-5 w-5 text-text-primary"
                   >
-                    <line x1="18" x2="6" y1="6" y2="18"></line>
-                    <line x1="6" x2="18" y1="6" y2="18"></line>
+                    <line x1="18" x2="6" y1="6" y2="18" />
+                    <line x1="6" x2="18" y1="6" y2="18" />
                   </svg>
                   <span className="sr-only">Close</span>
                 </button>

@@ -1,5 +1,5 @@
-import { useApi } from 'librechat-data-provider';
 import React, { useEffect, useState } from 'react';
+import { useApi } from '../data-provider/simplified-api.tsx'; // Using the local import for consistency
 
 // Simple component for selecting an agent
 const AgentSelector = ({ onSelect }) => {

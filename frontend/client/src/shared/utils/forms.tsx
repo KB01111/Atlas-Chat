@@ -6,7 +6,6 @@ import {
   FileSources,
 } from 'librechat-data-provider';
 import { EarthIcon } from 'lucide-react';
-
 import type { DropdownValueSetter, ExtendedFile, TAgentOption } from '~/common';
 
 /**

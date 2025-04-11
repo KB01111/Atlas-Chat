@@ -70,7 +70,7 @@ const useUpdateTagsInConvo = () => {
         'conversation',
         conversationId,
       ]);
-      if (conversation && conversation.tags) {
+      if (conversation?.tags) {
         const updatedConvo = {
           ...conversation,
           tags: conversation.tags.map((t) => (t === tag ? newTag : t)),
