@@ -34,7 +34,7 @@ export default function ModelPanel({
     return value ?? '';
   }, [providerOption]);
   const models = useMemo(
-    () => (provider ? (modelsData[provider] ?? []) : []),
+    () => (provider ? modelsData[provider] ?? [] : []),
     [modelsData, provider],
   );
 
@@ -114,11 +114,11 @@ export default function ModelPanel({
               const value =
                 typeof field.value === 'string'
                   ? field.value
-                  : ((field.value as StringOption)?.value ?? '');
+                  : (field.value as StringOption)?.value ?? '';
               const display =
                 typeof field.value === 'string'
                   ? field.value
-                  : ((field.value as StringOption)?.label ?? '');
+                  : (field.value as StringOption)?.label ?? '';
 
               return (
                 <>

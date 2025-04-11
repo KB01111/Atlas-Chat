@@ -187,7 +187,7 @@ const MessageEndpointIcon: React.FC<IconProps> = (props) => {
 
   let { icon, bg, name } =
     endpoint != null && endpoint && endpointIcons[endpoint]
-      ? (endpointIcons[endpoint] ?? {})
+      ? endpointIcons[endpoint] ?? {}
       : (endpointIcons.default as EndpointIcon);
 
   if (iconURL && endpointIcons[iconURL]) {

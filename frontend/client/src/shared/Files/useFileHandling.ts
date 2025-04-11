@@ -128,7 +128,7 @@ const useFileHandling = (params?: UseFileHandling) => {
         const errorMessage =
           error?.code === 'ERR_CANCELED'
             ? 'com_error_files_upload_canceled'
-            : (error?.response?.data?.message ?? 'com_error_files_upload');
+            : error?.response?.data?.message ?? 'com_error_files_upload';
         setError(errorMessage);
       },
     },

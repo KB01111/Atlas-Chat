@@ -71,9 +71,7 @@ function PromptsCommand({
         label: `${group.command != null && group.command ? `/${group.command} - ` : ''}${
           group.name
         }: ${
-          (group.oneliner?.length ?? 0) > 0
-            ? group.oneliner
-            : (group.productionPrompt?.prompt ?? '')
+          (group.oneliner?.length ?? 0) > 0 ? group.oneliner : group.productionPrompt?.prompt ?? ''
         }`,
         icon: <CategoryIcon category={group.category ?? ''} className="h-5 w-5" />,
       }));

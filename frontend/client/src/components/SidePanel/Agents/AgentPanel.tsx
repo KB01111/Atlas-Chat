@@ -201,7 +201,7 @@ export default function AgentPanel({
 
   const canEditAgent = useMemo(() => {
     const canEdit =
-      (agentQuery.data?.isCollaborative ?? false)
+      agentQuery.data?.isCollaborative ?? false
         ? true
         : agentQuery.data?.author === user?.id || user?.role === SystemRoles.ADMIN;
 
@@ -229,7 +229,7 @@ export default function AgentPanel({
               setCurrentAgentId={setCurrentAgentId}
               // The following is required to force re-render the component when the form's agent ID changes
               // Also maintains ComboBox Focus for Accessibility
-              selectedAgentId={agentQuery.isInitialLoading ? null : (current_agent_id ?? null)}
+              selectedAgentId={agentQuery.isInitialLoading ? null : current_agent_id ?? null}
             />
           </div>
           {/* Create + Select Button */}

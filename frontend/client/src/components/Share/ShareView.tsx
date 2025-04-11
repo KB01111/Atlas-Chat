@@ -17,7 +17,7 @@ function SharedView() {
   const { shareId } = useParams();
   const { data, isLoading } = useGetSharedMessages(shareId ?? '');
   const dataTree = data && buildTree({ messages: data.messages });
-  const messagesTree = dataTree?.length === 0 ? null : (dataTree ?? null);
+  const messagesTree = dataTree?.length === 0 ? null : dataTree ?? null;
 
   // configure document title
   let docTitle = '';

@@ -80,7 +80,7 @@ function DynamicDropdown({
                 htmlFor={`${settingKey}-dynamic-dropdown`}
                 className="text-left text-sm font-medium"
               >
-                {labelCode ? (localize(label as TranslationKeys) ?? label) : label || settingKey}
+                {labelCode ? localize(label as TranslationKeys) ?? label : label || settingKey}
                 {showDefault && (
                   <small className="opacity-40">
                     ({localize('com_endpoint_default')}: {defaultValue})
@@ -100,7 +100,7 @@ function DynamicDropdown({
             id={`${settingKey}-dynamic-dropdown`}
             placeholder={
               placeholderCode
-                ? (localize(placeholder as TranslationKeys) ?? placeholder)
+                ? localize(placeholder as TranslationKeys) ?? placeholder
                 : placeholder
             }
           />
@@ -109,7 +109,7 @@ function DynamicDropdown({
           <OptionHover
             description={
               descriptionCode
-                ? (localize(description as TranslationKeys) ?? description)
+                ? localize(description as TranslationKeys) ?? description
                 : description
             }
             side={ESide.Left}

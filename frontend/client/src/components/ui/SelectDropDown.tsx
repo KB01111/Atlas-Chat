@@ -218,12 +218,10 @@ function SelectDropDown({
                       return null;
                     }
                     const currentLabel =
-                      typeof option === 'string' ? option : (option.label ?? option.value ?? '');
-                    const currentValue = typeof option === 'string' ? option : (option.value ?? '');
+                      typeof option === 'string' ? option : option.label ?? option.value ?? '';
+                    const currentValue = typeof option === 'string' ? option : option.value ?? '';
                     const currentIcon =
-                      typeof option === 'string'
-                        ? null
-                        : ((option.icon as React.ReactNode) ?? null);
+                      typeof option === 'string' ? null : (option.icon as React.ReactNode) ?? null;
                     let activeValue: string | number | null | Option = value;
                     if (typeof activeValue !== 'string') {
                       activeValue = activeValue?.value ?? '';

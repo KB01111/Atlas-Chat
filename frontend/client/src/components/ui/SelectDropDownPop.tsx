@@ -83,7 +83,7 @@ function SelectDropDownPop({
                     'min-w-[75px] font-normal',
                   )}
                 >
-                  {typeof value !== 'string' && value ? (value.label ?? '') : (value ?? '')}
+                  {typeof value !== 'string' && value ? value.label ?? '' : value ?? ''}
                 </span>
               </span>
               <span className="absolute inset-y-0 right-0 flex items-center pr-2">

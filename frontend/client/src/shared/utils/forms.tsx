@@ -87,7 +87,7 @@ export const processAgentOption = ({
     const source =
       tool_resource === EToolResources.file_search
         ? FileSources.vectordb
-        : (file?.source ?? FileSources.local);
+        : file?.source ?? FileSources.local;
 
     if (file) {
       list?.push([

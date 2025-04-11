@@ -136,7 +136,7 @@ function ControlCombobox({
         className={cn(
           'animate-popover z-50 overflow-hidden rounded-xl border border-border-light bg-surface-secondary shadow-lg',
         )}
-        style={{ width: isCollapsed ? '300px' : (buttonWidth ?? '300px') }}
+        style={{ width: isCollapsed ? '300px' : buttonWidth ?? '300px' }}
       >
         <div className="py-1.5">
           <div className="relative">

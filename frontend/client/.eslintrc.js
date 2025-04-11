@@ -22,13 +22,7 @@ module.exports = {
     project: './tsconfig.json',
     tsconfigRootDir: __dirname,
   },
-  plugins: [
-    'react',
-    '@typescript-eslint',
-    'jsx-a11y',
-    'import',
-    'react-hooks',
-  ],
+  plugins: ['react', '@typescript-eslint', 'jsx-a11y', 'import', 'react-hooks'],
   settings: {
     react: {
       version: 'detect',
@@ -77,7 +71,7 @@ module.exports = {
       },
     ],
     'import/newline-after-import': 'warn',
-     // Turned off prop-types for TS/TSX files by default
+    // Turned off prop-types for TS/TSX files by default
     'react/prop-types': 'off',
   },
   overrides: [
@@ -88,15 +82,15 @@ module.exports = {
         jest: true,
       },
       rules: {
-         // Allow test files to use dev dependencies
+        // Allow test files to use dev dependencies
         'import/no-extraneous-dependencies': 'off',
         // specific test file rules can go here if needed
-      }
+      },
     },
     {
-       // Enable prop-types for JS/JSX files specifically
+      // Enable prop-types for JS/JSX files specifically
       files: ['*.jsx'],
-       rules: {
+      rules: {
         'react/prop-types': 'warn', // Use 'warn' or 'error' as preferred
         '@typescript-eslint/no-var-requires': 'off', // Allow require in JSX files if needed
       },
@@ -104,35 +98,35 @@ module.exports = {
     {
       // Allow JS files (like configs) to use require
       files: ['*.js'],
-       rules: {
+      rules: {
         '@typescript-eslint/no-var-requires': 'off',
       },
     },
     // Add override for index.js if it should be ignored or treated differently
     {
-        files: ['src/index.js'], // Target the specific file causing issues
-        parserOptions: {
-            project: null // Indicate it's not part of the main TS project
-        },
-        rules: {
-            'import/no-unresolved': 'off', // Turn off specific rules if needed for this file
-             '@typescript-eslint/no-var-requires': 'off',
-             'no-undef': 'off', // Example: Turn off undefined variable checks if it uses globals differently
-        }
+      files: ['src/index.js'], // Target the specific file causing issues
+      parserOptions: {
+        project: null, // Indicate it's not part of the main TS project
+      },
+      rules: {
+        'import/no-unresolved': 'off', // Turn off specific rules if needed for this file
+        '@typescript-eslint/no-var-requires': 'off',
+        'no-undef': 'off', // Example: Turn off undefined variable checks if it uses globals differently
+      },
     },
     // Add override for SupabaseProvider.jsx if it should be ignored or treated differently
-     {
-        files: ['src/shared/Providers/SupabaseProvider.jsx'], // Target the specific file causing issues
-        parserOptions: {
-            project: null // Indicate it's not part of the main TS project
-        },
-        rules: {
-            'import/no-unresolved': 'off', // Turn off specific rules if needed for this file
-             '@typescript-eslint/no-var-requires': 'off',
-             'no-undef': 'off', // Example: Turn off undefined variable checks if it uses globals differently
-            'react/prop-types': 'off',
-        }
-    }
+    {
+      files: ['src/shared/Providers/SupabaseProvider.jsx'], // Target the specific file causing issues
+      parserOptions: {
+        project: null, // Indicate it's not part of the main TS project
+      },
+      rules: {
+        'import/no-unresolved': 'off', // Turn off specific rules if needed for this file
+        '@typescript-eslint/no-var-requires': 'off',
+        'no-undef': 'off', // Example: Turn off undefined variable checks if it uses globals differently
+        'react/prop-types': 'off',
+      },
+    },
   ],
   ignorePatterns: ['node_modules/', 'dist/', 'build/', '*.config.js', '*.config.ts'],
 };

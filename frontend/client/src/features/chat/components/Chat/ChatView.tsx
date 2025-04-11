@@ -32,7 +32,7 @@ function ChatView({ index = 0 }: { index?: number }) {
     select: useCallback(
       (data: TMessage[]) => {
         const dataTree = buildTree({ messages: data, fileMap });
-        return dataTree?.length === 0 ? null : (dataTree ?? null);
+        return dataTree?.length === 0 ? null : dataTree ?? null;
       },
       [fileMap],
     ),

@@ -125,7 +125,7 @@ function DynamicSlider({
               htmlFor={`${settingKey}-dynamic-setting`}
               className="text-left text-sm font-medium"
             >
-              {labelCode ? (localize(label as TranslationKeys) ?? label) : label || settingKey}{' '}
+              {labelCode ? localize(label as TranslationKeys) ?? label : label || settingKey}{' '}
               {showDefault && (
                 <small className="opacity-40">
                   ({localize('com_endpoint_default')}: {defaultValue})
@@ -140,7 +140,7 @@ function DynamicSlider({
                 onChange={(value) => setInputValue(Number(value))}
                 max={range ? range.max : (options?.length ?? 0) - 1}
                 min={range ? range.min : 0}
-                step={range ? (range.step ?? 1) : 1}
+                step={range ? range.step ?? 1 : 1}
                 controls={false}
                 className={cn(
                   defaultTextProps,
@@ -172,13 +172,13 @@ function DynamicSlider({
             value={[
               isEnum
                 ? enumToNumeric[(selectedValue as number) ?? '']
-                : ((inputValue as number) ?? (defaultValue as number)),
+                : (inputValue as number) ?? (defaultValue as number),
             ]}
             onValueChange={(value) => handleValueChange(value[0])}
             onDoubleClick={() => setInputValue(defaultValue as string | number)}
             max={max}
             min={range ? range.min : 0}
-            step={range ? (range.step ?? 1) : 1}
+            step={range ? range.step ?? 1 : 1}
             className="flex h-4 w-full"
           />
         </HoverCardTrigger>
@@ -186,7 +186,7 @@ function DynamicSlider({
           <OptionHover
             description={
               descriptionCode
-                ? (localize(description as TranslationKeys) ?? description)
+                ? localize(description as TranslationKeys) ?? description
                 : description
             }
             side={ESide.Left}
