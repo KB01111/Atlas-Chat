@@ -48,14 +48,21 @@ app.include_router(integration.router)
 @app.on_event("startup")
 async def startup_event():
     logger.info("AtlasChat backend starting up")
-    # Initialize Sentry SDK here for async compatibility
-    sentry_sdk.init(
-        dsn=os.getenv("SENTRY_DSN", ""),
-        traces_sample_rate=1.0,
-        send_default_pii=True,
-        profiles_sample_rate=1.0,
-    )
-    logger.info("Sentry SDK initialized.")
+    # Initialize Sentry SDK only if DSN is provided
+    sentry_dsn = os.getenv("SENTRY_DSN")
+    if sentry_dsn:
+        try:
+            sentry_sdk.init(
+                dsn=sentry_dsn,
+                traces_sample_rate=1.0,
+                send_default_pii=True,
+                profiles_sample_rate=1.0,
+            )
+            logger.info("Sentry SDK initialized.")
+        except sentry_sdk.utils.BadDsn:
+            logger.warning("Invalid SENTRY_DSN provided. Sentry integration disabled.")
+    else:
+        logger.info("SENTRY_DSN not found. Sentry integration disabled.")
 
 
 @app.on_event("shutdown")

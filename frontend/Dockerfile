@@ -9,25 +9,36 @@ WORKDIR /app
 RUN apk add --no-cache python3 make g++ git
 
 # First copy package files and install node modules
-COPY client/package.json .
+COPY frontend/client/package.json .
 RUN npm install
 
 # Then copy the rest of the application
-COPY client/public ./public
-COPY client/src ./src
-COPY client/.eslintrc.json .
-COPY client/tsconfig.json .
-COPY craco.config.js .
+COPY frontend/client/public ./public
+COPY frontend/client/src ./src
+COPY frontend/client/.eslintrc.json .
+COPY frontend/client/tsconfig.json .
+COPY frontend/craco.config.js .
 
-# Set environment for production build
-ENV NODE_ENV=production
-ENV REACT_APP_API_BASE_URL=/api
+# Declare build arguments
+ARG REACT_APP_API_BASE_URL=/api
+ARG REACT_APP_E2B_CODEINTERPRETER_URL
+ARG REACT_APP_SENTRY_DSN
+ARG NODE_ENV=production
+
+# Set environment for production build using args
+ENV NODE_ENV=$NODE_ENV
+ENV REACT_APP_API_BASE_URL=$REACT_APP_API_BASE_URL
+ENV REACT_APP_E2B_CODEINTERPRETER_URL=$REACT_APP_E2B_CODEINTERPRETER_URL
+ENV REACT_APP_SENTRY_DSN=$REACT_APP_SENTRY_DSN
 
 # Build the application
 RUN npm run build
 
 # Stage 2: Nginx for serving the application
 FROM nginx:alpine
+
+# Install wget for healthcheck
+RUN apk add --no-cache wget
 
 # Copy built app from builder stage
 COPY --from=builder /app/build /usr/share/nginx/html
