@@ -25,6 +25,7 @@
     "react-dom": "^18.0.0"
   },
   "scripts": {
+    "start": "craco start",
     "build": "craco build",
     "analyze:source-map": "source-map-explorer 'build/static/js/*.js'",
     "analyze:webpack": "webpack-bundle-analyzer build/static/js/*.js",
@@ -41,5 +42,17 @@
         "lines": 80
       }
     }
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
