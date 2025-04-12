@@ -35,7 +35,7 @@ export const TooltipAnchor = forwardRef<HTMLDivElement, TooltipAnchorProps>(func
     }
   }, [placement]);
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
     if (role === 'button' && event.key === 'Enter') {
       event.preventDefault();
       (event.target as HTMLDivElement).click();

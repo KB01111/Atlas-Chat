@@ -36,5 +36,13 @@
       "version": "detect"
     }
   },
-  "rules": {}
+  "rules": {},
+  "overrides": [
+    {
+      "files": ["*.js"],
+      "parser": "espree",
+      "extends": ["eslint:recommended"],
+      "rules": {}
+    }
+  ]
 }

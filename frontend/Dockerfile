@@ -1,65 +1,59 @@
-# Use bun as the base image
-FROM oven/bun:1 as base
+# Multi-stage build for Atlas-Chat frontend
+# Stage 1: Install dependencies and build
+FROM node:20-alpine AS builder
 
-# Stage 1: Install dependencies
-FROM base AS deps
-WORKDIR /workspace
-
-COPY package.json bun.lockb* ./
-COPY frontend/ ./frontend/
-COPY frontend/packages/ ./frontend/packages/
-COPY frontend/packages/data-provider/ ./frontend/packages/data-provider/
-
-# Explicitly copy Craco config
-# Copy the real craco.config.js into frontend directory inside container
-COPY frontend/craco.config.js ./frontend/craco.config.js
-COPY frontend/client/ ./frontend/client/
-
-RUN bun install --frozen-lockfile
-
-# Build the librechat-data-provider package to generate dist/
-RUN bun run --cwd frontend/packages/data-provider build
-
-# Debug: list the dist directory contents after build
-RUN ls -R frontend/packages/data-provider/dist
-RUN ls -l frontend/packages/data-provider/dist/react-query
-
-# Stage 2: Build the application
-FROM base AS builder
+# Set working directory
 WORKDIR /app
 
-# Copy installed dependencies from the 'deps' stage
-COPY --from=deps /workspace/node_modules ./node_modules
+# Install necessary build dependencies
+RUN apk add --no-cache python3 make g++ git
 
-# Copy the rest of the client application code
-COPY --from=deps /workspace/frontend/client ./frontend/client
+# First copy package files and install node modules
+COPY client/package.json .
+RUN npm install
 
-# Set environment variables for production build
-ARG REACT_APP_API_BASE_URL
-ENV REACT_APP_API_BASE_URL=${REACT_APP_API_BASE_URL}
+# Then copy the rest of the application
+COPY client/public ./public
+COPY client/src ./src
+COPY client/.eslintrc.json .
+COPY client/tsconfig.json .
+COPY craco.config.js .
 
-# Build the React application using the build script defined in package.json
-# Debug: print Craco config to verify alias is included
-RUN echo "CRACO CONFIG:" && cat frontend/client/craco.config.js
+# Set environment for production build
+ENV NODE_ENV=production
+ENV REACT_APP_API_BASE_URL=/api
 
-WORKDIR /app/frontend/client
-RUN bun run build
+# Build the application
+RUN npm run build
 
-# Stage 3: Production image
-FROM base AS runner
-WORKDIR /app
+# Stage 2: Nginx for serving the application
+FROM nginx:alpine
 
-ENV NODE_ENV production
+# Copy built app from builder stage
+COPY --from=builder /app/build /usr/share/nginx/html
 
-# Copy only necessary production files from the 'builder' stage
-COPY --from=builder /app/frontend/client/build ./build
+# Copy health check page for Docker health checks
+COPY --from=builder /app/public/health.html /usr/share/nginx/html/health
 
-# Install serve globally for production hosting
-RUN bun install -g serve
+# Configure nginx with proper routing for SPA and health check
+RUN echo 'server { \
+    listen 3000; \
+    root /usr/share/nginx/html; \
+    index index.html; \
+    # Handle SPA routing \
+    location / { \
+        try_files $uri $uri/ /index.html; \
+    } \
+    # Health check endpoint required by Windsurf rules \
+    location /health { \
+        alias /usr/share/nginx/html/health; \
+        add_header Content-Type text/html; \
+    } \
+}' > /etc/nginx/conf.d/default.conf
 
-# Expose the port serve will run on (default is 3000)
+# Expose port
 EXPOSE 3000
 
-# Use 'serve' to host the static files from the 'build' directory
-# The '-s' flag ensures that routing works correctly for single-page applications
-CMD ["serve", "-s", "build", "-l", "tcp://0.0.0.0:3000"]
+# Add health check as required by Windsurf rules
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD wget --quiet --tries=1 --spider http://localhost:3000/health || exit 1

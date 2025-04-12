@@ -29,5 +29,5 @@
       "~shared/common/*": ["src/shared/common/*"]
     }
   },
-  "include": ["src"]
+  "include": ["src", "src/index.js"]
 }
