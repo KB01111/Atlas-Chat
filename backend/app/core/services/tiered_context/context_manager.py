@@ -189,7 +189,8 @@ class TieredContextManager:
 
         return context_bundle
 
-    async def format_context_for_prompt(self, context_bundle: ContextBundle) -> str:
+    @staticmethod
+    async def format_context_for_prompt(context_bundle: ContextBundle) -> str:
         """
         Format context bundle for use in a prompt.
 
