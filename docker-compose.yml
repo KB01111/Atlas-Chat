@@ -137,15 +137,13 @@ services:
       context: .
       dockerfile: frontend/Dockerfile
       args:
-        # Point API URL to the Nginx proxy path (e.g., /api)
-        # Frontend should call backend, backend calls E2B if needed.
-        REACT_APP_API_BASE_URL: "/api"
-        # REACT_APP_E2B_CODEINTERPRETER_URL: ${E2B_CODEINTERPRETER_URL} # Removed: Frontend should not call E2B directly
-        REACT_APP_SENTRY_DSN: ${SENTRY_DSN}
-        REACT_APP_SUPABASE_URL: ${SUPABASE_URL}
-        REACT_APP_SUPABASE_ANON_KEY: ${SUPABASE_KEY}
-        # REACT_APP_API_BASE_URL defaults to /api
-        NODE_ENV: production
+        # Pass build arguments from .env or defaults
+        REACT_APP_API_BASE_URL: ${REACT_APP_API_BASE_URL:-/api}
+        REACT_APP_E2B_CODEINTERPRETER_URL: ${REACT_APP_E2B_CODEINTERPRETER_URL}
+        REACT_APP_SENTRY_DSN: ${REACT_APP_SENTRY_DSN}
+        REACT_APP_SUPABASE_URL: ${REACT_APP_SUPABASE_URL}
+        REACT_APP_SUPABASE_ANON_KEY: ${REACT_APP_SUPABASE_ANON_KEY}
+        NODE_ENV: ${NODE_ENV:-production}
     container_name: atlas-chat-frontend
     restart: always
     depends_on:
@@ -155,11 +153,11 @@ services:
     networks:
       - atlas-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000"] # Corrected port for serve
+      test: ["CMD-SHELL", "wget --quiet --tries=1 --spider http://localhost:3000/health || exit 1"] # Use wget like Dockerfile HEALTHCHECK
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 40s
+      start_period: 60s
     # Performance enhancements
     deploy:
       resources:
