@@ -3,24 +3,24 @@
 This directory is intended for component and feature documentation as required by the Atlas-Chat Windsurf Rules. Below are the most important documentation files that should be present or created:
 
 - [Component Documentation](./components.md)  
-  *Document the purpose, usage, and props of each UI component.*
+  _Document the purpose, usage, and props of each UI component._
 
 - [Feature Documentation](./features.md)  
-  *Describe major features, their workflows, and user stories.*
+  _Describe major features, their workflows, and user stories._
 
 - [API Integration Guide](./api-integration.md)  
-  *Explain how the frontend communicates with backend services.*
+  _Explain how the frontend communicates with backend services._
 
 - [State Management Guide](./state-management.md)  
-  *Outline the approach to state management (e.g., Redux, Context API).*
+  _Outline the approach to state management (e.g., Redux, Context API)._
 
 - [Theming and Styling Guide](./theming.md)  
-  *Document the styling system, theming, and design tokens.*
+  _Document the styling system, theming, and design tokens._
 
 - [Contribution Guide](./contributing.md)  
-  *Instructions for contributing to the frontend codebase.*
+  _Instructions for contributing to the frontend codebase._
 
 - [Testing Guide](./testing.md)  
-  *Describe testing strategies, tools, and best practices.*
+  _Describe testing strategies, tools, and best practices._
 
 Add or update these files as needed to ensure comprehensive documentation for the frontend/client.
