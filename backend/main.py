@@ -49,9 +49,7 @@ app.include_router(integration.router)
 @app.on_event("startup")
 async def startup_event():
     logger.info("AtlasChat backend starting up")
-    # Initialize Sentry SDK only if DSN is provided
-    sentry_dsn = os.getenv("SENTRY_DSN")
-    if sentry_dsn:
+    if sentry_dsn := os.getenv("SENTRY_DSN"):
         try:
             sentry_sdk.init(
                 dsn=sentry_dsn,
