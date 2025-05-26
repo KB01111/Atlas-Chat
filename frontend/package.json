@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "@ariakit/react": "^0.1.7",
+    "@ariakit/react": "^0.4.17",
     "@craco/craco": "^7.1.0",
     "@radix-ui/react-toast": "^1.2.7",
     "@sentry/react": "^7.0.0",
