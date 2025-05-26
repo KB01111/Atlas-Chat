@@ -16,7 +16,7 @@
     "i18next": "^21.10.0",
     "librechat-data-provider": "0.7.790",
     "lodash": "^4.17.21",
-    "lucide-react": "^0.263.0",
+    "lucide-react": "^0.507.0",
     "react": "^18.2.0",
     "react-dnd": "^16.0.1",
     "react-dom": "^18.2.0",
