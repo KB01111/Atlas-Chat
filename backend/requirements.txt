@@ -17,3 +17,4 @@ supabase>=1.0.0  # For Supabase integration
 sqlalchemy>=1.4
 loguru>=0.7.0
 python-multipart>=0.0.6
+urllib3>=2.5.0 # not directly required, pinned by Snyk to avoid a vulnerability
