@@ -35,7 +35,7 @@ ENV REACT_APP_SENTRY_DSN=$REACT_APP_SENTRY_DSN
 RUN npm run build
 
 # Stage 2: Nginx for serving the application
-FROM nginx:alpine
+FROM nginx:1.29.3-alpine3.22
 
 # Install wget for healthcheck
 RUN apk add --no-cache wget
