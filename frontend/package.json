@@ -13,7 +13,7 @@
     "@tanstack/react-table": "^8.7.0",
     "export-from-json": "^1.7.4",
     "filenamify": "^6.0.0",
-    "i18next": "^21.10.0",
+    "i18next": "^27.2.6",
     "librechat-data-provider": "0.7.790",
     "lodash": "^4.17.21",
     "lucide-react": "^0.263.0",
